@@ -1,0 +1,9 @@
+Package: vtreat
+Type: Package
+Title: vtreat: a package for simple variable treatment
+Version: 0.2
+Date: 2014-06-22
+Author: John Mount, Nina Zumel
+Maintainer: <contact@win-vector.com>
+Description:vtreat is a package that treats variables so that models can be used in production. Common problems vtreat defends against: NA, too many categorical values, rare categorical values, new categorical values (levels seen during application, but not during training).   vtreatList(treatments,data.frame) should be used as you would use model.matrix.
+License: GNU General Public License version 3
