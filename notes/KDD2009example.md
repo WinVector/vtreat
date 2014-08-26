@@ -4,8 +4,10 @@
 ```r
 # To make the html: echo "library(knitr); knit('KDD2009example.Rmd')" | R --vanilla ; pandoc KDD2009example.md -o KDD2009example.html
 # Example of working with KDD2009 data (just to show library at work).
-# For data and details see: https://github.com/WinVector/zmPDSwR/tree/master/KDD2009
+# For vtreat details see: http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/
 # and Chapter 6 of Practical Data Science with R: http://www.amazon.com/Practical-Data-Science/dp/1617291560
+# For details on data see: https://github.com/WinVector/zmPDSwR/tree/master/KDD2009
+
 # load the data as in the book
 dir <- '~/Documents/work/DataScienceBook/zmPDSwR/KDD2009/' # change this path to match your directory structure
 d <- read.table(paste(dir,'orange_small_train.data.gz',sep=''),

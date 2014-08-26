@@ -1,7 +1,9 @@
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># To make the html: echo &quot;library(knitr); knit(&#39;KDD2009example.Rmd&#39;)&quot; | R --vanilla ; pandoc KDD2009example.md -o KDD2009example.html</span>
 <span class="co"># Example of working with KDD2009 data (just to show library at work).</span>
-<span class="co"># For data and details see: https://github.com/WinVector/zmPDSwR/tree/master/KDD2009</span>
+<span class="co"># For vtreat details see: http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/</span>
 <span class="co"># and Chapter 6 of Practical Data Science with R: http://www.amazon.com/Practical-Data-Science/dp/1617291560</span>
+<span class="co"># For details on data see: https://github.com/WinVector/zmPDSwR/tree/master/KDD2009</span>
+
 <span class="co"># load the data as in the book</span>
 dir &lt;-<span class="st"> &#39;~/Documents/work/DataScienceBook/zmPDSwR/KDD2009/&#39;</span> <span class="co"># change this path to match your directory structure</span>
 d &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="kw">paste</span>(dir,<span class="st">&#39;orange_small_train.data.gz&#39;</span>,<span class="dt">sep=</span><span class="st">&#39;&#39;</span>),
