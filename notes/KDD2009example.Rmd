@@ -6,7 +6,7 @@
 # For data and details see: https://github.com/WinVector/zmPDSwR/tree/master/KDD2009
 # and Chapter 6 of Practical Data Science with R: http://www.amazon.com/Practical-Data-Science/dp/1617291560
 # load the data as in the book
-dir <- '~/Documents/work/DataScienceBook/zmPDSwR/KDD2009/'
+dir <- '~/Documents/work/DataScienceBook/zmPDSwR/KDD2009/' # change this path to match your directory structure
 d <- read.table(paste(dir,'orange_small_train.data.gz',sep=''),
                 header=T,sep='\t',na.strings=c('NA',''))
 churn <- read.table(paste(dir,'orange_small_train_churn.labels.txt',sep=''),
@@ -20,11 +20,12 @@ upselling <- read.table(paste(dir,'orange_small_train_upselling.labels.txt',sep=
 d$upselling <- upselling$V1
 set.seed(729375)
 d$rgroup <- runif(dim(d)[[1]])
-dTrainAll <- subset(d,rgroup<=0.9)
+dTrainPri <- subset(d,rgroup<=0.8)
+dTrainCal <- subset(d,rgroup>0.8 & rgroup<=0.9)
 dTest <- subset(d,rgroup>0.9)
 rm(list=c('d','churn','appetency','upselling','dir'))
 outcomes <- c('churn','appetency','upselling')
-vars <- setdiff(colnames(dTrainAll),
+vars <- setdiff(colnames(dTrainPri),
                 c(outcomes,'rgroup'))
 yName <- 'churn'
 yTarget <- 1
@@ -39,39 +40,116 @@ library('vtreat')  # This library isn't public yet, intall instructions: http://
 
 # try the automatic variable treatment
 set.seed(239525)
-treatments <- designTreatmentsC(dTrainAll[sample.int(n=dim(dTrainAll)[[1]],size=5000),],vars,yName,1)
-pruneLevel <- 0.9999
-treatedTrain <- prepare(treatments,dTrainAll,
-                        pruneLevel=pruneLevel,scale=TRUE)
-treatedTest <- prepare(treatments,dTest,
-                       pruneLevel=pruneLevel,scale=TRUE)
-mvars <- intersect(treatments$vars,colnames(treatedTrain))
+treatments <- designTreatmentsC(dTrainPri,
+    vars,yName,yTarget,smFactor=1.0,minFraction=2.0,maxMissing=-1.0)
+save(file='kdd2009ex.Rdata',list=ls())
 ```
 
 ```{r kddexanalyze, tidy=FALSE, cache=FALSE}
+#load('kdd2009ex.Rdata') # how we would load the data by hand
 #load/re-load some libraries
 library('ggplot2')
 library('ROCR')
+library('vtreat')
+library('randomForest')
+library('class')
 
-library('vtreat')  # This library isn't public yet, intall instructions: http://www.win-vector.com/blog/2014/08/vtreat-designin# try a principal components version of the analysis
+
+
+# select variables that look good in calibration
+pruneLevel <- 0.99999 # noisy weak variables, so not leaning on PRESS statistic
+treatedTrain <- prepare(treatments,dTrainPri,
+                        pruneLevel=pruneLevel,scale=TRUE)
+treatedCal <- prepare(treatments,dTrainCal,
+                        pruneLevel=pruneLevel,scale=TRUE)
+treatedTest <- prepare(treatments,dTest,
+                       pruneLevel=pruneLevel,scale=TRUE)
+scoreVarCal <- function(vname,trainFrame,calFrame) {
+  mv <- glm(paste(yCond,vname,sep=' ~ '),data=trainFrame,family=binomial(link='logit'))
+  sv <- predict(mv,newdata=calFrame,type='response')
+  ncal <- length(calFrame[,yName])
+  sc <- sum(calFrame[,yName]==yTarget)/ncal
+  (sum(ifelse(calFrame[,yName]==yTarget,log(sv),log(1-sv))) - sum(ifelse(calFrame[,yName]==yTarget,log(sc),log(1-sc))))/ncal
+}
+m1vars <- intersect(treatments$vars,colnames(treatedTrain))
+varValues <- sapply(m1vars,function(v) scoreVarCal(v,treatedTrain,treatedCal)) # weak noisy variables, so score on calibration set
+print(table(PRESSgood=treatments$varScores[m1vars]<1,CALgood=varValues>0))
+mvars <- names(varValues)[varValues>1.0e-5]
+
+
+# Add some principal components as new synthetic variables (better would be something like partial least squares 
+# as we are working towards inverse-regressio style effects).  
+# See http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/ )
 pcomp <- prcomp(treatedTrain[,mvars])
-goodP <- pcomp$sdev>1.0e-2
+goodP <- pcomp$sdev>=1.0e-3
 projection <- pcomp$rotation[,goodP]
 treatedTrainP <- as.data.frame(as.matrix(treatedTrain[,mvars]) %*% projection)
-pvars <- colnames(treatedTrainP)
-treatedTrainP[,yName] = treatedTrain[,yName]
+pvars1 <- colnames(treatedTrainP)
+treatedTrainP <- cbind(treatedTrainP,treatedTrain)
+treatedCalP <- as.data.frame(as.matrix(treatedCal[,mvars]) %*% projection)
+treatedCalP <- cbind(treatedCalP,treatedCal)
 treatedTestP <- as.data.frame(as.matrix(treatedTest[,mvars]) %*% projection)
-treatedTestP[,yName] = treatedTest[,yName]
-formulaP <- paste(yCond,paste(pvars,collapse=' + '),sep=' ~ ')
+treatedTestP <- cbind(treatedTestP,treatedTest)
+pvarValues <- sapply(pvars1,function(v) scoreVarCal(v,treatedTrainP,treatedCalP)) # weak noisy variables, so score on calibration set
+pvars <- names(pvarValues)[pvarValues>1.0e-5]
 
-# simple glm model (just to show things work)
-modelP <- glm(formulaP,data=treatedTrainP,family=binomial(link='logit'))
-treatedTestP$glmPred <- predict(modelP,newdata=treatedTestP,type='link')
-ggplot(data=treatedTestP) + 
-   geom_density(aes_string(x='glmPred',color=paste('as.factor(',yName,')')))
-# compute AUC aas in chapter 5 of Practical Data Science with R
-ROCRpred <- prediction(treatedTestP$glmPred,treatedTest[,yName]==yTarget)
-plot(performance(ROCRpred,"tpr","fpr"))
-auc <- attributes(performance(ROCRpred,'auc'))$y.values[[1]]
-print(auc)
+
+uvars <- c(mvars,pvars)
+
+
+for (varset in list(mvars,pvars,uvars)) {
+   print('----------')
+   print(varset)
+   
+   print('')
+   print('glm')
+   # simple glm model (just to show things work)
+   formulaP <- paste(yCond,paste(varset,collapse=' + '),sep=' ~ ')
+   modelP <- glm(formulaP,data=treatedTrainP,family=binomial(link='logit'))
+   treatedTestP$glmPred <- predict(modelP,newdata=treatedTestP,type='response')
+   print(ggplot(data=treatedTestP) +
+      geom_density(aes_string(x='glmPred',color=paste('as.factor(',yName,')'))))
+   # compute AUC aas in chapter 5 of Practical Data Science with R
+   ROCR_glmPred <- prediction(treatedTestP$glmPred,treatedTest[,yName]==yTarget)
+   #plot(performance(ROCR_glmPred,"tpr","fpr"))
+   glmPredAUC <- attributes(performance(ROCR_glmPred,'auc'))$y.values[[1]]
+   print(glmPredAUC)
+   print('')
+
+   print('')
+   print('randomForest')
+   # random forest model, see chapter 9 of Practical Data Science with R
+   modelF <- randomForest(x=treatedTrainP[,varset],
+      y=as.factor(treatedTrainP[,yName]==yTarget),
+      ntree=300)
+   treatedTestP$rfPred <- predict(modelF,newdata=treatedTestP[,varset],type='prob')[,'TRUE']
+   print(ggplot(data=treatedTestP) +
+      geom_density(aes_string(x='rfPred',color=paste('as.factor(',yName,')'))))
+   ROCR_rfPred <- prediction(treatedTestP$rfPred,treatedTest[,yName]==yTarget)
+   #plot(performance(ROCR_rfPred,"tpr","fpr"))
+   rfPredAUC <- attributes(performance(ROCR_rfPred,'auc'))$y.values[[1]]
+   print(rfPredAUC)
+   print('')
+
+   print('')
+   print('knn')
+   # knn model, see chapter 6 of Practical Data Science with R
+   knnPred <- function(trainF,trainY,nK,testF) {
+       knnDecision <- knn(trainF,testF,trainY,k=nK,prob=T)
+       ifelse(knnDecision==TRUE,
+          attributes(knnDecision)$prob,
+          1-(attributes(knnDecision)$prob))
+   }
+   treatedTestP$knnPred <- knnPred(treatedTrainP[,varset],treatedTrainP[,yName],
+                                   200,
+                                   treatedTestP[,varset])
+   print(ggplot(data=treatedTestP) +
+      geom_density(aes_string(x='knnPred',color=paste('as.factor(',yName,')'))))
+   ROCR_knnPred <- prediction(treatedTestP$knnPred,treatedTest[,yName]==yTarget)
+   #plot(performance(ROCR_knnPred,"tpr","fpr"))
+   knnPredAUC <- attributes(performance(ROCR_knnPred,'auc'))$y.values[[1]]
+   print(knnPredAUC)
+   print('')
+}
+
 ```
