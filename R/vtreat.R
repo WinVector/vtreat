@@ -64,7 +64,7 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   sum(match1)<lv
 }
 
-# check if a clearn numeric vector has more than one value
+# check if a clean numeric vector has more than one value
 .has.range.cn <- function(v) {
   lv <- length(v)
   if(lv<=1) {
@@ -340,10 +340,10 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   if(n<=1) {
     return(0.0)
   }
-  if(!.has.range.cn(vcol)) {
+  if(!.has.range(vcolin)) {
     return(1.0)
   }
-  eConst <- pressConst(y,weights)
+  eConst <- .pressConst(y,weights)
   if(eConst<=0.0) {
     return(1.0)
   }
@@ -414,6 +414,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   if((sum(zoY)<=0)||(sum(zoY)>=length(zoY))) {
     stop("outcome variable doesn't vary with respect to target")
   }
+  cvarScores <- list()
   for(v in varlist) {
     vcol <- dframe[,v]
     colclass = class(vcol)
@@ -438,6 +439,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
         }
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
+          cvarScores[ti$newvars[[1]]] <- .pressCat(vcol,zoY,weights) # assumes only one newvar
         }
       }
     }
@@ -445,6 +447,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   treated <- .vtreatList(treatments,dframe,TRUE)
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   varScores <- .scoreColumnsC(treated,ycol,weights)
+  for(v in names(cvarScores)) {  # TODO: get rid of the wasteful calc and overwrite
+    varScores[v] <- cvarScores[v]
+  }
   plan <- list(treatments=treatments,
                vars=names(varScores),varScores=varScores,varMoves=varMoves,
                outcomename=outcomename,
@@ -479,6 +484,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   if(!.has.range.cn(ycol)) {
     stop("outcome variable was a constant")
   }
+  cvarScores <- list()
   for(v in varlist) {
     vcol <- dframe[,v]
     colclass <- class(vcol)
@@ -503,6 +509,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
         }
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
+          cvarScores[ti$newvars[[1]]] <- .pressCat(vcol,ycol,weights) # assumes only one newvar
         }
       }
     }
@@ -510,6 +517,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   treated <- .vtreatList(treatments,dframe,TRUE)
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   varScores <- .scoreColumnsN(treated,ycol,weights)
+  for(v in names(cvarScores)) {  # TODO: get rid of the wasteful calc and overwrite
+    varScores[v] <- cvarScores[v]
+  }
   plan <- list(treatments=treatments,
                vars=names(varScores),varScores=varScores,varMoves=varMoves,
                outcomename=outcomename,
