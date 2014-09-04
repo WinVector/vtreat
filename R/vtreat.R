@@ -357,7 +357,14 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   if(sum(valid)<=0) {
     return(1.0)
   }
-  error <- sum(weights)*sum(weights[valid]*(y[valid]-preds[valid])^2)/sum(weights[valid])
+  if(sum(valid)<n) {
+     # grand mean predictions
+     sumY <- sum(y*weights)
+     sumW <- sum(weights)
+     meanP <- (sumY - y*weights)/(sumW - weights)
+     preds[!valid] <- meanP[!valid]
+  }
+  error <- sum(weights*(y-preds)^2)
   error/eConst
 }
 
@@ -374,14 +381,14 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
 }
 
 # score list of columns related to numeric outcome
-.scoreColumnsN <- function(treatedFrame,yValues,weights) {
-  sapply(colnames(treatedFrame),
+.scoreColumnsN <- function(treatedFrame,yValues,weights,exclude) {
+  sapply(setdiff(colnames(treatedFrame),exclude),
          function(c) .scoreVN(treatedFrame[,c],yValues,weights))
 }
 
 # score list of columns related to a categorical outcome
-.scoreColumnsC <- function(treatedFrame,yValues,weights) {
-  sapply(colnames(treatedFrame),
+.scoreColumnsC <- function(treatedFrame,yValues,weights,exclude) {
+  sapply(setdiff(colnames(treatedFrame),exclude),
          function(c) .scoreVC(treatedFrame[,c],yValues,weights))
 }
 
@@ -446,10 +453,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   }
   treated <- .vtreatList(treatments,dframe,TRUE)
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
-  varScores <- .scoreColumnsC(treated,ycol,weights)
-  for(v in names(cvarScores)) {  # TODO: get rid of the wasteful calc and overwrite
-    varScores[v] <- cvarScores[v]
-  }
+  varScores <- append(.scoreColumnsC(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
   plan <- list(treatments=treatments,
                vars=names(varScores),varScores=varScores,varMoves=varMoves,
                outcomename=outcomename,
@@ -516,10 +520,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   }
   treated <- .vtreatList(treatments,dframe,TRUE)
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
-  varScores <- .scoreColumnsN(treated,ycol,weights)
-  for(v in names(cvarScores)) {  # TODO: get rid of the wasteful calc and overwrite
-    varScores[v] <- cvarScores[v]
-  }
+  varScores <- append(.scoreColumnsN(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
   plan <- list(treatments=treatments,
                vars=names(varScores),varScores=varScores,varMoves=varMoves,
                outcomename=outcomename,
