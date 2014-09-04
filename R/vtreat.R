@@ -257,6 +257,7 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
 
 
 
+
 # weighted press statistic of a weighted mean
 .pressConst <- function(y,weights) {
   n <- length(y)
@@ -329,6 +330,38 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   }
   error/eConst
 }
+
+# compute the press statistic of 
+# vcol: character 
+# y: numeric vectors (no NAs/NULLs)
+# y ~ a*x + b
+.pressCat <- function(vcolin,y,weights) {
+  n <- length(vcolin)
+  if(n<=1) {
+    return(0.0)
+  }
+  if(!.has.range.cn(vcol)) {
+    return(1.0)
+  }
+  eConst <- pressConst(y,weights)
+  if(eConst<=0.0) {
+    return(1.0)
+  }
+  origna <- is.na(vcolin)
+  vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
+  vcol[origna] <- 'NA'
+  num <- tapply(y*weights,vcol,sum) 
+  den <- tapply(weights,vcol,sum)
+  preds <- (num[vcol]- y*weights)/(den[vcol] - weights)
+  valid <- !is.na(preds)
+  if(sum(valid)<=0) {
+    return(1.0)
+  }
+  error <- sum(weights)*sum(weights[valid]*(y[valid]-preds[valid])^2)/sum(weights[valid])
+  error/eConst
+}
+
+
 
 # check if a variable is at all useful
 .scoreVN <- function(x,y,weights) {
