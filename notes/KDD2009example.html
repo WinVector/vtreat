@@ -80,7 +80,7 @@ varValues &lt;-<span class="st"> </span><span class="kw">sapply</span>(m1vars,fu
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">table</span>(<span class="dt">PRESSgood=</span>treatments$varScores[m1vars]&lt;<span class="dv">1</span>,<span class="dt">CALgood=</span>varValues&gt;<span class="dv">0</span>))</code></pre>
 <pre><code>##          CALgood
 ## PRESSgood FALSE TRUE
-##      TRUE    66  143</code></pre>
+##      TRUE    53  140</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">mvars &lt;-<span class="st"> </span><span class="kw">names</span>(varValues)[varValues&gt;<span class="fl">1.0e-5</span>]
 
 
@@ -190,54 +190,53 @@ for (varset in <span class="kw">list</span>(mvars,pvars,uvars)) {
 ## [113] &quot;Var176_isBAD&quot; &quot;Var177_isBAD&quot; &quot;Var178_isBAD&quot; &quot;Var179_isBAD&quot;
 ## [117] &quot;Var181_isBAD&quot; &quot;Var182_isBAD&quot; &quot;Var183_isBAD&quot; &quot;Var184_isBAD&quot;
 ## [121] &quot;Var188_clean&quot; &quot;Var188_isBAD&quot; &quot;Var189_clean&quot; &quot;Var191_catN&quot; 
-## [125] &quot;Var193_catN&quot;  &quot;Var197_catN&quot;  &quot;Var203_catN&quot;  &quot;Var205_catN&quot; 
-## [129] &quot;Var206_catN&quot;  &quot;Var207_catN&quot;  &quot;Var208_catN&quot;  &quot;Var210_catN&quot; 
-## [133] &quot;Var211_catN&quot;  &quot;Var218_catN&quot;  &quot;Var219_catN&quot;  &quot;Var221_catN&quot; 
-## [137] &quot;Var223_catN&quot;  &quot;Var224_catN&quot;  &quot;Var225_catN&quot;  &quot;Var226_catN&quot; 
-## [141] &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot; 
+## [125] &quot;Var193_catN&quot;  &quot;Var203_catN&quot;  &quot;Var205_catN&quot;  &quot;Var206_catN&quot; 
+## [129] &quot;Var207_catN&quot;  &quot;Var210_catN&quot;  &quot;Var211_catN&quot;  &quot;Var218_catN&quot; 
+## [133] &quot;Var219_catN&quot;  &quot;Var221_catN&quot;  &quot;Var224_catN&quot;  &quot;Var225_catN&quot; 
+## [137] &quot;Var226_catN&quot;  &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot; 
 ## [1] &quot;&quot;
 ## [1] &quot;glm&quot;</code></pre>
 <pre><code>## Warning: prediction from a rank-deficient fit may be misleading</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze1.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6971
+<pre><code>## [1] 0.7054
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;randomForest&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze2.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6968
+<pre><code>## [1] 0.6983
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;knn&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze3.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6893
+<pre><code>## [1] 0.6872
 ## [1] &quot;&quot;
 ## [1] &quot;----------&quot;
-##  [1] &quot;PC1&quot;  &quot;PC2&quot;  &quot;PC3&quot;  &quot;PC4&quot;  &quot;PC5&quot;  &quot;PC6&quot;  &quot;PC8&quot;  &quot;PC13&quot; &quot;PC15&quot; &quot;PC16&quot;
-## [11] &quot;PC17&quot; &quot;PC19&quot; &quot;PC22&quot; &quot;PC23&quot; &quot;PC24&quot; &quot;PC26&quot; &quot;PC29&quot; &quot;PC30&quot; &quot;PC31&quot; &quot;PC34&quot;
-## [21] &quot;PC36&quot; &quot;PC37&quot; &quot;PC42&quot; &quot;PC44&quot;
+##  [1] &quot;PC1&quot;  &quot;PC2&quot;  &quot;PC3&quot;  &quot;PC4&quot;  &quot;PC5&quot;  &quot;PC6&quot;  &quot;PC7&quot;  &quot;PC10&quot; &quot;PC12&quot; &quot;PC14&quot;
+## [11] &quot;PC15&quot; &quot;PC16&quot; &quot;PC18&quot; &quot;PC21&quot; &quot;PC22&quot; &quot;PC23&quot; &quot;PC25&quot; &quot;PC28&quot; &quot;PC29&quot; &quot;PC30&quot;
+## [21] &quot;PC33&quot; &quot;PC35&quot; &quot;PC36&quot; &quot;PC39&quot; &quot;PC41&quot; &quot;PC43&quot; &quot;PC47&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;glm&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze4.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.692
+<pre><code>## [1] 0.696
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;randomForest&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze5.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6758
+<pre><code>## [1] 0.6717
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;knn&quot;</code></pre>
-<pre><code>## [1] 0.6945
+<pre><code>## [1] 0.6879
 ## [1] &quot;&quot;
 ## [1] &quot;----------&quot;
 ##   [1] &quot;Var2_isBAD&quot;   &quot;Var3_isBAD&quot;   &quot;Var4_isBAD&quot;   &quot;Var6_clean&quot;  
@@ -271,34 +270,34 @@ for (varset in <span class="kw">list</span>(mvars,pvars,uvars)) {
 ## [113] &quot;Var176_isBAD&quot; &quot;Var177_isBAD&quot; &quot;Var178_isBAD&quot; &quot;Var179_isBAD&quot;
 ## [117] &quot;Var181_isBAD&quot; &quot;Var182_isBAD&quot; &quot;Var183_isBAD&quot; &quot;Var184_isBAD&quot;
 ## [121] &quot;Var188_clean&quot; &quot;Var188_isBAD&quot; &quot;Var189_clean&quot; &quot;Var191_catN&quot; 
-## [125] &quot;Var193_catN&quot;  &quot;Var197_catN&quot;  &quot;Var203_catN&quot;  &quot;Var205_catN&quot; 
-## [129] &quot;Var206_catN&quot;  &quot;Var207_catN&quot;  &quot;Var208_catN&quot;  &quot;Var210_catN&quot; 
-## [133] &quot;Var211_catN&quot;  &quot;Var218_catN&quot;  &quot;Var219_catN&quot;  &quot;Var221_catN&quot; 
-## [137] &quot;Var223_catN&quot;  &quot;Var224_catN&quot;  &quot;Var225_catN&quot;  &quot;Var226_catN&quot; 
-## [141] &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot;  &quot;PC1&quot;         
-## [145] &quot;PC2&quot;          &quot;PC3&quot;          &quot;PC4&quot;          &quot;PC5&quot;         
-## [149] &quot;PC6&quot;          &quot;PC8&quot;          &quot;PC13&quot;         &quot;PC15&quot;        
-## [153] &quot;PC16&quot;         &quot;PC17&quot;         &quot;PC19&quot;         &quot;PC22&quot;        
-## [157] &quot;PC23&quot;         &quot;PC24&quot;         &quot;PC26&quot;         &quot;PC29&quot;        
-## [161] &quot;PC30&quot;         &quot;PC31&quot;         &quot;PC34&quot;         &quot;PC36&quot;        
-## [165] &quot;PC37&quot;         &quot;PC42&quot;         &quot;PC44&quot;        
+## [125] &quot;Var193_catN&quot;  &quot;Var203_catN&quot;  &quot;Var205_catN&quot;  &quot;Var206_catN&quot; 
+## [129] &quot;Var207_catN&quot;  &quot;Var210_catN&quot;  &quot;Var211_catN&quot;  &quot;Var218_catN&quot; 
+## [133] &quot;Var219_catN&quot;  &quot;Var221_catN&quot;  &quot;Var224_catN&quot;  &quot;Var225_catN&quot; 
+## [137] &quot;Var226_catN&quot;  &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot; 
+## [141] &quot;PC1&quot;          &quot;PC2&quot;          &quot;PC3&quot;          &quot;PC4&quot;         
+## [145] &quot;PC5&quot;          &quot;PC6&quot;          &quot;PC7&quot;          &quot;PC10&quot;        
+## [149] &quot;PC12&quot;         &quot;PC14&quot;         &quot;PC15&quot;         &quot;PC16&quot;        
+## [153] &quot;PC18&quot;         &quot;PC21&quot;         &quot;PC22&quot;         &quot;PC23&quot;        
+## [157] &quot;PC25&quot;         &quot;PC28&quot;         &quot;PC29&quot;         &quot;PC30&quot;        
+## [161] &quot;PC33&quot;         &quot;PC35&quot;         &quot;PC36&quot;         &quot;PC39&quot;        
+## [165] &quot;PC41&quot;         &quot;PC43&quot;         &quot;PC47&quot;        
 ## [1] &quot;&quot;
 ## [1] &quot;glm&quot;</code></pre>
 <pre><code>## Warning: prediction from a rank-deficient fit may be misleading</code></pre>
 <p><img src="figure/kddexanalyze6.png" alt="plot of chunk kddexanalyze" /> <img src="figure/kddexanalyze7.png" alt="plot of chunk kddexanalyze" /></p>
-<pre><code>## [1] 0.6971
+<pre><code>## [1] 0.7054
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;randomForest&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze8.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.7091
+<pre><code>## [1] 0.7005
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;knn&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze9.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6884
+<pre><code>## [1] 0.6885
 ## [1] &quot;&quot;</code></pre>

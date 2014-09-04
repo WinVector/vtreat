@@ -115,7 +115,7 @@ print(table(PRESSgood=treatments$varScores[m1vars]<1,CALgood=varValues>0))
 ```
 ##          CALgood
 ## PRESSgood FALSE TRUE
-##      TRUE    66  143
+##      TRUE    53  140
 ```
 
 ```r
@@ -231,11 +231,10 @@ for (varset in list(mvars,pvars,uvars)) {
 ## [113] "Var176_isBAD" "Var177_isBAD" "Var178_isBAD" "Var179_isBAD"
 ## [117] "Var181_isBAD" "Var182_isBAD" "Var183_isBAD" "Var184_isBAD"
 ## [121] "Var188_clean" "Var188_isBAD" "Var189_clean" "Var191_catN" 
-## [125] "Var193_catN"  "Var197_catN"  "Var203_catN"  "Var205_catN" 
-## [129] "Var206_catN"  "Var207_catN"  "Var208_catN"  "Var210_catN" 
-## [133] "Var211_catN"  "Var218_catN"  "Var219_catN"  "Var221_catN" 
-## [137] "Var223_catN"  "Var224_catN"  "Var225_catN"  "Var226_catN" 
-## [141] "Var227_catN"  "Var228_catN"  "Var229_catN" 
+## [125] "Var193_catN"  "Var203_catN"  "Var205_catN"  "Var206_catN" 
+## [129] "Var207_catN"  "Var210_catN"  "Var211_catN"  "Var218_catN" 
+## [133] "Var219_catN"  "Var221_catN"  "Var224_catN"  "Var225_catN" 
+## [137] "Var226_catN"  "Var227_catN"  "Var228_catN"  "Var229_catN" 
 ## [1] ""
 ## [1] "glm"
 ```
@@ -247,7 +246,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze1.png) 
 
 ```
-## [1] 0.6971
+## [1] 0.7054
 ## [1] ""
 ## [1] ""
 ## [1] "randomForest"
@@ -256,7 +255,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze2.png) 
 
 ```
-## [1] 0.6968
+## [1] 0.6983
 ## [1] ""
 ## [1] ""
 ## [1] "knn"
@@ -265,12 +264,12 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze3.png) 
 
 ```
-## [1] 0.6893
+## [1] 0.6872
 ## [1] ""
 ## [1] "----------"
-##  [1] "PC1"  "PC2"  "PC3"  "PC4"  "PC5"  "PC6"  "PC8"  "PC13" "PC15" "PC16"
-## [11] "PC17" "PC19" "PC22" "PC23" "PC24" "PC26" "PC29" "PC30" "PC31" "PC34"
-## [21] "PC36" "PC37" "PC42" "PC44"
+##  [1] "PC1"  "PC2"  "PC3"  "PC4"  "PC5"  "PC6"  "PC7"  "PC10" "PC12" "PC14"
+## [11] "PC15" "PC16" "PC18" "PC21" "PC22" "PC23" "PC25" "PC28" "PC29" "PC30"
+## [21] "PC33" "PC35" "PC36" "PC39" "PC41" "PC43" "PC47"
 ## [1] ""
 ## [1] "glm"
 ```
@@ -278,7 +277,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze4.png) 
 
 ```
-## [1] 0.692
+## [1] 0.696
 ## [1] ""
 ## [1] ""
 ## [1] "randomForest"
@@ -287,14 +286,14 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze5.png) 
 
 ```
-## [1] 0.6758
+## [1] 0.6717
 ## [1] ""
 ## [1] ""
 ## [1] "knn"
 ```
 
 ```
-## [1] 0.6945
+## [1] 0.6879
 ## [1] ""
 ## [1] "----------"
 ##   [1] "Var2_isBAD"   "Var3_isBAD"   "Var4_isBAD"   "Var6_clean"  
@@ -328,17 +327,17 @@ for (varset in list(mvars,pvars,uvars)) {
 ## [113] "Var176_isBAD" "Var177_isBAD" "Var178_isBAD" "Var179_isBAD"
 ## [117] "Var181_isBAD" "Var182_isBAD" "Var183_isBAD" "Var184_isBAD"
 ## [121] "Var188_clean" "Var188_isBAD" "Var189_clean" "Var191_catN" 
-## [125] "Var193_catN"  "Var197_catN"  "Var203_catN"  "Var205_catN" 
-## [129] "Var206_catN"  "Var207_catN"  "Var208_catN"  "Var210_catN" 
-## [133] "Var211_catN"  "Var218_catN"  "Var219_catN"  "Var221_catN" 
-## [137] "Var223_catN"  "Var224_catN"  "Var225_catN"  "Var226_catN" 
-## [141] "Var227_catN"  "Var228_catN"  "Var229_catN"  "PC1"         
-## [145] "PC2"          "PC3"          "PC4"          "PC5"         
-## [149] "PC6"          "PC8"          "PC13"         "PC15"        
-## [153] "PC16"         "PC17"         "PC19"         "PC22"        
-## [157] "PC23"         "PC24"         "PC26"         "PC29"        
-## [161] "PC30"         "PC31"         "PC34"         "PC36"        
-## [165] "PC37"         "PC42"         "PC44"        
+## [125] "Var193_catN"  "Var203_catN"  "Var205_catN"  "Var206_catN" 
+## [129] "Var207_catN"  "Var210_catN"  "Var211_catN"  "Var218_catN" 
+## [133] "Var219_catN"  "Var221_catN"  "Var224_catN"  "Var225_catN" 
+## [137] "Var226_catN"  "Var227_catN"  "Var228_catN"  "Var229_catN" 
+## [141] "PC1"          "PC2"          "PC3"          "PC4"         
+## [145] "PC5"          "PC6"          "PC7"          "PC10"        
+## [149] "PC12"         "PC14"         "PC15"         "PC16"        
+## [153] "PC18"         "PC21"         "PC22"         "PC23"        
+## [157] "PC25"         "PC28"         "PC29"         "PC30"        
+## [161] "PC33"         "PC35"         "PC36"         "PC39"        
+## [165] "PC41"         "PC43"         "PC47"        
 ## [1] ""
 ## [1] "glm"
 ```
@@ -350,7 +349,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze6.png) ![plot of chunk kddexanalyze](figure/kddexanalyze7.png) 
 
 ```
-## [1] 0.6971
+## [1] 0.7054
 ## [1] ""
 ## [1] ""
 ## [1] "randomForest"
@@ -359,7 +358,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze8.png) 
 
 ```
-## [1] 0.7091
+## [1] 0.7005
 ## [1] ""
 ## [1] ""
 ## [1] "knn"
@@ -368,6 +367,6 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze9.png) 
 
 ```
-## [1] 0.6884
+## [1] 0.6885
 ## [1] ""
 ```
