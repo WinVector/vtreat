@@ -450,7 +450,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   varScores <- append(.scoreColumnsC(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
   plan <- list(treatments=treatments,
-               vars=names(varScores),varScores=varScores,varMoves=varMoves,
+               vars=names(varScores),
+               varScores=varScores,PRESSRquared=lapply(varScores,function(x) 1-x),
+               varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
   class(plan) <- 'treatmentplan'
@@ -517,7 +519,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   varScores <- append(.scoreColumnsN(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
   plan <- list(treatments=treatments,
-               vars=names(varScores),varScores=varScores,varMoves=varMoves,
+               vars=names(varScores),
+               varScores=varScores,PRESSRquared=lapply(varScores,function(x) 1-x),
+               varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(ycol,weights),ndat=length(ycol))
   class(plan) <- 'treatmentplan'
