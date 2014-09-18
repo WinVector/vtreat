@@ -448,10 +448,13 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   }
   treated <- .vtreatList(treatments,dframe,TRUE)
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
+  adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$adj.r.squared })
+  Rsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$r.squared })
   varScores <- append(.scoreColumnsC(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
   plan <- list(treatments=treatments,
                vars=names(varScores),
-               varScores=varScores,PRESSRquared=lapply(varScores,function(x) 1-x),
+               varScores=varScores,PRESSRsquared=lapply(varScores,function(x) 1-x),
+               Rsquared=Rsquared,adjRsquared=adjRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
@@ -517,10 +520,13 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   }
   treated <- .vtreatList(treatments,dframe,TRUE)
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
+  adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$adj.r.squared })
+  Rsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$r.squared })
   varScores <- append(.scoreColumnsN(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
   plan <- list(treatments=treatments,
                vars=names(varScores),
-               varScores=varScores,PRESSRquared=lapply(varScores,function(x) 1-x),
+               varScores=varScores,PRESSRsquared=lapply(varScores,function(x) 1-x),
+               Rsquared=Rsquared,adjRsquared=adjRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(ycol,weights),ndat=length(ycol))
