@@ -94,7 +94,7 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   lmaty[,1] <- ycol-meany
   model <- lm.wfit(lmatx,lmaty,weights)
   a <- 0.0
-  b <- 0.0;
+  b <- 0.0
   if(!is.na(model$coefficients[[2]])) {
     a <- model$coefficients[[2]]
     if(a!=0.0) {
@@ -258,28 +258,26 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
 
 
 
-# weighted press statistic of a weighted mean
-.pressConst <- function(y,weights) {
-  n <- length(y)
-  if(n<=1) {
-    return(0.0)
-  }
+# weighted PRESS statistic of a weighted mean
+# so in this case it is sum((y_i - meanAllBut(y,i))^) where mean is computed of all but the i'th datum
+# y numeric, no NAs/NULLS
+# weights numeric, non-negative, no NAs/NULLs at least two positive positions
+# all vectors same length
+.hold1OutMeans <- function(y,weights) {
+  # get per-datum hold-1 out grand means
   sumY <- sum(y*weights)
   sumW <- sum(weights)
-  error <- 0.0
-  for(i in 1:n) {
-    yi <- y[i]
-    wi <- weights[i]
-    ye <- (sumY - yi)/(sumW-wi)
-    error <- error + wi*(yi-ye)^2
-  }
-  error
+  meanP <- (sumY - y*weights)/(sumW - weights)
+  meanP[is.na(meanP)] <- 0.5
+  meanP
 }
 
-# compute the press statistic of 
+# compute the PRESS statistic of 
 # x,y: numeric vectors (no NAs/NULLs)
-# y ~ a*x + b
-.pressStat <- function(x,y,weights) {
+# weights numeric, non-negative, no NAs/NULLs at least two positive positions
+# all vectors same length
+# return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
+pressStatOfBestLinearFit <- function(x,y,weights) {
   n <- length(x)
   if(n<=1) {
     return(0.0)
@@ -287,13 +285,9 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   if(!.has.range.cn(x)) {
     return(1.0)
   }
-  eConst <- .pressConst(y,weights)
-  if(eConst<=0.0) {
-    return(1.0)
-  }
-  sumY <- sum(y*weights)
-  sumW <- sum(weights)
   error <- 0.0
+  # get per-datum hold-1 out grand means (used for smoothing and fallback)
+  meanP <- .hold1OutMeans(y,weights)
   a <- matrix(data=0,nrow=2,ncol=2)
   a[1,1] = 1.0e-5
   a[2,2] = 1.0e-5
@@ -321,21 +315,26 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
     aM[2,2] <- a[2,2] - wi*xi*xi
     bM[1,1] <- b[1,1] - wi*yi
     bM[2,1] <- b[2,1] - wi*xi*yi
-    ye <- (sumY - yi)/(sumW-wi) # const fn solution, for fallback
+    ye <- meanP[i] # const fn solution, for fallback
     tryCatch(
       ye <- sum(solve(aM,bM) * c(1,xi)),
       warning = function(w) {},
       error = function(e) {})
     error <- error + wi*(yi-ye)^2
   }
+  eConst <- sum(weights*(y-meanP)^2)
   error/eConst
 }
 
-# compute the press statistic of 
+# compute the PRESS statistic of 
 # vcol: character 
 # y: numeric vectors (no NAs/NULLs)
-# y ~ a*x + b
-.pressCat <- function(vcolin,y,weights) {
+# x: general categorical
+# weights numeric, non-negative, no NAs/NULLs at least two positive positions
+# all vectors same length
+# smoothingTerm scalar >= 0
+# return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
+pressStatOfCategoricalVariable <- function(vcolin,y,weights,smoothingTerm=0.5) {
   n <- length(vcolin)
   if(n<=1) {
     return(0.0)
@@ -343,27 +342,23 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   if(!.has.range(vcolin)) {
     return(1.0)
   }
-  eConst <- .pressConst(y,weights)
-  if(eConst<=0.0) {
-    return(1.0)
-  }
+  # get per-datum hold-1 out grand means (used for smoothing and fallback)
+  meanP <- .hold1OutMeans(y,weights)
   origna <- is.na(vcolin)
   vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
   vcol[origna] <- 'NA'
   num <- tapply(y*weights,vcol,sum) 
   den <- tapply(weights,vcol,sum)
-  preds <- (num[vcol]- y*weights)/(den[vcol] - weights)
+  preds <- (num[vcol] - y*weights + smoothingTerm*meanP)/(den[vcol] - weights + smoothingTerm)
   valid <- !is.na(preds)
   if(sum(valid)<=0) {
     return(1.0)
   }
   if(sum(valid)<n) {
-     # grand mean predictions
-     sumY <- sum(y*weights)
-     sumW <- sum(weights)
-     meanP <- (sumY - y*weights)/(sumW - weights)
+     # hold-1 out grand mean predictions
      preds[!valid] <- meanP[!valid]
   }
+  eConst <- sum(weights*(y-meanP)^2)
   error <- sum(weights*(y-preds)^2)
   error/eConst
 }
@@ -372,12 +367,12 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
 
 # check if a variable is at all useful
 .scoreVN <- function(x,y,weights) {
-  .pressStat(x,y,weights)
+  pressStatOfBestLinearFit(x,y,weights)
 }
 
 # check if a variable is at all useful
 .scoreVC <- function(x,y,weights) {
-  .pressStat(x,ifelse(y,1.0,0.0),weights)
+  pressStatOfBestLinearFit(x,ifelse(y,1.0,0.0),weights)
 }
 
 # score list of columns related to numeric outcome
@@ -446,7 +441,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
         }
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
-          cvarScores[ti$newvars[[1]]] <- .pressCat(vcol,zoY,weights) # assumes only one newvar
+          cvarScores[ti$newvars[[1]]] <- pressStatOfCategoricalVariable(vcol,zoY,weights) # assumes only one newvar
         }
       }
     }
@@ -513,7 +508,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
         }
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
-          cvarScores[ti$newvars[[1]]] <- .pressCat(vcol,ycol,weights) # assumes only one newvar
+          cvarScores[ti$newvars[[1]]] <- pressStatOfCategoricalVariable(vcol,ycol,weights) # assumes only one newvar
         }
       }
     }
