@@ -366,27 +366,16 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,smoothingTerm=0.5) {
 }
 
 
-
-# check if a variable is at all useful
-.scoreVN <- function(x,y,weights) {
-  pressStatOfBestLinearFit(x,y,weights)
-}
-
-# check if a variable is at all useful
-.scoreVC <- function(x,y,weights) {
-  pressStatOfBestLinearFit(x,ifelse(y,1.0,0.0),weights)
-}
-
 # score list of columns related to numeric outcome
 .scoreColumnsN <- function(treatedFrame,yValues,weights,exclude) {
   sapply(setdiff(colnames(treatedFrame),exclude),
-         function(c) .scoreVN(treatedFrame[,c],yValues,weights))
+         function(c) pressStatOfBestLinearFit(treatedFrame[,c],yValues,weights))
 }
 
 # score list of columns related to a categorical outcome
 .scoreColumnsC <- function(treatedFrame,yValues,weights,exclude) {
   sapply(setdiff(colnames(treatedFrame),exclude),
-         function(c) .scoreVC(treatedFrame[,c],yValues,weights))
+         function(c) pressStatOfBestLinearFit(treatedFrame[,c],ifelse(yValues,1.0,0.0),weights))
 }
 
 
@@ -452,10 +441,11 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$adj.r.squared })
   Rsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$r.squared })
-  varScores <- append(.scoreColumnsC(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
+  varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)])
+  names(varScores) <- colnames(treated)
   plan <- list(treatments=treatments,
                vars=names(varScores),
-               varScores=varScores,PRESSRsquared=lapply(varScores,function(x) 1-x),
+               varScores=varScores,PRESSRsquared=1-varScores,
                Rsquared=Rsquared,adjRsquared=adjRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
@@ -524,10 +514,11 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$adj.r.squared })
   Rsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$r.squared })
-  varScores <- append(.scoreColumnsN(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)]
+  varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)])
+  names(varScores) <- colnames(treated)
   plan <- list(treatments=treatments,
                vars=names(varScores),
-               varScores=varScores,PRESSRsquared=lapply(varScores,function(x) 1-x),
+               varScores=varScores,PRESSRsquared=1-varScores,
                Rsquared=Rsquared,adjRsquared=adjRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
