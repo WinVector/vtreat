@@ -263,7 +263,7 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
 # y numeric, no NAs/NULLS
 # weights numeric, non-negative, no NAs/NULLs at least two positive positions
 # all vectors same length
-.hold1OutMeans <- function(y,weights) {
+hold1OutMeans <- function(y,weights) {
   # get per-datum hold-1 out grand means
   sumY <- sum(y*weights)
   sumW <- sum(weights)
@@ -272,12 +272,31 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   meanP
 }
 
+
+# y: numeric vector no null/NAs
+# w: numeric vector same length as y, no negative/null/NAs at least 2 position non-zer
+# normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
+.PRESSnormalization <- function(normalizationStrat,y,weights) {
+   res <- switch(normalizationStrat,
+      none = 1.0,
+      total = { meanY <- .wmean(y,weights); sum(weights*(y-meanY)^2) },
+      holdout = { meanH <- hold1OutMeans(y,weights); sum(weights*(y-meanH)^2) },
+   )
+   # switch default doesn't get called if use passes in a numeric
+   if(is.null(res)) {
+      stop("normalizationStrat must be one of 'none', 'total', or 'holdout'")
+   }
+   res
+}
+
+
 # compute the PRESS statistic of 
 # x,y: numeric vectors (no NAs/NULLs)
 # weights numeric, non-negative, no NAs/NULLs at least two positive positions
 # all vectors same length
+# normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 # return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
-pressStatOfBestLinearFit <- function(x,y,weights) {
+pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
     return(0.0)
@@ -287,7 +306,7 @@ pressStatOfBestLinearFit <- function(x,y,weights) {
   }
   error <- 0.0
   # get per-datum hold-1 out grand means (used for smoothing and fallback)
-  meanP <- .hold1OutMeans(y,weights)
+  meanP <- hold1OutMeans(y,weights)
   a <- matrix(data=0,nrow=2,ncol=2)
   a[1,1] = 1.0e-5
   a[2,2] = 1.0e-5
@@ -323,7 +342,7 @@ pressStatOfBestLinearFit <- function(x,y,weights) {
     error <- error + wi*(yi-ye)^2
   }
   meanY <- .wmean(y,weights)
-  eConst <- sum(weights*(y-meanY)^2)
+  eConst <- .PRESSnormalization(normalizationStrat,y,weights)
   error/eConst
 }
 
@@ -333,9 +352,10 @@ pressStatOfBestLinearFit <- function(x,y,weights) {
 # x: general categorical
 # weights numeric, non-negative, no NAs/NULLs at least two positive positions
 # all vectors same length
+# normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 # smoothingTerm scalar >= 0
 # return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
-pressStatOfCategoricalVariable <- function(vcolin,y,weights,smoothingTerm=0.5) {
+pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='total',smoothingTerm=0.5) {
   n <- length(vcolin)
   if(n<=1) {
     return(0.0)
@@ -344,7 +364,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,smoothingTerm=0.5) {
     return(1.0)
   }
   # get per-datum hold-1 out grand means (used for smoothing and fallback)
-  meanP <- .hold1OutMeans(y,weights)
+  meanP <- hold1OutMeans(y,weights)
   origna <- is.na(vcolin)
   vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
   vcol[origna] <- 'NA'
@@ -361,21 +381,21 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,smoothingTerm=0.5) {
   }
   error <- sum(weights*(y-preds)^2)
   meanY <- .wmean(y,weights)
-  eConst <- sum(weights*(y-meanY)^2)
+  eConst <- .PRESSnormalization(normalizationStrat,y,weights)
   error/eConst
 }
 
 
 # score list of columns related to numeric outcome
-.scoreColumnsN <- function(treatedFrame,yValues,weights,exclude) {
+.scoreColumnsN <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
   sapply(setdiff(colnames(treatedFrame),exclude),
-         function(c) pressStatOfBestLinearFit(treatedFrame[,c],yValues,weights))
+         function(c) pressStatOfBestLinearFit(treatedFrame[,c],yValues,weights,normalizationStrat))
 }
 
 # score list of columns related to a categorical outcome
-.scoreColumnsC <- function(treatedFrame,yValues,weights,exclude) {
+.scoreColumnsC <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
   sapply(setdiff(colnames(treatedFrame),exclude),
-         function(c) pressStatOfBestLinearFit(treatedFrame[,c],ifelse(yValues,1.0,0.0),weights))
+         function(c) pressStatOfBestLinearFit(treatedFrame[,c],ifelse(yValues,1.0,0.0),weights,normalizationStrat))
 }
 
 
@@ -441,11 +461,13 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$adj.r.squared })
   Rsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$r.squared })
-  varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)])
+  varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
   names(varScores) <- colnames(treated)
+  varScoresH <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'holdout'),cvarScores)[colnames(treated)])
+  names(varScoresH) <- colnames(treated)
   plan <- list(treatments=treatments,
                vars=names(varScores),
-               varScores=varScores,PRESSRsquared=1-varScores,
+               varScores=varScores,PRESSRsquared=1-varScores,PRESSRsquaredH=1-varScoresH,
                Rsquared=Rsquared,adjRsquared=adjRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
@@ -514,11 +536,13 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
   adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$adj.r.squared })
   Rsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$r.squared })
-  varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores)),cvarScores)[colnames(treated)])
+  varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
   names(varScores) <- colnames(treated)
+  varScoresH <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'holdout'),cvarScores)[colnames(treated)])
+  names(varScoresH) <- colnames(treated)
   plan <- list(treatments=treatments,
                vars=names(varScores),
-               varScores=varScores,PRESSRsquared=1-varScores,
+               varScores=varScores,PRESSRsquared=1-varScores,PRESSRsquaredH=1-varScoresH,
                Rsquared=Rsquared,adjRsquared=adjRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
