@@ -322,7 +322,8 @@ pressStatOfBestLinearFit <- function(x,y,weights) {
       error = function(e) {})
     error <- error + wi*(yi-ye)^2
   }
-  eConst <- sum(weights*(y-meanP)^2)
+  meanY <- .wmean(y,weights)
+  eConst <- sum(weights*(y-meanY)^2)
   error/eConst
 }
 
@@ -358,8 +359,9 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,smoothingTerm=0.5) {
      # hold-1 out grand mean predictions
      preds[!valid] <- meanP[!valid]
   }
-  eConst <- sum(weights*(y-meanP)^2)
   error <- sum(weights*(y-preds)^2)
+  meanY <- .wmean(y,weights)
+  eConst <- sum(weights*(y-meanY)^2)
   error/eConst
 }
 
