@@ -115,7 +115,7 @@ print(table(PRESSgood=treatments$varScores[m1vars]<1,CALgood=varValues>0))
 ```
 ##          CALgood
 ## PRESSgood FALSE TRUE
-##      TRUE    53  140
+##      TRUE    39  119
 ```
 
 ```r
@@ -204,37 +204,32 @@ for (varset in list(mvars,pvars,uvars)) {
 ##   [5] "Var6_isBAD"   "Var7_clean"   "Var7_isBAD"   "Var11_isBAD" 
 ##   [9] "Var13_clean"  "Var13_isBAD"  "Var14_isBAD"  "Var17_isBAD" 
 ##  [13] "Var18_isBAD"  "Var19_isBAD"  "Var21_isBAD"  "Var22_isBAD" 
-##  [17] "Var24_clean"  "Var24_isBAD"  "Var25_clean"  "Var25_isBAD" 
-##  [21] "Var28_clean"  "Var28_isBAD"  "Var34_isBAD"  "Var35_isBAD" 
-##  [25] "Var36_isBAD"  "Var37_isBAD"  "Var38_isBAD"  "Var40_isBAD" 
-##  [29] "Var43_isBAD"  "Var44_isBAD"  "Var46_isBAD"  "Var49_isBAD" 
-##  [33] "Var51_isBAD"  "Var54_isBAD"  "Var56_isBAD"  "Var59_isBAD" 
-##  [37] "Var65_clean"  "Var65_isBAD"  "Var68_isBAD"  "Var72_clean" 
-##  [41] "Var73_clean"  "Var74_clean"  "Var74_isBAD"  "Var75_isBAD" 
-##  [45] "Var76_isBAD"  "Var78_isBAD"  "Var81_clean"  "Var81_isBAD" 
-##  [49] "Var82_isBAD"  "Var83_isBAD"  "Var84_isBAD"  "Var85_clean" 
-##  [53] "Var85_isBAD"  "Var88_isBAD"  "Var89_isBAD"  "Var95_isBAD" 
-##  [57] "Var96_isBAD"  "Var99_isBAD"  "Var101_isBAD" "Var102_isBAD"
-##  [61] "Var104_isBAD" "Var105_isBAD" "Var106_isBAD" "Var109_isBAD"
-##  [65] "Var110_clean" "Var112_isBAD" "Var113_clean" "Var114_isBAD"
-##  [69] "Var115_isBAD" "Var117_isBAD" "Var119_isBAD" "Var122_isBAD"
-##  [73] "Var123_isBAD" "Var124_isBAD" "Var125_clean" "Var125_isBAD"
-##  [77] "Var126_clean" "Var126_isBAD" "Var127_isBAD" "Var128_isBAD"
-##  [81] "Var130_isBAD" "Var132_isBAD" "Var133_isBAD" "Var134_isBAD"
-##  [85] "Var135_isBAD" "Var138_isBAD" "Var139_clean" "Var140_isBAD"
-##  [89] "Var143_isBAD" "Var144_clean" "Var144_isBAD" "Var145_isBAD"
-##  [93] "Var149_clean" "Var149_isBAD" "Var150_isBAD" "Var152_isBAD"
-##  [97] "Var153_isBAD" "Var155_isBAD" "Var158_isBAD" "Var159_isBAD"
-## [101] "Var160_clean" "Var160_isBAD" "Var161_isBAD" "Var162_isBAD"
-## [105] "Var163_isBAD" "Var164_isBAD" "Var165_isBAD" "Var168_clean"
-## [109] "Var170_isBAD" "Var171_isBAD" "Var173_isBAD" "Var174_isBAD"
-## [113] "Var176_isBAD" "Var177_isBAD" "Var178_isBAD" "Var179_isBAD"
-## [117] "Var181_isBAD" "Var182_isBAD" "Var183_isBAD" "Var184_isBAD"
-## [121] "Var188_clean" "Var188_isBAD" "Var189_clean" "Var191_catN" 
-## [125] "Var193_catN"  "Var203_catN"  "Var205_catN"  "Var206_catN" 
-## [129] "Var207_catN"  "Var210_catN"  "Var211_catN"  "Var218_catN" 
-## [133] "Var219_catN"  "Var221_catN"  "Var224_catN"  "Var225_catN" 
-## [137] "Var226_catN"  "Var227_catN"  "Var228_catN"  "Var229_catN" 
+##  [17] "Var25_isBAD"  "Var28_clean"  "Var28_isBAD"  "Var34_isBAD" 
+##  [21] "Var35_isBAD"  "Var36_isBAD"  "Var37_isBAD"  "Var38_isBAD" 
+##  [25] "Var40_isBAD"  "Var43_isBAD"  "Var44_isBAD"  "Var46_isBAD" 
+##  [29] "Var49_isBAD"  "Var51_isBAD"  "Var54_isBAD"  "Var65_clean" 
+##  [33] "Var65_isBAD"  "Var68_isBAD"  "Var72_clean"  "Var73_clean" 
+##  [37] "Var74_clean"  "Var74_isBAD"  "Var75_isBAD"  "Var76_isBAD" 
+##  [41] "Var78_isBAD"  "Var81_clean"  "Var81_isBAD"  "Var82_isBAD" 
+##  [45] "Var83_isBAD"  "Var84_isBAD"  "Var85_isBAD"  "Var88_isBAD" 
+##  [49] "Var95_isBAD"  "Var96_isBAD"  "Var99_isBAD"  "Var101_isBAD"
+##  [53] "Var106_isBAD" "Var112_isBAD" "Var113_clean" "Var114_isBAD"
+##  [57] "Var117_isBAD" "Var119_isBAD" "Var122_isBAD" "Var123_isBAD"
+##  [61] "Var124_isBAD" "Var125_clean" "Var125_isBAD" "Var126_clean"
+##  [65] "Var126_isBAD" "Var127_isBAD" "Var128_isBAD" "Var130_isBAD"
+##  [69] "Var132_isBAD" "Var133_isBAD" "Var134_isBAD" "Var135_isBAD"
+##  [73] "Var138_isBAD" "Var140_isBAD" "Var143_isBAD" "Var144_clean"
+##  [77] "Var144_isBAD" "Var145_isBAD" "Var149_clean" "Var150_isBAD"
+##  [81] "Var152_isBAD" "Var153_isBAD" "Var155_isBAD" "Var158_isBAD"
+##  [85] "Var159_isBAD" "Var160_isBAD" "Var161_isBAD" "Var162_isBAD"
+##  [89] "Var163_isBAD" "Var164_isBAD" "Var165_isBAD" "Var170_isBAD"
+##  [93] "Var171_isBAD" "Var173_isBAD" "Var174_isBAD" "Var176_isBAD"
+##  [97] "Var177_isBAD" "Var179_isBAD" "Var181_isBAD" "Var182_isBAD"
+## [101] "Var183_isBAD" "Var184_isBAD" "Var188_isBAD" "Var189_clean"
+## [105] "Var191_catN"  "Var193_catN"  "Var205_catN"  "Var206_catN" 
+## [109] "Var207_catN"  "Var210_catN"  "Var211_catN"  "Var218_catN" 
+## [113] "Var219_catN"  "Var221_catN"  "Var225_catN"  "Var226_catN" 
+## [117] "Var227_catN"  "Var228_catN"  "Var229_catN" 
 ## [1] ""
 ## [1] "glm"
 ```
@@ -246,7 +241,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze1.png) 
 
 ```
-## [1] 0.7054
+## [1] 0.706
 ## [1] ""
 ## [1] ""
 ## [1] "randomForest"
@@ -255,7 +250,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze2.png) 
 
 ```
-## [1] 0.6983
+## [1] 0.6867
 ## [1] ""
 ## [1] ""
 ## [1] "knn"
@@ -264,12 +259,12 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze3.png) 
 
 ```
-## [1] 0.6872
+## [1] 0.6846
 ## [1] ""
 ## [1] "----------"
 ##  [1] "PC1"  "PC2"  "PC3"  "PC4"  "PC5"  "PC6"  "PC7"  "PC10" "PC12" "PC14"
-## [11] "PC15" "PC16" "PC18" "PC21" "PC22" "PC23" "PC25" "PC28" "PC29" "PC30"
-## [21] "PC33" "PC35" "PC36" "PC39" "PC41" "PC43" "PC47"
+## [11] "PC15" "PC16" "PC18" "PC20" "PC21" "PC22" "PC23" "PC25" "PC28" "PC29"
+## [21] "PC30" "PC32" "PC35"
 ## [1] ""
 ## [1] "glm"
 ```
@@ -277,7 +272,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze4.png) 
 
 ```
-## [1] 0.696
+## [1] 0.6984
 ## [1] ""
 ## [1] ""
 ## [1] "randomForest"
@@ -286,58 +281,52 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze5.png) 
 
 ```
-## [1] 0.6717
+## [1] 0.6773
 ## [1] ""
 ## [1] ""
 ## [1] "knn"
 ```
 
 ```
-## [1] 0.6879
+## [1] 0.6892
 ## [1] ""
 ## [1] "----------"
 ##   [1] "Var2_isBAD"   "Var3_isBAD"   "Var4_isBAD"   "Var6_clean"  
 ##   [5] "Var6_isBAD"   "Var7_clean"   "Var7_isBAD"   "Var11_isBAD" 
 ##   [9] "Var13_clean"  "Var13_isBAD"  "Var14_isBAD"  "Var17_isBAD" 
 ##  [13] "Var18_isBAD"  "Var19_isBAD"  "Var21_isBAD"  "Var22_isBAD" 
-##  [17] "Var24_clean"  "Var24_isBAD"  "Var25_clean"  "Var25_isBAD" 
-##  [21] "Var28_clean"  "Var28_isBAD"  "Var34_isBAD"  "Var35_isBAD" 
-##  [25] "Var36_isBAD"  "Var37_isBAD"  "Var38_isBAD"  "Var40_isBAD" 
-##  [29] "Var43_isBAD"  "Var44_isBAD"  "Var46_isBAD"  "Var49_isBAD" 
-##  [33] "Var51_isBAD"  "Var54_isBAD"  "Var56_isBAD"  "Var59_isBAD" 
-##  [37] "Var65_clean"  "Var65_isBAD"  "Var68_isBAD"  "Var72_clean" 
-##  [41] "Var73_clean"  "Var74_clean"  "Var74_isBAD"  "Var75_isBAD" 
-##  [45] "Var76_isBAD"  "Var78_isBAD"  "Var81_clean"  "Var81_isBAD" 
-##  [49] "Var82_isBAD"  "Var83_isBAD"  "Var84_isBAD"  "Var85_clean" 
-##  [53] "Var85_isBAD"  "Var88_isBAD"  "Var89_isBAD"  "Var95_isBAD" 
-##  [57] "Var96_isBAD"  "Var99_isBAD"  "Var101_isBAD" "Var102_isBAD"
-##  [61] "Var104_isBAD" "Var105_isBAD" "Var106_isBAD" "Var109_isBAD"
-##  [65] "Var110_clean" "Var112_isBAD" "Var113_clean" "Var114_isBAD"
-##  [69] "Var115_isBAD" "Var117_isBAD" "Var119_isBAD" "Var122_isBAD"
-##  [73] "Var123_isBAD" "Var124_isBAD" "Var125_clean" "Var125_isBAD"
-##  [77] "Var126_clean" "Var126_isBAD" "Var127_isBAD" "Var128_isBAD"
-##  [81] "Var130_isBAD" "Var132_isBAD" "Var133_isBAD" "Var134_isBAD"
-##  [85] "Var135_isBAD" "Var138_isBAD" "Var139_clean" "Var140_isBAD"
-##  [89] "Var143_isBAD" "Var144_clean" "Var144_isBAD" "Var145_isBAD"
-##  [93] "Var149_clean" "Var149_isBAD" "Var150_isBAD" "Var152_isBAD"
-##  [97] "Var153_isBAD" "Var155_isBAD" "Var158_isBAD" "Var159_isBAD"
-## [101] "Var160_clean" "Var160_isBAD" "Var161_isBAD" "Var162_isBAD"
-## [105] "Var163_isBAD" "Var164_isBAD" "Var165_isBAD" "Var168_clean"
-## [109] "Var170_isBAD" "Var171_isBAD" "Var173_isBAD" "Var174_isBAD"
-## [113] "Var176_isBAD" "Var177_isBAD" "Var178_isBAD" "Var179_isBAD"
-## [117] "Var181_isBAD" "Var182_isBAD" "Var183_isBAD" "Var184_isBAD"
-## [121] "Var188_clean" "Var188_isBAD" "Var189_clean" "Var191_catN" 
-## [125] "Var193_catN"  "Var203_catN"  "Var205_catN"  "Var206_catN" 
-## [129] "Var207_catN"  "Var210_catN"  "Var211_catN"  "Var218_catN" 
-## [133] "Var219_catN"  "Var221_catN"  "Var224_catN"  "Var225_catN" 
-## [137] "Var226_catN"  "Var227_catN"  "Var228_catN"  "Var229_catN" 
-## [141] "PC1"          "PC2"          "PC3"          "PC4"         
-## [145] "PC5"          "PC6"          "PC7"          "PC10"        
-## [149] "PC12"         "PC14"         "PC15"         "PC16"        
-## [153] "PC18"         "PC21"         "PC22"         "PC23"        
-## [157] "PC25"         "PC28"         "PC29"         "PC30"        
-## [161] "PC33"         "PC35"         "PC36"         "PC39"        
-## [165] "PC41"         "PC43"         "PC47"        
+##  [17] "Var25_isBAD"  "Var28_clean"  "Var28_isBAD"  "Var34_isBAD" 
+##  [21] "Var35_isBAD"  "Var36_isBAD"  "Var37_isBAD"  "Var38_isBAD" 
+##  [25] "Var40_isBAD"  "Var43_isBAD"  "Var44_isBAD"  "Var46_isBAD" 
+##  [29] "Var49_isBAD"  "Var51_isBAD"  "Var54_isBAD"  "Var65_clean" 
+##  [33] "Var65_isBAD"  "Var68_isBAD"  "Var72_clean"  "Var73_clean" 
+##  [37] "Var74_clean"  "Var74_isBAD"  "Var75_isBAD"  "Var76_isBAD" 
+##  [41] "Var78_isBAD"  "Var81_clean"  "Var81_isBAD"  "Var82_isBAD" 
+##  [45] "Var83_isBAD"  "Var84_isBAD"  "Var85_isBAD"  "Var88_isBAD" 
+##  [49] "Var95_isBAD"  "Var96_isBAD"  "Var99_isBAD"  "Var101_isBAD"
+##  [53] "Var106_isBAD" "Var112_isBAD" "Var113_clean" "Var114_isBAD"
+##  [57] "Var117_isBAD" "Var119_isBAD" "Var122_isBAD" "Var123_isBAD"
+##  [61] "Var124_isBAD" "Var125_clean" "Var125_isBAD" "Var126_clean"
+##  [65] "Var126_isBAD" "Var127_isBAD" "Var128_isBAD" "Var130_isBAD"
+##  [69] "Var132_isBAD" "Var133_isBAD" "Var134_isBAD" "Var135_isBAD"
+##  [73] "Var138_isBAD" "Var140_isBAD" "Var143_isBAD" "Var144_clean"
+##  [77] "Var144_isBAD" "Var145_isBAD" "Var149_clean" "Var150_isBAD"
+##  [81] "Var152_isBAD" "Var153_isBAD" "Var155_isBAD" "Var158_isBAD"
+##  [85] "Var159_isBAD" "Var160_isBAD" "Var161_isBAD" "Var162_isBAD"
+##  [89] "Var163_isBAD" "Var164_isBAD" "Var165_isBAD" "Var170_isBAD"
+##  [93] "Var171_isBAD" "Var173_isBAD" "Var174_isBAD" "Var176_isBAD"
+##  [97] "Var177_isBAD" "Var179_isBAD" "Var181_isBAD" "Var182_isBAD"
+## [101] "Var183_isBAD" "Var184_isBAD" "Var188_isBAD" "Var189_clean"
+## [105] "Var191_catN"  "Var193_catN"  "Var205_catN"  "Var206_catN" 
+## [109] "Var207_catN"  "Var210_catN"  "Var211_catN"  "Var218_catN" 
+## [113] "Var219_catN"  "Var221_catN"  "Var225_catN"  "Var226_catN" 
+## [117] "Var227_catN"  "Var228_catN"  "Var229_catN"  "PC1"         
+## [121] "PC2"          "PC3"          "PC4"          "PC5"         
+## [125] "PC6"          "PC7"          "PC10"         "PC12"        
+## [129] "PC14"         "PC15"         "PC16"         "PC18"        
+## [133] "PC20"         "PC21"         "PC22"         "PC23"        
+## [137] "PC25"         "PC28"         "PC29"         "PC30"        
+## [141] "PC32"         "PC35"        
 ## [1] ""
 ## [1] "glm"
 ```
@@ -349,7 +338,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze6.png) ![plot of chunk kddexanalyze](figure/kddexanalyze7.png) 
 
 ```
-## [1] 0.7054
+## [1] 0.706
 ## [1] ""
 ## [1] ""
 ## [1] "randomForest"
@@ -358,7 +347,7 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze8.png) 
 
 ```
-## [1] 0.7005
+## [1] 0.6981
 ## [1] ""
 ## [1] ""
 ## [1] "knn"
@@ -367,6 +356,6 @@ for (varset in list(mvars,pvars,uvars)) {
 ![plot of chunk kddexanalyze](figure/kddexanalyze9.png) 
 
 ```
-## [1] 0.6885
+## [1] 0.6846
 ## [1] ""
 ```
