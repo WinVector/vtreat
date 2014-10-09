@@ -171,15 +171,18 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   col[origna] <- 'NA'
   vals <- matrix(data=0,nrow=length(col),ncol=length(args$tracked))
   sum <- rep(0,length(col))
-  for(j in 1:length(args$tracked)) {
+  nres <- length(args$tracked)
+  for(j in 1:nres) {
     vi <- ifelse(col==args$tracked[j],1.0,0.0) 
     vals[,j] <- vi
     sum = sum + vi
   }
-  for(ri in which(sum==0)) { # For novel levels put fraction of time each level was on in original data
-    for(j in 1:length(args$tracked)) {
-      vals[ri,j] = args$dist[j]
-    }
+  if(nres>1) {
+     for(ri in which(sum==0)) { # For novel levels put fraction of time each level was on in original data
+        for(j in 1:nres) {
+           vals[ri,j] = args$dist[j]
+        }
+     }
   }
   vals
 }
