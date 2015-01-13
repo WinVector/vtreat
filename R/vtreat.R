@@ -420,7 +420,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
-                              scoreVars=TRUE) {
+                              scoreVars=TRUE,verbose=TRUE) {
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
     weights <- rep(1.0,dim(dframe)[[1]])
@@ -443,7 +443,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   }
   cvarScores <- list()
   for(v in varlist) {
-    print(paste('design var',v,date()))
+    if(verbose) {
+      print(paste('design var',v,date()))
+    }
     vcol <- dframe[,v]
     colclass = class(vcol)
     if(length(colclass)!=1) { # defend against POSIXt types
@@ -477,9 +479,13 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   varScores <- c()
   PRESSRsquared <- c()
   if (scoreVars) {
-     print(paste("treat frame",date())) 
+     if(verbose) {
+        print(paste("treat frame",date()))
+     }
      treated <- .vtreatList(treatments,dframe,TRUE)
-     print(paste("look for moves",date()))
+     if(verbose) {
+        print(paste("score frame",date()))
+     }
      varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
      varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
      names(varScores) <- colnames(treated)
@@ -500,7 +506,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
-                              scoreVars=TRUE) {
+                              scoreVars=TRUE,verbose=TRUE) {
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
     weights <- rep(1.0,dim(dframe)[[1]])
@@ -525,6 +531,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   }
   cvarScores <- list()
   for(v in varlist) {
+    if(verbose) {
+      print(paste('design var',v,date()))
+    }
     vcol <- dframe[,v]
     colclass <- class(vcol)
     if(length(colclass)!=1) { # defend against POSIXt types
@@ -558,7 +567,13 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   varScores <- c()
   PRESSRsquared <- c()
   if(scoreVars) {
+     if(verbose) {
+       print(paste("treat frame",date()))
+     }
      treated <- .vtreatList(treatments,dframe,TRUE)
+     if(verbose) {
+       print(paste("score frame",date()))
+     }
      varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
      varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
      names(varScores) <- colnames(treated)
