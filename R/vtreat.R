@@ -17,6 +17,19 @@
   dout
 }
 
+.getNewVarNames <- function(treatments) {
+  names <- c()
+  if(length(treatments)>=1) {
+    names <- treatments[[1]]$newvars
+    if(length(treatments)>=2) {
+      for(i in 2:length(treatments)) {
+        names <- c(names,treatments[[i]]$newvars)
+      }
+    }
+  }
+  names
+}
+
 .vtreatList <- function(treatments,dframe,scale) {
   cols <- c()
   if(length(treatments)>=1) {
@@ -406,7 +419,8 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 # build all treatments for a data frame to predict a categorical outcome
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
-                              minFraction=0.02,smFactor=0.0,maxMissing=0.04) {
+                              minFraction=0.02,smFactor=0.0,maxMissing=0.04,
+                              scoreVars=TRUE) {
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
     weights <- rep(1.0,dim(dframe)[[1]])
@@ -423,15 +437,13 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   if(sum(.is.bad(ycol))>0) {
     stop("outcome variable had NAs")
   }
-  if(!.has.range.cn(ycol)) {
-    stop("outcome variable was a constant")
-  }
   zoY <- ifelse(ycol,1.0,0.0)
   if((sum(zoY)<=0)||(sum(zoY)>=length(zoY))) {
-    stop("outcome variable doesn't vary with respect to target")
+    stop("outcome variable doesn't vary")
   }
   cvarScores <- list()
   for(v in varlist) {
+    print(paste('design var',v,date()))
     vcol <- dframe[,v]
     colclass = class(vcol)
     if(length(colclass)!=1) { # defend against POSIXt types
@@ -460,18 +472,23 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
       }
     }
   }
-  treated <- .vtreatList(treatments,dframe,TRUE)
-  varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
-  adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$adj.r.squared })
-  Rsquared <- sapply(colnames(treated),function(c) { summary(lm(zoY~treated[,c]))$r.squared })
-  varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
-  names(varScores) <- colnames(treated)
-  varScoresH <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'holdout'),cvarScores)[colnames(treated)])
-  names(varScoresH) <- colnames(treated)
+  treatedVarNames <- .getNewVarNames(treatments)
+  varMoves <- c()
+  varScores <- c()
+  PRESSRsquared <- c()
+  if (scoreVars) {
+     print(paste("treat frame",date())) 
+     treated <- .vtreatList(treatments,dframe,TRUE)
+     print(paste("look for moves",date()))
+     varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
+     varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
+     names(varScores) <- colnames(treated)
+     treatedVarNames <- names(varScores)
+     PRESSRsquared <- 1-varScores
+  }
   plan <- list(treatments=treatments,
-               vars=names(varScores),
-               varScores=varScores,PRESSRsquared=1-varScores,PRESSRsquaredH=1-varScoresH,
-               Rsquared=Rsquared,adjRsquared=adjRsquared,
+               vars=treatedVarNames,
+               varScores=varScores,PRESSRsquared=PRESSRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
@@ -482,7 +499,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 # build all treatments for a data frame to predict a numeric outcome
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
-                              minFraction=0.02,smFactor=0.0,maxMissing=0.04) {
+                              minFraction=0.02,smFactor=0.0,maxMissing=0.04,
+                              scoreVars=TRUE) {
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
     weights <- rep(1.0,dim(dframe)[[1]])
@@ -535,18 +553,21 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
       }
     }
   }
-  treated <- .vtreatList(treatments,dframe,TRUE)
-  varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
-  adjRsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$adj.r.squared })
-  Rsquared <- sapply(colnames(treated),function(c) { summary(lm(ycol~treated[,c]))$r.squared })
-  varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
-  names(varScores) <- colnames(treated)
-  varScoresH <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'holdout'),cvarScores)[colnames(treated)])
-  names(varScoresH) <- colnames(treated)
+  treatedVarNames <- .getNewVarNames(treatments)
+  varMoves <- c()
+  varScores <- c()
+  PRESSRsquared <- c()
+  if(scoreVars) {
+     treated <- .vtreatList(treatments,dframe,TRUE)
+     varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
+     varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
+     names(varScores) <- colnames(treated)
+     treatedVarNames <- names(varScores)
+     PRESSRsquared <- 1-varScores
+  }
   plan <- list(treatments=treatments,
-               vars=names(varScores),
-               varScores=varScores,PRESSRsquared=1-varScores,PRESSRsquaredH=1-varScoresH,
-               Rsquared=Rsquared,adjRsquared=adjRsquared,
+               vars=treatedVarNames,
+               varScores=varScores,PRESSRsquared=PRESSRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(ycol,weights),ndat=length(ycol))
@@ -567,10 +588,14 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE) {
   treated <- .vtreatList(treatmentplan$treatments,dframe,scale)
   usableVars <- treatmentplan$vars
-  usableVars <- intersect(usableVars,names(treatmentplan$varMoves)[treatmentplan$varMoves])
-  usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores>0])
-  if(!is.null(pruneLevel)) {
-    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores<=pruneLevel])
+  if(!is.null(treatmentplan$varMoves)) {
+    usableVars <- intersect(usableVars,names(treatmentplan$varMoves)[treatmentplan$varMoves])
+  }
+  if(!is.null(treatmentplan$varScores)) {
+    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores>0])
+    if(!is.null(pruneLevel)) {
+      usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores<=pruneLevel])
+    }
   }
   treated <- treated[,usableVars,drop=FALSE]
   if(logitTransform) {
