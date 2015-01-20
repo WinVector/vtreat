@@ -17,8 +17,8 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.2.07\cr
-Date: \tab 2015-01-19\cr
+Version: \tab 0.2.08\cr
+Date: \tab 2015-01-20\cr
 License: \tab GNU General Public License version 3\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
@@ -49,26 +49,34 @@ option in \code{\link{prepare}}.
 }
 \examples{
 # categorical example
-dTrainC <- data.frame(x=c('a','a','a','b','b',NA),z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
+   z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
-sapply(dTrainCTreated[,varsC,drop=FALSE],mean) # all input variables should be mean 0
-sapply(varsC,function(c) { lm(paste('y',c,sep='~'),data=dTrainCTreated)$coefficients[[2]]}) # all slopes should be 1
+# all input variables should be mean 0
+sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
+# all slopes should be 1
+sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
+   data=dTrainCTreated)$coefficients[[2]]})
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
 # logit categoircal example
 dTrainLTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
 dTestLTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
 
 # numeric example
-dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),z=c(1,2,3,4,5,NA,7),y=c(0,0,0,1,0,1,1))
+dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
+   z=c(1,2,3,4,5,NA,7),y=c(0,0,0,1,0,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneLevel=c(),scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
-sapply(dTrainNTreated[,varsN,drop=FALSE],mean) # all input variables should be mean 0
-sapply(varsN,function(c) { lm(paste('y',c,sep='~'),data=dTrainNTreated)$coefficients[[2]]}) # all slopes should be 1
+# all input variables should be mean 0
+sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
+# all slopes should be 1
+sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
+   data=dTrainNTreated)$coefficients[[2]]}) 
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneLevel=c(),scale=TRUE)
 
 # for large data sets you can consider designing the treatments on 

@@ -1,4 +1,3 @@
-
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
@@ -47,17 +46,51 @@
   as.data.frame(cols,stringsAsFactors=FALSE)
 }
 
-# try and neaten up vtreatment class a bit
+#'
+#' Original variable name.
+#' @param x vtreatment item.
+#' @param ... additional args (to match general signature)
+#' 
 vorig <- function(x,...) UseMethod('vorig',x)
-vorig.vtreatment <- function(vtreat) { vtreat$origvar }
+
+#'
+#' Original variable name.
+#' @param x vtreatment item.
+#' @param ... additional args (to match general signature).
+#' 
+vorig.vtreatment <- function(x,...) { x$origvar }
+
+#'
+#' New treated variable names.
+#' @param x vtreatment item.
+#' @param ... additional args (to match general signature).
+#' 
 vnames <- function(x,...) UseMethod('vnames',x)
-vnames.vtreatment <- function(vtreat) { vtreat$newvars }
+
+#'
+#' New treated variable names.
+#' @param x vtreatment item
+#' @param ... additional args (to match general signature).
+#' 
+vnames.vtreatment <- function(x,...) { x$newvars }
+
+#'
+#' Display treatment plan.
+#' @param vtreat treatment plan
+#' @param ... additional args (to match general signature).
+#' 
 show.vtreatment <- function(vtreat,...) { paste(
   'vtreat \'',vtreat$treatmentName,
   '\'(\'',vtreat$origvar,'\'->\'',
   paste(vtreat$newvars,collapse='\',\''),
   '\')',sep='') }
-print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
+
+#'
+#' Print treatment plan.
+#' @param x treatmet plan
+#' @param ... additional args (to match general signature).
+#' 
+print.vtreatment <- function(x,...) { print(show.vtreatment(x),...) }
 
 
 
@@ -283,6 +316,11 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
 # y numeric, no NAs/NULLS
 # weights numeric, non-negative, no NAs/NULLs at least two positive positions
 # all vectors same length
+#'
+#' Return a vector of length(y) where the i-th entry is the weighted mean 
+#' of all but the i-th y.  Usefull for normalizing PRESS style statistics.
+#' @param y values to average (should not have NAs).
+#' @param weights data weighing (should not have NAs, be non-negative and not all zero).
 hold1OutMeans <- function(y,weights) {
   # get per-datum hold-1 out grand means
   sumY <- sum(y*weights)
@@ -310,12 +348,12 @@ hold1OutMeans <- function(y,weights) {
 }
 
 
-# compute the PRESS statistic of 
-# x,y: numeric vectors (no NAs/NULLs)
-# weights numeric, non-negative, no NAs/NULLs at least two positive positions
-# all vectors same length
-# normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-# return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
+#' Compute the PRESS statistic of a 1-variable linear model
+#' @param x numeric (no NAs/NULLs) effective variable
+#' @param y numeric (no NAs/NULLs) outcome variable
+#' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
+#' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
+#' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
 pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
@@ -366,17 +404,14 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   error/eConst
 }
 
-# Tries to prevent some of the test/train leakage in scoring, note there is still some in other variables such as 
-# in the missing value level.
-# compute the PRESS statistic of 
-# vcol: character 
-# y: numeric vectors (no NAs/NULLs)
-# x: general categorical
-# weights numeric, non-negative, no NAs/NULLs at least two positive positions
-# all vectors same length
-# normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-# smoothingTerm scalar >= 0
-# return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
+#' Compute the PRESS statistic a single categorical model.   Tries to prevent some of the test/train leakage in scoring
+#' (so apply this directly to a categorical variable, and don't score an impact coded varaible).
+#' @param vcolin character 
+#' @param y numeric vectors (no NAs/NULLs)
+#' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
+#' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
+#' @param smoothingTerm scalar >= 0
+#' @return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
 pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='total',smoothingTerm=0.5) {
   n <- length(vcolin)
   if(n<=1) {
@@ -513,6 +548,40 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 
 
 # build all treatments for a data frame to predict a categorical outcome
+
+
+#' designTreatmentsC 
+#' 
+#' Function to design variable treatments for binary prediction of a
+#' categorical outcome.  Data frame is assumed to have only atomic columns
+#' except for dates (which are converted to numeric).
+#' 
+#' @param dframe Data frame to learn treatments from (training data).
+#' @param varlist Names of columns to treat (effetive variables).
+#' @param outcomename Name of column holding outcome variable.
+#' @param outcometarget Value/level of outcome to be considered "success"
+#' @param weights optional training weights for each row
+#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
+#' @param smFactor optional smoothing factor for impact coding models.
+#' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
+#' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
+#' @param verbose if TRUE print progress.
+#' @return treatment plan (for use with prepare)
+#' @note %% ~~further notes~~
+#' @author %% ~~who you are~~
+#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
+#' @references %% ~put references to the literature/web site here ~
+#' @examples
+#' 
+#' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
+#'    z=c(1,2,3,4,5,6),
+#'    y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+#' dTestC <- data.frame(x=c('a','b','c',NA),
+#'    z=c(10,20,30,NA))
+#' treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
+#' dTrainCTreated <- prepare(treatmentsC,dTrainC)
+#' dTestCTreated <- prepare(treatmentsC,dTestC)
+#' 
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
@@ -525,6 +594,38 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 }
 
 # build all treatments for a data frame to predict a numeric outcome
+
+
+#' designTreatmentsN 
+#' 
+#' Function to design variable treatments for binary prediction of a
+#' numeric outcome.  Data frame is assumed to have only atomic columns
+#' except for dates (which are converted to numeric).
+#' 
+#' @param dframe Data frame to learn treatments from (training data).
+#' @param varlist Names of columns to treat (effetive variables).
+#' @param outcomename Name of column holding outcome variable.
+#' @param weights optional training weights for each row
+#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
+#' @param smFactor optional smoothing factor for impact coding models.
+#' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
+#' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
+#' @param verbose if TRUE print progress.
+#' @return treatment plan (for use with prepare)
+#' @note %% ~~further notes~~
+#' @author %% ~~who you are~~
+#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
+#' @references %% ~put references to the literature/web site here ~
+#' @examples
+#' 
+#' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
+#'     z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
+#' dTestN <- data.frame(x=c('a','b','c',NA),
+#'     z=c(10,20,30,NA))
+#' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
+#' dTrainNTreated <- prepare(treatmentsN,dTrainN)
+#' dTestNTreated <- prepare(treatmentsN,dTestN)
+#' 
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
@@ -549,6 +650,44 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 
 # apply treatments and restrict to useful variables
 # copies over y if present
+
+
+#' prepare 
+#' 
+#' Use a treatment plan to prepare a data frame for analysis.  The
+#' resulting frame will have new effective variables that are numeric
+#' and free of NaN/NA.  If the outcome column is present it will be copied over.
+#' The intent is that these frames are compatible with more machine learning
+#' techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
+#' 
+#' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
+#' @param dframe Data frame to be treated
+#' @param pruneLevel optional supress variables with varScore below this threshold.
+#' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
+#' @param logitTransform if TRUE and scale is also TRUE, then logit transform probabilities.
+#' @return treated data frame (all columns numeric, without NA,NaN)
+#' @note %% ~~further notes~~
+#' @author %% ~~who you are~~
+#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
+#' @references %% ~put references to the literature/web site here ~
+#' @examples
+#' 
+#' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
+#'     z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
+#' dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
+#' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
+#' dTrainNTreated <- prepare(treatmentsN,dTrainN)
+#' dTestNTreated <- prepare(treatmentsN,dTestN)
+#' 
+#' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
+#'     z=c(1,2,3,4,5,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+#' dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
+#' treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
+#' dTrainCTreated <- prepare(treatmentsC,dTrainC)
+#' dTestCTreated <- prepare(treatmentsC,dTestC)
+#' 
+#' 
+#' 
 prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE) {
   treated <- .vtreatList(treatmentplan$treatments,dframe,scale)
   usableVars <- treatmentplan$vars
@@ -562,7 +701,7 @@ prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransf
     }
   }
   treated <- treated[,usableVars,drop=FALSE]
-  if(logitTransform) {
+  if(logitTransform&&scale) {
     epsilon <- 1.0/treatmentplan$ndat
     for(c in colnames(treated)) {
       treated[[c]] <- .logit(treated[[c]]+treatmentplan$meanY,epsilon)
