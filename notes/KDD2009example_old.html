@@ -80,7 +80,7 @@ varValues &lt;-<span class="st"> </span><span class="kw">sapply</span>(m1vars,fu
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">table</span>(<span class="dt">PRESSgood=</span>treatments$varScores[m1vars]&lt;<span class="dv">1</span>,<span class="dt">CALgood=</span>varValues&gt;<span class="dv">0</span>))</code></pre>
 <pre><code>##          CALgood
 ## PRESSgood FALSE TRUE
-##      TRUE    66  143</code></pre>
+##      TRUE    39  119</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">mvars &lt;-<span class="st"> </span><span class="kw">names</span>(varValues)[varValues&gt;<span class="fl">1.0e-5</span>]
 
 
@@ -163,142 +163,130 @@ for (varset in <span class="kw">list</span>(mvars,pvars,uvars)) {
 ##   [5] &quot;Var6_isBAD&quot;   &quot;Var7_clean&quot;   &quot;Var7_isBAD&quot;   &quot;Var11_isBAD&quot; 
 ##   [9] &quot;Var13_clean&quot;  &quot;Var13_isBAD&quot;  &quot;Var14_isBAD&quot;  &quot;Var17_isBAD&quot; 
 ##  [13] &quot;Var18_isBAD&quot;  &quot;Var19_isBAD&quot;  &quot;Var21_isBAD&quot;  &quot;Var22_isBAD&quot; 
-##  [17] &quot;Var24_clean&quot;  &quot;Var24_isBAD&quot;  &quot;Var25_clean&quot;  &quot;Var25_isBAD&quot; 
-##  [21] &quot;Var28_clean&quot;  &quot;Var28_isBAD&quot;  &quot;Var34_isBAD&quot;  &quot;Var35_isBAD&quot; 
-##  [25] &quot;Var36_isBAD&quot;  &quot;Var37_isBAD&quot;  &quot;Var38_isBAD&quot;  &quot;Var40_isBAD&quot; 
-##  [29] &quot;Var43_isBAD&quot;  &quot;Var44_isBAD&quot;  &quot;Var46_isBAD&quot;  &quot;Var49_isBAD&quot; 
-##  [33] &quot;Var51_isBAD&quot;  &quot;Var54_isBAD&quot;  &quot;Var56_isBAD&quot;  &quot;Var59_isBAD&quot; 
-##  [37] &quot;Var65_clean&quot;  &quot;Var65_isBAD&quot;  &quot;Var68_isBAD&quot;  &quot;Var72_clean&quot; 
-##  [41] &quot;Var73_clean&quot;  &quot;Var74_clean&quot;  &quot;Var74_isBAD&quot;  &quot;Var75_isBAD&quot; 
-##  [45] &quot;Var76_isBAD&quot;  &quot;Var78_isBAD&quot;  &quot;Var81_clean&quot;  &quot;Var81_isBAD&quot; 
-##  [49] &quot;Var82_isBAD&quot;  &quot;Var83_isBAD&quot;  &quot;Var84_isBAD&quot;  &quot;Var85_clean&quot; 
-##  [53] &quot;Var85_isBAD&quot;  &quot;Var88_isBAD&quot;  &quot;Var89_isBAD&quot;  &quot;Var95_isBAD&quot; 
-##  [57] &quot;Var96_isBAD&quot;  &quot;Var99_isBAD&quot;  &quot;Var101_isBAD&quot; &quot;Var102_isBAD&quot;
-##  [61] &quot;Var104_isBAD&quot; &quot;Var105_isBAD&quot; &quot;Var106_isBAD&quot; &quot;Var109_isBAD&quot;
-##  [65] &quot;Var110_clean&quot; &quot;Var112_isBAD&quot; &quot;Var113_clean&quot; &quot;Var114_isBAD&quot;
-##  [69] &quot;Var115_isBAD&quot; &quot;Var117_isBAD&quot; &quot;Var119_isBAD&quot; &quot;Var122_isBAD&quot;
-##  [73] &quot;Var123_isBAD&quot; &quot;Var124_isBAD&quot; &quot;Var125_clean&quot; &quot;Var125_isBAD&quot;
-##  [77] &quot;Var126_clean&quot; &quot;Var126_isBAD&quot; &quot;Var127_isBAD&quot; &quot;Var128_isBAD&quot;
-##  [81] &quot;Var130_isBAD&quot; &quot;Var132_isBAD&quot; &quot;Var133_isBAD&quot; &quot;Var134_isBAD&quot;
-##  [85] &quot;Var135_isBAD&quot; &quot;Var138_isBAD&quot; &quot;Var139_clean&quot; &quot;Var140_isBAD&quot;
-##  [89] &quot;Var143_isBAD&quot; &quot;Var144_clean&quot; &quot;Var144_isBAD&quot; &quot;Var145_isBAD&quot;
-##  [93] &quot;Var149_clean&quot; &quot;Var149_isBAD&quot; &quot;Var150_isBAD&quot; &quot;Var152_isBAD&quot;
-##  [97] &quot;Var153_isBAD&quot; &quot;Var155_isBAD&quot; &quot;Var158_isBAD&quot; &quot;Var159_isBAD&quot;
-## [101] &quot;Var160_clean&quot; &quot;Var160_isBAD&quot; &quot;Var161_isBAD&quot; &quot;Var162_isBAD&quot;
-## [105] &quot;Var163_isBAD&quot; &quot;Var164_isBAD&quot; &quot;Var165_isBAD&quot; &quot;Var168_clean&quot;
-## [109] &quot;Var170_isBAD&quot; &quot;Var171_isBAD&quot; &quot;Var173_isBAD&quot; &quot;Var174_isBAD&quot;
-## [113] &quot;Var176_isBAD&quot; &quot;Var177_isBAD&quot; &quot;Var178_isBAD&quot; &quot;Var179_isBAD&quot;
-## [117] &quot;Var181_isBAD&quot; &quot;Var182_isBAD&quot; &quot;Var183_isBAD&quot; &quot;Var184_isBAD&quot;
-## [121] &quot;Var188_clean&quot; &quot;Var188_isBAD&quot; &quot;Var189_clean&quot; &quot;Var191_catN&quot; 
-## [125] &quot;Var193_catN&quot;  &quot;Var197_catN&quot;  &quot;Var203_catN&quot;  &quot;Var205_catN&quot; 
-## [129] &quot;Var206_catN&quot;  &quot;Var207_catN&quot;  &quot;Var208_catN&quot;  &quot;Var210_catN&quot; 
-## [133] &quot;Var211_catN&quot;  &quot;Var218_catN&quot;  &quot;Var219_catN&quot;  &quot;Var221_catN&quot; 
-## [137] &quot;Var223_catN&quot;  &quot;Var224_catN&quot;  &quot;Var225_catN&quot;  &quot;Var226_catN&quot; 
-## [141] &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot; 
+##  [17] &quot;Var25_isBAD&quot;  &quot;Var28_clean&quot;  &quot;Var28_isBAD&quot;  &quot;Var34_isBAD&quot; 
+##  [21] &quot;Var35_isBAD&quot;  &quot;Var36_isBAD&quot;  &quot;Var37_isBAD&quot;  &quot;Var38_isBAD&quot; 
+##  [25] &quot;Var40_isBAD&quot;  &quot;Var43_isBAD&quot;  &quot;Var44_isBAD&quot;  &quot;Var46_isBAD&quot; 
+##  [29] &quot;Var49_isBAD&quot;  &quot;Var51_isBAD&quot;  &quot;Var54_isBAD&quot;  &quot;Var65_clean&quot; 
+##  [33] &quot;Var65_isBAD&quot;  &quot;Var68_isBAD&quot;  &quot;Var72_clean&quot;  &quot;Var73_clean&quot; 
+##  [37] &quot;Var74_clean&quot;  &quot;Var74_isBAD&quot;  &quot;Var75_isBAD&quot;  &quot;Var76_isBAD&quot; 
+##  [41] &quot;Var78_isBAD&quot;  &quot;Var81_clean&quot;  &quot;Var81_isBAD&quot;  &quot;Var82_isBAD&quot; 
+##  [45] &quot;Var83_isBAD&quot;  &quot;Var84_isBAD&quot;  &quot;Var85_isBAD&quot;  &quot;Var88_isBAD&quot; 
+##  [49] &quot;Var95_isBAD&quot;  &quot;Var96_isBAD&quot;  &quot;Var99_isBAD&quot;  &quot;Var101_isBAD&quot;
+##  [53] &quot;Var106_isBAD&quot; &quot;Var112_isBAD&quot; &quot;Var113_clean&quot; &quot;Var114_isBAD&quot;
+##  [57] &quot;Var117_isBAD&quot; &quot;Var119_isBAD&quot; &quot;Var122_isBAD&quot; &quot;Var123_isBAD&quot;
+##  [61] &quot;Var124_isBAD&quot; &quot;Var125_clean&quot; &quot;Var125_isBAD&quot; &quot;Var126_clean&quot;
+##  [65] &quot;Var126_isBAD&quot; &quot;Var127_isBAD&quot; &quot;Var128_isBAD&quot; &quot;Var130_isBAD&quot;
+##  [69] &quot;Var132_isBAD&quot; &quot;Var133_isBAD&quot; &quot;Var134_isBAD&quot; &quot;Var135_isBAD&quot;
+##  [73] &quot;Var138_isBAD&quot; &quot;Var140_isBAD&quot; &quot;Var143_isBAD&quot; &quot;Var144_clean&quot;
+##  [77] &quot;Var144_isBAD&quot; &quot;Var145_isBAD&quot; &quot;Var149_clean&quot; &quot;Var150_isBAD&quot;
+##  [81] &quot;Var152_isBAD&quot; &quot;Var153_isBAD&quot; &quot;Var155_isBAD&quot; &quot;Var158_isBAD&quot;
+##  [85] &quot;Var159_isBAD&quot; &quot;Var160_isBAD&quot; &quot;Var161_isBAD&quot; &quot;Var162_isBAD&quot;
+##  [89] &quot;Var163_isBAD&quot; &quot;Var164_isBAD&quot; &quot;Var165_isBAD&quot; &quot;Var170_isBAD&quot;
+##  [93] &quot;Var171_isBAD&quot; &quot;Var173_isBAD&quot; &quot;Var174_isBAD&quot; &quot;Var176_isBAD&quot;
+##  [97] &quot;Var177_isBAD&quot; &quot;Var179_isBAD&quot; &quot;Var181_isBAD&quot; &quot;Var182_isBAD&quot;
+## [101] &quot;Var183_isBAD&quot; &quot;Var184_isBAD&quot; &quot;Var188_isBAD&quot; &quot;Var189_clean&quot;
+## [105] &quot;Var191_catN&quot;  &quot;Var193_catN&quot;  &quot;Var205_catN&quot;  &quot;Var206_catN&quot; 
+## [109] &quot;Var207_catN&quot;  &quot;Var210_catN&quot;  &quot;Var211_catN&quot;  &quot;Var218_catN&quot; 
+## [113] &quot;Var219_catN&quot;  &quot;Var221_catN&quot;  &quot;Var225_catN&quot;  &quot;Var226_catN&quot; 
+## [117] &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot; 
 ## [1] &quot;&quot;
 ## [1] &quot;glm&quot;</code></pre>
 <pre><code>## Warning: prediction from a rank-deficient fit may be misleading</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze1.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6971
+<pre><code>## [1] 0.706
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;randomForest&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze2.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6968
+<pre><code>## [1] 0.6867
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;knn&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze3.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6893
+<pre><code>## [1] 0.6846
 ## [1] &quot;&quot;
 ## [1] &quot;----------&quot;
-##  [1] &quot;PC1&quot;  &quot;PC2&quot;  &quot;PC3&quot;  &quot;PC4&quot;  &quot;PC5&quot;  &quot;PC6&quot;  &quot;PC8&quot;  &quot;PC13&quot; &quot;PC15&quot; &quot;PC16&quot;
-## [11] &quot;PC17&quot; &quot;PC19&quot; &quot;PC22&quot; &quot;PC23&quot; &quot;PC24&quot; &quot;PC26&quot; &quot;PC29&quot; &quot;PC30&quot; &quot;PC31&quot; &quot;PC34&quot;
-## [21] &quot;PC36&quot; &quot;PC37&quot; &quot;PC42&quot; &quot;PC44&quot;
+##  [1] &quot;PC1&quot;  &quot;PC2&quot;  &quot;PC3&quot;  &quot;PC4&quot;  &quot;PC5&quot;  &quot;PC6&quot;  &quot;PC7&quot;  &quot;PC10&quot; &quot;PC12&quot; &quot;PC14&quot;
+## [11] &quot;PC15&quot; &quot;PC16&quot; &quot;PC18&quot; &quot;PC20&quot; &quot;PC21&quot; &quot;PC22&quot; &quot;PC23&quot; &quot;PC25&quot; &quot;PC28&quot; &quot;PC29&quot;
+## [21] &quot;PC30&quot; &quot;PC32&quot; &quot;PC35&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;glm&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze4.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.692
+<pre><code>## [1] 0.6984
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;randomForest&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze5.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6758
+<pre><code>## [1] 0.6773
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;knn&quot;</code></pre>
-<pre><code>## [1] 0.6945
+<pre><code>## [1] 0.6892
 ## [1] &quot;&quot;
 ## [1] &quot;----------&quot;
 ##   [1] &quot;Var2_isBAD&quot;   &quot;Var3_isBAD&quot;   &quot;Var4_isBAD&quot;   &quot;Var6_clean&quot;  
 ##   [5] &quot;Var6_isBAD&quot;   &quot;Var7_clean&quot;   &quot;Var7_isBAD&quot;   &quot;Var11_isBAD&quot; 
 ##   [9] &quot;Var13_clean&quot;  &quot;Var13_isBAD&quot;  &quot;Var14_isBAD&quot;  &quot;Var17_isBAD&quot; 
 ##  [13] &quot;Var18_isBAD&quot;  &quot;Var19_isBAD&quot;  &quot;Var21_isBAD&quot;  &quot;Var22_isBAD&quot; 
-##  [17] &quot;Var24_clean&quot;  &quot;Var24_isBAD&quot;  &quot;Var25_clean&quot;  &quot;Var25_isBAD&quot; 
-##  [21] &quot;Var28_clean&quot;  &quot;Var28_isBAD&quot;  &quot;Var34_isBAD&quot;  &quot;Var35_isBAD&quot; 
-##  [25] &quot;Var36_isBAD&quot;  &quot;Var37_isBAD&quot;  &quot;Var38_isBAD&quot;  &quot;Var40_isBAD&quot; 
-##  [29] &quot;Var43_isBAD&quot;  &quot;Var44_isBAD&quot;  &quot;Var46_isBAD&quot;  &quot;Var49_isBAD&quot; 
-##  [33] &quot;Var51_isBAD&quot;  &quot;Var54_isBAD&quot;  &quot;Var56_isBAD&quot;  &quot;Var59_isBAD&quot; 
-##  [37] &quot;Var65_clean&quot;  &quot;Var65_isBAD&quot;  &quot;Var68_isBAD&quot;  &quot;Var72_clean&quot; 
-##  [41] &quot;Var73_clean&quot;  &quot;Var74_clean&quot;  &quot;Var74_isBAD&quot;  &quot;Var75_isBAD&quot; 
-##  [45] &quot;Var76_isBAD&quot;  &quot;Var78_isBAD&quot;  &quot;Var81_clean&quot;  &quot;Var81_isBAD&quot; 
-##  [49] &quot;Var82_isBAD&quot;  &quot;Var83_isBAD&quot;  &quot;Var84_isBAD&quot;  &quot;Var85_clean&quot; 
-##  [53] &quot;Var85_isBAD&quot;  &quot;Var88_isBAD&quot;  &quot;Var89_isBAD&quot;  &quot;Var95_isBAD&quot; 
-##  [57] &quot;Var96_isBAD&quot;  &quot;Var99_isBAD&quot;  &quot;Var101_isBAD&quot; &quot;Var102_isBAD&quot;
-##  [61] &quot;Var104_isBAD&quot; &quot;Var105_isBAD&quot; &quot;Var106_isBAD&quot; &quot;Var109_isBAD&quot;
-##  [65] &quot;Var110_clean&quot; &quot;Var112_isBAD&quot; &quot;Var113_clean&quot; &quot;Var114_isBAD&quot;
-##  [69] &quot;Var115_isBAD&quot; &quot;Var117_isBAD&quot; &quot;Var119_isBAD&quot; &quot;Var122_isBAD&quot;
-##  [73] &quot;Var123_isBAD&quot; &quot;Var124_isBAD&quot; &quot;Var125_clean&quot; &quot;Var125_isBAD&quot;
-##  [77] &quot;Var126_clean&quot; &quot;Var126_isBAD&quot; &quot;Var127_isBAD&quot; &quot;Var128_isBAD&quot;
-##  [81] &quot;Var130_isBAD&quot; &quot;Var132_isBAD&quot; &quot;Var133_isBAD&quot; &quot;Var134_isBAD&quot;
-##  [85] &quot;Var135_isBAD&quot; &quot;Var138_isBAD&quot; &quot;Var139_clean&quot; &quot;Var140_isBAD&quot;
-##  [89] &quot;Var143_isBAD&quot; &quot;Var144_clean&quot; &quot;Var144_isBAD&quot; &quot;Var145_isBAD&quot;
-##  [93] &quot;Var149_clean&quot; &quot;Var149_isBAD&quot; &quot;Var150_isBAD&quot; &quot;Var152_isBAD&quot;
-##  [97] &quot;Var153_isBAD&quot; &quot;Var155_isBAD&quot; &quot;Var158_isBAD&quot; &quot;Var159_isBAD&quot;
-## [101] &quot;Var160_clean&quot; &quot;Var160_isBAD&quot; &quot;Var161_isBAD&quot; &quot;Var162_isBAD&quot;
-## [105] &quot;Var163_isBAD&quot; &quot;Var164_isBAD&quot; &quot;Var165_isBAD&quot; &quot;Var168_clean&quot;
-## [109] &quot;Var170_isBAD&quot; &quot;Var171_isBAD&quot; &quot;Var173_isBAD&quot; &quot;Var174_isBAD&quot;
-## [113] &quot;Var176_isBAD&quot; &quot;Var177_isBAD&quot; &quot;Var178_isBAD&quot; &quot;Var179_isBAD&quot;
-## [117] &quot;Var181_isBAD&quot; &quot;Var182_isBAD&quot; &quot;Var183_isBAD&quot; &quot;Var184_isBAD&quot;
-## [121] &quot;Var188_clean&quot; &quot;Var188_isBAD&quot; &quot;Var189_clean&quot; &quot;Var191_catN&quot; 
-## [125] &quot;Var193_catN&quot;  &quot;Var197_catN&quot;  &quot;Var203_catN&quot;  &quot;Var205_catN&quot; 
-## [129] &quot;Var206_catN&quot;  &quot;Var207_catN&quot;  &quot;Var208_catN&quot;  &quot;Var210_catN&quot; 
-## [133] &quot;Var211_catN&quot;  &quot;Var218_catN&quot;  &quot;Var219_catN&quot;  &quot;Var221_catN&quot; 
-## [137] &quot;Var223_catN&quot;  &quot;Var224_catN&quot;  &quot;Var225_catN&quot;  &quot;Var226_catN&quot; 
-## [141] &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot;  &quot;PC1&quot;         
-## [145] &quot;PC2&quot;          &quot;PC3&quot;          &quot;PC4&quot;          &quot;PC5&quot;         
-## [149] &quot;PC6&quot;          &quot;PC8&quot;          &quot;PC13&quot;         &quot;PC15&quot;        
-## [153] &quot;PC16&quot;         &quot;PC17&quot;         &quot;PC19&quot;         &quot;PC22&quot;        
-## [157] &quot;PC23&quot;         &quot;PC24&quot;         &quot;PC26&quot;         &quot;PC29&quot;        
-## [161] &quot;PC30&quot;         &quot;PC31&quot;         &quot;PC34&quot;         &quot;PC36&quot;        
-## [165] &quot;PC37&quot;         &quot;PC42&quot;         &quot;PC44&quot;        
+##  [17] &quot;Var25_isBAD&quot;  &quot;Var28_clean&quot;  &quot;Var28_isBAD&quot;  &quot;Var34_isBAD&quot; 
+##  [21] &quot;Var35_isBAD&quot;  &quot;Var36_isBAD&quot;  &quot;Var37_isBAD&quot;  &quot;Var38_isBAD&quot; 
+##  [25] &quot;Var40_isBAD&quot;  &quot;Var43_isBAD&quot;  &quot;Var44_isBAD&quot;  &quot;Var46_isBAD&quot; 
+##  [29] &quot;Var49_isBAD&quot;  &quot;Var51_isBAD&quot;  &quot;Var54_isBAD&quot;  &quot;Var65_clean&quot; 
+##  [33] &quot;Var65_isBAD&quot;  &quot;Var68_isBAD&quot;  &quot;Var72_clean&quot;  &quot;Var73_clean&quot; 
+##  [37] &quot;Var74_clean&quot;  &quot;Var74_isBAD&quot;  &quot;Var75_isBAD&quot;  &quot;Var76_isBAD&quot; 
+##  [41] &quot;Var78_isBAD&quot;  &quot;Var81_clean&quot;  &quot;Var81_isBAD&quot;  &quot;Var82_isBAD&quot; 
+##  [45] &quot;Var83_isBAD&quot;  &quot;Var84_isBAD&quot;  &quot;Var85_isBAD&quot;  &quot;Var88_isBAD&quot; 
+##  [49] &quot;Var95_isBAD&quot;  &quot;Var96_isBAD&quot;  &quot;Var99_isBAD&quot;  &quot;Var101_isBAD&quot;
+##  [53] &quot;Var106_isBAD&quot; &quot;Var112_isBAD&quot; &quot;Var113_clean&quot; &quot;Var114_isBAD&quot;
+##  [57] &quot;Var117_isBAD&quot; &quot;Var119_isBAD&quot; &quot;Var122_isBAD&quot; &quot;Var123_isBAD&quot;
+##  [61] &quot;Var124_isBAD&quot; &quot;Var125_clean&quot; &quot;Var125_isBAD&quot; &quot;Var126_clean&quot;
+##  [65] &quot;Var126_isBAD&quot; &quot;Var127_isBAD&quot; &quot;Var128_isBAD&quot; &quot;Var130_isBAD&quot;
+##  [69] &quot;Var132_isBAD&quot; &quot;Var133_isBAD&quot; &quot;Var134_isBAD&quot; &quot;Var135_isBAD&quot;
+##  [73] &quot;Var138_isBAD&quot; &quot;Var140_isBAD&quot; &quot;Var143_isBAD&quot; &quot;Var144_clean&quot;
+##  [77] &quot;Var144_isBAD&quot; &quot;Var145_isBAD&quot; &quot;Var149_clean&quot; &quot;Var150_isBAD&quot;
+##  [81] &quot;Var152_isBAD&quot; &quot;Var153_isBAD&quot; &quot;Var155_isBAD&quot; &quot;Var158_isBAD&quot;
+##  [85] &quot;Var159_isBAD&quot; &quot;Var160_isBAD&quot; &quot;Var161_isBAD&quot; &quot;Var162_isBAD&quot;
+##  [89] &quot;Var163_isBAD&quot; &quot;Var164_isBAD&quot; &quot;Var165_isBAD&quot; &quot;Var170_isBAD&quot;
+##  [93] &quot;Var171_isBAD&quot; &quot;Var173_isBAD&quot; &quot;Var174_isBAD&quot; &quot;Var176_isBAD&quot;
+##  [97] &quot;Var177_isBAD&quot; &quot;Var179_isBAD&quot; &quot;Var181_isBAD&quot; &quot;Var182_isBAD&quot;
+## [101] &quot;Var183_isBAD&quot; &quot;Var184_isBAD&quot; &quot;Var188_isBAD&quot; &quot;Var189_clean&quot;
+## [105] &quot;Var191_catN&quot;  &quot;Var193_catN&quot;  &quot;Var205_catN&quot;  &quot;Var206_catN&quot; 
+## [109] &quot;Var207_catN&quot;  &quot;Var210_catN&quot;  &quot;Var211_catN&quot;  &quot;Var218_catN&quot; 
+## [113] &quot;Var219_catN&quot;  &quot;Var221_catN&quot;  &quot;Var225_catN&quot;  &quot;Var226_catN&quot; 
+## [117] &quot;Var227_catN&quot;  &quot;Var228_catN&quot;  &quot;Var229_catN&quot;  &quot;PC1&quot;         
+## [121] &quot;PC2&quot;          &quot;PC3&quot;          &quot;PC4&quot;          &quot;PC5&quot;         
+## [125] &quot;PC6&quot;          &quot;PC7&quot;          &quot;PC10&quot;         &quot;PC12&quot;        
+## [129] &quot;PC14&quot;         &quot;PC15&quot;         &quot;PC16&quot;         &quot;PC18&quot;        
+## [133] &quot;PC20&quot;         &quot;PC21&quot;         &quot;PC22&quot;         &quot;PC23&quot;        
+## [137] &quot;PC25&quot;         &quot;PC28&quot;         &quot;PC29&quot;         &quot;PC30&quot;        
+## [141] &quot;PC32&quot;         &quot;PC35&quot;        
 ## [1] &quot;&quot;
 ## [1] &quot;glm&quot;</code></pre>
 <pre><code>## Warning: prediction from a rank-deficient fit may be misleading</code></pre>
 <p><img src="figure/kddexanalyze6.png" alt="plot of chunk kddexanalyze" /> <img src="figure/kddexanalyze7.png" alt="plot of chunk kddexanalyze" /></p>
-<pre><code>## [1] 0.6971
+<pre><code>## [1] 0.706
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;randomForest&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze8.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.7091
+<pre><code>## [1] 0.6981
 ## [1] &quot;&quot;
 ## [1] &quot;&quot;
 ## [1] &quot;knn&quot;</code></pre>
 <div class="figure">
 <img src="figure/kddexanalyze9.png" alt="plot of chunk kddexanalyze" /><p class="caption">plot of chunk kddexanalyze</p>
 </div>
-<pre><code>## [1] 0.6884
+<pre><code>## [1] 0.6846
 ## [1] &quot;&quot;</code></pre>

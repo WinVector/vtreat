@@ -418,23 +418,13 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
   scores
 }
 
-# score list of columns related to a categorical outcome
-.scoreColumnsC <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
-  nms <- setdiff(colnames(treatedFrame),exclude)
-  scores <- vapply(nms,
-         function(c) pressStatOfBestLinearFit(treatedFrame[[c]],ifelse(yValues,1.0,0.0),weights,normalizationStrat),
-         double(1))
-  names(scores) <- nms
-  scores
-}
 
 
-
-# build all treatments for a data frame to predict a categorical outcome
-designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
-                              weights=c(),
-                              minFraction=0.02,smFactor=0.0,maxMissing=0.04,
-                              scoreVars=TRUE,verbose=TRUE) {
+# build all treatments for a data frame to predict a given outcome
+.designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
+                              weights,
+                              minFraction,smFactor,maxMissing,
+                              scoreVars,verbose) {
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
     weights <- rep(1.0,dim(dframe)[[1]])
@@ -443,18 +433,16 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
     dframe <- dframe[goodPosns,]
     weights <- weights[goodPosns]
   }
-  treatments <- list()
-  ycol <- dframe[[outcomename]]==outcometarget
-  if(length(ycol)<=0) {
+  if(sum(weights)<=0) {
     stop("no non-zero weighted rows")
   }
-  if(sum(.is.bad(ycol))>0) {
+  if(sum(.is.bad(zoY))>0) {
     stop("outcome variable had NAs")
   }
-  zoY <- ifelse(ycol,1.0,0.0)
-  if((sum(zoY)<=0)||(sum(zoY)>=length(zoY))) {
+  if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
   }
+  treatments <- list()
   cvarScores <- list()
   for(v in varlist) {
     if(verbose) {
@@ -483,7 +471,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
         }
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
-          cvarScores[ti$newvars[[1]]] <- pressStatOfCategoricalVariable(vcol,zoY,weights) # assumes only one newvar
+          if (scoreVars) {
+             cvarScores[ti$newvars[[1]]] <- pressStatOfCategoricalVariable(vcol,zoY,weights) # assumes only one newvar
+          }
         }
       }
     }
@@ -505,7 +495,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
      varScores <- rep(1.0,length(varMoves))
      names(varScores) <- colnames(treated)
      varScores[names(cvarScores)] <- as.numeric(cvarScores)
-     additionalScores <- .scoreColumnsC(treated,ycol,weights,union(names(cvarScores),names(varMoves)[!varMoves]),'total')
+     additionalScores <- .scoreColumnsN(treated,zoY,weights,union(names(cvarScores),names(varMoves)[!varMoves]),'total')
      varScores[names(additionalScores)] <- additionalScores
      treatedVarNames <- names(varScores)
      PRESSRsquared <- 1-varScores
@@ -520,97 +510,33 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   plan
 }
 
+
+
+# build all treatments for a data frame to predict a categorical outcome
+designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
+                              weights=c(),
+                              minFraction=0.02,smFactor=0.0,maxMissing=0.04,
+                              scoreVars=TRUE,verbose=TRUE) {
+   zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
+  .designTreatmentsX(dframe,varlist,outcomename,zoY,
+                              weights,
+                              minFraction,smFactor,maxMissing,
+                              scoreVars,verbose)
+}
+
 # build all treatments for a data frame to predict a numeric outcome
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               scoreVars=TRUE,verbose=TRUE) {
-  varlist <- setdiff(varlist,outcomename)
-  if(is.null(weights)) {
-    weights <- rep(1.0,dim(dframe)[[1]])
-  } else {
-    goodPosns <- ifelse(.is.bad(weights),FALSE,weights>0.0)
-    dframe <- dframe[goodPosns,]
-    weights <- weights[goodPosns]
-  }
-  treatments <- list()
-  ycol <- dframe[[outcomename]]
-  if(length(ycol)<=0) {
-    stop("no non-zero weighted rows")
-  }
-  if(!((class(ycol)=='numeric') || (class(ycol)=='integer'))) {
-    stop("outcome must be numeric or integer")
-  }
-  if(sum(.is.bad(ycol))>0) {
-    stop("outcome variable had NAs/NaNs/infinites")
-  }
-  if(!.has.range.cn(ycol)) {
-    stop("outcome variable was a constant")
-  }
-  cvarScores <- list()
-  for(v in varlist) {
-    if(verbose) {
-      print(paste('design var',v,date()))
-    }
-    vcol <- dframe[[v]]
-    colclass <- class(vcol)
-    if(length(colclass)!=1) { # defend against POSIXt types
-      vcol <- as.numeric(vcol)
-      colclass <- class(vcol)
-    }
-    if(.has.range(vcol)) {
-      if((colclass=='numeric') || (colclass=='integer')) {
-        ti <- .mkPassThrough(v,vcol,ycol,weights)
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-        }
-        ti <- .mkIsNA(v,vcol,ycol,weights)
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-        }
-      } else {
-        ti <- .mkCatInd(v,vcol,ycol,minFraction,maxMissing,weights)
-        if(is.null(ti)) {
-          ti <- .mkCatNum(v,vcol,ycol,smFactor,weights)
-        }
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-          cvarScores[ti$newvars[[1]]] <- pressStatOfCategoricalVariable(vcol,ycol,weights) # assumes only one newvar
-        }
-      }
-    }
-  }
-  treatedVarNames <- .getNewVarNames(treatments)
-  varMoves <- c()
-  varScores <- c()
-  PRESSRsquared <- c()
-  if(scoreVars) {
-     if(verbose) {
-       print(paste("treat frame",date()))
-     }
-     treated <- .vtreatList(treatments,dframe,TRUE)
-     if(verbose) {
-       print(paste("score frame",date()))
-     }
-     varMoves <- vapply(colnames(treated),function(c) { .has.range.cn(treated[[c]]) },logical(1))
-     names(varMoves) <- colnames(treated)
-     varScores <- rep(1.0,length(varMoves))
-     names(varScores) <- colnames(treated)
-     varScores[names(cvarScores)] <- as.numeric(cvarScores)
-     additionalScores <- .scoreColumnsN(treated,ycol,weights,union(names(cvarScores),names(varMoves)[!varMoves]),'total')
-     varScores[names(additionalScores)] <- additionalScores
-     treatedVarNames <- names(varScores)
-     PRESSRsquared <- 1-varScores
-  }
-  plan <- list(treatments=treatments,
-               vars=treatedVarNames,
-               varScores=varScores,PRESSRsquared=PRESSRsquared,
-               varMoves=varMoves,
-               outcomename=outcomename,
-               meanY=.wmean(ycol,weights),ndat=length(ycol))
-  class(plan) <- 'treatmentplan'
-  plan
+   ycol <- dframe[[outcomename]]
+  .designTreatmentsX(dframe,varlist,outcomename,ycol,
+                              weights,
+                              minFraction,smFactor,maxMissing,
+                              scoreVars,verbose)
 }
+
+
 
 # safe logit transform
 .logit <- function(x,epsilon) {
@@ -619,6 +545,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   x[.is.bad(x)] <- 0.0
   x
 }
+
 
 # apply treatments and restrict to useful variables
 # copies over y if present
