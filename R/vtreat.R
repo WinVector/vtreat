@@ -46,33 +46,19 @@
   as.data.frame(cols,stringsAsFactors=FALSE)
 }
 
-#'
-#' Original variable name.
-#' @param x vtreatment item.
-#' @param ... additional args (to match general signature)
-#' 
-vorig <- function(x,...) UseMethod('vorig',x)
 
 #'
 #' Original variable name.
 #' @param x vtreatment item.
-#' @param ... additional args (to match general signature).
 #' 
-vorig.vtreatment <- function(x,...) { x$origvar }
+vorig <- function(x) { x$origvar }
 
-#'
-#' New treated variable names.
-#' @param x vtreatment item.
-#' @param ... additional args (to match general signature).
-#' 
-vnames <- function(x,...) UseMethod('vnames',x)
 
 #'
 #' New treated variable names.
 #' @param x vtreatment item
-#' @param ... additional args (to match general signature).
 #' 
-vnames.vtreatment <- function(x,...) { x$newvars }
+vnames <- function(x) { x$newvars }
 
 #'
 #' Display treatment plan.
@@ -90,7 +76,9 @@ show.vtreatment <- function(vtreat,...) { paste(
 #' @param x treatmet plan
 #' @param ... additional args (to match general signature).
 #' 
-print.vtreatment <- function(x,...) { print(show.vtreatment(x),...) }
+print.vtreatment <- function(x,...) { 
+  print(show.vtreatment(x),...) 
+}
 
 
 

@@ -4,12 +4,10 @@
 \alias{vorig}
 \title{Original variable name.}
 \usage{
-vorig(x, ...)
+vorig(x)
 }
 \arguments{
 \item{x}{vtreatment item.}
-
-\item{...}{additional args (to match general signature)}
 }
 \description{
 Original variable name.

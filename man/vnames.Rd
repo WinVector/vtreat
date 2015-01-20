@@ -4,12 +4,10 @@
 \alias{vnames}
 \title{New treated variable names.}
 \usage{
-vnames(x, ...)
+vnames(x)
 }
 \arguments{
-\item{x}{vtreatment item.}
-
-\item{...}{additional args (to match general signature).}
+\item{x}{vtreatment item}
 }
 \description{
 New treated variable names.
