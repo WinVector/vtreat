@@ -2,43 +2,47 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
-.vtreatA <- function(x,...) UseMethod('.vtreatA',x)
-.vtreatA.vtreatment <- function(vtreat,xcol,scale) {
+.vtreatA <- function(vtreat,xcol,scale) {
   if(length(class(xcol))!=1) { # defend against POSIXt types
     xcol <- as.numeric(xcol)
   }
   dout <- as.data.frame(vtreat$f(xcol,vtreat$args),stringsAsFactors=FALSE)
   colnames(dout) <- vtreat$newvars
   if(scale) {
-    for(j in 1:length(vtreat$scales$a)) {
-      dout[,j] <- dout[,j]*vtreat$scales$a[j] + vtreat$scales$b[j]
+    for(j in seq_along(vtreat$scales$a)) {
+      dout[[j]] <- dout[[j]]*vtreat$scales$a[[j]] + vtreat$scales$b[[j]]
     }
   }
   dout
 }
 
+
 .getNewVarNames <- function(treatments) {
-  names <- c()
-  if(length(treatments)>=1) {
-    names <- treatments[[1]]$newvars
-    if(length(treatments)>=2) {
-      for(i in 2:length(treatments)) {
-        names <- c(names,treatments[[i]]$newvars)
-      }
-    }
+  resCount <- 0
+  for(ti in treatments) {
+     resCount <- resCount + length(ti$newvars)
+  }
+  names <- vector('list',resCount)
+  j <- 1
+  for(ti in treatments) {
+     for(ni in ti$newvars) {
+        names[[j]] <- ni
+        j <- j + 1
+     }
   }
   names
 }
 
 .vtreatList <- function(treatments,dframe,scale) {
-  cols <- c()
-  if(length(treatments)>=1) {
-    cols <- .vtreatA(treatments[[1]],dframe[,treatments[[1]]$origvar],scale)
-    if(length(treatments)>=2) {
-      for(i in 2:length(treatments)) {
-        cols <- cbind(cols,.vtreatA(treatments[[i]],dframe[,treatments[[i]]$origvar],scale))
-      }
-    }
+  colNames <- .getNewVarNames(treatments)
+  cols <- vector('list',length(colNames))
+  names(cols) <- colNames
+  j <- 1
+  for(ti in treatments) {
+     for(ci in .vtreatA(ti,dframe[[ti$origvar]],scale)) {
+        cols[[j]] <- ci
+        j <- j + 1
+     }
   }
   as.data.frame(cols,stringsAsFactors=FALSE)
 }
@@ -182,18 +186,18 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
   origna <- is.na(col)
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
-  vals <- matrix(data=0,nrow=length(col),ncol=length(args$tracked))
-  sum <- rep(0,length(col))
   nres <- length(args$tracked)
+  vals <- vector('list',nres)
+  sum <- rep(0,length(col))
   for(j in 1:nres) {
     vi <- ifelse(col==args$tracked[j],1.0,0.0) 
-    vals[,j] <- vi
+    vals[[j]] <- vi
     sum = sum + vi
   }
   if(nres>1) {
      for(ri in which(sum==0)) { # For novel levels put fraction of time each level was on in original data
         for(j in 1:nres) {
-           vals[ri,j] = args$dist[j]
+           vals[[j]][[ri]] = args$dist[[j]]
         }
      }
   }
@@ -221,10 +225,10 @@ print.vtreatment <- function(vtreat,...) { print(show.vtreatment(vtreat),...) }
                     treatmentName='Categoric Indicators')
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
-  nvar <- (dim(pred)[[2]])
+  nvar <- length(pred)
   treatment$scales <- list('a'=rep(1.0,nvar),'b'=rep(0.0,nvar))  
   for(j in 1:nvar) {
-    scales <- .getScales(pred[,j],ynumeric,weights)
+    scales <- .getScales(pred[[j]],ynumeric,weights)
     treatment$scales$a[j] <- scales$a
     treatment$scales$b[j] <- scales$b
   }
@@ -404,14 +408,16 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 
 # score list of columns related to numeric outcome
 .scoreColumnsN <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
-  sapply(setdiff(colnames(treatedFrame),exclude),
-         function(c) pressStatOfBestLinearFit(treatedFrame[,c],yValues,weights,normalizationStrat))
+  vapply(setdiff(colnames(treatedFrame),exclude),
+         function(c) pressStatOfBestLinearFit(treatedFrame[[c]],yValues,weights,normalizationStrat),
+         double(1))
 }
 
 # score list of columns related to a categorical outcome
 .scoreColumnsC <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
-  sapply(setdiff(colnames(treatedFrame),exclude),
-         function(c) pressStatOfBestLinearFit(treatedFrame[,c],ifelse(yValues,1.0,0.0),weights,normalizationStrat))
+  vapply(setdiff(colnames(treatedFrame),exclude),
+         function(c) pressStatOfBestLinearFit(treatedFrame[[c]],ifelse(yValues,1.0,0.0),weights,normalizationStrat),
+         double(1))
 }
 
 
@@ -430,7 +436,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
     weights <- weights[goodPosns]
   }
   treatments <- list()
-  ycol <- dframe[,outcomename]==outcometarget
+  ycol <- dframe[[outcomename]]==outcometarget
   if(length(ycol)<=0) {
     stop("no non-zero weighted rows")
   }
@@ -446,7 +452,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
     if(verbose) {
       print(paste('design var',v,date()))
     }
-    vcol <- dframe[,v]
+    vcol <- dframe[[v]]
     colclass = class(vcol)
     if(length(colclass)!=1) { # defend against POSIXt types
       vcol <- as.numeric(vcol)
@@ -486,7 +492,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
      if(verbose) {
         print(paste("score frame",date()))
      }
-     varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
+     varMoves <- vapply(colnames(treated),function(c) { .has.range.cn(treated[[c]]) },logical(1))
      varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
      names(varScores) <- colnames(treated)
      treatedVarNames <- names(varScores)
@@ -516,7 +522,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
     weights <- weights[goodPosns]
   }
   treatments <- list()
-  ycol <- dframe[,outcomename]
+  ycol <- dframe[[outcomename]]
   if(length(ycol)<=0) {
     stop("no non-zero weighted rows")
   }
@@ -534,7 +540,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
     if(verbose) {
       print(paste('design var',v,date()))
     }
-    vcol <- dframe[,v]
+    vcol <- dframe[[v]]
     colclass <- class(vcol)
     if(length(colclass)!=1) { # defend against POSIXt types
       vcol <- as.numeric(vcol)
@@ -574,7 +580,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
      if(verbose) {
        print(paste("score frame",date()))
      }
-     varMoves <- sapply(colnames(treated),function(c) { .has.range.cn(treated[,c]) })
+     varMoves <- vapply(colnames(treated),function(c) { .has.range.cn(treated[[c]]) },logical(1))
      varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
      names(varScores) <- colnames(treated)
      treatedVarNames <- names(varScores)
@@ -616,11 +622,11 @@ prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransf
   if(logitTransform) {
     epsilon <- 1.0/treatmentplan$ndat
     for(c in colnames(treated)) {
-      treated[,c] <- .logit(treated[,c]+treatmentplan$meanY,epsilon)
+      treated[[c]] <- .logit(treated[[c]]+treatmentplan$meanY,epsilon)
     }
   }
   if(treatmentplan$outcomename %in% colnames(dframe)) {
-    treated[,treatmentplan$outcomename] <- dframe[,treatmentplan$outcomename]
+    treated[[treatmentplan$outcomename]] <- dframe[[treatmentplan$outcomename]]
   }
   treated
 }
