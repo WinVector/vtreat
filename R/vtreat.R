@@ -366,6 +366,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   error/eConst
 }
 
+# Tries to prevent some of the test/train leakage in scoring, note there is still some in other variables such as 
+# in the missing value level.
 # compute the PRESS statistic of 
 # vcol: character 
 # y: numeric vectors (no NAs/NULLs)
@@ -408,16 +410,22 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 
 # score list of columns related to numeric outcome
 .scoreColumnsN <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
-  vapply(setdiff(colnames(treatedFrame),exclude),
+  nms <- setdiff(colnames(treatedFrame),exclude)
+  scores <- vapply(nms,
          function(c) pressStatOfBestLinearFit(treatedFrame[[c]],yValues,weights,normalizationStrat),
          double(1))
+  names(scores) <- nms
+  scores
 }
 
 # score list of columns related to a categorical outcome
 .scoreColumnsC <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
-  vapply(setdiff(colnames(treatedFrame),exclude),
+  nms <- setdiff(colnames(treatedFrame),exclude)
+  scores <- vapply(nms,
          function(c) pressStatOfBestLinearFit(treatedFrame[[c]],ifelse(yValues,1.0,0.0),weights,normalizationStrat),
          double(1))
+  names(scores) <- nms
+  scores
 }
 
 
@@ -493,8 +501,12 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
         print(paste("score frame",date()))
      }
      varMoves <- vapply(colnames(treated),function(c) { .has.range.cn(treated[[c]]) },logical(1))
-     varScores <- as.numeric(append(.scoreColumnsC(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
+     names(varMoves) <- colnames(treated)
+     varScores <- rep(1.0,length(varMoves))
      names(varScores) <- colnames(treated)
+     varScores[names(cvarScores)] <- as.numeric(cvarScores)
+     additionalScores <- .scoreColumnsC(treated,ycol,weights,union(names(cvarScores),names(varMoves)[!varMoves]),'total')
+     varScores[names(additionalScores)] <- additionalScores
      treatedVarNames <- names(varScores)
      PRESSRsquared <- 1-varScores
   }
@@ -581,8 +593,12 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
        print(paste("score frame",date()))
      }
      varMoves <- vapply(colnames(treated),function(c) { .has.range.cn(treated[[c]]) },logical(1))
-     varScores <- as.numeric(append(.scoreColumnsN(treated,ycol,weights,names(cvarScores),'total'),cvarScores)[colnames(treated)])
+     names(varMoves) <- colnames(treated)
+     varScores <- rep(1.0,length(varMoves))
      names(varScores) <- colnames(treated)
+     varScores[names(cvarScores)] <- as.numeric(cvarScores)
+     additionalScores <- .scoreColumnsN(treated,ycol,weights,union(names(cvarScores),names(varMoves)[!varMoves]),'total')
+     varScores[names(additionalScores)] <- additionalScores
      treatedVarNames <- names(varScores)
      PRESSRsquared <- 1-varScores
   }
