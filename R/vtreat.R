@@ -460,7 +460,8 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
-                              scoreVars,verbose) {
+                              scoreVars,maxScoreSize,
+                              verbose) {
   if(collarProb>=0.5) {
      stop("collarProb must be < 0.5")
   }
@@ -522,10 +523,17 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
   varScores <- c()
   PRESSRsquared <- c()
   if (scoreVars) {
-     if(verbose) {
-        print(paste("treat frame",date()))
+     if(nrow(dframe)<=maxScoreSize) {
+       if(verbose) {
+         print(paste("treat frame",date()))
+       }
+       treated <- .vtreatList(treatments,dframe,TRUE)
+     } else {
+       if(verbose) {
+         print(paste("treat frame sample",date()))
+       }
+       treated <- .vtreatList(treatments,dframe[sample.int(nrow(dframe),size=maxScoreSize),,drop=FALSE],TRUE)
      }
-     treated <- .vtreatList(treatments,dframe,TRUE)
      if(verbose) {
         print(paste("score frame",date()))
      }
@@ -570,6 +578,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
+#' @param maxScoreSize optimal maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}}
@@ -589,13 +598,15 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.01,
-                              scoreVars=TRUE,verbose=TRUE) {
+                              scoreVars=TRUE,maxScoreSize=1000000L,
+                              verbose=TRUE) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
-                              scoreVars,verbose)
+                              scoreVars,maxScoreSize,
+                              verbose)
 }
 
 # build all treatments for a data frame to predict a numeric outcome
@@ -616,6 +627,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
+#' @param maxScoreSize optimal maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}}
@@ -634,13 +646,15 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.01,
-                              scoreVars=TRUE,verbose=TRUE) {
+                              scoreVars=TRUE,maxScoreSize=1000000L,
+                              verbose=TRUE) {
    ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
-                              scoreVars,verbose)
+                              scoreVars,maxScoreSize,
+                              verbose)
 }
 
 

@@ -6,7 +6,8 @@
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, weights = c(),
   minFraction = 0.02, smFactor = 0, maxMissing = 0.04,
-  collarProb = 0.01, scoreVars = TRUE, verbose = TRUE)
+  collarProb = 0.01, scoreVars = TRUE, maxScoreSize = 1000000L,
+  verbose = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
@@ -26,6 +27,8 @@ designTreatmentsN(dframe, varlist, outcomename, weights = c(),
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
 
 \item{scoreVars}{optional if TRUE attempt to estimate individual variable utility.}
+
+\item{maxScoreSize}{optimal maximum size for treated variable scoring frame}
 
 \item{verbose}{if TRUE print progress.}
 }
