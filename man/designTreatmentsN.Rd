@@ -5,8 +5,8 @@
 \title{designTreatmentsN}
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, weights = c(),
-  minFraction = 0.02, smFactor = 0, maxMissing = 0.04, scoreVars = TRUE,
-  verbose = TRUE)
+  minFraction = 0.02, smFactor = 0, maxMissing = 0.04,
+  collarProb = 0.01, scoreVars = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
@@ -22,6 +22,8 @@ designTreatmentsN(dframe, varlist, outcomename, weights = c(),
 \item{smFactor}{optional smoothing factor for impact coding models.}
 
 \item{maxMissing}{optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.}
+
+\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
 
 \item{scoreVars}{optional if TRUE attempt to estimate individual variable utility.}
 

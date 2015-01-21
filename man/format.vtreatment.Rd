@@ -7,9 +7,9 @@
 \method{format}{vtreatment}(x, ...)
 }
 \arguments{
-\item{...}{additional args (to match general signature).}
+\item{x}{treatment plan}
 
-\item{vtreat}{treatment plan}
+\item{...}{additional args (to match general signature).}
 }
 \description{
 Display treatment plan.

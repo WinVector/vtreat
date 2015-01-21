@@ -63,7 +63,7 @@ vnames <- function(x) { x$newvars }
 
 #'
 #' Display treatment plan.
-#' @param vtreat treatment plan
+#' @param x treatment plan
 #' @param ... additional args (to match general signature).
 #' @export
 format.vtreatment <- function(x,...) { paste(
@@ -151,24 +151,32 @@ print.vtreatment <- function(x,...) {
 .passThrough <- function(col,args) {
   treated <- as.numeric(col)
   treated[.is.bad(treated)] <- args$nadist
+  treated[treated<args$cuts[[1]]] <- args$cuts[[1]]
+  treated[treated>args$cuts[[2]]] <- args$cuts[[2]]
   treated
 }
 
-.mkPassThrough <- function(origVarName,xcol,ycol,weights) {
+.mkPassThrough <- function(origVarName,xcol,ycol,weights,collarProb) {
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)
   if(nna>=length(xcol)) {
     return(c())
   }
+  if(collarProb>0.0) {
+     cuts <- as.numeric(quantile(xcol[!napositions],probs=c(collarProb,1-collarProb)))
+  } else {
+     cuts <- c(min(xcol[!napositions]),max(xcol[!napositions]))
+  }
   nadist <- .wmean(xcol[!napositions],weights[!napositions])
   xcol[napositions] <- nadist
   if(max(xcol)<=min(xcol)) {
     return(c())
   }
-  treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'clean',sep='_')),
+  treatment <- list(origvar=origVarName,
+                    newvars=make.names(paste(origVarName,'clean',sep='_')),
                     f=.passThrough,
-                    args=list(nadist=nadist),
+                    args=list(nadist=nadist,cuts=cuts),
                     treatmentName='Scalable pass through')
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(xcol,ycol,weights)
@@ -451,7 +459,11 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
                               weights,
                               minFraction,smFactor,maxMissing,
+                              collarProb,
                               scoreVars,verbose) {
+  if(collarProb>=0.5) {
+     stop("collarProb must be < 0.5")
+  }
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
     weights <- rep(1.0,dim(dframe)[[1]])
@@ -483,7 +495,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
     }
     if(.has.range(vcol)) {
       if((colclass=='numeric') || (colclass=='integer')) {
-        ti <- .mkPassThrough(v,vcol,zoY,weights)
+        ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
         }
@@ -556,6 +568,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
@@ -578,11 +591,13 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
+                              collarProb=0.01,
                               scoreVars=TRUE,verbose=TRUE) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
                               weights,
                               minFraction,smFactor,maxMissing,
+                              collarProb,
                               scoreVars,verbose)
 }
 
@@ -602,6 +617,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
@@ -623,11 +639,13 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
+                              collarProb=0.01,
                               scoreVars=TRUE,verbose=TRUE) {
    ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
                               weights,
                               minFraction,smFactor,maxMissing,
+                              collarProb,
                               scoreVars,verbose)
 }
 
