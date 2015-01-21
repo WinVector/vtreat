@@ -3,7 +3,7 @@
 \name{pressStatOfCategoricalVariable}
 \alias{pressStatOfCategoricalVariable}
 \title{Compute the PRESS statistic a single categorical model.   Tries to prevent some of the test/train leakage in scoring
-(so apply this directly to a categorical variable, and don't score an impact coded varaible).}
+(so apply this directly to a categorical variable, and don't score an impact coded variable).}
 \usage{
 pressStatOfCategoricalVariable(vcolin, y, weights,
   normalizationStrat = "total", smoothingTerm = 0.5)
@@ -24,6 +24,6 @@ PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
 }
 \description{
 Compute the PRESS statistic a single categorical model.   Tries to prevent some of the test/train leakage in scoring
-(so apply this directly to a categorical variable, and don't score an impact coded varaible).
+(so apply this directly to a categorical variable, and don't score an impact coded variable).
 }
 

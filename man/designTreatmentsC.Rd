@@ -11,7 +11,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
 
-\item{varlist}{Names of columns to treat (effetive variables).}
+\item{varlist}{Names of columns to treat (effective variables).}
 
 \item{outcomename}{Name of column holding outcome variable.}
 
@@ -39,9 +39,6 @@ Function to design variable treatments for binary prediction of a
 categorical outcome.  Data frame is assumed to have only atomic columns
 except for dates (which are converted to numeric).
 }
-\note{
-%% ~~further notes~~
-}
 \examples{
 dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
    z=c(1,2,3,4,5,6),
@@ -52,13 +49,7 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
 dTrainCTreated <- prepare(treatmentsC,dTrainC)
 dTestCTreated <- prepare(treatmentsC,dTestC)
 }
-\author{
-%% ~~who you are~~
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{prepare}} \code{\link{designTreatmentsN}}
 }
 

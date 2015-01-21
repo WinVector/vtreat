@@ -53,7 +53,7 @@ sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
 head(dTestCTreated)
 
-# logit categoircal example
+# logit categorical example
 dTrainLTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
 head(dTrainLTreated)
 

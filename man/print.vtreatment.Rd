@@ -7,7 +7,7 @@
 \method{print}{vtreatment}(x, ...)
 }
 \arguments{
-\item{x}{treatmet plan}
+\item{x}{treatment plan}
 
 \item{...}{additional args (to match general signature).}
 }

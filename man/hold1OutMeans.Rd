@@ -3,7 +3,7 @@
 \name{hold1OutMeans}
 \alias{hold1OutMeans}
 \title{Return a vector of length(y) where the i-th entry is the weighted mean
-of all but the i-th y.  Usefull for normalizing PRESS style statistics.}
+of all but the i-th y.  Useful for normalizing PRESS style statistics.}
 \usage{
 hold1OutMeans(y, weights)
 }
@@ -14,6 +14,6 @@ hold1OutMeans(y, weights)
 }
 \description{
 Return a vector of length(y) where the i-th entry is the weighted mean
-of all but the i-th y.  Usefull for normalizing PRESS style statistics.
+of all but the i-th y.  Useful for normalizing PRESS style statistics.
 }
 

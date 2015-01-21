@@ -74,7 +74,7 @@ format.vtreatment <- function(x,...) { paste(
 
 #'
 #' Print treatment plan.
-#' @param x treatmet plan
+#' @param x treatment plan
 #' @param ... additional args (to match general signature).
 #' @export
 print.vtreatment <- function(x,...) { 
@@ -187,12 +187,12 @@ print.vtreatment <- function(x,...) {
 
 
 # return if a variable is NA
-.isNA <- function(col,args) {
+.isBAD <- function(col,args) {
   treated <- ifelse(.is.bad(col),1.0,0.0)
   treated
 }
 
-.mkIsNA <- function(origVarName,xcol,ynumeric,weights) {
+.mkIsBAD <- function(origVarName,xcol,ynumeric,weights) {
   badIDX <- .is.bad(xcol)
   nna <- sum(badIDX)
   if((nna<=0)||(nna>=length(xcol))) {
@@ -202,7 +202,7 @@ print.vtreatment <- function(x,...) {
     return(c())
   }
   treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'isBAD',sep='_')),
-                    f=.isNA,
+                    f=.isBAD,
                     args=list(),
                     treatmentName='is.bad')
   class(treatment) <- 'vtreatment'
@@ -267,7 +267,7 @@ print.vtreatment <- function(x,...) {
 
 
 # apply a numeric impact model
-# replace level with .wmean(x|categor) - .wmean(x)
+# replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args) {
   origna <- is.na(col)
   col <- paste('x',as.character(col)) # R can't use empty string as a key
@@ -276,7 +276,7 @@ print.vtreatment <- function(x,...) {
   keys <- col
   keys[novel] <- names(args$scores)[[1]]  # just to prevent bad lookups
   pred <- as.numeric(args$scores[keys]) 
-  pred[novel] <- args$novelvalue  # mean delta impact avergaed over all possibilities, should be zero in scaled mode, mean dist in unscaled
+  pred[novel] <- args$novelvalue  # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
   pred
 }
 
@@ -315,7 +315,7 @@ print.vtreatment <- function(x,...) {
 # all vectors same length
 #'
 #' Return a vector of length(y) where the i-th entry is the weighted mean 
-#' of all but the i-th y.  Usefull for normalizing PRESS style statistics.
+#' of all but the i-th y.  Useful for normalizing PRESS style statistics.
 #' @param y values to average (should not have NAs).
 #' @param weights data weighing (should not have NAs, be non-negative and not all zero).
 #' @export
@@ -330,7 +330,7 @@ hold1OutMeans <- function(y,weights) {
 
 
 # y: numeric vector no null/NAs
-# w: numeric vector same length as y, no negative/null/NAs at least 2 position non-zer
+# w: numeric vector same length as y, no negative/null/NAs at least 2 position non-zero
 # normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 .PRESSnormalization <- function(normalizationStrat,y,weights) {
    res <- switch(normalizationStrat,
@@ -404,7 +404,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 }
 
 #' Compute the PRESS statistic a single categorical model.   Tries to prevent some of the test/train leakage in scoring
-#' (so apply this directly to a categorical variable, and don't score an impact coded varaible).
+#' (so apply this directly to a categorical variable, and don't score an impact coded variable).
 #' @param vcolin character 
 #' @param y numeric vectors (no NAs/NULLs)
 #' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
@@ -499,7 +499,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
         }
-        ti <- .mkIsNA(v,vcol,zoY,weights)
+        ti <- .mkIsBAD(v,vcol,zoY,weights)
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
         }
@@ -561,7 +561,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' except for dates (which are converted to numeric).
 #' 
 #' @param dframe Data frame to learn treatments from (training data).
-#' @param varlist Names of columns to treat (effetive variables).
+#' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable.
 #' @param outcometarget Value/level of outcome to be considered "success"
 #' @param weights optional training weights for each row
@@ -572,10 +572,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
-#' @note %% ~~further notes~~
-#' @author %% ~~who you are~~
-#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
-#' @references %% ~put references to the literature/web site here ~
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}}
 #' @examples
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
@@ -611,7 +608,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' except for dates (which are converted to numeric).
 #' 
 #' @param dframe Data frame to learn treatments from (training data).
-#' @param varlist Names of columns to treat (effetive variables).
+#' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable.
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
@@ -621,10 +618,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
-#' @note %% ~~further notes~~
-#' @author %% ~~who you are~~
-#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
-#' @references %% ~put references to the literature/web site here ~
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
@@ -674,14 +668,11 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
 #' @param dframe Data frame to be treated
-#' @param pruneLevel optional supress variables with varScore below this threshold.
+#' @param pruneLevel optional suppress variables with varScore below this threshold.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param logitTransform if TRUE and scale is also TRUE, then logit transform probabilities.
 #' @return treated data frame (all columns numeric, without NA,NaN)
-#' @note %% ~~further notes~~
-#' @author %% ~~who you are~~
-#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
-#' @references %% ~put references to the literature/web site here ~
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),

@@ -17,8 +17,8 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.2.08\cr
-Date: \tab 2015-01-20\cr
+Version: \tab 0.2.09.0000\cr
+Date: \tab 2015-01-21\cr
 License: \tab GNU General Public License version 3\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
@@ -43,7 +43,7 @@ or \code{\link{designTreatmentsN}} (for models predicting numeric outcomes).
 Then apply a list of treatments to a data frame to get a treated data frame using
 \code{\link{prepare}}.  All the code is assuming we are working only with rows
 where the outcome or y-value is not NA, finite and not nan.  Categoric examples are
-in "probability space" (computing expections of a 0/1 outcome).  For modeling some work you may
+in "probability space" (computing expectations of a 0/1 outcome).  For modeling some work you may
 want to first transform columns into logistic space with the by setting the \code{logitTransform=TRUE} 
 option in \code{\link{prepare}}.
 }
@@ -61,7 +61,7 @@ sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
-# logit categoircal example
+# logit categorical example
 dTrainLTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
 dTestLTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
 

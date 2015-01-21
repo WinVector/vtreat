@@ -12,7 +12,7 @@ prepare(treatmentplan, dframe, pruneLevel = 0.99, scale = FALSE,
 
 \item{dframe}{Data frame to be treated}
 
-\item{pruneLevel}{optional supress variables with varScore below this threshold.}
+\item{pruneLevel}{optional suppress variables with varScore below this threshold.}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 
@@ -27,9 +27,6 @@ resulting frame will have new effective variables that are numeric
 and free of NaN/NA.  If the outcome column is present it will be copied over.
 The intent is that these frames are compatible with more machine learning
 techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
-}
-\note{
-%% ~~further notes~~
 }
 \examples{
 dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
@@ -46,13 +43,7 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
 dTrainCTreated <- prepare(treatmentsC,dTrainC)
 dTestCTreated <- prepare(treatmentsC,dTestC)
 }
-\author{
-%% ~~who you are~~
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 }
 
