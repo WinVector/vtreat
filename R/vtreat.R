@@ -50,6 +50,7 @@
 #'
 #' Original variable name.
 #' @param x vtreatment item.
+#' @export
 #' 
 vorig <- function(x) { x$origvar }
 
@@ -57,14 +58,14 @@ vorig <- function(x) { x$origvar }
 #'
 #' New treated variable names.
 #' @param x vtreatment item
-#' 
+#' @export
 vnames <- function(x) { x$newvars }
 
 #'
 #' Display treatment plan.
 #' @param vtreat treatment plan
 #' @param ... additional args (to match general signature).
-#' 
+#' @export
 show.vtreatment <- function(vtreat,...) { paste(
   'vtreat \'',vtreat$treatmentName,
   '\'(\'',vtreat$origvar,'\'->\'',
@@ -75,7 +76,7 @@ show.vtreatment <- function(vtreat,...) { paste(
 #' Print treatment plan.
 #' @param x treatmet plan
 #' @param ... additional args (to match general signature).
-#' 
+#' @export
 print.vtreatment <- function(x,...) { 
   print(show.vtreatment(x),...) 
 }
@@ -309,6 +310,7 @@ print.vtreatment <- function(x,...) {
 #' of all but the i-th y.  Usefull for normalizing PRESS style statistics.
 #' @param y values to average (should not have NAs).
 #' @param weights data weighing (should not have NAs, be non-negative and not all zero).
+#' @export
 hold1OutMeans <- function(y,weights) {
   # get per-datum hold-1 out grand means
   sumY <- sum(y*weights)
@@ -342,6 +344,7 @@ hold1OutMeans <- function(y,weights) {
 #' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
+#' @export
 pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
@@ -400,6 +403,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 #' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @param smoothingTerm scalar >= 0
 #' @return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
+#' @export
 pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='total',smoothingTerm=0.5) {
   n <- length(vcolin)
   if(n<=1) {
@@ -570,6 +574,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' dTrainCTreated <- prepare(treatmentsC,dTrainC)
 #' dTestCTreated <- prepare(treatmentsC,dTestC)
 #' 
+#' @export
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
@@ -614,6 +619,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' dTrainNTreated <- prepare(treatmentsN,dTrainN)
 #' dTestNTreated <- prepare(treatmentsN,dTestN)
 #' 
+#' @export
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
@@ -675,7 +681,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' dTestCTreated <- prepare(treatmentsC,dTestC)
 #' 
 #' 
-#' 
+#' @export
 prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE) {
   treated <- .vtreatList(treatmentplan$treatments,dframe,scale)
   usableVars <- treatmentplan$vars
