@@ -66,10 +66,10 @@ vnames <- function(x) { x$newvars }
 #' @param vtreat treatment plan
 #' @param ... additional args (to match general signature).
 #' @export
-show.vtreatment <- function(vtreat,...) { paste(
-  'vtreat \'',vtreat$treatmentName,
-  '\'(\'',vtreat$origvar,'\'->\'',
-  paste(vtreat$newvars,collapse='\',\''),
+format.vtreatment <- function(x,...) { paste(
+  'vtreat \'',x$treatmentName,
+  '\'(\'',x$origvar,'\'->\'',
+  paste(x$newvars,collapse='\',\''),
   '\')',sep='') }
 
 #'
@@ -78,7 +78,7 @@ show.vtreatment <- function(vtreat,...) { paste(
 #' @param ... additional args (to match general signature).
 #' @export
 print.vtreatment <- function(x,...) { 
-  print(show.vtreatment(x),...) 
+  print(format.vtreatment(x),...) 
 }
 
 
