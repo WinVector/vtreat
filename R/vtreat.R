@@ -462,15 +462,25 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
                               collarProb,
                               scoreVars,maxScoreSize,
                               verbose) {
+  if(!is.data.frame(dframe)) {
+    stop("dframe must be a data frame")
+  }
   if(collarProb>=0.5) {
      stop("collarProb must be < 0.5")
   }
   varlist <- setdiff(varlist,outcomename)
   if(is.null(weights)) {
-    weights <- rep(1.0,dim(dframe)[[1]])
+    weights <- rep(1.0,nrow(dframe))
   } else {
+    if(!is.numeric(weights)) {
+      stop("weights need to be numeric")
+    }
+    if(length(weights)!=nrow(dframe)) {
+      stop("must have same number of weights as data frame rows")
+    }
     goodPosns <- ifelse(.is.bad(weights),FALSE,weights>0.0)
-    dframe <- dframe[goodPosns,]
+    dframe <- dframe[goodPosns,,drop=FALSE]
+    zoY <- zoY[goodPosns]
     weights <- weights[goodPosns]
   }
   if(sum(weights)<=0) {
@@ -528,11 +538,18 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
          print(paste("treat frame",date()))
        }
        treated <- .vtreatList(treatments,dframe,TRUE)
+       treatedZoY <- zoY
+       treatedWeights <- weights
      } else {
        if(verbose) {
          print(paste("treat frame sample",date()))
        }
-       treated <- .vtreatList(treatments,dframe[sample.int(nrow(dframe),size=maxScoreSize),,drop=FALSE],TRUE)
+       # Note: we are sampling according to indices (not weights), so this can have a bit higher variance 
+       # than a weight-driven sample.
+       rowSample <- sample.int(nrow(dframe),size=maxScoreSize)
+       treated <- .vtreatList(treatments,dframe[rowSample,,drop=FALSE],TRUE)
+       treatedZoY <- zoY[rowSample]
+       treatedWeights <- weights[rowSample]
      }
      if(verbose) {
         print(paste("score frame",date()))
@@ -542,7 +559,8 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
      varScores <- rep(1.0,length(varMoves))
      names(varScores) <- colnames(treated)
      varScores[names(cvarScores)] <- as.numeric(cvarScores)
-     additionalScores <- .scoreColumnsN(treated,zoY,weights,union(names(cvarScores),names(varMoves)[!varMoves]),'total')
+     additionalScores <- .scoreColumnsN(treated,treatedZoY,treatedWeights,
+                                        union(names(cvarScores),names(varMoves)[!varMoves]),'total')
      varScores[names(additionalScores)] <- additionalScores
      treatedVarNames <- names(varScores)
      PRESSRsquared <- 1-varScores
@@ -706,6 +724,12 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' @export
 prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE) {
+  if(class(treatmentplan)!='treatmentplan') {
+    stop("treatmentplan must be of class treatmentplan")
+  }
+  if(!is.data.frame(dframe)) {
+    stop("dframe must be a data frame")
+  }
   treated <- .vtreatList(treatmentplan$treatments,dframe,scale)
   usableVars <- treatmentplan$vars
   if(!is.null(treatmentplan$varMoves)) {
