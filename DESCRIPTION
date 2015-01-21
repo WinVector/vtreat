@@ -1,7 +1,7 @@
 Package: vtreat
 Type: Package
 Title: vtreat: A Package for Simple Variable Treatment
-Version: 0.2.09.0001
+Version: 0.2.09.0002
 Date: 2015-01-21
 Author: John Mount, Nina Zumel
 Maintainer: <contact@win-vector.com>

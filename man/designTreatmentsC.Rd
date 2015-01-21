@@ -30,7 +30,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
 
 \item{scoreVars}{optional if TRUE attempt to estimate individual variable utility.}
 
-\item{maxScoreSize}{optimal maximum size for treated variable scoring frame}
+\item{maxScoreSize}{optional maximum size for treated variable scoring frame}
 
 \item{verbose}{if TRUE print progress.}
 }

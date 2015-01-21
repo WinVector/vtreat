@@ -578,7 +578,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
-#' @param maxScoreSize optimal maximum size for treated variable scoring frame
+#' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}}
@@ -627,7 +627,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
-#' @param maxScoreSize optimal maximum size for treated variable scoring frame
+#' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}}
