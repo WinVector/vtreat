@@ -29,6 +29,7 @@ resulting frame will have new effective variables that are numeric
 and free of NaN/NA.  If the outcome column is present it will be copied over.
 The intent is that these frames are compatible with more machine learning
 techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
+Note: each column is processed independently of all others.
 }
 \examples{
 dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),

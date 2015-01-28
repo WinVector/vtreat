@@ -15,25 +15,33 @@
   dout
 }
 
-
-.getNewVarNames <- function(treatments) {
+#' Return a list of new treated variable names (coresponding to optional original variable names)
+#' @param treatemnts the treatments slot from a treatmentplan object
+#' @param origVarNames optional restrict to only derived variable originating from these original variables (null is no restriction)
+#' @return list of new treated variable names
+#' @export
+getNewVarNames <- function(treatments,origVarNames=c()) {
   resCount <- 0
   for(ti in treatments) {
-     resCount <- resCount + length(ti$newvars)
+     if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
+        resCount <- resCount + length(ti$newvars)
+     }
   }
   names <- vector('list',resCount)
   j <- 1
   for(ti in treatments) {
-     for(ni in ti$newvars) {
-        names[[j]] <- ni
-        j <- j + 1
+     if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
+        for(ni in ti$newvars) {
+          names[[j]] <- ni
+          j <- j + 1
+        }
      }
   }
   names
 }
 
 .vtreatList <- function(treatments,dframe,scale,doCollar) {
-  colNames <- .getNewVarNames(treatments)
+  colNames <- getNewVarNames(treatments)
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
   j <- 1
@@ -530,7 +538,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
       }
     }
   }
-  treatedVarNames <- .getNewVarNames(treatments)
+  treatedVarNames <- getNewVarNames(treatments)
   varMoves <- c()
   varScores <- c()
   PRESSRsquared <- c()
@@ -637,6 +645,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' Function to design variable treatments for binary prediction of a
 #' numeric outcome.  Data frame is assumed to have only atomic columns
 #' except for dates (which are converted to numeric).
+#' Note: each column is processed independently of all others.
 #' 
 #' @param dframe Data frame to learn treatments from (training data).
 #' @param varlist Names of columns to treat (effective variables).
@@ -699,6 +708,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' and free of NaN/NA.  If the outcome column is present it will be copied over.
 #' The intent is that these frames are compatible with more machine learning
 #' techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
+#' Note: each column is processed independently of all others.
 #' 
 #' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
 #' @param dframe Data frame to be treated
