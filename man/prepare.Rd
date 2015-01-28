@@ -5,7 +5,7 @@
 \title{prepare}
 \usage{
 prepare(treatmentplan, dframe, pruneLevel = 0.99, scale = FALSE,
-  logitTransform = FALSE)
+  logitTransform = FALSE, doCollar = TRUE)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -17,6 +17,8 @@ prepare(treatmentplan, dframe, pruneLevel = 0.99, scale = FALSE,
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 
 \item{logitTransform}{if TRUE and scale is also TRUE, then logit transform probabilities.}
+
+\item{doCollar}{if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 }
 \value{
 treated data frame (all columns numeric, without NA,NaN)

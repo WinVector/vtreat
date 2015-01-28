@@ -5,9 +5,8 @@
 \title{designTreatmentsC}
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
-  minFraction = 0.02, smFactor = 0, maxMissing = 0.04,
-  collarProb = 0.01, scoreVars = TRUE, maxScoreSize = 1000000L,
-  verbose = TRUE)
+  minFraction = 0.02, smFactor = 0, maxMissing = 0.04, collarProb = 0,
+  scoreVars = TRUE, maxScoreSize = 1000000L, verbose = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}

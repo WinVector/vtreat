@@ -1,11 +1,11 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
-.vtreatA <- function(vtreat,xcol,scale) {
+.vtreatA <- function(vtreat,xcol,scale,doCollar) {
   if(length(class(xcol))!=1) { # defend against POSIXt types
     xcol <- as.numeric(xcol)
   }
-  dout <- as.data.frame(vtreat$f(xcol,vtreat$args),stringsAsFactors=FALSE)
+  dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),stringsAsFactors=FALSE)
   colnames(dout) <- vtreat$newvars
   if(scale) {
     for(j in seq_along(vtreat$scales$a)) {
@@ -32,13 +32,13 @@
   names
 }
 
-.vtreatList <- function(treatments,dframe,scale) {
+.vtreatList <- function(treatments,dframe,scale,doCollar) {
   colNames <- .getNewVarNames(treatments)
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
   j <- 1
   for(ti in treatments) {
-     for(ci in .vtreatA(ti,dframe[[ti$origvar]],scale)) {
+     for(ci in .vtreatA(ti,dframe[[ti$origvar]],scale,doCollar)) {
         cols[[j]] <- ci
         j <- j + 1
      }
@@ -148,11 +148,13 @@ print.vtreatment <- function(x,...) {
 
 
 # pass a variable through (removing NAs) (should only by used for numerics)
-.passThrough <- function(col,args) {
+.passThrough <- function(col,args,doCollar) {
   treated <- as.numeric(col)
   treated[.is.bad(treated)] <- args$nadist
-  treated[treated<args$cuts[[1]]] <- args$cuts[[1]]
-  treated[treated>args$cuts[[2]]] <- args$cuts[[2]]
+  if(doCollar) {
+     treated[treated<args$cuts[[1]]] <- args$cuts[[1]]
+     treated[treated>args$cuts[[2]]] <- args$cuts[[2]]
+  }
   treated
 }
 
@@ -187,7 +189,7 @@ print.vtreatment <- function(x,...) {
 
 
 # return if a variable is NA
-.isBAD <- function(col,args) {
+.isBAD <- function(col,args,doCollar) {
   treated <- ifelse(.is.bad(col),1.0,0.0)
   treated
 }
@@ -212,7 +214,7 @@ print.vtreatment <- function(x,...) {
 
 
 # return categorical indicators
-.catInd <- function(col,args) {
+.catInd <- function(col,args,doCollar) {
   origna <- is.na(col)
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
@@ -268,7 +270,7 @@ print.vtreatment <- function(x,...) {
 
 # apply a numeric impact model
 # replace level with .wmean(x|category) - .wmean(x)
-.catNum <- function(col,args) {
+.catNum <- function(col,args,doCollar) {
   origna <- is.na(col)
   col <- paste('x',as.character(col)) # R can't use empty string as a key
   col[origna] <- 'NA' 
@@ -537,7 +539,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
        if(verbose) {
          print(paste("treat frame",date()))
        }
-       treated <- .vtreatList(treatments,dframe,TRUE)
+       treated <- .vtreatList(treatments,dframe,TRUE,TRUE)
        treatedZoY <- zoY
        treatedWeights <- weights
      } else {
@@ -547,7 +549,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
        # Note: we are sampling according to indices (not weights), so this can have a bit higher variance 
        # than a weight-driven sample.
        rowSample <- sample.int(nrow(dframe),size=maxScoreSize)
-       treated <- .vtreatList(treatments,dframe[rowSample,,drop=FALSE],TRUE)
+       treated <- .vtreatList(treatments,dframe[rowSample,,drop=FALSE],TRUE,TRUE)
        treatedZoY <- zoY[rowSample]
        treatedWeights <- weights[rowSample]
      }
@@ -615,7 +617,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
-                              collarProb=0.01,
+                              collarProb=0.00,
                               scoreVars=TRUE,maxScoreSize=1000000L,
                               verbose=TRUE) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
@@ -663,7 +665,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
-                              collarProb=0.01,
+                              collarProb=0.00,
                               scoreVars=TRUE,maxScoreSize=1000000L,
                               verbose=TRUE) {
    ycol <- dframe[[outcomename]]
@@ -703,6 +705,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param pruneLevel optional suppress variables with varScore below this threshold.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param logitTransform if TRUE and scale is also TRUE, then logit transform probabilities.
+#' @param doCollar if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @return treated data frame (all columns numeric, without NA,NaN)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 #' @examples
@@ -723,14 +726,14 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' 
 #' @export
-prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE) {
+prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE,doCollar=TRUE) {
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
-  treated <- .vtreatList(treatmentplan$treatments,dframe,scale)
+  treated <- .vtreatList(treatmentplan$treatments,dframe,scale,doCollar)
   usableVars <- treatmentplan$vars
   if(!is.null(treatmentplan$varMoves)) {
     usableVars <- intersect(usableVars,names(treatmentplan$varMoves)[treatmentplan$varMoves])
