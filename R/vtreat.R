@@ -16,9 +16,19 @@
 }
 
 #' Return a list of new treated variable names (coresponding to optional original variable names)
-#' @param treatemnts the treatments slot from a treatmentplan object
+#' @param treatments the treatments slot from a treatmentplan object
 #' @param origVarNames optional restrict to only derived variable originating from these original variables (null is no restriction)
 #' @return list of new treated variable names
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
+#' @examples
+#' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
+#'     z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
+#' dTestN <- data.frame(x=c('a','b','c',NA),
+#'     z=c(10,20,30,NA))
+#' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
+#' print(as.character(getNewVarNames(treatmentsN$treatments)))
+#' print(as.character(getNewVarNames(treatmentsN$treatments,c('x'))))
+#' 
 #' @export
 getNewVarNames <- function(treatments,origVarNames=c()) {
   resCount <- 0
@@ -56,16 +66,18 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 
 
 #'
-#' Original variable name.
+#' Original variable name from a treatmentplan$treatment item.
 #' @param x vtreatment item.
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 #' @export
 #' 
 vorig <- function(x) { x$origvar }
 
 
 #'
-#' New treated variable names.
+#' New treated variable names from a treatmentplan$treatment item.
 #' @param x vtreatment item
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 #' @export
 vnames <- function(x) { x$newvars }
 
@@ -81,9 +93,10 @@ format.vtreatment <- function(x,...) { paste(
   '\')',sep='') }
 
 #'
-#' Print treatment plan.
-#' @param x treatment plan
+#' Print treatmentplan.
+#' @param x treatmentplan
 #' @param ... additional args (to match general signature).
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @export
 print.vtreatment <- function(x,...) { 
   print(format.vtreatment(x),...) 
@@ -324,10 +337,11 @@ print.vtreatment <- function(x,...) {
 # weights numeric, non-negative, no NAs/NULLs at least two positive positions
 # all vectors same length
 #'
-#' Return a vector of length(y) where the i-th entry is the weighted mean 
 #' of all but the i-th y.  Useful for normalizing PRESS style statistics.
 #' @param y values to average (should not have NAs).
 #' @param weights data weighing (should not have NAs, be non-negative and not all zero).
+#' @return a vector of length(y) where the i-th entry is the weighted mean 
+#' @seealso \code{\link{pressStatOfBestLinearFit}} \code{\link{pressStatOfCategoricalVariable}}
 #' @export
 hold1OutMeans <- function(y,weights) {
   # get per-datum hold-1 out grand means
@@ -362,6 +376,7 @@ hold1OutMeans <- function(y,weights) {
 #' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
+#' @seealso \code{\link{hold1OutMeans}} \code{\link{pressStatOfCategoricalVariable}}
 #' @export
 pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- length(x)
@@ -421,6 +436,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 #' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @param smoothingTerm scalar >= 0
 #' @return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
+#' @seealso \code{\link{hold1OutMeans}} \code{\link{pressStatOfBestLinearFit}}
 #' @export
 pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='total',smoothingTerm=0.5) {
   n <- length(vcolin)
@@ -609,7 +625,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 #' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}}
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 #' @examples
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
@@ -659,7 +675,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}}
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{getNewVarNames}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),

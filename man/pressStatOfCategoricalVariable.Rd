@@ -26,4 +26,7 @@ PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
 Compute the PRESS statistic a single categorical model.   Tries to prevent some of the test/train leakage in scoring
 (so apply this directly to a categorical variable, and don't score an impact coded variable).
 }
+\seealso{
+\code{\link{hold1OutMeans}} \code{\link{pressStatOfBestLinearFit}}
+}
 

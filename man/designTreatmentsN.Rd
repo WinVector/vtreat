@@ -50,6 +50,6 @@ dTrainNTreated <- prepare(treatmentsN,dTrainN)
 dTestNTreated <- prepare(treatmentsN,dTestN)
 }
 \seealso{
-\code{\link{prepare}} \code{\link{designTreatmentsC}}
+\code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{getNewVarNames}}
 }
 

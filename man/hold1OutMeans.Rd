@@ -2,8 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{hold1OutMeans}
 \alias{hold1OutMeans}
-\title{Return a vector of length(y) where the i-th entry is the weighted mean
-of all but the i-th y.  Useful for normalizing PRESS style statistics.}
+\title{of all but the i-th y.  Useful for normalizing PRESS style statistics.}
 \usage{
 hold1OutMeans(y, weights)
 }
@@ -12,8 +11,13 @@ hold1OutMeans(y, weights)
 
 \item{weights}{data weighing (should not have NAs, be non-negative and not all zero).}
 }
+\value{
+a vector of length(y) where the i-th entry is the weighted mean
+}
 \description{
-Return a vector of length(y) where the i-th entry is the weighted mean
 of all but the i-th y.  Useful for normalizing PRESS style statistics.
+}
+\seealso{
+\code{\link{pressStatOfBestLinearFit}} \code{\link{pressStatOfCategoricalVariable}}
 }
 

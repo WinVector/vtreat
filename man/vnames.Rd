@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{vnames}
 \alias{vnames}
-\title{New treated variable names.}
+\title{New treated variable names from a treatmentplan$treatment item.}
 \usage{
 vnames(x)
 }
@@ -10,6 +10,9 @@ vnames(x)
 \item{x}{vtreatment item}
 }
 \description{
-New treated variable names.
+New treated variable names from a treatmentplan$treatment item.
+}
+\seealso{
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 }
 

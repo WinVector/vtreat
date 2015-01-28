@@ -2,16 +2,19 @@
 % Please edit documentation in R/vtreat.R
 \name{print.vtreatment}
 \alias{print.vtreatment}
-\title{Print treatment plan.}
+\title{Print treatmentplan.}
 \usage{
 \method{print}{vtreatment}(x, ...)
 }
 \arguments{
-\item{x}{treatment plan}
+\item{x}{treatmentplan}
 
 \item{...}{additional args (to match general signature).}
 }
 \description{
-Print treatment plan.
+Print treatmentplan.
+}
+\seealso{
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 }
 

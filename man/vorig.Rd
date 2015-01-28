@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{vorig}
 \alias{vorig}
-\title{Original variable name.}
+\title{Original variable name from a treatmentplan$treatment item.}
 \usage{
 vorig(x)
 }
@@ -10,6 +10,9 @@ vorig(x)
 \item{x}{vtreatment item.}
 }
 \description{
-Original variable name.
+Original variable name from a treatmentplan$treatment item.
+}
+\seealso{
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 }
 
