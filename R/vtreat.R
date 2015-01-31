@@ -584,8 +584,12 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
      treatedZoY <- zoY[rowSample]
      treatedWeights <- weights[rowSample]
      for(ti in treatments) {
+        if(verbose) {
+         print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
+        }
         subF <- .vtreatA(ti,dframe[rowSample,ti$origvar,drop=TRUE],TRUE,TRUE)
-        subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,names(cvarScores),'total')
+        subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,
+                                    names(cvarScores),'total')
         for(nv in colnames(subF)) {
            varMoves[[nv]] <- .has.range.cn(subF[[nv]])
            if(varMoves[[nv]]) {
