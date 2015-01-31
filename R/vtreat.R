@@ -53,6 +53,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   dout
 }
 
+# colNames a subset of treated variable names
 .vtreatList <- function(treatments,dframe,colNames,scale,doCollar) {
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
@@ -552,7 +553,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
           if (scoreVars) {
-             cvarScores[ti$newvars[[1]]] <- pressStatOfCategoricalVariable(vcol,zoY,weights) # assumes only one newvar
+             cvarScores[[ti$newvars[[1]]]] <- pressStatOfCategoricalVariable(vcol,zoY,weights) # assumes only one newvar
           }
         }
       }
@@ -563,36 +564,39 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
   varScores <- c()
   PRESSRsquared <- c()
   if (scoreVars) {
+     varMoves <- logical(length(treatedVarNames))
+     names(varMoves) <- treatedVarNames
+     varScores <- rep(1.0,length(treatedVarNames))
+     names(varScores) <- treatedVarNames
      if(nrow(dframe)<=maxScoreSize) {
        if(verbose) {
-         print(paste("treat frame",date()))
+         print(paste("score treated frame",date()))
        }
-       treated <- .vtreatList(treatments,dframe,treatedVarNames,TRUE,TRUE)
-       treatedZoY <- zoY
-       treatedWeights <- weights
+       rowSample <- 1:nrow(dframe)
      } else {
        if(verbose) {
-         print(paste("treat frame sample",date()))
+         print(paste("score treated frame sample",date()))
        }
        # Note: we are sampling according to indices (not weights), so this can have a bit higher variance 
        # than a weight-driven sample.
        rowSample <- sample.int(nrow(dframe),size=maxScoreSize)
-       treated <- .vtreatList(treatments,dframe[rowSample,,drop=FALSE],treatedVarNames,TRUE,TRUE)
-       treatedZoY <- zoY[rowSample]
-       treatedWeights <- weights[rowSample]
      }
-     if(verbose) {
-        print(paste("score frame",date()))
+     treatedZoY <- zoY[rowSample]
+     treatedWeights <- weights[rowSample]
+     for(ti in treatments) {
+        subF <- .vtreatA(ti,dframe[rowSample,ti$origvar,drop=TRUE],TRUE,TRUE)
+        subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,names(cvarScores),'total')
+        for(nv in colnames(subF)) {
+           varMoves[[nv]] <- .has.range.cn(subF[[nv]])
+           if(varMoves[[nv]]) {
+              if(nv %in% names(cvarScores)) {
+                 varScores[[nv]] <- cvarScores[[nv]]
+              } else {
+                 varScores[[nv]] <- subScores[[nv]]
+              }
+           }
+        }
      }
-     varMoves <- vapply(colnames(treated),function(c) { .has.range.cn(treated[[c]]) },logical(1))
-     names(varMoves) <- colnames(treated)
-     varScores <- rep(1.0,length(varMoves))
-     names(varScores) <- colnames(treated)
-     varScores[names(cvarScores)] <- as.numeric(cvarScores)
-     additionalScores <- .scoreColumnsN(treated,treatedZoY,treatedWeights,
-                                        union(names(cvarScores),names(varMoves)[!varMoves]),'total')
-     varScores[names(additionalScores)] <- additionalScores
-     treatedVarNames <- names(varScores)
      PRESSRsquared <- 1-varScores
   }
   plan <- list(treatments=treatments,
