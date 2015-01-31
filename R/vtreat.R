@@ -1,19 +1,6 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
-.vtreatA <- function(vtreat,xcol,scale,doCollar) {
-  if(length(class(xcol))!=1) { # defend against POSIXt types
-    xcol <- as.numeric(xcol)
-  }
-  dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),stringsAsFactors=FALSE)
-  colnames(dout) <- vtreat$newvars
-  if(scale) {
-    for(j in seq_along(vtreat$scales$a)) {
-      dout[[j]] <- dout[[j]]*vtreat$scales$a[[j]] + vtreat$scales$b[[j]]
-    }
-  }
-  dout
-}
 
 #' Return a list of new treated variable names (coresponding to optional original variable names)
 #' @param treatments the treatments slot from a treatmentplan object
@@ -50,15 +37,32 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   names
 }
 
-.vtreatList <- function(treatments,dframe,scale,doCollar) {
-  colNames <- getNewVarNames(treatments)
+
+
+.vtreatA <- function(vtreat,xcol,scale,doCollar) {
+  if(length(class(xcol))!=1) { # defend against POSIXt types
+    xcol <- as.numeric(xcol)
+  }
+  dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),stringsAsFactors=FALSE)
+  colnames(dout) <- vtreat$newvars
+  if(scale) {
+    for(j in seq_along(vtreat$scales$a)) {
+      dout[[j]] <- dout[[j]]*vtreat$scales$a[[j]] + vtreat$scales$b[[j]]
+    }
+  }
+  dout
+}
+
+.vtreatList <- function(treatments,dframe,colNames,scale,doCollar) {
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
-  j <- 1
   for(ti in treatments) {
-     for(ci in .vtreatA(ti,dframe[[ti$origvar]],scale,doCollar)) {
-        cols[[j]] <- ci
-        j <- j + 1
+     wants <- intersect(colNames,ti$newvars)
+     if(length(wants)>0) {
+        gi <- .vtreatA(ti,dframe[[ti$origvar]],scale,doCollar)
+        for(vi in wants) {
+           cols[[vi]] <- gi[[vi]]
+        }
      }
   }
   as.data.frame(cols,stringsAsFactors=FALSE)
@@ -563,7 +567,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
        if(verbose) {
          print(paste("treat frame",date()))
        }
-       treated <- .vtreatList(treatments,dframe,TRUE,TRUE)
+       treated <- .vtreatList(treatments,dframe,treatedVarNames,TRUE,TRUE)
        treatedZoY <- zoY
        treatedWeights <- weights
      } else {
@@ -573,7 +577,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
        # Note: we are sampling according to indices (not weights), so this can have a bit higher variance 
        # than a weight-driven sample.
        rowSample <- sample.int(nrow(dframe),size=maxScoreSize)
-       treated <- .vtreatList(treatments,dframe[rowSample,,drop=FALSE],TRUE,TRUE)
+       treated <- .vtreatList(treatments,dframe[rowSample,,drop=FALSE],treatedVarNames,TRUE,TRUE)
        treatedZoY <- zoY[rowSample]
        treatedWeights <- weights[rowSample]
      }
@@ -730,8 +734,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param dframe Data frame to be treated
 #' @param pruneLevel optional suppress variables with varScore below this threshold.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
-#' @param logitTransform if TRUE and scale is also TRUE, then logit transform probabilities.
-#' @param doCollar if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
+#' @param logitTransform optional if TRUE and scale is also TRUE, then logit transform probabilities.
+#' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
+#' @param varRestriction optional list of treated variable names to restrict to
 #' @return treated data frame (all columns numeric, without NA,NaN)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 #' @examples
@@ -752,25 +757,26 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' 
 #' @export
-prepare <- function(treatmentplan,dframe,pruneLevel=0.99,scale=FALSE,logitTransform=FALSE,doCollar=TRUE) {
+prepare <- function(treatmentplan,dframe,
+  pruneLevel=0.99,scale=FALSE,logitTransform=FALSE,doCollar=TRUE,
+  varRestriction=c()) {
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
-  treated <- .vtreatList(treatmentplan$treatments,dframe,scale,doCollar)
   usableVars <- treatmentplan$vars
   if(!is.null(treatmentplan$varMoves)) {
     usableVars <- intersect(usableVars,names(treatmentplan$varMoves)[treatmentplan$varMoves])
   }
-  if(!is.null(treatmentplan$varScores)) {
-    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores>0])
-    if(!is.null(pruneLevel)) {
-      usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores<=pruneLevel])
-    }
+  if((!is.null(treatmentplan$varScores)) &&(!is.null(pruneLevel))) {
+    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores<=pruneLevel])
   }
-  treated <- treated[,usableVars,drop=FALSE]
+  if(!is.null(varRestriction)) {
+     usableVars <- intersect(usableVars,varRestriction)
+  }
+  treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar)
   if(logitTransform&&scale) {
     epsilon <- 1.0/treatmentplan$ndat
     for(c in colnames(treated)) {
