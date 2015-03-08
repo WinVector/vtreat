@@ -17,8 +17,8 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.2.10.0008\cr
-Date: \tab 2015-03-07\cr
+Version: \tab 0.2.11.0009\cr
+Date: \tab 2015-03-08\cr
 License: \tab GNU General Public License version 3\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
@@ -61,9 +61,6 @@ sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
-# logit categorical example
-dTrainLTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
-dTestLTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
 
 # numeric example
 dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),

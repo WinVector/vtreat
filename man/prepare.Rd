@@ -5,7 +5,7 @@
 \title{prepare}
 \usage{
 prepare(treatmentplan, dframe, pruneLevel = 0.99, scale = FALSE,
-  logitTransform = FALSE, doCollar = TRUE, varRestriction = c())
+  doCollar = TRUE, varRestriction = c())
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -15,8 +15,6 @@ prepare(treatmentplan, dframe, pruneLevel = 0.99, scale = FALSE,
 \item{pruneLevel}{optional suppress variables with varScore below this threshold.}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
-
-\item{logitTransform}{optional if TRUE and scale is also TRUE, then logit transform probabilities.}
 
 \item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 

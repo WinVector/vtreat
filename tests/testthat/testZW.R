@@ -20,9 +20,6 @@ test_that("Test Zero Weights Don't Crash", {
   sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainCTreated)$coefficients[[2]]})
   dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
-  # logit categorical example
-  dTrainLTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
-  dTestLTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
   
   # numeric example
   dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),

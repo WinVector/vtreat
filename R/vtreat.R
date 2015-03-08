@@ -561,17 +561,19 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
         }
-        ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-        }
-        if(!is.null(zC)) {
-          ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
+        if(is.null(ti)||(length(unique(vcol))>2)) {
+          ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
           if(!is.null(ti)) {
             treatments[[length(treatments)+1]] <- ti
-          }          
+          }
+          if(!is.null(zC)) {
+            ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
+            if(!is.null(ti)) {
+              treatments[[length(treatments)+1]] <- ti
+            }          
+          }
         }
-       }
+      }
     }
   }
   treatedVarNames <- getNewVarNames(treatments)
@@ -729,15 +731,6 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 
 
 
-# safe logit transform
-.logit <- function(x,epsilon) {
-  x <- pmin(pmax(as.numeric(x),epsilon),1.0-epsilon)
-  x <- log(x/(1.0-x))
-  x[.is.bad(x)] <- 0.0
-  x
-}
-
-
 # apply treatments and restrict to useful variables
 # copies over y if present
 
@@ -755,7 +748,6 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param dframe Data frame to be treated
 #' @param pruneLevel optional suppress variables with varScore below this threshold.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
-#' @param logitTransform optional if TRUE and scale is also TRUE, then logit transform probabilities.
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @return treated data frame (all columns numeric, without NA,NaN)
@@ -779,7 +771,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' @export
 prepare <- function(treatmentplan,dframe,
-  pruneLevel=0.99,scale=FALSE,logitTransform=FALSE,doCollar=TRUE,
+  pruneLevel=0.99,scale=FALSE,doCollar=TRUE,
   varRestriction=c()) {
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
@@ -798,12 +790,6 @@ prepare <- function(treatmentplan,dframe,
      usableVars <- intersect(usableVars,varRestriction)
   }
   treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar)
-  if(logitTransform&&scale) {
-    epsilon <- 1.0/treatmentplan$ndat
-    for(c in colnames(treated)) {
-      treated[[c]] <- .logit(treated[[c]]+treatmentplan$meanY,epsilon)
-    }
-  }
   if(treatmentplan$outcomename %in% colnames(dframe)) {
     treated[[treatmentplan$outcomename]] <- dframe[[treatmentplan$outcomename]]
   }

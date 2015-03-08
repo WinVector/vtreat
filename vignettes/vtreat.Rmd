@@ -53,12 +53,6 @@ sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
 head(dTestCTreated)
 
-# logit categorical example
-dTrainLTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
-head(dTrainLTreated)
-
-dTestLTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE,logitTransform=TRUE)
-head(dTestLTreated)
 
 # numeric example
 dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
