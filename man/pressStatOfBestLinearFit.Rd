@@ -22,6 +22,6 @@ PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weight
 Compute the PRESS statistic of a 1-variable linear model
 }
 \seealso{
-\code{\link{hold1OutMeans}} \code{\link{pressStatOfCategoricalVariable}}
+\code{\link{hold1OutMeans}}
 }
 

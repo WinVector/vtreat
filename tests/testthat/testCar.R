@@ -16,7 +16,4 @@ test_that("Numeric Var Scores as expected", {
   
   uci.car.data$y <- ifelse(uci.car.data[,dYName]==dYTarget,1,0)
   uci.car.data$w <- 1
-  score <- pressStatOfCategoricalVariable(uci.car.data$safety,
-                                          uci.car.data$y,uci.car.data$w)
-  expect_true(score<1)
 })

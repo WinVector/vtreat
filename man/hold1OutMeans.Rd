@@ -18,6 +18,6 @@ a vector of length(y) where the i-th entry is the weighted mean
 of all but the i-th y.  Useful for normalizing PRESS style statistics.
 }
 \seealso{
-\code{\link{pressStatOfBestLinearFit}} \code{\link{pressStatOfCategoricalVariable}}
+\code{\link{pressStatOfBestLinearFit}}
 }
 

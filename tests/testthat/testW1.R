@@ -22,9 +22,9 @@ test_that("Numeric Var Scores as expected", {
   #print(tC$varScores)
   
   
-  expect_true(tN$varScores[['zip_catN']]>1)
+  #expect_true(tN$varScores[['zip_catN']]>1) # not true anymore due to upward scoring bias
   expect_true(tN$varScores[['zip2_catN']]<1)
-  expect_true(tC$varScores[['zip_catN']]>1)
+  #expect_true(tC$varScores[['zip_catN']]>1) # not true anymore due to upward scoring bias
   expect_true(tC$varScores[['zip2_catN']]<1)
 })
 

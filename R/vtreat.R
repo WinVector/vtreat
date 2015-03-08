@@ -332,6 +332,53 @@ print.vtreatment <- function(x,...) {
 
 
 
+# apply a classification impact model
+# replace level with .wmean(x|category) - .wmean(x)
+.catBayes <- function(col,args,doCollar) {
+  origna <- is.na(col)
+  col <- paste('x',as.character(col)) # R can't use empty string as a key
+  col[origna] <- 'NA' 
+  novel <- !(col %in% names(args$logLift))
+  keys <- col
+  keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
+  pred <- as.numeric(args$logLift[keys]) 
+  pred[novel] <- args$novelvalue  # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
+  pred
+}
+
+# build a classification impact model
+# see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
+.mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,weights) {
+  origna <- is.na(vcolin)
+  vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
+  vcol[origna] <- 'NA'
+  smFactor <- max(smFactor,1.0e-3)
+  nT <- sum(as.numeric(rescol==resTarget)*weights)
+  nF <- sum(as.numeric(rescol!=resTarget)*weights)
+  baseProb <- nT/(nT+nF)
+  nCgivenT <- tapply(as.numeric(rescol==resTarget)*weights,vcol,sum)
+  nCgivenF <- tapply(as.numeric(rescol!=resTarget)*weights,vcol,sum)
+  pCgivenT <- (nCgivenT+baseProb*smFactor)/(nT+baseProb*smFactor)
+  pCgivenF <- (nCgivenF+(1.0-baseProb)*smFactor)/(nF+(1.0-baseProb)*smFactor)
+  pTgivenC <- pCgivenT*baseProb
+  pFgivenC <- pCgivenF*(1-baseProb)
+  logLift <- log(pTgivenC/(pTgivenC+pFgivenC)) - log(baseProb)
+  den <- tapply(as.numeric(rescol==resTarget)*weights,vcol,sum)
+  novelvalue <- sum(logLift*den)/sum(den)
+  logLift <- as.list(logLift)
+  treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'catB',sep='_')),
+                    f=.catBayes,
+                    args=list(logLift=logLift,novelvalue=novelvalue),
+                    treatmentName='Bayesian Impact Code')
+  pred <- treatment$f(vcolin,treatment$args)
+  class(treatment) <- 'vtreatment'
+  treatment$scales <- .getScales(pred,as.numeric(rescol==resTarget),weights)
+  treatment
+}
+
+
+
+
 
 
 
@@ -346,7 +393,7 @@ print.vtreatment <- function(x,...) {
 #' @param y values to average (should not have NAs).
 #' @param weights data weighing (should not have NAs, be non-negative and not all zero).
 #' @return a vector of length(y) where the i-th entry is the weighted mean 
-#' @seealso \code{\link{pressStatOfBestLinearFit}} \code{\link{pressStatOfCategoricalVariable}}
+#' @seealso \code{\link{pressStatOfBestLinearFit}}
 #' @export
 hold1OutMeans <- function(y,weights) {
   # get per-datum hold-1 out grand means
@@ -381,7 +428,7 @@ hold1OutMeans <- function(y,weights) {
 #' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
-#' @seealso \code{\link{hold1OutMeans}} \code{\link{pressStatOfCategoricalVariable}}
+#' @seealso \code{\link{hold1OutMeans}} 
 #' @export
 pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- length(x)
@@ -433,45 +480,6 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   error/eConst
 }
 
-#' Compute the PRESS statistic a single categorical model.   Tries to prevent some of the test/train leakage in scoring
-#' (so apply this directly to a categorical variable, and don't score an impact coded variable).
-#' @param vcolin character 
-#' @param y numeric vectors (no NAs/NULLs)
-#' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-#' @param smoothingTerm scalar >= 0
-#' @return PRESS statistic of model y ~ x divided by pressStatOfBestConstant(y,weights)
-#' @seealso \code{\link{hold1OutMeans}} \code{\link{pressStatOfBestLinearFit}}
-#' @export
-pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='total',smoothingTerm=0.5) {
-  n <- length(vcolin)
-  if(n<=1) {
-    return(0.0)
-  }
-  if(!.has.range(vcolin)) {
-    return(1.0)
-  }
-  # get per-datum hold-1 out grand means (used for smoothing and fallback)
-  meanP <- hold1OutMeans(y,weights)
-  origna <- is.na(vcolin)
-  vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
-  vcol[origna] <- 'NA'
-  num <- tapply(y*weights,vcol,sum) 
-  den <- tapply(weights,vcol,sum)
-  preds <- (num[vcol] - y*weights + smoothingTerm*meanP)/(den[vcol] - weights + smoothingTerm)
-  valid <- !is.na(preds)
-  if(sum(valid)<=0) {
-    return(1.0)
-  }
-  if(sum(valid)<n) {
-     # hold-1 out grand mean predictions
-     preds[!valid] <- meanP[!valid]
-  }
-  error <- sum(weights*(y-preds)^2)
-  meanY <- .wmean(y,weights)
-  eConst <- .PRESSnormalization(normalizationStrat,y,weights)
-  error/eConst
-}
 
 
 # score list of columns related to numeric outcome
@@ -488,6 +496,7 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
 
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
+                               zC,zTarget,
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
@@ -513,6 +522,9 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
     dframe <- dframe[goodPosns,,drop=FALSE]
     zoY <- zoY[goodPosns]
     weights <- weights[goodPosns]
+    if(!is.null(zC)) {
+      zC <- zC[goodPosns]
+    }
   }
   if(sum(weights)<=0) {
     stop("no non-zero weighted rows")
@@ -524,7 +536,6 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
     stop("outcome variable doesn't vary")
   }
   treatments <- list()
-  cvarScores <- list()
   for(v in varlist) {
     if(verbose) {
       print(paste('design var',v,date()))
@@ -547,16 +558,20 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
         }
       } else {
         ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
-        if(is.null(ti)) {
-          ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
-        }
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
-          if (scoreVars) {
-             cvarScores[[ti$newvars[[1]]]] <- pressStatOfCategoricalVariable(vcol,zoY,weights) # assumes only one newvar
-          }
         }
-      }
+        ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
+        if(!is.null(ti)) {
+          treatments[[length(treatments)+1]] <- ti
+        }
+        if(!is.null(zC)) {
+          ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
+          }          
+        }
+       }
     }
   }
   treatedVarNames <- getNewVarNames(treatments)
@@ -589,22 +604,18 @@ pressStatOfCategoricalVariable <- function(vcolin,y,weights,normalizationStrat='
         }
         subF <- .vtreatA(ti,dframe[rowSample,ti$origvar,drop=TRUE],TRUE,TRUE)
         subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,
-                                    names(cvarScores),'total')
+                                    c(),'total')
         for(nv in colnames(subF)) {
            varMoves[[nv]] <- .has.range.cn(subF[[nv]])
            if(varMoves[[nv]]) {
-              if(nv %in% names(cvarScores)) {
-                 varScores[[nv]] <- cvarScores[[nv]]
-              } else {
-                 varScores[[nv]] <- subScores[[nv]]
-              }
+             varScores[[nv]] <- subScores[[nv]]
            }
         }
      }
      PRESSRsquared <- 1-varScores
   }
   plan <- list(treatments=treatments,
-               vars=treatedVarNames,
+               vars=as.character(treatedVarNames),
                varScores=varScores,PRESSRsquared=PRESSRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
@@ -658,11 +669,12 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               verbose=TRUE) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
-                              weights,
-                              minFraction,smFactor,maxMissing,
-                              collarProb,
-                              scoreVars,maxScoreSize,
-                              verbose)
+                     dframe[[outcomename]],outcometarget,
+                     weights,
+                     minFraction,smFactor,maxMissing,
+                     collarProb,
+                     scoreVars,maxScoreSize,
+                     verbose)
 }
 
 # build all treatments for a data frame to predict a numeric outcome
@@ -707,6 +719,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               verbose=TRUE) {
    ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
+                     c(),c(),
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
