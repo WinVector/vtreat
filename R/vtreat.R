@@ -40,7 +40,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 
 
 .vtreatA <- function(vtreat,xcol,scale,doCollar) {
-  if(length(class(xcol))!=1) { # defend against POSIXt types
+  if(length(class(xcol))!=1) {  # defend against POSIXt types
     xcol <- as.numeric(xcol)
   }
   dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),stringsAsFactors=FALSE)
@@ -250,12 +250,13 @@ print.vtreatment <- function(x,...) {
   for(j in 1:nres) {
     vi <- ifelse(col==args$tracked[j],1.0,0.0) 
     vals[[j]] <- vi
-    sum = sum + vi
+    sum <- sum + vi
   }
   if(nres>1) {
-     for(ri in which(sum==0)) { # For novel levels put fraction of time each level was on in original data
+     for(ri in which(sum==0)) { 
+        # For novel levels put fraction of time each level was on in original data
         for(j in 1:nres) {
-           vals[[j]][[ri]] = args$dist[[j]]
+           vals[[j]][[ri]] <- args$dist[[j]]
         }
      }
   }
@@ -298,13 +299,14 @@ print.vtreatment <- function(x,...) {
 # replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args,doCollar) {
   origna <- is.na(col)
-  col <- paste('x',as.character(col)) # R can't use empty string as a key
+  col <- paste('x',as.character(col))  # R can't use empty string as a key
   col[origna] <- 'NA' 
   novel <- !(col %in% names(args$scores))
   keys <- col
-  keys[novel] <- names(args$scores)[[1]]  # just to prevent bad lookups
+  keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
   pred <- as.numeric(args$scores[keys]) 
-  pred[novel] <- args$novelvalue  # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
+  # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
+  pred[novel] <- args$novelvalue  
   pred
 }
 
@@ -312,7 +314,7 @@ print.vtreatment <- function(x,...) {
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,weights) {
   origna <- is.na(vcolin)
-  vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
+  vcol <- paste('x',as.character(vcolin))   # R can't use empty string as a key
   vcol[origna] <- 'NA'
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
@@ -336,7 +338,7 @@ print.vtreatment <- function(x,...) {
 # replace level with .wmean(x|category) - .wmean(x)
 .catBayes <- function(col,args,doCollar) {
   origna <- is.na(col)
-  col <- paste('x',as.character(col)) # R can't use empty string as a key
+  col <- paste('x',as.character(col))   # R can't use empty string as a key
   col[origna] <- 'NA' 
   novel <- !(col %in% names(args$logLift))
   keys <- col
@@ -350,7 +352,7 @@ print.vtreatment <- function(x,...) {
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,weights) {
   origna <- is.na(vcolin)
-  vcol <- paste('x',as.character(vcolin)) # R can't use empty string as a key
+  vcol <- paste('x',as.character(vcolin))  # R can't use empty string as a key
   vcol[origna] <- 'NA'
   smFactor <- max(smFactor,1.0e-3)
   nT <- sum(as.numeric(rescol==resTarget)*weights)
@@ -442,8 +444,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   # get per-datum hold-1 out grand means (used for smoothing and fallback)
   meanP <- hold1OutMeans(y,weights)
   a <- matrix(data=0,nrow=2,ncol=2)
-  a[1,1] = 1.0e-5
-  a[2,2] = 1.0e-5
+  a[1,1] <- 1.0e-5
+  a[2,2] <- 1.0e-5
   b <- matrix(data=0,nrow=2,ncol=1)
   for(i in 1:n) {
     xi <- x[i]
@@ -468,7 +470,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     aM[2,2] <- a[2,2] - wi*xi*xi
     bM[1,1] <- b[1,1] - wi*yi
     bM[2,1] <- b[2,1] - wi*xi*yi
-    ye <- meanP[i] # const fn solution, for fallback
+    ye <- meanP[i]  # const fn solution, for fallback
     tryCatch(
       ye <- sum(solve(aM,bM) * c(1,xi)),
       warning = function(w) {},
@@ -541,8 +543,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       print(paste('design var',v,date()))
     }
     vcol <- dframe[[v]]
-    colclass = class(vcol)
-    if(length(colclass)!=1) { # defend against POSIXt types
+    colclass <- class(vcol)
+    if(length(colclass)!=1) {  # defend against POSIXt types
       vcol <- as.numeric(vcol)
       colclass <- class(vcol)
     }
