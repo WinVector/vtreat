@@ -277,8 +277,8 @@ print.vtreatment <- function(x,...) {
     return(c())
   }
   dist <- as.numeric(counts/sum(counts))
-  nind <- length(tracked)
-  treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
+  treatment <- list(origvar=origVarName,
+                    newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
                     args=list(tracked=tracked,dist=dist),
                     treatmentName='Categoric Indicators')
@@ -477,7 +477,6 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       error = function(e) {})
     error <- error + wi*(yi-ye)^2
   }
-  meanY <- .wmean(y,weights)
   eConst <- .PRESSnormalization(normalizationStrat,y,weights)
   error/eConst
 }
