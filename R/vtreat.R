@@ -355,17 +355,21 @@ print.vtreatment <- function(x,...) {
   vcol <- paste('x',as.character(vcolin))  # R can't use empty string as a key
   vcol[origna] <- 'NA'
   smFactor <- max(smFactor,1.0e-3)
-  nT <- sum(as.numeric(rescol==resTarget)*weights)
-  nF <- sum(as.numeric(rescol!=resTarget)*weights)
-  baseProb <- nT/(nT+nF)
-  nCgivenT <- tapply(as.numeric(rescol==resTarget)*weights,vcol,sum)
-  nCgivenF <- tapply(as.numeric(rescol!=resTarget)*weights,vcol,sum)
-  pCgivenT <- (nCgivenT+baseProb*smFactor)/(nT+baseProb*smFactor)
-  pCgivenF <- (nCgivenF+(1.0-baseProb)*smFactor)/(nF+(1.0-baseProb)*smFactor)
-  pTgivenC <- pCgivenT*baseProb
-  pFgivenC <- pCgivenF*(1-baseProb)
-  logLift <- log(pTgivenC/(pTgivenC+pFgivenC)) - log(baseProb)
-  den <- tapply(as.numeric(rescol==resTarget)*weights,vcol,sum)
+  # T/F is true false of the quantity to be predicted
+  # C is the feature we are looking at
+  nT <- sum(as.numeric(rescol==resTarget)*weights)  # weighted sum of true examples
+  nF <- sum(as.numeric(rescol!=resTarget)*weights)  # weighted sum of false examples
+  probT <- nT/(nT+nF)   # unconditional probabilty target is true
+  nCandT <- tapply(as.numeric(rescol==resTarget)*weights,vcol,sum)  # weighted sum of true examples for a given C (vector)
+  nCandF <- tapply(as.numeric(rescol!=resTarget)*weights,vcol,sum)  # weighted sum of false examples for a give C (vector)
+  pCgivenT <- (nCandT+probT*smFactor)/(nT+probT*smFactor)   # probability of a given evidence C, condition on outcome=T
+  pCgivenF <- (nCandF+(1.0-probT)*smFactor)/(nF+(1.0-probT)*smFactor)  # probability of a given evidence C, condition on outcome=F
+  pTgivenCunnorm <- pCgivenT*probT      # Bayes law, corret missing a /pC term (which we will normalize out)
+  pFgivenCunnorm <- pCgivenF*(1-probT)  # Bayes law, corret missing a /pC term (which we will normalize out)
+  pTgivenC <- pTgivenCunnorm/(pTgivenCunnorm+pFgivenCunnorm)
+  logLift <- log(pTgivenC/probT)  # log probability ratio (so no effect is coded as zero)
+  # fall back for novel levels, use average response of model during training
+  den <- tapply(weights,vcol,sum)
   novelvalue <- sum(logLift*den)/sum(den)
   logLift <- as.list(logLift)
   treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'catB',sep='_')),
@@ -497,7 +501,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
-                               zC,zTarget,
+                              zC,zTarget,forceCatNum,
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
@@ -562,16 +566,18 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
         }
-        if(is.null(ti)||(length(unique(vcol))>2)) {
-          ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-          if(!is.null(zC)) {
+        if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+           if(!is.null(zC)) {  # in categorical mode
             ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
             if(!is.null(ti)) {
               treatments[[length(treatments)+1]] <- ti
             }          
+          }
+          if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
+             ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
+             if(!is.null(ti)) {
+               treatments[[length(treatments)+1]] <- ti
+             }
           }
         }
       }
@@ -650,6 +656,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
+#' @param forceCatNum set to true to also get _catN style impact variables (not needed, for backward compatability)
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 #' @examples
@@ -669,10 +676,10 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.00,
                               scoreVars=TRUE,maxScoreSize=1000000L,
-                              verbose=TRUE) {
+                              verbose=TRUE,forceCatNum=FALSE) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
-                     dframe[[outcomename]],outcometarget,
+                     dframe[[outcomename]],outcometarget,forceCatNum,
                      weights,
                      minFraction,smFactor,maxMissing,
                      collarProb,
@@ -722,7 +729,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               verbose=TRUE) {
    ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
-                     c(),c(),
+                     c(),c(),FALSE,
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,

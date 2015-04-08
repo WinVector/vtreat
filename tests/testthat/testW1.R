@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Variable Scoring")
 
-test_that("Numeric Var Scores as expected", {
+test_that("Numeric Var Scores as expected w1", {
   set.seed(23525)
   zip <- paste('z',1:400)
   N = 1000
@@ -24,7 +24,7 @@ test_that("Numeric Var Scores as expected", {
   
   #expect_true(tN$varScores[['zip_catN']]>1) # not true anymore due to upward scoring bias
   expect_true(tN$varScores[['zip2_catN']]<1)
-  #expect_true(tC$varScores[['zip_catN']]>1) # not true anymore due to upward scoring bias
-  expect_true(tC$varScores[['zip2_catN']]<1)
+  #expect_true(tC$varScores[['zip_catB']]>1) # not true anymore due to upward scoring bias
+  expect_true(tC$varScores[['zip2_catB']]<1)
 })
 

@@ -6,7 +6,8 @@
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
   minFraction = 0.02, smFactor = 0, maxMissing = 0.04, collarProb = 0,
-  scoreVars = TRUE, maxScoreSize = 1000000L, verbose = TRUE)
+  scoreVars = TRUE, maxScoreSize = 1000000L, verbose = TRUE,
+  forceCatNum = FALSE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
@@ -32,6 +33,8 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
 \item{maxScoreSize}{optional maximum size for treated variable scoring frame}
 
 \item{verbose}{if TRUE print progress.}
+
+\item{forceCatNum}{set to true to also get _catN style impact variables (not needed, for backward compatability)}
 }
 \value{
 treatment plan (for use with prepare)
