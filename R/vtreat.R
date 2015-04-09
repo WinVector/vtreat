@@ -561,7 +561,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
         }
-      } else {
+      } else if((colclass=='character') || (colclass=='factor')) {
+        # expect character or factor here
         ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
         if(!is.null(ti)) {
           treatments[[length(treatments)+1]] <- ti
@@ -580,7 +581,9 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
              }
           }
         }
-      }
+      } else {
+        warning(paste('variable',v,'has unexpected class:',colclass,', skipping, (want one of numeric,integer,character,factor)'))
+      }  
     }
   }
   treatedVarNames <- getNewVarNames(treatments)
