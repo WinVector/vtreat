@@ -38,11 +38,48 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 }
 
 
+# take in a column and return a column that is safely one of the primative
+# types: numeric, character 
+# if the column is more exotic (multiple classes, AsIs, other issues) return null
+# protects downstream code from surprises
+# given how diverse R types are this is no way we can defend again everything, 
+# this is supposed to be a consistent defense against common unexpected convertions
+# see: http://www.win-vector.com/blog/2015/04/what-can-be-in-an-r-data-frame-column/
+.cleanColumn <- function(xcol) {
+  if(is.null(xcol)) {
+    return(NULL)
+  }
+  if("AsIs" %in% class(xcol)) {
+    return(NULL)
+  }
+  xcol <- as.vector(xcol) # defend against arrays, converts POSIXct to numeric, but not POSIXlt
+  if(is.null(xcol)) {
+    return(NULL)
+  }
+  if("POSIXt" %in% class(xcol)) {
+    return(as.numeric(xcol))
+  }
+  if(length(class(xcol))!=1) {
+    return(NULL)
+  }
+  if(class(xcol) %in% c('list','AsIs')) {
+    return(NULL)
+  }
+  if(is.logical(xcol)||is.factor(xcol)||is.character(xcol)) {
+    # logical, factor, character case
+    return(as.character(xcol))
+  }
+  if(is.numeric(xcol)) { # is.numeric(factor('a')) returns false, but lets not have factors here anyway
+    # integer, numeric case
+    return(as.numeric(xcol))
+  }
+  if(is.atomic(xcol)) {
+     return(as.character(xcol))
+  }
+  return(NULL)
+}
 
 .vtreatA <- function(vtreat,xcol,scale,doCollar) {
-  if(length(class(xcol))!=1) {  # defend against POSIXt types
-    xcol <- as.numeric(xcol)
-  }
   dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),stringsAsFactors=FALSE)
   colnames(dout) <- vtreat$newvars
   if(scale) {
@@ -60,7 +97,12 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   for(ti in treatments) {
      wants <- intersect(colNames,ti$newvars)
      if(length(wants)>0) {
-        gi <- .vtreatA(ti,dframe[[ti$origvar]],scale,doCollar)
+        xcolOrig <- dframe[[ti$origvar]]
+        xcolClean <- .cleanColumn(xcolOrig)
+        if(is.null(xcolClean)) {
+          stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+        }
+        gi <- .vtreatA(ti,xcolClean,scale,doCollar)
         for(vi in wants) {
            cols[[vi]] <- gi[[vi]]
         }
@@ -545,45 +587,46 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     if(verbose) {
       print(paste('design var',v,date()))
     }
-    vcol <- dframe[[v]]
-    colclass <- class(vcol)
-    if(length(colclass)!=1) {  # defend against POSIXt types
-      vcol <- as.numeric(vcol)
+    vcolOrig <- dframe[[v]]
+    vcol <- .cleanColumn(vcolOrig)
+    if(is.null(vcol)) {
+      warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
+    } else {
       colclass <- class(vcol)
-    }
-    if(.has.range(vcol)) {
-      if((colclass=='numeric') || (colclass=='integer')) {
-        ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-        }
-        ti <- .mkIsBAD(v,vcol,zoY,weights)
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-        }
-      } else if((colclass=='character') || (colclass=='factor')) {
-        # expect character or factor here
-        ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
-        if(!is.null(ti)) {
-          treatments[[length(treatments)+1]] <- ti
-        }
-        if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-           if(!is.null(zC)) {  # in categorical mode
-            ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
-            if(!is.null(ti)) {
-              treatments[[length(treatments)+1]] <- ti
-            }          
+      if(.has.range(vcol)) {
+        if((colclass=='numeric') || (colclass=='integer')) {
+          ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
           }
-          if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
-             ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
-             if(!is.null(ti)) {
-               treatments[[length(treatments)+1]] <- ti
-             }
+          ti <- .mkIsBAD(v,vcol,zoY,weights)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
           }
-        }
-      } else {
-        warning(paste('variable',v,'has unexpected class:',colclass,', skipping, (want one of numeric,integer,character,factor)'))
-      }  
+        } else if((colclass=='character') || (colclass=='factor')) {
+          # expect character or factor here
+          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
+          }
+          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+            if(!is.null(zC)) {  # in categorical mode
+              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
+              if(!is.null(ti)) {
+                treatments[[length(treatments)+1]] <- ti
+              }          
+            }
+            if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
+              ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
+              if(!is.null(ti)) {
+                treatments[[length(treatments)+1]] <- ti
+              }
+            }
+          }
+        } else {
+          warning(paste('variable',v,'has unexpected class:',colclass,', skipping, (want one of numeric,integer,character,factor)'))
+        }  
+      }
     }
   }
   treatedVarNames <- getNewVarNames(treatments)
@@ -614,7 +657,12 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
         if(verbose) {
          print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
         }
-        subF <- .vtreatA(ti,dframe[rowSample,ti$origvar,drop=TRUE],TRUE,TRUE)
+        xcolOrig <- dframe[rowSample,ti$origvar,drop=TRUE]
+        xcolClean <- .cleanColumn(xcolOrig)
+        if(is.null(xcolClean)) {
+          stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+        }
+        subF <- .vtreatA(ti,xcolClean,TRUE,TRUE)
         subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,
                                     c(),'total')
         for(nv in colnames(subF)) {
@@ -799,6 +847,9 @@ prepare <- function(treatmentplan,dframe,
   }
   if(!is.null(varRestriction)) {
      usableVars <- intersect(usableVars,varRestriction)
+  }
+  if(length(usableVars)<=0) {
+    stop('no usable vars')
   }
   treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar)
   if(treatmentplan$outcomename %in% colnames(dframe)) {
