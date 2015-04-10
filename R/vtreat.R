@@ -45,7 +45,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 # given how diverse R types are this is no way we can defend again everything, 
 # this is supposed to be a consistent defense against common unexpected convertions
 # see: http://www.win-vector.com/blog/2015/04/what-can-be-in-an-r-data-frame-column/
-.cleanColumn <- function(xcol) {
+.cleanColumn <- function(xcol,expectedLength) {
   if(is.null(xcol)) {
     return(NULL)
   }
@@ -53,7 +53,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
     return(NULL)
   }
   xcol <- as.vector(xcol) # defend against arrays, converts POSIXct to numeric, but not POSIXlt
-  if(is.null(xcol)) {
+  if(is.null(xcol)||(length(xcol)!=expectedLength)) {
     return(NULL)
   }
   if("POSIXt" %in% class(xcol)) {
@@ -65,12 +65,13 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   if(class(xcol) %in% c('list','AsIs')) {
     return(NULL)
   }
-  if(is.logical(xcol)||is.factor(xcol)||is.character(xcol)) {
+  if(is.factor(xcol)||is.character(xcol)) {
     # logical, factor, character case
     return(as.character(xcol))
   }
-  if(is.numeric(xcol)) { # is.numeric(factor('a')) returns false, but lets not have factors here anyway
-    # integer, numeric case
+  if(is.logical(xcol)||is.numeric(xcol)) { # is.numeric(factor('a')) returns false, but lets not have factors here anyway
+    # logical (treat as an indicator), integer, numeric case
+    # is.numeric(1:10) returns TRUE (integers get into this block)
     return(as.numeric(xcol))
   }
   if(is.atomic(xcol)) {
@@ -94,19 +95,22 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 .vtreatList <- function(treatments,dframe,colNames,scale,doCollar) {
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
-  for(ti in treatments) {
-     wants <- intersect(colNames,ti$newvars)
-     if(length(wants)>0) {
+  nRows <- nrow(dframe)
+  if(nRows>0) {
+    for(ti in treatments) {
+      wants <- intersect(colNames,ti$newvars)
+      if(length(wants)>0) {
         xcolOrig <- dframe[[ti$origvar]]
-        xcolClean <- .cleanColumn(xcolOrig)
+        xcolClean <- .cleanColumn(xcolOrig,nRows)
         if(is.null(xcolClean)) {
           stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
         }
         gi <- .vtreatA(ti,xcolClean,scale,doCollar)
         for(vi in wants) {
-           cols[[vi]] <- gi[[vi]]
+          cols[[vi]] <- gi[[vi]]
         }
-     }
+      }
+    }
   }
   as.data.frame(cols,stringsAsFactors=FALSE)
 }
@@ -573,6 +577,10 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       zC <- zC[goodPosns]
     }
   }
+  nRows <- length(zoY)
+  if(nRows<=0) {
+    stop("no good rows")
+  }
   if(sum(weights)<=0) {
     stop("no non-zero weighted rows")
   }
@@ -588,7 +596,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       print(paste('design var',v,date()))
     }
     vcolOrig <- dframe[[v]]
-    vcol <- .cleanColumn(vcolOrig)
+    vcol <- .cleanColumn(vcolOrig,nRows)
     if(is.null(vcol)) {
       warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
     } else {
@@ -653,12 +661,13 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      }
      treatedZoY <- zoY[rowSample]
      treatedWeights <- weights[rowSample]
+     nScoreRows <- length(treatedZoY)
      for(ti in treatments) {
         if(verbose) {
          print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
         }
         xcolOrig <- dframe[rowSample,ti$origvar,drop=TRUE]
-        xcolClean <- .cleanColumn(xcolOrig)
+        xcolClean <- .cleanColumn(xcolOrig,nScoreRows)
         if(is.null(xcolClean)) {
           stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
         }

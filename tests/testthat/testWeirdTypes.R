@@ -3,6 +3,7 @@ library('vtreat')
 context("Defensive Coding")
 
 test_that("Protect from odd columns types (and warn)", {
+  op <- options(warn = (-1)) # suppress warnings 
   d <- data.frame(xInteger=1:3,
                   xNumeric=0,
                   xCharacter='a',
@@ -12,9 +13,10 @@ test_that("Protect from odd columns types (and warn)", {
                   xLogical=TRUE,
                   xArrayNull=as.array(list(NULL,NULL,NULL)),
                   stringsAsFactors=FALSE)
-  d$xPOSIXlt <- as.POSIXlt(Sys.time())
-  d$xArray <- as.array(c(7,7,7))
-  d$xMatrix <- matrix(data=-1,nrow=3,ncol=2)
+  d$xPOSIXlt <- as.POSIXlt(c(Sys.time(),Sys.time()+100,Sys.time()+200))
+  d$xArray <- as.array(c(17,18,19))
+  d$xMatrix1 <- matrix(data=c(1,2,3,4,5,6),nrow=3,ncol=1)
+  d$xMatrix <- matrix(data=c(88,89,90),nrow=3,ncol=2)
   d$xListH <- list(10,20,'thirty')
   d$xListR <- list(list(),list('a'),list('a','b'))
   d$xData.Frame <- data.frame(xData.FrameA=6:8,xData.FrameB=11:13)
@@ -24,8 +26,14 @@ test_that("Protect from odd columns types (and warn)", {
   yVar <- 'y'
   yTarget <- 1
   xVars <- setdiff(colnames(d),yVar)
-  treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget)
+  treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
   dCTreated <- prepare(treatmentsC,d,pruneLevel=NULL)
-  treatmentsN <- designTreatmentsN(d,xVars,yVar)
+  expectedCols <- sort(c('xInteger_clean', 'xArray_clean', 'xMatrix1_clean', 'y'))
+  expect_true(nrow(dCTreated)==nrow(d))
+  expect_true(all(sort(colnames(dCTreated))==expectedCols))
+  treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
   dNTreated <- prepare(treatmentsN,d,pruneLevel=NULL)
+  expect_true(nrow(dNTreated)==nrow(d))
+  expect_true(all(sort(colnames(dNTreated))==expectedCols))
+  options(op) # restore settings
 })
