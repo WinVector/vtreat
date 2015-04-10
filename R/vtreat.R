@@ -103,7 +103,15 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
         xcolOrig <- dframe[[ti$origvar]]
         xcolClean <- .cleanColumn(xcolOrig,nRows)
         if(is.null(xcolClean)) {
-          stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+          stop(paste('column',ti$origvar,
+                     'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+        }
+        if(!is.null(ti$origColClass)) {
+           curColClass <- class(xcolClean)
+           if(curColClass!=ti$origColClass) {
+             stop(paste('column',ti$origvar,'expected to convert to ',
+                        ti$origColClass,'saw',class(xcolOrig),curColClass))
+           }
         }
         gi <- .vtreatA(ti,xcolClean,scale,doCollar)
         for(vi in wants) {
@@ -139,7 +147,7 @@ vnames <- function(x) { x$newvars }
 #' @export
 format.vtreatment <- function(x,...) { paste(
   'vtreat \'',x$treatmentName,
-  '\'(\'',x$origvar,'\'->\'',
+  '\'(\'',x$origvar,'\'->',x$origColClass,'->\'',
   paste(x$newvars,collapse='\',\''),
   '\')',sep='') }
 
@@ -231,6 +239,7 @@ print.vtreatment <- function(x,...) {
 }
 
 .mkPassThrough <- function(origVarName,xcol,ycol,weights,collarProb) {
+  origColClass <- class(xcol)
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)
@@ -247,7 +256,7 @@ print.vtreatment <- function(x,...) {
   if(max(xcol)<=min(xcol)) {
     return(c())
   }
-  treatment <- list(origvar=origVarName,
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'clean',sep='_')),
                     f=.passThrough,
                     args=list(nadist=nadist,cuts=cuts),
@@ -267,6 +276,7 @@ print.vtreatment <- function(x,...) {
 }
 
 .mkIsBAD <- function(origVarName,xcol,ynumeric,weights) {
+  origColClass <- class(xcol)
   badIDX <- .is.bad(xcol)
   nna <- sum(badIDX)
   if((nna<=0)||(nna>=length(xcol))) {
@@ -275,7 +285,8 @@ print.vtreatment <- function(x,...) {
   if(.wmean(ynumeric[badIDX],weights[badIDX])==.wmean(ynumeric[!badIDX],weights[!badIDX])) {
     return(c())
   }
-  treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'isBAD',sep='_')),
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
+                    newvars=make.names(paste(origVarName,'isBAD',sep='_')),
                     f=.isBAD,
                     args=list(),
                     treatmentName='is.bad')
@@ -311,6 +322,7 @@ print.vtreatment <- function(x,...) {
 
 # build categorical indicators
 .mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,weights) {
+  origColClass <- class(vcolin)
   origna <- is.na(vcolin)
   vcol <- paste('x',as.character(vcolin))
   vcol[origna] <- 'NA'
@@ -323,7 +335,7 @@ print.vtreatment <- function(x,...) {
     return(c())
   }
   dist <- as.numeric(counts/sum(counts))
-  treatment <- list(origvar=origVarName,
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
                     args=list(tracked=tracked,dist=dist),
@@ -359,6 +371,7 @@ print.vtreatment <- function(x,...) {
 # build a numeric impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,weights) {
+  origColClass <- class(vcolin)
   origna <- is.na(vcolin)
   vcol <- paste('x',as.character(vcolin))   # R can't use empty string as a key
   vcol[origna] <- 'NA'
@@ -368,7 +381,8 @@ print.vtreatment <- function(x,...) {
   scores <- (num+smFactor*baseMean)/(den+smFactor)-baseMean
   novelvalue <- sum(scores*den)/sum(den)
   scores <- as.list(scores)
-  treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'catN',sep='_')),
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
+                    newvars=make.names(paste(origVarName,'catN',sep='_')),
                     f=.catNum,
                     args=list(scores=scores,novelvalue=novelvalue),
                     treatmentName='Scalable Impact Code')
@@ -397,6 +411,7 @@ print.vtreatment <- function(x,...) {
 # build a classification impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,weights) {
+  origColClass <- class(vcolin)
   origna <- is.na(vcolin)
   vcol <- paste('x',as.character(vcolin))  # R can't use empty string as a key
   vcol[origna] <- 'NA'
@@ -418,7 +433,8 @@ print.vtreatment <- function(x,...) {
   den <- tapply(weights,vcol,sum)
   novelvalue <- sum(logLift*den)/sum(den)
   logLift <- as.list(logLift)
-  treatment <- list(origvar=origVarName,newvars=make.names(paste(origVarName,'catB',sep='_')),
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
+                    newvars=make.names(paste(origVarName,'catB',sep='_')),
                     f=.catBayes,
                     args=list(logLift=logLift,novelvalue=novelvalue),
                     treatmentName='Bayesian Impact Code')
@@ -560,6 +576,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      stop("collarProb must be < 0.5")
   }
   varlist <- setdiff(varlist,outcomename)
+  varlist <- intersect(varlist,colnames(dframe))
+  varlist <- as.character(varlist)
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   } else {
@@ -637,7 +655,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       }
     }
   }
-  treatedVarNames <- getNewVarNames(treatments)
+  treatedVarNames <- as.character(getNewVarNames(treatments))
   varMoves <- c()
   varScores <- c()
   PRESSRsquared <- c()
@@ -684,7 +702,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      PRESSRsquared <- 1-varScores
   }
   plan <- list(treatments=treatments,
-               vars=as.character(treatedVarNames),
+               vars=treatedVarNames,
                varScores=varScores,PRESSRsquared=PRESSRsquared,
                varMoves=varMoves,
                outcomename=outcomename,
