@@ -42,10 +42,7 @@ First build a list of variable treatments from your training data using
 or \code{\link{designTreatmentsN}} (for models predicting numeric outcomes).
 Then apply a list of treatments to a data frame to get a treated data frame using
 \code{\link{prepare}}.  All the code is assuming we are working only with rows
-where the outcome or y-value is not NA, finite and not nan.  Categoric examples are
-in "probability space" (computing expectations of a 0/1 outcome).  For modeling some work you may
-want to first transform columns into logistic space with the by setting the \code{logitTransform=TRUE} 
-option in \code{\link{prepare}}.
+where the outcome or y-value is not NA, finite and not nan.
 }
 \examples{
 # categorical example
