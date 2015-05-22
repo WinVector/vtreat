@@ -6,7 +6,8 @@
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, weights = c(),
   minFraction = 0.02, smFactor = 0, maxMissing = 0.04, collarProb = 0,
-  scoreVars = TRUE, maxScoreSize = 1000000L, verbose = TRUE)
+  scoreVars = TRUE, maxScoreSize = 1000000L, verbose = TRUE,
+  parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
@@ -30,6 +31,8 @@ designTreatmentsN(dframe, varlist, outcomename, weights = c(),
 \item{maxScoreSize}{optional maximum size for treated variable scoring frame}
 
 \item{verbose}{if TRUE print progress.}
+
+\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }
 \value{
 treatment plan (for use with prepare)

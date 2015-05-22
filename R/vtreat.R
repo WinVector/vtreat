@@ -735,6 +735,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 #' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
 #' @param forceCatNum set to true to also get _catN style impact variables (not needed, for backward compatability)
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
 #' @examples
@@ -754,7 +755,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.00,
                               scoreVars=TRUE,maxScoreSize=1000000L,
-                              verbose=TRUE,forceCatNum=FALSE) {
+                              verbose=TRUE,
+                              forceCatNum=FALSE,
+                              parallelCluster=NULL) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
                      dframe[[outcomename]],outcometarget,forceCatNum,
@@ -786,6 +789,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{getNewVarNames}}
 #' @examples
@@ -804,7 +808,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.00,
                               scoreVars=TRUE,maxScoreSize=1000000L,
-                              verbose=TRUE) {
+                              verbose=TRUE,
+                              parallelCluster=NULL) {
    ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),FALSE,
@@ -836,6 +841,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric, without NA,NaN)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 #' @examples
@@ -858,7 +864,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @export
 prepare <- function(treatmentplan,dframe,
   pruneLevel=0.99,scale=FALSE,doCollar=TRUE,
-  varRestriction=c()) {
+  varRestriction=c(),
+  parallelCluster=NULL
+  ) {
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
