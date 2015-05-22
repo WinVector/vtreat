@@ -97,6 +97,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   names(cols) <- colNames
   nRows <- nrow(dframe)
   if(nRows>0) {
+    # TODO: parallelize this
     for(ti in treatments) {
       wants <- intersect(colNames,ti$newvars)
       if(length(wants)>0) {
@@ -560,6 +561,79 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 }
 
 
+# design a treatment for a single variables
+# bind a bunch of variables, so we pass exactly what we need to sub-processes
+.varDesigner <- function(zoY,
+                         zC,zTarget,forceCatNum,
+                         weights,
+                         minFraction,smFactor,maxMissing,
+                         collarProb,
+                         scoreVars,maxScoreSize,
+                         verbose) {
+  force(zoY)
+  force(zC)
+  force(zTarget)
+  force(forceCatNum)
+  force(weights)
+  force(minFraction)
+  force(smFactor)
+  force(maxMissing)
+  force(collarProb)
+  force(scoreVars)
+  force(maxScoreSize)
+  force(verbose)
+  function(argpair) {
+    v <- argpair$v
+    vcolOrig <- argpair$vcolOrig
+    if(verbose) {
+      print(paste('design var',v,date()))
+    }
+    nRows = length(zoY)
+    treatments <- list()
+    vcol <- .cleanColumn(vcolOrig,nRows)
+    if(is.null(vcol)) {
+      warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
+    } else {
+      colclass <- class(vcol)
+      if(.has.range(vcol)) {
+        if((colclass=='numeric') || (colclass=='integer')) {
+          ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
+          }
+          ti <- .mkIsBAD(v,vcol,zoY,weights)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
+          }
+        } else if((colclass=='character') || (colclass=='factor')) {
+          # expect character or factor here
+          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
+          if(!is.null(ti)) {
+            treatments[[length(treatments)+1]] <- ti
+          }
+          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+            if(!is.null(zC)) {  # in categorical mode
+              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
+              if(!is.null(ti)) {
+                treatments[[length(treatments)+1]] <- ti
+              }          
+            }
+            if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
+              ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
+              if(!is.null(ti)) {
+                treatments[[length(treatments)+1]] <- ti
+              }
+            }
+          }
+        } else {
+          warning(paste('variable',v,'has unexpected class:',colclass,
+                        ', skipping, (want one of numeric,integer,character,factor)'))
+        }  
+      }
+    }
+    treatments
+  }
+}
 
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
@@ -568,7 +642,11 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
                               minFraction,smFactor,maxMissing,
                               collarProb,
                               scoreVars,maxScoreSize,
-                              verbose) {
+                              verbose,
+                              parallelCluster) {
+  if(!requireNamespace("parallel",quietly=TRUE)) {
+    parallelCluster <- NULL
+  }
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
@@ -608,53 +686,22 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
   }
-  treatments <- list()
-  for(v in varlist) {
-    if(verbose) {
-      print(paste('design var',v,date()))
-    }
-    vcolOrig <- dframe[[v]]
-    vcol <- .cleanColumn(vcolOrig,nRows)
-    if(is.null(vcol)) {
-      warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
-    } else {
-      colclass <- class(vcol)
-      if(.has.range(vcol)) {
-        if((colclass=='numeric') || (colclass=='integer')) {
-          ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-          ti <- .mkIsBAD(v,vcol,zoY,weights)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-        } else if((colclass=='character') || (colclass=='factor')) {
-          # expect character or factor here
-          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-            if(!is.null(zC)) {  # in categorical mode
-              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
-              if(!is.null(ti)) {
-                treatments[[length(treatments)+1]] <- ti
-              }          
-            }
-            if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
-              ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
-              if(!is.null(ti)) {
-                treatments[[length(treatments)+1]] <- ti
-              }
-            }
-          }
-        } else {
-          warning(paste('variable',v,'has unexpected class:',colclass,', skipping, (want one of numeric,integer,character,factor)'))
-        }  
-      }
-    }
+  workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
+  worker <- .varDesigner( zoY,
+                          zC,zTarget,forceCatNum,
+                          weights,
+                          minFraction,smFactor,maxMissing,
+                          collarProb,
+                          scoreVars,maxScoreSize,
+                          verbose)
+  if(is.null(parallelCluster)) {
+    # print("design serial")
+    treatments <- lapply(workList,worker)
+  } else {
+    # print("design parallel")
+    treatments <- parallel::parLapply(parallelCluster,workList,worker)
   }
+  treatments <- unlist(treatments,recursive=FALSE)
   treatedVarNames <- as.character(getNewVarNames(treatments))
   varMoves <- c()
   varScores <- c()
@@ -680,6 +727,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      treatedZoY <- zoY[rowSample]
      treatedWeights <- weights[rowSample]
      nScoreRows <- length(treatedZoY)
+     # TODO: parallelize this
      for(ti in treatments) {
         if(verbose) {
          print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
@@ -765,7 +813,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                      minFraction,smFactor,maxMissing,
                      collarProb,
                      scoreVars,maxScoreSize,
-                     verbose)
+                     verbose,
+                     parallelCluster)
 }
 
 # build all treatments for a data frame to predict a numeric outcome
@@ -810,14 +859,15 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               scoreVars=TRUE,maxScoreSize=1000000L,
                               verbose=TRUE,
                               parallelCluster=NULL) {
-   ycol <- dframe[[outcomename]]
+  ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),FALSE,
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
                               scoreVars,maxScoreSize,
-                              verbose)
+                              verbose,
+                     parallelCluster)
 }
 
 
@@ -867,6 +917,9 @@ prepare <- function(treatmentplan,dframe,
   varRestriction=c(),
   parallelCluster=NULL
   ) {
+  if(!requireNamespace("parallel",quietly=TRUE)) {
+    parallelCluster <- NULL
+  }
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
