@@ -16,8 +16,7 @@ test_that("Parallel works", {
   treatmentsCP <- designTreatmentsC(uci.car.data,
                                    pvars,dYName,dYTarget,verbose=FALSE,
                                    parallelCluster=cl)
-  dTrainCTreatedP <- prepare(treatmentsCP,uci.car.data,
-                            parallelCluster=cl)
+  dTrainCTreatedP <- prepare(treatmentsCP,uci.car.data)
   if(!is.null(cl)) {
     parallel::stopCluster(cl)
     cl <- NULL

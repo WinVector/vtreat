@@ -97,7 +97,6 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   names(cols) <- colNames
   nRows <- nrow(dframe)
   if(nRows>0) {
-    # TODO: parallelize this
     for(ti in treatments) {
       wants <- intersect(colNames,ti$newvars)
       if(length(wants)>0) {
@@ -639,9 +638,14 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 .varScorer <- function(treatedZoY,treatedWeights,verbose) {
   force(treatedZoY)
   force(treatedWeights)
+  nScoreRows <- length(treatedZoY)
   function(spair) {
     ti <- spair$ti
-    xcolClean <- spair$xcolClean
+    xcolOrig <- spair$xcolOrig
+    xcolClean <- .cleanColumn(xcolOrig,nScoreRows)
+    if(is.null(xcolClean)) {
+      stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+    }
     if(verbose) {
       print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
     }
@@ -669,6 +673,9 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   }
   if(collarProb>=0.5) {
      stop("collarProb must be < 0.5")
+  }
+  if(verbose) {
+    print(paste("desigining treatments",date()))
   }
   varlist <- setdiff(varlist,outcomename)
   varlist <- intersect(varlist,colnames(dframe))
@@ -746,12 +753,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      nScoreRows <- length(treatedZoY)
      workList <- list()
      for(ti in treatments) {
-        xcolOrig <- dframe[rowSample,ti$origvar,drop=TRUE]
-        xcolClean <- .cleanColumn(xcolOrig,nScoreRows)
-        if(is.null(xcolClean)) {
-          stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
-        }
-        workList[[length(workList)+1]] <- list(ti=ti,xcolClean=xcolClean)
+        workList[[length(workList)+1]] <- list(ti=ti,
+                                               xcolOrig=dframe[rowSample,ti$origvar,drop=TRUE])
      }
      worker <- .varScorer(treatedZoY,treatedWeights,verbose) 
      if(is.null(parallelCluster)) {
@@ -915,7 +918,6 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric, without NA,NaN)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 #' @examples
@@ -938,8 +940,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @export
 prepare <- function(treatmentplan,dframe,
   pruneLevel=0.99,scale=FALSE,doCollar=TRUE,
-  varRestriction=c(),
-  parallelCluster=NULL
+  varRestriction=c()
   ) {
   if(!requireNamespace("parallel",quietly=TRUE)) {
     parallelCluster <- NULL
