@@ -560,7 +560,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   scores
 }
 
-
+# TODO: pivot warnings/print out of here
 # design a treatment for a single variables
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
 .varDesigner <- function(zoY,
@@ -632,6 +632,23 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       }
     }
     treatments
+  }
+}
+
+# TODO: pivot warnings/print out of here
+.varScorer <- function(treatedZoY,treatedWeights,verbose) {
+  force(treatedZoY)
+  force(treatedWeights)
+  function(spair) {
+    ti <- spair$ti
+    xcolClean <- spair$xcolClean
+    if(verbose) {
+      print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
+    }
+    subF <- .vtreatA(ti,xcolClean,TRUE,TRUE)
+    subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,
+                                c(),'total')
+    list(ti=ti,subF=subF,subScores=subScores)
   }
 }
 
@@ -727,19 +744,26 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      treatedZoY <- zoY[rowSample]
      treatedWeights <- weights[rowSample]
      nScoreRows <- length(treatedZoY)
-     # TODO: parallelize this
+     workList <- list()
      for(ti in treatments) {
-        if(verbose) {
-         print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
-        }
         xcolOrig <- dframe[rowSample,ti$origvar,drop=TRUE]
         xcolClean <- .cleanColumn(xcolOrig,nScoreRows)
         if(is.null(xcolClean)) {
           stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
         }
-        subF <- .vtreatA(ti,xcolClean,TRUE,TRUE)
-        subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,
-                                    c(),'total')
+        workList[[length(workList)+1]] <- list(ti=ti,xcolClean=xcolClean)
+     }
+     worker <- .varScorer(treatedZoY,treatedWeights,verbose) 
+     if(is.null(parallelCluster)) {
+       # print("design serial")
+       scoreList <- lapply(workList,worker)
+     } else {
+       # print("design parallel")
+       scoreList <- parallel::parLapply(parallelCluster,workList,worker)
+     }
+     for(wpair in scoreList) {
+        subF <- wpair$subF
+        subScores <- wpair$subScores
         for(nv in colnames(subF)) {
            varMoves[[nv]] <- .has.range.cn(subF[[nv]])
            if(varMoves[[nv]]) {
