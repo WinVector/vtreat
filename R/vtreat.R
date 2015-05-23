@@ -490,21 +490,21 @@ hold1OutMeans <- function(y,weights) {
 }
 
 
-#' Compute the PRESS statistic of a 1-variable linear model
+#' Compute the PRESS R-squared statistic of a 1-variable linear model
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param y numeric (no NAs/NULLs) outcome variable
 #' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-#' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights)
+#' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
 #' @seealso \code{\link{hold1OutMeans}} 
 #' @export
 pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
-    return(0.0)
+    return(1.0)
   }
   if(!.has.range.cn(x)) {
-    return(1.0)
+    return(0.0)
   }
   error <- 0.0
   # get per-datum hold-1 out grand means (used for smoothing and fallback)
@@ -544,7 +544,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     error <- error + wi*(yi-ye)^2
   }
   eConst <- .PRESSnormalization(normalizationStrat,y,weights)
-  error/eConst
+  1.0 - error/eConst
 }
 
 
@@ -624,11 +624,28 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 }
 
 
+# return a pseudo R-squared
+# TODO: at least get an adjusted pseudo R-squared here
+.catScore <- function(x,yC,yTarget,weights) {
+  tryCatch({
+       tf <- data.frame(x=x,y=(yC==yTarget))
+       model <- glm(as.formula('y~x'),data=tf,
+                    family=binomial(link='logit'),
+                    weights=weights)
+       s <- summary(model)
+       return(1-s$deviance/s$null.deviance)
+    },
+    error=function(e){})
+  0.0
+}
 
 
 # TODO: pivot warnings/print out of here
-.varScorer <- function(treatedZoY,treatedWeights,rowSample,verbose) {
+.varScorer <- function(treatedZoY,treatedZC,zTarget,
+                       treatedWeights,rowSample,verbose) {
   force(treatedZoY)
+  force(treatedZC)
+  force(zTarget)
   force(treatedWeights)
   force(rowSample)
   force(verbose)
@@ -648,16 +665,27 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     for(nv in colnames(subF)) {
       varMoves[[nv]] <- .has.range.cn(subF[[nv]])
     }
-    nms <- names(varMoves)
-    # TODO: a real direct categorical scoring mode
-    subScores <- vapply(nms,
-                     function(c) pressStatOfBestLinearFit(subF[[c]],
-                                                          treatedZoY,
-                                                          treatedWeights,
-                                                          'total'),
-                     double(1))
-    names(subScores) <- nms
-    list(ti=ti,varMoves=varMoves,subScores=subScores)
+    nms <- names(varMoves)[as.logical(varMoves)]
+    subScores <- c()
+    catScores <- c()
+    if(length(nms>0)) {
+      subScores <- vapply(nms,
+                          function(c) pressStatOfBestLinearFit(subF[[c]],
+                                                               treatedZoY,
+                                                               treatedWeights,
+                                                               'total'),
+                          double(1))
+      names(subScores) <- nms
+      if(!is.null(treatedZC)) {
+        catScores <- vapply(nms,
+                            function(c) .catScore(subF[[c]],
+                                                  treatedZC,zTarget,
+                                                  treatedWeights),
+                            double(1))
+        names(subScores) <- nms
+      }
+    }
+    list(ti=ti,varMoves=varMoves,subScores=subScores,subCScores=catScores)
   }
 }
 
@@ -735,12 +763,17 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   treatedVarNames <- as.character(getNewVarNames(treatments))
   varMoves <- c()
   varScores <- c()
+  catPRSquared <- c()
   PRESSRsquared <- c()
   if (scoreVars) {
      varMoves <- logical(length(treatedVarNames))
      names(varMoves) <- treatedVarNames
-     varScores <- rep(1.0,length(treatedVarNames))
-     names(varScores) <- treatedVarNames
+     PRESSRsquared <- numeric(length(treatedVarNames))
+     names(PRESSRsquared) <- treatedVarNames
+     if(!is.null(zC)) {
+        catPRSquared <- numeric(length(treatedVarNames))
+        names(catPRSquared) <- treatedVarNames
+     }
      if(nrow(dframe)<=maxScoreSize) {
        if(verbose) {
          print(paste("score treated frame",date()))
@@ -755,13 +788,18 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
        rowSample <- sample.int(nrow(dframe),size=maxScoreSize)
      }
      treatedZoY <- zoY[rowSample]
+     treatedZC <- c()
+     if(!is.null(zC)) {
+       treatedZC <- zC[rowSample]
+     }
      treatedWeights <- weights[rowSample]
      workList <- list()
      for(ti in treatments) {
         workList[[length(workList)+1]] <- list(ti=ti,
                                                xcolOrig=dframe[[ti$origvar]])
      }
-     worker <- .varScorer(treatedZoY,treatedWeights,rowSample,verbose) 
+     worker <- .varScorer(treatedZoY,treatedZC,zTarget,
+                          treatedWeights,rowSample,verbose) 
      if(is.null(parallelCluster)) {
        # print("score serial")
        scoreList <- lapply(workList,worker)
@@ -771,15 +809,17 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      }
      for(wpair in scoreList) {
         subMoves <- wpair$varMoves
-        subScores <- wpair$subScores
         for(nv in names(subMoves)) {
            varMoves[[nv]] <- subMoves[[nv]]
            if(varMoves[[nv]]) {
-             varScores[[nv]] <- subScores[[nv]]
+             PRESSRsquared[[nv]] <- wpair$subScores[[nv]]
+             if(!is.null(catPRSquared)) {
+               catPRSquared[[nv]] <- wpair$subCScores[[nv]]
+             }
            }
         }
      }
-     PRESSRsquared <- 1-varScores
+     varScores <- 1-PRESSRsquared
   }
   plan <- list(treatments=treatments,
                vars=treatedVarNames,
@@ -787,6 +827,9 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
                varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
+  if(!is.null(catPRSquared)) {
+    plan[['catPseudoRSquared']] <- catPRSquared
+  }
   class(plan) <- 'treatmentplan'
   plan
 }
