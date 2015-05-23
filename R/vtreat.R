@@ -768,10 +768,10 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      }
      worker <- .varScorer(treatedZoY,treatedWeights,rowSample,verbose) 
      if(is.null(parallelCluster)) {
-       # print("design serial")
+       # print("score serial")
        scoreList <- lapply(workList,worker)
      } else {
-       # print("design parallel")
+       # print("score parallel")
        scoreList <- parallel::parLapply(parallelCluster,workList,worker)
      }
      for(wpair in scoreList) {
