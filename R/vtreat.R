@@ -636,7 +636,8 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   pRs <- numeric(0)
   origOpt <- options()
   options(warn=-1)
-  for(rep in 1:10) {
+  nrep <- max(3,floor(200/nrow(tf)))
+  for(rep in 1:5) {
     tryCatch({
       isTrain <- rbinom(n,1,0.5)
       yTest <- tf$y[!isTrain]
