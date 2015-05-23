@@ -826,7 +826,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.00,
-                              scoreVars=TRUE,maxScoreSize=1000000L,
+                              scoreVars=TRUE,maxScoreSize=100000L,
                               verbose=TRUE,
                               forceCatNum=FALSE,
                               parallelCluster=NULL) {
