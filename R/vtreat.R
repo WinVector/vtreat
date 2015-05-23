@@ -549,15 +549,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 
 
 
-# score list of columns related to numeric outcome
-.scoreColumnsN <- function(treatedFrame,yValues,weights,exclude,normalizationStrat) {
-  nms <- setdiff(colnames(treatedFrame),exclude)
-  scores <- vapply(nms,
-         function(c) pressStatOfBestLinearFit(treatedFrame[[c]],yValues,weights,normalizationStrat),
-         double(1))
-  names(scores) <- nms
-  scores
-}
+
 
 # TODO: pivot warnings/print out of here
 # design a treatment for a single variables
@@ -634,15 +626,20 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   }
 }
 
+
+
+
 # TODO: pivot warnings/print out of here
-.varScorer <- function(treatedZoY,treatedWeights,verbose) {
+.varScorer <- function(treatedZoY,treatedWeights,rowSample,verbose) {
   force(treatedZoY)
   force(treatedWeights)
+  force(rowSample)
+  force(verbose)
   nScoreRows <- length(treatedZoY)
   function(spair) {
     ti <- spair$ti
     xcolOrig <- spair$xcolOrig
-    xcolClean <- .cleanColumn(xcolOrig,nScoreRows)
+    xcolClean <- .cleanColumn(xcolOrig[rowSample],nScoreRows)
     if(is.null(xcolClean)) {
       stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
     }
@@ -650,11 +647,24 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       print(paste("score variable(s)",ti$newvars,"(derived from",ti$origvar,")",date()))
     }
     subF <- .vtreatA(ti,xcolClean,TRUE,TRUE)
-    subScores <- .scoreColumnsN(subF,treatedZoY,treatedWeights,
-                                c(),'total')
-    list(ti=ti,subF=subF,subScores=subScores)
+    varMoves <- list()
+    for(nv in colnames(subF)) {
+      varMoves[[nv]] <- .has.range.cn(subF[[nv]])
+    }
+    nms <- names(varMoves)
+    # TODO: a real direct categorical scoring mode
+    subScores <- vapply(nms,
+                     function(c) pressStatOfBestLinearFit(subF[[c]],
+                                                          treatedZoY,
+                                                          treatedWeights,
+                                                          'total'),
+                     double(1))
+    names(subScores) <- nms
+    list(ti=ti,varMoves=varMoves,subScores=subScores)
   }
 }
+
+
 
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
@@ -754,9 +764,9 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      workList <- list()
      for(ti in treatments) {
         workList[[length(workList)+1]] <- list(ti=ti,
-                                               xcolOrig=dframe[rowSample,ti$origvar,drop=TRUE])
+                                               xcolOrig=dframe[[ti$origvar]])
      }
-     worker <- .varScorer(treatedZoY,treatedWeights,verbose) 
+     worker <- .varScorer(treatedZoY,treatedWeights,rowSample,verbose) 
      if(is.null(parallelCluster)) {
        # print("design serial")
        scoreList <- lapply(workList,worker)
@@ -765,10 +775,10 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
        scoreList <- parallel::parLapply(parallelCluster,workList,worker)
      }
      for(wpair in scoreList) {
-        subF <- wpair$subF
+        subMoves <- wpair$varMoves
         subScores <- wpair$subScores
-        for(nv in colnames(subF)) {
-           varMoves[[nv]] <- .has.range.cn(subF[[nv]])
+        for(nv in names(subMoves)) {
+           varMoves[[nv]] <- subMoves[[nv]]
            if(varMoves[[nv]]) {
              varScores[[nv]] <- subScores[[nv]]
            }
