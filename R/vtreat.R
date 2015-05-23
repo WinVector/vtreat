@@ -647,7 +647,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     repnum <- 0
     while((repnum<100)&&(length(trainSet)<3)) {
       repnum <- repnum+1
-      isTrain <- rbinom(n,1,0.8)
+      isTrain <- runif(n)<=0.8
       if(isGoodSample(isTrain)) {
         trainSet[[length(trainSet)+1]] <- isTrain
       }
