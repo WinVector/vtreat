@@ -559,7 +559,6 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
                          weights,
                          minFraction,smFactor,maxMissing,
                          collarProb,
-                         scoreVars,maxScoreSize,
                          verbose) {
   force(zoY)
   force(zC)
@@ -570,16 +569,14 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   force(smFactor)
   force(maxMissing)
   force(collarProb)
-  force(scoreVars)
-  force(maxScoreSize)
   force(verbose)
+  nRows = length(zoY)
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
     if(verbose) {
       print(paste('design var',v,date()))
     }
-    nRows = length(zoY)
     treatments <- list()
     vcol <- .cleanColumn(vcolOrig,nRows)
     if(is.null(vcol)) {
@@ -726,7 +723,6 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
                           weights,
                           minFraction,smFactor,maxMissing,
                           collarProb,
-                          scoreVars,maxScoreSize,
                           verbose)
   if(is.null(parallelCluster)) {
     # print("design serial")
