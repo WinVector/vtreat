@@ -756,7 +756,6 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
      }
      treatedZoY <- zoY[rowSample]
      treatedWeights <- weights[rowSample]
-     nScoreRows <- length(treatedZoY)
      workList <- list()
      for(ti in treatments) {
         workList[[length(workList)+1]] <- list(ti=ti,
@@ -948,9 +947,6 @@ prepare <- function(treatmentplan,dframe,
   pruneLevel=0.99,scale=FALSE,doCollar=TRUE,
   varRestriction=c()
   ) {
-  if(!requireNamespace("parallel",quietly=TRUE)) {
-    parallelCluster <- NULL
-  }
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
