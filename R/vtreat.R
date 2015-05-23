@@ -634,30 +634,53 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   n <- nrow(tf)
   # get hold out pseudo-Rsquareds
   pRs <- numeric(0)
-  origOpt <- options()
-  options(warn=-1)
-  nrep <- max(3,floor(200/nrow(tf)))
-  for(rep in 1:5) {
-    tryCatch({
-      isTrain <- rbinom(n,1,0.5)
-      yTest <- tf$y[!isTrain]
-      pNull <- mean(tf$y) + numeric(length(yTest))
-      devNull <- .deviance(yTest,pNull)
-      if(devNull>0) {
-        model <- glm(as.formula('y~x'),data=tf[isTrain,,drop=FALSE],
-                     family=binomial(link='logit'),
-                     weights=weights[isTrain])
-        py <- predict(model,type='response',newdata=tf[!isTrain,,drop=FALSE])
-        devModel <- .deviance(yTest,py)
-        pseudoR2 <- 1 - devModel/devNull
-        pRs <- c(pRs,pseudoR2)
-      }
-    },
-    error=function(e){})
+  isGoodSample <- function(isTrain) {
+    (sum(isTrain)>1) && (sum(isTrain)<n) &&
+      (max(tf$y[isTrain])>min(tf$y[isTrain])) &&
+      (max(tf$x[isTrain])>min(tf$x[isTrain]))
   }
-  options(origOpt)
-  if(length(pRs)>0) {
-    return(median(pRs))
+  if(n<=100) {
+    trainSet <- lapply(1:n,function(i) { v=!logical(n); v[[i]]=FALSE; v})
+    trainSet <- trainSet[vapply(trainSet,isGoodSample,logical(1))]
+  } else {
+    trainSet <- list()
+    repnum <- 0
+    while((repnum<100)&&(length(trainSet)<3)) {
+      repnum <- repnum+1
+      isTrain <- rbinom(n,1,0.8)
+      if(isGoodSample(isTrain)) {
+        trainSet[[length(trainSet)+1]] <- isTrain
+      }
+    }
+  }
+  if(length(trainSet)>0) {
+    origOpt <- options()
+    options(warn=-1)
+    for(isTrain in trainSet) {
+      if(isGoodSample(isTrain)) {
+        tryCatch({      
+          yTest <- tf$y[!isTrain]
+          pNull <- mean(tf$y) + numeric(length(yTest))
+          devNull <- .deviance(yTest,pNull)
+          model <- glm(as.formula('y~x'),
+                       data=tf[isTrain,,drop=FALSE],
+                       family=binomial(link='logit'),
+                       weights=weights[isTrain])
+          if(model$converged) {
+            py <- predict(model,type='response',
+                          newdata=tf[!isTrain,,drop=FALSE])
+            devModel <- .deviance(yTest,py)
+            pseudoR2 <- 1 - devModel/devNull
+            pRs <- c(pRs,pseudoR2)
+          }
+        },
+        error=function(e){})
+      }
+    }
+    options(origOpt)
+    if(length(pRs)>0) {
+      return(median(pRs))
+    }
   }
   0.0
 }
@@ -854,6 +877,9 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     plan[['catPseudoRSquared']] <- catPRSquared
   }
   class(plan) <- 'treatmentplan'
+  if(verbose) {
+    print(paste("have treatment plan",date()))
+  }
   plan
 }
 
