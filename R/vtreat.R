@@ -539,7 +539,6 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
     ye <- meanP[i]  # const fn solution, for fallback
     tryCatch(
       ye <- sum(solve(aM,bM) * c(1,xi)),
-      warning = function(w) {},
       error = function(e) {})
     error <- error + wi*(yi-ye)^2
   }
@@ -623,19 +622,42 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   }
 }
 
+# y = TRUE/FALSE
+# py = probilities
+.deviance <- function(y,py) {
+  -2.0*(sum(log(py[y]))+sum(log(1-py[!y])))
+}
 
 # return a pseudo R-squared
-# TODO: at least get an adjusted pseudo R-squared here
 .catScore <- function(x,yC,yTarget,weights) {
-  tryCatch({
-       tf <- data.frame(x=x,y=(yC==yTarget))
-       model <- glm(as.formula('y~x'),data=tf,
-                    family=binomial(link='logit'),
-                    weights=weights)
-       s <- summary(model)
-       return(1-s$deviance/s$null.deviance)
+  tf <- data.frame(x=x,y=(yC==yTarget))
+  n <- nrow(tf)
+  # get hold out pseudo-Rsquareds
+  pRs <- numeric(0)
+  origOpt <- options()
+  options(warn=-1)
+  for(rep in 1:10) {
+    tryCatch({
+      isTrain <- rbinom(n,1,0.5)
+      yTest <- tf$y[!isTrain]
+      pNull <- mean(tf$y) + numeric(length(yTest))
+      devNull <- .deviance(yTest,pNull)
+      if(devNull>0) {
+        model <- glm(as.formula('y~x'),data=tf[isTrain,,drop=FALSE],
+                     family=binomial(link='logit'),
+                     weights=weights[isTrain])
+        py <- predict(model,type='response',newdata=tf[!isTrain,,drop=FALSE])
+        devModel <- .deviance(yTest,py)
+        pseudoR2 <- 1 - devModel/devNull
+        pRs <- c(pRs,pseudoR2)
+      }
     },
     error=function(e){})
+  }
+  options(origOpt)
+  if(length(pRs)>0) {
+    return(median(pRs))
+  }
   0.0
 }
 
