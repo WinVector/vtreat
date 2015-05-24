@@ -395,7 +395,7 @@ print.vtreatment <- function(x,...) {
 
 
 # apply a classification impact model
-# replace level with .wmean(x|category) - .wmean(x)
+# replace level with log(.wmean(x|category)/.wmean(x))
 .catBayes <- function(col,args,doCollar) {
   origna <- is.na(col)
   col <- paste('x',as.character(col))   # R can't use empty string as a key
@@ -590,77 +590,6 @@ pressStatOfBestLinearFitFrame <- function(df,namevec,
 }
 
 
-# TODO: pivot warnings/print out of here
-# design a treatment for a single variables
-# bind a bunch of variables, so we pass exactly what we need to sub-processes
-.varDesigner <- function(zoY,
-                         zC,zTarget,forceCatNum,
-                         weights,
-                         minFraction,smFactor,maxMissing,
-                         collarProb,
-                         verbose) {
-  force(zoY)
-  force(zC)
-  force(zTarget)
-  force(forceCatNum)
-  force(weights)
-  force(minFraction)
-  force(smFactor)
-  force(maxMissing)
-  force(collarProb)
-  force(verbose)
-  nRows = length(zoY)
-  function(argpair) {
-    v <- argpair$v
-    vcolOrig <- argpair$vcolOrig
-    if(verbose) {
-      print(paste('design var',v,date()))
-    }
-    treatments <- list()
-    vcol <- .cleanColumn(vcolOrig,nRows)
-    if(is.null(vcol)) {
-      warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
-    } else {
-      colclass <- class(vcol)
-      if(.has.range(vcol)) {
-        if((colclass=='numeric') || (colclass=='integer')) {
-          ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-          ti <- .mkIsBAD(v,vcol,zoY,weights)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-        } else if((colclass=='character') || (colclass=='factor')) {
-          # expect character or factor here
-          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
-          if(!is.null(ti)) {
-            treatments[[length(treatments)+1]] <- ti
-          }
-          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-            if(!is.null(zC)) {  # in categorical mode
-              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
-              if(!is.null(ti)) {
-                treatments[[length(treatments)+1]] <- ti
-              }          
-            }
-            if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
-              ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
-              if(!is.null(ti)) {
-                treatments[[length(treatments)+1]] <- ti
-              }
-            }
-          }
-        } else {
-          warning(paste('variable',v,'has unexpected class:',colclass,
-                        ', skipping, (want one of numeric,integer,character,factor)'))
-        }  
-      }
-    }
-    treatments
-  }
-}
 
 # y = TRUE/FALSE
 # py = probilities
@@ -668,12 +597,12 @@ pressStatOfBestLinearFitFrame <- function(df,namevec,
   -2.0*(sum(log(py[y]))+sum(log(1-py[!y])))
 }
 
-#' return a pseudo R-squared
+#' return a pseudo R-squared from a 1 variable logistic regression
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param yC  (no NAs/NULLs) outcome variable
 #' @param yTarget scalar target for yC to match (yC==tTarget is goal)
 #' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @return cross-validated pseudo-Rsquared estimate
+#' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 #' @seealso \code{\link{hold1OutMeans}} 
 #' @export
 catScore <- function(x,yC,yTarget,weights=c()) {
@@ -695,7 +624,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   } else {
     trainSet <- list()
     repnum <- 0
-    while((repnum<100)&&(length(trainSet)<3)) {
+    repeatTarget = max(5,floor(10000/n))
+    while((repnum<200)&&(length(trainSet)<repeatTarget)) {
       repnum <- repnum+1
       isTrain <- runif(n)<=0.8
       if(isGoodSample(isTrain)) {
@@ -779,18 +709,18 @@ catScoreFrame <- function(df,namevec,
 
 # TODO: pivot warnings/print out of here
 .varScorer <- function(treatedZoY,treatedZC,zTarget,
-                       treatedWeights,rowSample,verbose) {
+                       treatedWeights,scoreRows,verbose) {
   force(treatedZoY)
   force(treatedZC)
   force(zTarget)
   force(treatedWeights)
-  force(rowSample)
+  force(scoreRows)
   force(verbose)
   nScoreRows <- length(treatedZoY)
   function(spair) {
     ti <- spair$ti
     xcolOrig <- spair$xcolOrig
-    xcolClean <- .cleanColumn(xcolOrig[rowSample],nScoreRows)
+    xcolClean <- .cleanColumn(xcolOrig[scoreRows],nScoreRows)
     if(is.null(xcolClean)) {
       stop(paste('column',ti$origvar,'is not a type/class vtreat can work with (',class(xcolOrig),')'))
     }
@@ -828,6 +758,76 @@ catScoreFrame <- function(df,namevec,
 
 
 
+# TODO: pivot warnings/print out of here
+# design a treatment for a single variables
+# bind a bunch of variables, so we pass exactly what we need to sub-processes
+.varDesigner <- function(zoY,
+                         zC,zTarget,forceCatNum,
+                         weights,
+                         minFraction,smFactor,maxMissing,
+                         collarProb,
+                         verbose) {
+  force(zoY)
+  force(zC)
+  force(zTarget)
+  force(forceCatNum)
+  force(weights)
+  force(minFraction)
+  force(smFactor)
+  force(maxMissing)
+  force(collarProb)
+  force(verbose)
+  nRows = length(zoY)
+  function(argpair) {
+    v <- argpair$v
+    vcolOrig <- argpair$vcolOrig
+    if(verbose) {
+      print(paste('design var',v,date()))
+    }
+    treatments <- list()
+    vcol <- .cleanColumn(vcolOrig,nRows)
+    acceptTreatment <- function(ti) {
+      if(!is.null(ti)) {
+        treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
+      }
+    }
+    if(is.null(vcol)) {
+      warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
+    } else {
+      colclass <- class(vcol)
+      if(.has.range(vcol)) {
+        if((colclass=='numeric') || (colclass=='integer')) {
+          ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
+          acceptTreatment(ti)
+          ti <- .mkIsBAD(v,vcol,zoY,weights)
+          acceptTreatment(ti)
+        } else if((colclass=='character') || (colclass=='factor')) {
+          # expect character or factor here
+          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,weights)
+          acceptTreatment(ti)
+          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+            if(!is.null(zC)) {  # in categorical mode
+              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
+              acceptTreatment(ti)      
+            }
+            if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
+              ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
+              acceptTreatment(ti)
+            }
+          }
+        } else {
+          warning(paste('variable',v,'has unexpected class:',colclass,
+                        ', skipping, (want one of numeric,integer,character,factor)'))
+        }  
+      }
+    }
+    treatments
+  }
+}
+
+
+
+
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
                               zC,zTarget,forceCatNum,
@@ -842,6 +842,9 @@ catScoreFrame <- function(df,namevec,
   }
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
+  }
+  if(nrow(dframe)<=0) {
+    stop("not enough rows in data frame")
   }
   if(collarProb>=0.5) {
      stop("collarProb must be < 0.5")
@@ -869,8 +872,7 @@ catScoreFrame <- function(df,namevec,
       zC <- zC[goodPosns]
     }
   }
-  nRows <- length(zoY)
-  if(nRows<=0) {
+  if(nrow(dframe)<=0) {
     stop("no good rows")
   }
   if(sum(weights)<=0) {
@@ -881,6 +883,26 @@ catScoreFrame <- function(df,namevec,
   }
   if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
+  }
+  trainRows <- 1:nrow(dframe)
+  scoreRows <- integer(0)
+  if (scoreVars) {  # see if we can afford to score on disjoint rows
+    # Note: we are sampling according to indices (not weights), 
+    # so this can have a bit higher variance 
+    # than a weight-driven sample.
+    if(nrow(dframe)>1000) {  # large case, go for disjoint
+      trainRows <- sort(sample.int(nrow(dframe),size=floor(0.8*nrow(dframe))))
+      scoreRows <- setdiff(1:nrow(dframe),trainRows)
+      if(length(scoreRows)>maxScoreSize) {
+        scoreRows <- sample(scoreRows,size=maxScoreSize)
+      }
+    } else {  # small case, allow overlap
+      if(nrow(dframe)<=maxScoreSize) {
+        scoreRows <- 1:nrow(dframe)
+      } else {
+        scoreRows <- sort(sample.int(nrow(dframe),size=maxScoreSize))
+      }
+    }
   }
   workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
   worker <- .varDesigner( zoY,
@@ -911,32 +933,22 @@ catScoreFrame <- function(df,namevec,
         catPRSquared <- numeric(length(treatedVarNames))
         names(catPRSquared) <- treatedVarNames
      }
-     if(nrow(dframe)<=maxScoreSize) {
-       if(verbose) {
-         print(paste("score treated frame",date()))
-       }
-       rowSample <- 1:nrow(dframe)
-     } else {
-       if(verbose) {
-         print(paste("score treated frame sample",date()))
-       }
-       # Note: we are sampling according to indices (not weights), so this can have a bit higher variance 
-       # than a weight-driven sample.
-       rowSample <- sample.int(nrow(dframe),size=maxScoreSize)
+     if(verbose) {
+       print(paste("scoring columns",date()))
      }
-     treatedZoY <- zoY[rowSample]
+     treatedZoY <- zoY[scoreRows]
      treatedZC <- c()
      if(!is.null(zC)) {
-       treatedZC <- zC[rowSample]
+       treatedZC <- zC[scoreRows]
      }
-     treatedWeights <- weights[rowSample]
+     treatedWeights <- weights[scoreRows]
      workList <- list()
      for(ti in treatments) {
         workList[[length(workList)+1]] <- list(ti=ti,
                                                xcolOrig=dframe[[ti$origvar]])
      }
      worker <- .varScorer(treatedZoY,treatedZC,zTarget,
-                          treatedWeights,rowSample,verbose) 
+                          treatedWeights,scoreRows,verbose) 
      if(is.null(parallelCluster)) {
        # print("score serial")
        scoreList <- lapply(workList,worker)

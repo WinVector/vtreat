@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{catScore}
 \alias{catScore}
-\title{return a pseudo R-squared}
+\title{return a pseudo R-squared from a 1 variable logistic regression}
 \usage{
 catScore(x, yC, yTarget, weights = c())
 }
@@ -16,10 +16,10 @@ catScore(x, yC, yTarget, weights = c())
 \item{weights}{(optional) numeric, non-negative, no NAs/NULLs at least two positive positions}
 }
 \value{
-cross-validated pseudo-Rsquared estimate
+cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 }
 \description{
-return a pseudo R-squared
+return a pseudo R-squared from a 1 variable logistic regression
 }
 \seealso{
 \code{\link{hold1OutMeans}}
