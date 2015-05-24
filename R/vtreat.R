@@ -493,18 +493,21 @@ hold1OutMeans <- function(y,weights) {
 #' Compute the PRESS R-squared statistic of a 1-variable linear model
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param y numeric (no NAs/NULLs) outcome variable
-#' @param weights numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @param normalizationStrat 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
+#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
+#' @param normalizationStrat (optional) 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
 #' @seealso \code{\link{hold1OutMeans}} 
 #' @export
-pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
+pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
     return(1.0)
   }
   if(!.has.range.cn(x)) {
     return(0.0)
+  }
+  if(is.null(weights)) {
+    weights <- 1.0+numeric(n)
   }
   error <- 0.0
   # get per-datum hold-1 out grand means (used for smoothing and fallback)
@@ -546,8 +549,45 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   1.0 - error/eConst
 }
 
+.pressStatOfBestLinearFitFrameWorker <- function(y,weights,normalizationStrat) {
+  force(y)
+  force(weights)
+  force(normalizationStrat)
+  function(wpair) {
+    v = wpair$v
+    x = wpair$col
+    pressStatOfBestLinearFit(x,y,weights,normalizationStrat)
+  }
+}
 
-
+#' Compute the PRESS R-squared statistic of a 1-variable linear model
+#' Can use a parallel cluster (and sends only sections of data to cluster elements)
+#' @param df numeric data frame (no NAs/NULLs) effective variables
+#' @param namevec names of columns to process
+#' @param y numeric (no NAs/NULLs) outcome variable
+#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
+#' @param normalizationStrat (optional) 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @return PRESS statistics of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
+#' @seealso \code{\link{hold1OutMeans}} 
+#' @export
+pressStatOfBestLinearFitFrame <- function(df,namevec,
+                                          y,weights=c(),normalizationStrat='total',
+                                          parallelCluster=c()) {
+  if(!requireNamespace("parallel",quietly=TRUE)) {
+    parallelCluster <- NULL
+  }
+  workList <- lapply(namevec,function(v) { list(v=v,col=df[[v]])})
+  worker <- .pressStatOfBestLinearFitFrameWorker(y,weights,normalizationStrat)
+  if(is.null(parallelCluster)) {
+    res <- lapply(workList,worker)
+  } else {
+    res <- parallel::parLapply(parallelCluster,workList,worker)
+  }
+  res <- as.numeric(res)
+  names(res) <- namevec
+  res
+}
 
 
 # TODO: pivot warnings/print out of here
@@ -628,10 +668,20 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
   -2.0*(sum(log(py[y]))+sum(log(1-py[!y])))
 }
 
-# return a pseudo R-squared
-.catScore <- function(x,yC,yTarget,weights) {
+#' return a pseudo R-squared
+#' @param x numeric (no NAs/NULLs) effective variable
+#' @param yC  (no NAs/NULLs) outcome variable
+#' @param yTarget scalar target for yC to match (yC==tTarget is goal)
+#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
+#' @return cross-validated pseudo-Rsquared estimate
+#' @seealso \code{\link{hold1OutMeans}} 
+#' @export
+catScore <- function(x,yC,yTarget,weights=c()) {
   tf <- data.frame(x=x,y=(yC==yTarget))
   n <- nrow(tf)
+  if(is.null(weights)) {
+    weights <- 1.0+numeric(n)
+  }
   # get hold out pseudo-Rsquareds
   pRs <- numeric(0)
   isGoodSample <- function(isTrain) {
@@ -686,6 +736,47 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
 }
 
 
+.catScoreFrameWorker <- function(yC,yTarget,weights) {
+  force(yC)
+  force(yTarget)
+  force(weights)
+  function(wpair) {
+    v = wpair$v
+    x = wpair$col
+    catScore(x,yC,yTarget,weights)
+  }
+}
+
+#' return pseudo R-squareds
+#' Can use a parallel cluster (and sends only sections of data to cluster elements)
+#' @param df numeric data frame (no NAs/NULLs) effective variables
+#' @param yC  (no NAs/NULLs) outcome values
+#' @param yTarget scalar target for yC to match (yC==tTarget is goal)
+#' @param namevec names of columns to process
+#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @return pseud R-squareds catScpre(y,weights), it is an R-squared so 1 is good 0 is bad
+#' @seealso \code{\link{hold1OutMeans}} 
+#' @export
+catScoreFrame <- function(df,namevec,
+                          yC,yTarget,
+                          weights=c(),
+                          parallelCluster=c()) {
+  if(!requireNamespace("parallel",quietly=TRUE)) {
+    parallelCluster <- NULL
+  }
+  workList <- lapply(namevec,function(v) { list(v=v,col=df[[v]])})
+  worker <- .catScoreFrameWorker(yC,yTarget,weights)
+  if(is.null(parallelCluster)) {
+    res <- lapply(workList,worker)
+  } else {
+    res <- parallel::parLapply(parallelCluster,workList,worker)
+  }
+  res <- as.numeric(res)
+  names(res) <- namevec
+  res
+}
+
 # TODO: pivot warnings/print out of here
 .varScorer <- function(treatedZoY,treatedZC,zTarget,
                        treatedWeights,rowSample,verbose) {
@@ -724,7 +815,7 @@ pressStatOfBestLinearFit <- function(x,y,weights,normalizationStrat='total') {
       names(subScores) <- nms
       if(!is.null(treatedZC)) {
         catScores <- vapply(nms,
-                            function(c) .catScore(subF[[c]],
+                            function(c) catScore(subF[[c]],
                                                   treatedZC,zTarget,
                                                   treatedWeights),
                             double(1))

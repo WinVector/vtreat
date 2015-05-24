@@ -4,16 +4,16 @@
 \alias{pressStatOfBestLinearFit}
 \title{Compute the PRESS R-squared statistic of a 1-variable linear model}
 \usage{
-pressStatOfBestLinearFit(x, y, weights, normalizationStrat = "total")
+pressStatOfBestLinearFit(x, y, weights = c(), normalizationStrat = "total")
 }
 \arguments{
 \item{x}{numeric (no NAs/NULLs) effective variable}
 
 \item{y}{numeric (no NAs/NULLs) outcome variable}
 
-\item{weights}{numeric, non-negative, no NAs/NULLs at least two positive positions}
+\item{weights}{(optional) numeric, non-negative, no NAs/NULLs at least two positive positions}
 
-\item{normalizationStrat}{'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)}
+\item{normalizationStrat}{(optional) 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)}
 }
 \value{
 PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
