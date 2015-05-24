@@ -766,6 +766,7 @@ catScoreFrame <- function(df,namevec,
                          weights,
                          minFraction,smFactor,maxMissing,
                          collarProb,
+                         trainRows,origRowCount,
                          verbose) {
   force(zoY)
   force(zC)
@@ -776,6 +777,8 @@ catScoreFrame <- function(df,namevec,
   force(smFactor)
   force(maxMissing)
   force(collarProb)
+  force(trainRows)
+  force(origRowCount)
   force(verbose)
   nRows = length(zoY)
   function(argpair) {
@@ -785,14 +788,18 @@ catScoreFrame <- function(df,namevec,
       print(paste('design var',v,date()))
     }
     treatments <- list()
-    vcol <- .cleanColumn(vcolOrig,nRows)
+    vcol <- .cleanColumn(vcolOrig,origRowCount)[trainRows]
+    if(length(vcol)!=nRows) {
+      warning("wrong column length")
+      vcol <- NULL
+    }
     acceptTreatment <- function(ti) {
       if(!is.null(ti)) {
         treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
       }
     }
     if(is.null(vcol)) {
-      warning(paste('column',v,'is not a type/class vtreat can work with (',class(vcolOrig),')'))
+      warning(paste('column',v,'is not a type/class/value vtreat can work with (',class(vcolOrig),')'))
     } else {
       colclass <- class(vcol)
       if(.has.range(vcol)) {
@@ -871,6 +878,8 @@ catScoreFrame <- function(df,namevec,
     if(!is.null(zC)) {
       zC <- zC[goodPosns]
     }
+    # the select goodPosns is duplicating the data frame, so it does cost
+    # memory
   }
   if(nrow(dframe)<=0) {
     stop("no good rows")
@@ -891,7 +900,14 @@ catScoreFrame <- function(df,namevec,
     # so this can have a bit higher variance 
     # than a weight-driven sample.
     if(nrow(dframe)>1000) {  # large case, go for disjoint
-      trainRows <- sort(sample.int(nrow(dframe),size=floor(0.8*nrow(dframe))))
+      repeat {
+         trainRows <- sort(sample.int(nrow(dframe),size=floor(0.8*nrow(dframe))))
+         # technically need to check that y is varying to gaurantee we have good sample
+         # with high probability we get on of each, so shouldn't repeat often (if at all)
+         if(min(zoY[trainRows])<max(zoY[trainRows])) {
+           break
+         }
+      }
       scoreRows <- setdiff(1:nrow(dframe),trainRows)
       if(length(scoreRows)>maxScoreSize) {
         scoreRows <- sample(scoreRows,size=maxScoreSize)
@@ -904,12 +920,16 @@ catScoreFrame <- function(df,namevec,
       }
     }
   }
+  # In building the workList don't transform any variables (such as making
+  # row selections), only select columns out of frame.  This prevents
+  # data growth prior to doing the work.
   workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
-  worker <- .varDesigner( zoY,
-                          zC,zTarget,forceCatNum,
-                          weights,
+  worker <- .varDesigner( zoY[trainRows],
+                          zC[trainRows],zTarget,forceCatNum,
+                          weights[trainRows],
                           minFraction,smFactor,maxMissing,
                           collarProb,
+                          trainRows,nrow(dframe),
                           verbose)
   if(is.null(parallelCluster)) {
     # print("design serial")
@@ -942,6 +962,9 @@ catScoreFrame <- function(df,namevec,
        treatedZC <- zC[scoreRows]
      }
      treatedWeights <- weights[scoreRows]
+     # In building the workList don't transform any variables (such as making
+     # row selections), only select columns out of frame.  This prevents
+     # data growth prior to doing the work.
      workList <- list()
      for(ti in treatments) {
         workList[[length(workList)+1]] <- list(ti=ti,
@@ -997,6 +1020,16 @@ catScoreFrame <- function(df,namevec,
 #' categorical outcome.  Data frame is assumed to have only atomic columns
 #' except for dates (which are converted to numeric).
 #' 
+#' The main fields are mostly vectors with names (all with the same names in the same order):
+#' 
+#' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
+#' - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
+#' - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
+#' - varScores : 1 - PRESSRsquared, so scores near zero are great and one and above are very bad
+#' - catPseudoRSquared : the pseudo-Rsquared (deviance ratio) of each variable in turn logisticly regressed against the categorical y target.  Similar ot the PRESSRsquared this attempts to be a hold-out statistic
+#'
+#' See the vtreat vignette for a bit more detail and a worked example.
+#'
 #' @param dframe Data frame to learn treatments from (training data).
 #' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable.
@@ -1053,6 +1086,15 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' numeric outcome.  Data frame is assumed to have only atomic columns
 #' except for dates (which are converted to numeric).
 #' Note: each column is processed independently of all others.
+#' 
+#' The main fields are mostly vectors with names (all with the same names in the same order):
+#' 
+#' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
+#' - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
+#' - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
+#' - varScores : 1 - PRESSRsquared, so scores near zero are great and one and above are very bad
+#'
+#' See the vtreat vignette for a bit more detail and a worked example.
 #' 
 #' @param dframe Data frame to learn treatments from (training data).
 #' @param varlist Names of columns to treat (effective variables).

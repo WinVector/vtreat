@@ -5,9 +5,10 @@ context("Parallel Example")
 test_that("Parallel works", {
   load('uci.car.data.Rdata')
   cl <- NULL
-  if(requireNamespace("parallel",quietly=TRUE)) {
-     cl <- parallel::makeCluster(4)
-  }
+  # This kills build check as I think you are not allowed to spawn.
+  #if(requireNamespace("parallel",quietly=TRUE)) {
+  #   cl <- parallel::makeCluster(4)
+  #}
   
   dYName <- "rating"
   dYTarget <- 'vgood'

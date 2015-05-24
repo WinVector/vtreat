@@ -46,6 +46,17 @@ Function to design variable treatments for binary prediction of a
 categorical outcome.  Data frame is assumed to have only atomic columns
 except for dates (which are converted to numeric).
 }
+\details{
+The main fields are mostly vectors with names (all with the same names in the same order):
+
+- vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
+- varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
+- PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
+- varScores : 1 - PRESSRsquared, so scores near zero are great and one and above are very bad
+- catPseudoRSquared : the pseudo-Rsquared (deviance ratio) of each variable in turn logisticly regressed against the categorical y target.  Similar ot the PRESSRsquared this attempts to be a hold-out statistic
+
+See the vtreat vignette for a bit more detail and a worked example.
+}
 \examples{
 dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
    z=c(1,2,3,4,5,6),
