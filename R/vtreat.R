@@ -837,13 +837,13 @@ catScoreFrame <- function(df,namevec,
 
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
-                              zC,zTarget,forceCatNum,
-                              weights,
-                              minFraction,smFactor,maxMissing,
-                              collarProb,
-                              scoreVars,maxScoreSize,
-                              verbose,
-                              parallelCluster) {
+                               zC,zTarget,forceCatNum,
+                               weights,
+                               minFraction,smFactor,maxMissing,
+                               collarProb,
+                               scoreVars,maxScoreSize,
+                               verbose,
+                               parallelCluster) {
   if(!requireNamespace("parallel",quietly=TRUE)) {
     parallelCluster <- NULL
   }
@@ -854,7 +854,7 @@ catScoreFrame <- function(df,namevec,
     stop("not enough rows in data frame")
   }
   if(collarProb>=0.5) {
-     stop("collarProb must be < 0.5")
+    stop("collarProb must be < 0.5")
   }
   if(verbose) {
     print(paste("desigining treatments",date()))
@@ -893,7 +893,7 @@ catScoreFrame <- function(df,namevec,
   if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
   }
-  trainRows <- 1:nrow(dframe)
+  evalTrainRows <- 1:nrow(dframe)
   scoreRows <- integer(0)
   if (scoreVars) {  # see if we can afford to score on disjoint rows
     # Note: we are sampling according to indices (not weights), 
@@ -901,14 +901,14 @@ catScoreFrame <- function(df,namevec,
     # than a weight-driven sample.
     if(nrow(dframe)>1000) {  # large case, go for disjoint
       repeat {
-         trainRows <- sort(sample.int(nrow(dframe),size=floor(0.8*nrow(dframe))))
-         # technically need to check that y is varying to gaurantee we have good sample
-         # with high probability we get on of each, so shouldn't repeat often (if at all)
-         if(min(zoY[trainRows])<max(zoY[trainRows])) {
-           break
-         }
+        evalTrainRows <- sort(sample.int(nrow(dframe),size=floor(0.75*nrow(dframe))))
+        # technically need to check that y is varying to gaurantee we have good sample
+        # with high probability we get on of each, so shouldn't repeat often (if at all)
+        if(min(zoY[evalTrainRows])<max(zoY[evalTrainRows])) {
+          break
+        }
       }
-      scoreRows <- setdiff(1:nrow(dframe),trainRows)
+      scoreRows <- setdiff(1:nrow(dframe),evalTrainRows)
       if(length(scoreRows)>maxScoreSize) {
         scoreRows <- sample(scoreRows,size=maxScoreSize)
       }
@@ -924,12 +924,13 @@ catScoreFrame <- function(df,namevec,
   # row selections), only select columns out of frame.  This prevents
   # data growth prior to doing the work.
   workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
-  worker <- .varDesigner( zoY[trainRows],
-                          zC[trainRows],zTarget,forceCatNum,
-                          weights[trainRows],
+  # first build the treatments we will return to the user
+  worker <- .varDesigner( zoY,
+                          zC,zTarget,forceCatNum,
+                          weights,
                           minFraction,smFactor,maxMissing,
                           collarProb,
-                          trainRows,nrow(dframe),
+                          1:nrow(dframe),nrow(dframe),
                           verbose)
   if(is.null(parallelCluster)) {
     # print("design serial")
@@ -945,53 +946,80 @@ catScoreFrame <- function(df,namevec,
   catPRSquared <- c()
   PRESSRsquared <- c()
   if (scoreVars) {
-     varMoves <- logical(length(treatedVarNames))
-     names(varMoves) <- treatedVarNames
-     PRESSRsquared <- numeric(length(treatedVarNames))
-     names(PRESSRsquared) <- treatedVarNames
-     if(!is.null(zC)) {
-        catPRSquared <- numeric(length(treatedVarNames))
-        names(catPRSquared) <- treatedVarNames
-     }
-     if(verbose) {
-       print(paste("scoring columns",date()))
-     }
-     treatedZoY <- zoY[scoreRows]
-     treatedZC <- c()
-     if(!is.null(zC)) {
-       treatedZC <- zC[scoreRows]
-     }
-     treatedWeights <- weights[scoreRows]
-     # In building the workList don't transform any variables (such as making
-     # row selections), only select columns out of frame.  This prevents
-     # data growth prior to doing the work.
-     workList <- list()
-     for(ti in treatments) {
-        workList[[length(workList)+1]] <- list(ti=ti,
-                                               xcolOrig=dframe[[ti$origvar]])
-     }
-     worker <- .varScorer(treatedZoY,treatedZC,zTarget,
-                          treatedWeights,scoreRows,verbose) 
-     if(is.null(parallelCluster)) {
-       # print("score serial")
-       scoreList <- lapply(workList,worker)
-     } else {
-       # print("score parallel")
-       scoreList <- parallel::parLapply(parallelCluster,workList,worker)
-     }
-     for(wpair in scoreList) {
-        subMoves <- wpair$varMoves
-        for(nv in names(subMoves)) {
-           varMoves[[nv]] <- subMoves[[nv]]
-           if(varMoves[[nv]]) {
-             PRESSRsquared[[nv]] <- wpair$subScores[[nv]]
-             if(!is.null(catPRSquared)) {
-               catPRSquared[[nv]] <- wpair$subCScores[[nv]]
-             }
-           }
+    if(length(treatedVarNames)==nrow(dframe)) {
+      evalTreatments <- treatments
+    } else {
+      # now build treatments we will use to estimate scores (try to make them disjoint)
+      # from test rows if we have enough data
+      worker <- .varDesigner( zoY[evalTrainRows],
+                              zC[evalTrainRows],zTarget,forceCatNum,
+                              weights[evalTrainRows],
+                              minFraction,smFactor,maxMissing,
+                              collarProb,
+                              evalTrainRows,nrow(dframe),
+                              verbose)
+      if(is.null(parallelCluster)) {
+        # print("design serial")
+        evalTreatments <- lapply(workList,worker)
+      } else {
+        # print("design parallel")
+        evalTreatments <- parallel::parLapply(parallelCluster,workList,worker)
+      }
+      evalTreatments <- unlist(evalTreatments,recursive=FALSE)
+    }
+    # get scores for our treatments, using the eval treatments
+    # there is a risk of name-mismatch (as each may be a different set)
+    # these are going to be rare low-utility variables (due to non-variation
+    # or levels not showing up), so give them a useless score.
+    varMoves <- logical(length(treatedVarNames))
+    names(varMoves) <- treatedVarNames
+    PRESSRsquared <- numeric(length(treatedVarNames))
+    names(PRESSRsquared) <- treatedVarNames
+    if(!is.null(zC)) {
+      catPRSquared <- numeric(length(treatedVarNames))
+      names(catPRSquared) <- treatedVarNames
+    }
+    if(verbose) {
+      print(paste("scoring columns",date()))
+    }
+    treatedZoY <- zoY[scoreRows]
+    treatedZC <- c()
+    if(!is.null(zC)) {
+      treatedZC <- zC[scoreRows]
+    }
+    treatedWeights <- weights[scoreRows]
+    # In building the workList don't transform any variables (such as making
+    # row selections), only select columns out of frame.  This prevents
+    # data growth prior to doing the work.
+    workList <- list()
+    for(ti in evalTreatments) {
+      workList[[length(workList)+1]] <- list(ti=ti,
+                                             xcolOrig=dframe[[ti$origvar]])
+    }
+    worker <- .varScorer(treatedZoY,treatedZC,zTarget,
+                         treatedWeights,scoreRows,verbose) 
+    if(is.null(parallelCluster)) {
+      # print("score serial")
+      scoreList <- lapply(workList,worker)
+    } else {
+      # print("score parallel")
+      scoreList <- parallel::parLapply(parallelCluster,workList,worker)
+    }
+    for(wpair in scoreList) {
+      subMoves <- wpair$varMoves
+      for(nv in names(subMoves)) {
+        if(nv %in% treatedVarNames) {
+          varMoves[[nv]] <- subMoves[[nv]]
+          if(varMoves[[nv]]) {
+            PRESSRsquared[[nv]] <- wpair$subScores[[nv]]
+            if(!is.null(catPRSquared)) {
+              catPRSquared[[nv]] <- wpair$subCScores[[nv]]
+            }
+          }
         }
-     }
-     varScores <- 1-PRESSRsquared
+      }
+    }
+    varScores <- 1-PRESSRsquared
   }
   plan <- list(treatments=treatments,
                vars=treatedVarNames,
