@@ -554,7 +554,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
   force(weights)
   force(normalizationStrat)
   function(wpair) {
-    v = wpair$v
+    #v = wpair$v
     x = wpair$col
     pressStatOfBestLinearFit(x,y,weights,normalizationStrat)
   }
@@ -671,7 +671,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(yTarget)
   force(weights)
   function(wpair) {
-    v = wpair$v
+    #v = wpair$v
     x = wpair$col
     catScore(x,yC,yTarget,weights)
   }
