@@ -946,7 +946,7 @@ catScoreFrame <- function(df,namevec,
   catPRSquared <- c()
   PRESSRsquared <- c()
   if (scoreVars) {
-    if(length(treatedVarNames)==nrow(dframe)) {
+    if(length(evalTrainRows)==nrow(dframe)) {
       evalTreatments <- treatments
     } else {
       # now build treatments we will use to estimate scores (try to make them disjoint)
