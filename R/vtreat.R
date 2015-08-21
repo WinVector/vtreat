@@ -545,7 +545,13 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
     error <- error + wi*(yi-ye)^2
   }
   eConst <- .PRESSnormalization(normalizationStrat,y,weights)
-  1.0 - error/eConst
+  pRsq <- 1.0 - error/eConst
+  sig <- 1.0
+  if(error<eConst) {
+     Fstat <- (eConst-error)*(n-2)/(error)
+     sig <- pf(Fstat,1,n-2,lower.tail=F)
+  }
+  list(rsq=pRsq,sig=sig)
 }
 
 
@@ -570,60 +576,30 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(n)
   }
-  # get hold out pseudo-Rsquareds
-  pRs <- numeric(0)
-  isGoodSample <- function(isTrain) {
-    (sum(isTrain)>1) && (sum(isTrain)<n) &&
-      (max(tf$y[isTrain])>min(tf$y[isTrain])) &&
-      (max(tf$x[isTrain])>min(tf$x[isTrain]))
-  }
-  if(n<=100) {
-    trainSet <- lapply(1:n,function(i) { v=!logical(n); v[[i]]=FALSE; v})
-    trainSet <- trainSet[vapply(trainSet,isGoodSample,logical(1))]
-  } else {
-    trainSet <- list()
-    repnum <- 0
-    repeatTarget = max(5,floor(10000/n))
-    while((repnum<200)&&(length(trainSet)<repeatTarget)) {
-      repnum <- repnum+1
-      isTrain <- runif(n)<=0.8
-      if(isGoodSample(isTrain)) {
-        trainSet[[length(trainSet)+1]] <- isTrain
-      }
+  origOpt <- options()
+  options(warn=-1)
+  tryCatch({      
+    model <- glm(as.formula('y~x'),
+                 data=tf,
+                 family=binomial(link='logit'),
+                 weights=weights)
+    if(model$converged) {
+      df.null <- n
+      df.model <- n-2
+      deldf <- df.null - df.model
+      null.dev <- .deviance(tf$y,numeric(n)+mean(tf$y))
+      py <- predict(model,type='response',
+                    newdata=tf)
+      resid.dev <- .deviance(tf$y,py)
+      pseudoR2 <- 1 - resid.dev/null.dev
+      delDev <- null.dev - resid.dev
+      sig <- pchisq(delDev,deldf,lower.tail=F)
+      return(list(pRsq=pseudoR2,sig=sig))
     }
-  }
-  if(length(trainSet)>0) {
-    origOpt <- options()
-    options(warn=-1)
-    for(isTrain in trainSet) {
-      if(isGoodSample(isTrain)) {
-        tryCatch({      
-          yTest <- tf$y[!isTrain]
-          pNull <- mean(tf$y) + numeric(length(yTest))
-          devNull <- .deviance(yTest,pNull)
-          model <- glm(as.formula('y~x'),
-                       data=tf[isTrain,,drop=FALSE],
-                       family=binomial(link='logit'),
-                       weights=weights[isTrain])
-          if(model$converged) {
-            py <- predict(model,type='response',
-                          newdata=tf[!isTrain,,drop=FALSE])
-            devModel <- .deviance(yTest,py)
-            pseudoR2 <- 1 - devModel/devNull
-            pRs <- c(pRs,pseudoR2)
-          }
-        },
-        error=function(e){})
-      }
-    }
-    options(origOpt)
-    if(length(pRs)>0) {
-      return(median(pRs))
-    }
-  }
-  0.0
+  },
+  error=function(e){})
+  return(list(pRsq=0.0,sig=1.0))
 }
-
 
 
 
@@ -657,24 +633,34 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     nms <- names(varMoves)[as.logical(varMoves)]
     subScores <- c()
     catScores <- c()
+    pRsq <- c()
+    pSig <- c()
+    cRsq <- c()
+    cSig <- c()
     if(length(nms>0)) {
-      subScores <- vapply(nms,
+      subScores <- lapply(nms,
                           function(c) pressStatOfBestLinearFit(subF[[c]],
                                                                treatedZoY,
                                                                treatedWeights,
-                                                               'total'),
-                          double(1))
+                                                               'total'))
       names(subScores) <- nms
+      pRsq <- vapply(subScores,function(z) z$rsq,numeric(1))
+      pSig <- vapply(subScores,function(z) z$sig,numeric(1))
       if(!is.null(treatedZC)) {
-        catScores <- vapply(nms,
+        catScores <- lapply(nms,
                             function(c) catScore(subF[[c]],
                                                   treatedZC,zTarget,
-                                                  treatedWeights),
-                            double(1))
-        names(subScores) <- nms
+                                                  treatedWeights))
+        names(catScores) <- nms
+        cRsq <- vapply(catScores,function(z) z$pRsq,numeric(1))
+        cSig <- vapply(catScores,function(z) z$sig,numeric(1))
       }
     }
-    list(ti=ti,varMoves=varMoves,subScores=subScores,subCScores=catScores)
+    list(ti=ti,varMoves=varMoves,
+         pRsq=pRsq,
+         pSig=pSig,
+         cRsq=cRsq,
+         cSig=cSig)
   }
 }
 
@@ -866,6 +852,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   varScores <- c()
   catPRSquared <- c()
   PRESSRsquared <- c()
+  sig <- c()
   if (scoreVars) {
     if(length(evalTrainRows)==nrow(dframe)) {
       evalTreatments <- treatments
@@ -896,6 +883,10 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     names(varMoves) <- treatedVarNames
     PRESSRsquared <- numeric(length(treatedVarNames))
     names(PRESSRsquared) <- treatedVarNames
+    varScores <- numeric(length(treatedVarNames)) + 1.0
+    names(varScores) <- treatedVarNames
+    sig <- numeric(length(treatedVarNames)) + 1.0
+    names(sig) <- treatedVarNames
     if(!is.null(zC)) {
       catPRSquared <- numeric(length(treatedVarNames))
       names(catPRSquared) <- treatedVarNames
@@ -932,19 +923,22 @@ catScore <- function(x,yC,yTarget,weights=c()) {
         if(nv %in% treatedVarNames) {
           varMoves[[nv]] <- subMoves[[nv]]
           if(varMoves[[nv]]) {
-            PRESSRsquared[[nv]] <- wpair$subScores[[nv]]
+            PRESSRsquared[[nv]] <- wpair$pRsq[[nv]]
+            varScores[[nv]] <- 1.0 - PRESSRsquared[[nv]]
+            sig[[nv]] <- wpair$pSig[[nv]]
             if(!is.null(catPRSquared)) {
-              catPRSquared[[nv]] <- wpair$subCScores[[nv]]
+              catPRSquared[[nv]] <- wpair$cRsq[[nv]]
+              varScores[[nv]] <- 1.0 - catPRSquared[[nv]]
+              sig[[nv]] <- wpair$cSig[[nv]]
             }
           }
         }
       }
     }
-    varScores <- 1-PRESSRsquared
   }
   plan <- list(treatments=treatments,
                vars=treatedVarNames,
-               varScores=varScores,PRESSRsquared=PRESSRsquared,
+               varScores=varScores,PRESSRsquared=PRESSRsquared,sig=sig,
                varMoves=varMoves,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
@@ -1142,7 +1136,8 @@ prepare <- function(treatmentplan,dframe,
     usableVars <- intersect(usableVars,names(treatmentplan$varMoves)[treatmentplan$varMoves])
   }
   if((!is.null(treatmentplan$varScores)) &&(!is.null(pruneLevel))) {
-    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[treatmentplan$varScores<=pruneLevel])
+    canUse <- (treatmentplan$varScores<=pruneLevel) & (treatmentplan$sig<1.0)
+    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[canUse])
   }
   if(!is.null(varRestriction)) {
      usableVars <- intersect(usableVars,varRestriction)
