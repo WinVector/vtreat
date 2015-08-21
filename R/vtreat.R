@@ -497,7 +497,6 @@ hold1OutMeans <- function(y,weights) {
 #' @param normalizationStrat (optional) 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
 #' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
 #' @seealso \code{\link{hold1OutMeans}} 
-#' @export
 pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
@@ -549,45 +548,6 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
   1.0 - error/eConst
 }
 
-.pressStatOfBestLinearFitFrameWorker <- function(y,weights,normalizationStrat) {
-  force(y)
-  force(weights)
-  force(normalizationStrat)
-  function(wpair) {
-    #v = wpair$v
-    x = wpair$col
-    pressStatOfBestLinearFit(x,y,weights,normalizationStrat)
-  }
-}
-
-#' Compute the PRESS R-squared statistic of a 1-variable linear model
-#' Can use a parallel cluster (and sends only sections of data to cluster elements)
-#' @param df numeric data frame (no NAs/NULLs) effective variables
-#' @param namevec names of columns to process
-#' @param y numeric (no NAs/NULLs) outcome variable
-#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @param normalizationStrat (optional) 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
-#' @return PRESS statistics of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
-#' @seealso \code{\link{hold1OutMeans}} 
-#' @export
-pressStatOfBestLinearFitFrame <- function(df,namevec,
-                                          y,weights=c(),normalizationStrat='total',
-                                          parallelCluster=c()) {
-  if(!requireNamespace("parallel",quietly=TRUE)) {
-    parallelCluster <- NULL
-  }
-  workList <- lapply(namevec,function(v) { list(v=v,col=df[[v]])})
-  worker <- .pressStatOfBestLinearFitFrameWorker(y,weights,normalizationStrat)
-  if(is.null(parallelCluster)) {
-    res <- lapply(workList,worker)
-  } else {
-    res <- parallel::parLapply(parallelCluster,workList,worker)
-  }
-  res <- as.numeric(res)
-  names(res) <- namevec
-  res
-}
 
 
 
@@ -604,7 +564,6 @@ pressStatOfBestLinearFitFrame <- function(df,namevec,
 #' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 #' @seealso \code{\link{hold1OutMeans}} 
-#' @export
 catScore <- function(x,yC,yTarget,weights=c()) {
   tf <- data.frame(x=x,y=(yC==yTarget))
   n <- nrow(tf)
@@ -666,46 +625,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 }
 
 
-.catScoreFrameWorker <- function(yC,yTarget,weights) {
-  force(yC)
-  force(yTarget)
-  force(weights)
-  function(wpair) {
-    #v = wpair$v
-    x = wpair$col
-    catScore(x,yC,yTarget,weights)
-  }
-}
 
-#' return pseudo R-squareds
-#' Can use a parallel cluster (and sends only sections of data to cluster elements)
-#' @param df numeric data frame (no NAs/NULLs) effective variables
-#' @param yC  (no NAs/NULLs) outcome values
-#' @param yTarget scalar target for yC to match (yC==tTarget is goal)
-#' @param namevec names of columns to process
-#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
-#' @return pseud R-squareds catScpre(y,weights), it is an R-squared so 1 is good 0 is bad
-#' @seealso \code{\link{hold1OutMeans}} 
-#' @export
-catScoreFrame <- function(df,namevec,
-                          yC,yTarget,
-                          weights=c(),
-                          parallelCluster=c()) {
-  if(!requireNamespace("parallel",quietly=TRUE)) {
-    parallelCluster <- NULL
-  }
-  workList <- lapply(namevec,function(v) { list(v=v,col=df[[v]])})
-  worker <- .catScoreFrameWorker(yC,yTarget,weights)
-  if(is.null(parallelCluster)) {
-    res <- lapply(workList,worker)
-  } else {
-    res <- parallel::parLapply(parallelCluster,workList,worker)
-  }
-  res <- as.numeric(res)
-  names(res) <- namevec
-  res
-}
+
+
 
 # TODO: pivot warnings/print out of here
 .varScorer <- function(treatedZoY,treatedZC,zTarget,
@@ -762,7 +684,7 @@ catScoreFrame <- function(df,namevec,
 # design a treatment for a single variables
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
 .varDesigner <- function(zoY,
-                         zC,zTarget,forceCatNum,
+                         zC,zTarget,
                          weights,
                          minFraction,smFactor,maxMissing,
                          collarProb,
@@ -771,7 +693,6 @@ catScoreFrame <- function(df,namevec,
   force(zoY)
   force(zC)
   force(zTarget)
-  force(forceCatNum)
   force(weights)
   force(minFraction)
   force(smFactor)
@@ -817,7 +738,7 @@ catScoreFrame <- function(df,namevec,
               ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,weights)
               acceptTreatment(ti)      
             }
-            if((is.null(zC))||(forceCatNum)) { # is numeric mode, or forcing extra 0/1 regression in categorical mode
+            if(is.null(zC)) { # is numeric mode
               ti <- .mkCatNum(v,vcol,zoY,smFactor,weights)
               acceptTreatment(ti)
             }
@@ -837,7 +758,7 @@ catScoreFrame <- function(df,namevec,
 
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
-                               zC,zTarget,forceCatNum,
+                               zC,zTarget,
                                weights,
                                minFraction,smFactor,maxMissing,
                                collarProb,
@@ -926,7 +847,7 @@ catScoreFrame <- function(df,namevec,
   workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
   # first build the treatments we will return to the user
   worker <- .varDesigner( zoY,
-                          zC,zTarget,forceCatNum,
+                          zC,zTarget,
                           weights,
                           minFraction,smFactor,maxMissing,
                           collarProb,
@@ -952,7 +873,7 @@ catScoreFrame <- function(df,namevec,
       # now build treatments we will use to estimate scores (try to make them disjoint)
       # from test rows if we have enough data
       worker <- .varDesigner( zoY[evalTrainRows],
-                              zC[evalTrainRows],zTarget,forceCatNum,
+                              zC[evalTrainRows],zTarget,
                               weights[evalTrainRows],
                               minFraction,smFactor,maxMissing,
                               collarProb,
@@ -1070,7 +991,6 @@ catScoreFrame <- function(df,namevec,
 #' @param scoreVars optional if TRUE attempt to estimate individual variable utility.
 #' @param maxScoreSize optional maximum size for treated variable scoring frame
 #' @param verbose if TRUE print progress.
-#' @param forceCatNum set to true to also get _catN style impact variables (not needed, for backward compatability)
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
@@ -1092,11 +1012,10 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               collarProb=0.00,
                               scoreVars=TRUE,maxScoreSize=100000L,
                               verbose=TRUE,
-                              forceCatNum=FALSE,
                               parallelCluster=NULL) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
-                     dframe[[outcomename]],outcometarget,forceCatNum,
+                     dframe[[outcomename]],outcometarget,
                      weights,
                      minFraction,smFactor,maxMissing,
                      collarProb,
@@ -1158,7 +1077,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               parallelCluster=NULL) {
   ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
-                     c(),c(),FALSE,
+                     c(),c(),
                               weights,
                               minFraction,smFactor,maxMissing,
                               collarProb,
