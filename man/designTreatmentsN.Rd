@@ -49,7 +49,6 @@ The main fields are mostly vectors with names (all with the same names in the sa
 - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
 - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
 - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-- varScores : 1 - PRESSRsquared, so scores near zero are great and one and above are very bad
 
 See the vtreat vignette for a bit more detail and a worked example.
 }

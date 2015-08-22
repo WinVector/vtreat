@@ -822,33 +822,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
   }
-  evalTrainRows <- 1:nrow(dframe)
-  scoreRows <- integer(0)
-  if (scoreVars) {  # see if we can afford to score on disjoint rows
-    # Note: we are sampling according to indices (not weights), 
-    # so this can have a bit higher variance 
-    # than a weight-driven sample.
-    if(nrow(dframe)>1000) {  # large case, go for disjoint
-      repeat {
-        evalTrainRows <- sort(sample.int(nrow(dframe),size=floor(0.75*nrow(dframe))))
-        # technically need to check that y is varying to gaurantee we have good sample
-        # with high probability we get on of each, so shouldn't repeat often (if at all)
-        if(min(zoY[evalTrainRows])<max(zoY[evalTrainRows])) {
-          break
-        }
-      }
-      scoreRows <- setdiff(1:nrow(dframe),evalTrainRows)
-      if(length(scoreRows)>maxScoreSize) {
-        scoreRows <- sample(scoreRows,size=maxScoreSize)
-      }
-    } else {  # small case, allow overlap
-      if(nrow(dframe)<=maxScoreSize) {
-        scoreRows <- 1:nrow(dframe)
-      } else {
-        scoreRows <- sort(sample.int(nrow(dframe),size=maxScoreSize))
-      }
-    }
-  }
   # In building the workList don't transform any variables (such as making
   # row selections), only select columns out of frame.  This prevents
   # data growth prior to doing the work.
@@ -870,13 +843,39 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
   treatments <- unlist(treatments,recursive=FALSE)
   treatedVarNames <- as.character(getNewVarNames(treatments))
+  # now (optinally) score variables
   varMoves <- c()
   PRESSRsquared <- c()
   psig <- c()
   catPRSquared <- c()
   csig <- c()
   sig <- c()
-  if (scoreVars) {
+  if (scoreVars) {  # see if we can afford to score on disjoint rows
+    evalTrainRows <- 1:nrow(dframe)
+    scoreRows <- integer(0)
+    # Note: we are sampling according to indices (not weights), 
+    # so this can have a bit higher variance 
+    # than a weight-driven sample.
+    if(nrow(dframe)>100) {  # large case, go for disjoint
+      repeat {
+        evalTrainRows <- sort(sample.int(nrow(dframe),size=floor(0.75*nrow(dframe))))
+        # technically need to check that y is varying to gaurantee we have good sample
+        # with high probability we get on of each, so shouldn't repeat often (if at all)
+        if(min(zoY[evalTrainRows])<max(zoY[evalTrainRows])) {
+          break
+        }
+      }
+      scoreRows <- setdiff(1:nrow(dframe),evalTrainRows)
+      if(length(scoreRows)>maxScoreSize) {
+        scoreRows <- sample(scoreRows,size=maxScoreSize)
+      }
+    } else {  # small case, allow overlap
+      if(nrow(dframe)<=maxScoreSize) {
+        scoreRows <- 1:nrow(dframe)
+      } else {
+        scoreRows <- sort(sample.int(nrow(dframe),size=maxScoreSize))
+      }
+    }
     if(length(evalTrainRows)==nrow(dframe)) {
       evalTreatments <- treatments
     } else {
