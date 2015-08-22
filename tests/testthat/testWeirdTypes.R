@@ -30,15 +30,13 @@ test_that("Protect from odd columns types (and warn)", {
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
   dCTreated <- prepare(treatmentsC,d,pruneSig=c())
-  expectedCCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean",     "xMatrixC1_lev_x.88",
-                          "xMatrixC1_lev_x.89", "xMatrixC1_lev_x.90", "xMatrixC1_catB",     "y" ))
+  expectedCCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean",   "y" ))
   expect_true(nrow(dCTreated)==nrow(d))
   expect_true(all(sort(colnames(dCTreated))==expectedCCols))
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
   dNTreated <- prepare(treatmentsN,d,pruneSig=c())
   expect_true(nrow(dNTreated)==nrow(d))
-  expectedNCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean",     "xMatrixC1_lev_x.88",
-                          "xMatrixC1_lev_x.89", "xMatrixC1_lev_x.90", "xMatrixC1_catN",     "y"))
+  expectedNCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean", "y"))
   expect_true(all(sort(colnames(dNTreated))==expectedNCols))
   
   # demonstarate catching a type error
