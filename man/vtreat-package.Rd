@@ -57,7 +57,7 @@ sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 # all slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
-dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
+dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 
 # numeric example
 dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
@@ -71,7 +71,7 @@ sapply(dTrainNTreated[,varsN,drop=FALSE],mean)
 # all slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
-dTestNTreated <- prepare(treatmentsN,dTestN,pruneLevel=c(),scale=TRUE)
+dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 
 # for large data sets you can consider designing the treatments on 
 # a subset like: d[sample(1:dim(d)[[1]],1000),]

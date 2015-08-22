@@ -16,7 +16,6 @@
 #' print(as.character(getNewVarNames(treatmentsN$treatments)))
 #' print(as.character(getNewVarNames(treatmentsN$treatments,c('x'))))
 #' 
-#' @export
 getNewVarNames <- function(treatments,origVarNames=c()) {
   resCount <- 0
   for(ti in treatments) {
@@ -29,7 +28,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   for(ti in treatments) {
      if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
         for(ni in ti$newvars) {
-          names[[j]] <- ni
+          names[[j]] <- list(new=ni,orig=ti$origvar)
           j <- j + 1
         }
      }
@@ -144,7 +143,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 #'
 #' Original variable name from a treatmentplan$treatment item.
 #' @param x vtreatment item.
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} 
 #' @export
 #' 
 vorig <- function(x) { x$origvar }
@@ -153,7 +152,7 @@ vorig <- function(x) { x$origvar }
 #'
 #' New treated variable names from a treatmentplan$treatment item.
 #' @param x vtreatment item
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} 
 #' @export
 vnames <- function(x) { x$newvars }
 
@@ -845,7 +844,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     treatments <- parallel::parLapply(parallelCluster,workList,worker)
   }
   treatments <- unlist(treatments,recursive=FALSE)
-  treatedVarNames <- as.character(getNewVarNames(treatments))
+  nmMap <- getNewVarNames(treatments)
+  treatedVarNames <- vapply(nmMap,function(p) {p$new},character(1))
+  origVarNames <- vapply(nmMap,function(p) {p$orig},character(1))
   # now (optinally) score variables
   varMoves <- c()
   PRESSRsquared <- c()
@@ -853,6 +854,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   catPRSquared <- c()
   csig <- c()
   sig <- c()
+  scoreFrame <- c()
   if (scoreVars) {  # see if we can afford to score on disjoint rows
     evalTrainRows <- 1:nrow(dframe)
     scoreRows <- integer(0)
@@ -918,10 +920,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     }
     sig <- numeric(length(treatedVarNames)) + 1.0
     names(sig) <- treatedVarNames
-    if(!is.null(zC)) {
-      catPRSquared <- numeric(length(treatedVarNames))
-      names(catPRSquared) <- treatedVarNames
-    }
     if(verbose) {
       print(paste("scoring columns",date()))
     }
@@ -966,6 +964,16 @@ catScore <- function(x,yC,yTarget,weights=c()) {
         }
       }
     }
+    scoreFrame <- data.frame(varName=treatedVarNames,
+                             origName=origVarNames,
+                             varMoves=varMoves,
+                             PRESSRsquared=PRESSRsquared,psig=psig,
+                             sig=sig,
+                             stringsAsFactors = FALSE)
+    if(!is.null(catPRSquared)) {
+      scoreFrame$catPRSquared <- catPRSquared
+      scoreFrame$csig <- csig
+    }
   }
   plan <- list(treatments=treatments,
                vars=treatedVarNames,
@@ -973,6 +981,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                PRESSRsquared=PRESSRsquared,psig=psig,
                catPRSquared=catPRSquared,csig=csig,
                sig=sig,
+               scoreFrame=scoreFrame,
+               nmMap=nmMap,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
   if(!is.null(catPRSquared)) {
@@ -1019,7 +1029,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} 
 #' @examples
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
@@ -1081,7 +1091,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{getNewVarNames}}
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} 
 #' @examples
 #' 
 #' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),

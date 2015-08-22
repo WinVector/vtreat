@@ -13,6 +13,6 @@ vorig(x)
 Original variable name from a treatmentplan$treatment item.
 }
 \seealso{
-\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{getNewVarNames}}
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 }
 
