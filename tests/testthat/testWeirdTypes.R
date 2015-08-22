@@ -29,21 +29,21 @@ test_that("Protect from odd columns types (and warn)", {
   yTarget <- 1
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
-  dCTreated <- prepare(treatmentsC,d,pruneLevel=NULL)
+  dCTreated <- prepare(treatmentsC,d,pruneSig=c())
   expectedCCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean",     "xMatrixC1_lev_x.88",
                           "xMatrixC1_lev_x.89", "xMatrixC1_lev_x.90", "xMatrixC1_catB",     "y" ))
   expect_true(nrow(dCTreated)==nrow(d))
   expect_true(all(sort(colnames(dCTreated))==expectedCCols))
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
-  dNTreated <- prepare(treatmentsN,d,pruneLevel=NULL)
+  dNTreated <- prepare(treatmentsN,d,pruneSig=c())
   expect_true(nrow(dNTreated)==nrow(d))
   expectedNCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean",     "xMatrixC1_lev_x.88",
                           "xMatrixC1_lev_x.89", "xMatrixC1_lev_x.90", "xMatrixC1_catN",     "y"))
   expect_true(all(sort(colnames(dNTreated))==expectedNCols))
   
-  # catch a type change failure
+  # demonstarate catching a type error
   d$xInteger <- as.character(d$xInteger)
-  expect_error(prepare(treatmentsN,d,pruneLevel=NULL),"Error in .vtreatList")
+  expect_error(prepare(treatmentsN,d,pruneSig=c()),"Error in .vtreatList")
   
   options(op) # restore settings
 })

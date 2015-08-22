@@ -5,7 +5,7 @@ context("Variable Scoring")
 test_that("Numeric Var Scores as expected w1", {
   set.seed(23525)
   zip <- paste('z',1:400)
-  N = 1000
+  N = 10000
   d <- data.frame(zip=sample(zip,N,replace=TRUE),
                   zip2=sample(zip,N,replace=TRUE),
                   y=runif(N))
@@ -15,16 +15,13 @@ test_that("Numeric Var Scores as expected w1", {
   d$yc <- d$y>=mean(d$y)
   library(vtreat)
   tN <- designTreatmentsN(d,c('zip','zip2'),'y',verbose=FALSE)
-  dTN <- prepare(tN,d)
-  #print(tN$varScores)
+  dTN <- prepare(tN,d,pruneSig=0.99)
   tC <- designTreatmentsC(d,c('zip','zip2'),'yc',TRUE,verbose=FALSE)
-  dTC <- prepare(tC,d)
-  #print(tC$varScores)
-  
-  
-  #expect_true(tN$varScores[['zip_catN']]>1) # not true anymore due to upward scoring bias
-  expect_true(tN$varScores[['zip2_catN']]<1)
-  #expect_true(tC$varScores[['zip_catB']]>1) # not true anymore due to upward scoring bias
-  expect_true(tC$varScores[['zip2_catB']]<1)
+  dTC <- prepare(tC,d,pruneSig=0.99)
+
+  expect_true(tN$sig[['zip2_catN']]<0.05)
+  expect_true(tC$sig[['zip2_catB']]<0.05)
+  expect_true(tN$sig[['zip_catN']]>0.5)
+  expect_true(tC$sig[['zip_catB']]>0.5)
 })
 

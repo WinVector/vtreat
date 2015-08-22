@@ -17,8 +17,8 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.4.0.0100\cr
-Date: \tab 2015-08-21\cr
+Version: \tab 0.5.0.0100\cr
+Date: \tab 2015-08-22\cr
 License: \tab GNU General Public License version 3\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
@@ -50,7 +50,7 @@ dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE)
+dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
@@ -64,7 +64,7 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
    z=c(1,2,3,4,5,NA,7),y=c(0,0,0,1,0,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneLevel=c(),scale=TRUE)
+dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 

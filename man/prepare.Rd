@@ -4,21 +4,23 @@
 \alias{prepare}
 \title{prepare}
 \usage{
-prepare(treatmentplan, dframe, pruneLevel = 0.99, scale = FALSE,
-  doCollar = TRUE, varRestriction = c())
+prepare(treatmentplan, dframe, pruneSig, scale = FALSE, doCollar = TRUE,
+  varRestriction = c(), parallelCluster = NULL)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
 
 \item{dframe}{Data frame to be treated}
 
-\item{pruneLevel}{optional suppress variables with varScore below this threshold.}
+\item{pruneSig}{suppress variables with significance above this level}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 
 \item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 
 \item{varRestriction}{optional list of treated variable names to restrict to}
+
+\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }
 \value{
 treated data frame (all columns numeric, without NA,NaN)
@@ -36,15 +38,15 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
     z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-dTrainNTreated <- prepare(treatmentsN,dTrainN)
-dTestNTreated <- prepare(treatmentsN,dTestN)
+dTrainNTreated <- prepare(treatmentsN,dTrainN,1.0)
+dTestNTreated <- prepare(treatmentsN,dTestN,1.0)
 
 dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
     z=c(1,2,3,4,5,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC,dTrainC)
-dTestCTreated <- prepare(treatmentsC,dTestC)
+dTrainCTreated <- prepare(treatmentsC,dTrainC,1.0)
+dTestCTreated <- prepare(treatmentsC,dTestC,1.0)
 }
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}

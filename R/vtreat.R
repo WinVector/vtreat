@@ -81,7 +81,8 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 }
 
 .vtreatA <- function(vtreat,xcol,scale,doCollar) {
-  dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),stringsAsFactors=FALSE)
+  dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),
+                        stringsAsFactors=FALSE)
   colnames(dout) <- vtreat$newvars
   if(scale) {
     for(j in seq_along(vtreat$scales$a)) {
@@ -92,32 +93,45 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
 }
 
 # colNames a subset of treated variable names
-.vtreatList <- function(treatments,dframe,colNames,scale,doCollar) {
+.vtreatList <- function(treatments,dframe,colNames,scale,doCollar,
+                        parallelCluster) {
+  resCounts <- vapply(treatments,function(ti) { 
+    length(intersect(colNames,ti$newvars))
+  },numeric(1))
+  toProcess <- treatments[resCounts>0]
+  procWorker <- function(ti) {
+    xcolOrig <- dframe[[ti$origvar]]
+    nRows <- length(xcolOrig)
+    xcolClean <- .cleanColumn(xcolOrig,nRows)
+    if(is.null(xcolClean)) {
+      return(paste('column',ti$origvar,
+                 'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+    }
+    if(!is.null(ti$origColClass)) {
+      curColClass <- class(xcolClean)
+      if(curColClass!=ti$origColClass) {
+        return(paste('column',ti$origvar,'expected to convert to ',
+                   ti$origColClass,'saw',class(xcolOrig),curColClass))
+      }
+    }
+    .vtreatA(ti,xcolClean,scale,doCollar)
+  }
+  # TODO: use parralelCluster
+  gs <- lapply(toProcess,procWorker)
+  # pass back first error
+  for(gi in gs) {
+    if(is.character(gi)) {
+      stop(gi)
+    }
+  }
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
-  nRows <- nrow(dframe)
-  if(nRows>0) {
-    for(ti in treatments) {
-      wants <- intersect(colNames,ti$newvars)
-      if(length(wants)>0) {
-        xcolOrig <- dframe[[ti$origvar]]
-        xcolClean <- .cleanColumn(xcolOrig,nRows)
-        if(is.null(xcolClean)) {
-          stop(paste('column',ti$origvar,
-                     'is not a type/class vtreat can work with (',class(xcolOrig),')'))
-        }
-        if(!is.null(ti$origColClass)) {
-           curColClass <- class(xcolClean)
-           if(curColClass!=ti$origColClass) {
-             stop(paste('column',ti$origvar,'expected to convert to ',
-                        ti$origColClass,'saw',class(xcolOrig),curColClass))
-           }
-        }
-        gi <- .vtreatA(ti,xcolClean,scale,doCollar)
-        for(vi in wants) {
-          cols[[vi]] <- gi[[vi]]
-        }
-      }
+  for(ii in seq_len(length(toProcess))) {
+    ti <- toProcess[[ii]]
+    gi <- gs[[ii]]
+    wants <- intersect(colNames,ti$newvars)
+    for(vi in wants) {
+      cols[[vi]] <- gi[[vi]]
     }
   }
   as.data.frame(cols,stringsAsFactors=FALSE)
@@ -591,9 +605,12 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       py <- predict(model,type='response',
                     newdata=tf)
       resid.dev <- .deviance(tf$y,py)
-      pseudoR2 <- 1 - resid.dev/null.dev
-      delDev <- null.dev - resid.dev
-      sig <- pchisq(delDev,deldf,lower.tail=F)
+      pseudoR2 <- 1.0 - resid.dev/null.dev
+      sig <- 1.0
+      if(resid.dev<null.dev) {
+         delDev <- null.dev - resid.dev
+         sig <- pchisq(delDev,deldf,lower.tail=F)
+      }
       return(list(pRsq=pseudoR2,sig=sig))
     }
   },
@@ -791,7 +808,10 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     # memory
   }
   if(nrow(dframe)<=0) {
-    stop("no good rows")
+    stop("no rows")
+  }
+  if(min(weights)<0) {
+    stop("negative weights")
   }
   if(sum(weights)<=0) {
     stop("no non-zero weighted rows")
@@ -855,7 +875,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   psig <- c()
   catPRSquared <- c()
   csig <- c()
-  varScores <- c()
   sig <- c()
   if (scoreVars) {
     if(length(evalTrainRows)==nrow(dframe)) {
@@ -895,8 +914,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       csig <- numeric(length(treatedVarNames)) + NA
       names(csig) <- treatedVarNames
     }
-    varScores <- numeric(length(treatedVarNames)) + 1.0
-    names(varScores) <- treatedVarNames
     sig <- numeric(length(treatedVarNames)) + 1.0
     names(sig) <- treatedVarNames
     if(!is.null(zC)) {
@@ -937,11 +954,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
           if(varMoves[[nv]]) {
             PRESSRsquared[[nv]] <- wpair$pRsq[[nv]]
             psig[[nv]] <- wpair$pSig[[nv]]
-            varScores[[nv]] <- 1.0 - PRESSRsquared[[nv]]
             sig[[nv]] <- psig[[nv]]
             if(!is.null(catPRSquared)) {
               catPRSquared[[nv]] <- wpair$cRsq[[nv]]
-              varScores[[nv]] <- 1.0 - catPRSquared[[nv]]
               csig[[nv]] <- wpair$cSig[[nv]]
               sig[[nv]] <- csig[[nv]]
             }
@@ -955,7 +970,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                varMoves=varMoves,
                PRESSRsquared=PRESSRsquared,psig=psig,
                catPRSquared=catPRSquared,csig=csig,
-               varScores=varScores,sig=sig,
+               sig=sig,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
   if(!is.null(catPRSquared)) {
@@ -984,7 +999,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
 #' - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
 #' - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-#' - varScores : 1 - PRESSRsquared, so scores near zero are great and one and above are very bad
 #' - catPseudoRSquared : the pseudo-Rsquared (deviance ratio) of each variable in turn logisticly regressed against the categorical y target.  Similar ot the PRESSRsquared this attempts to be a hold-out statistic
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
@@ -1049,7 +1063,6 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
 #' - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
 #' - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-#' - varScores : 1 - PRESSRsquared, so scores near zero are great and one and above are very bad
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #' 
@@ -1113,11 +1126,12 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
 #' @param dframe Data frame to be treated
-#' @param pruneLevel optional suppress variables with varScore below this threshold.
+#' @param pruneSig suppress variables with significance above this level
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @return treated data frame (all columns numeric, without NA,NaN)
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 #' @examples
 #' 
@@ -1125,35 +1139,38 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #'     z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
 #' dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 #' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#' dTrainNTreated <- prepare(treatmentsN,dTrainN)
-#' dTestNTreated <- prepare(treatmentsN,dTestN)
+#' dTrainNTreated <- prepare(treatmentsN,dTrainN,1.0)
+#' dTestNTreated <- prepare(treatmentsN,dTestN,1.0)
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
 #'     z=c(1,2,3,4,5,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 #' dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 #' treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-#' dTrainCTreated <- prepare(treatmentsC,dTrainC)
-#' dTestCTreated <- prepare(treatmentsC,dTestC)
+#' dTrainCTreated <- prepare(treatmentsC,dTrainC,1.0)
+#' dTestCTreated <- prepare(treatmentsC,dTestC,1.0)
 #' 
 #' 
 #' @export
-prepare <- function(treatmentplan,dframe,
-  pruneLevel=0.99,scale=FALSE,doCollar=TRUE,
-  varRestriction=c()
-  ) {
+prepare <- function(treatmentplan,dframe,pruneSig,
+  scale=FALSE,doCollar=TRUE,
+  varRestriction=c(),
+  parallelCluster=NULL) {
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
+  if(nrow(dframe)<=0) {
+    stop("no rows")
+  }
   usableVars <- treatmentplan$vars
   if(!is.null(treatmentplan$varMoves)) {
     usableVars <- intersect(usableVars,names(treatmentplan$varMoves)[treatmentplan$varMoves])
   }
-  if((!is.null(treatmentplan$varScores)) &&(!is.null(pruneLevel))) {
-    canUse <- (treatmentplan$varScores<=pruneLevel) & (treatmentplan$sig<1.0)
-    usableVars <- intersect(usableVars,names(treatmentplan$varScores)[canUse])
+  if((!is.null(treatmentplan$sig)) &&(!is.null(pruneSig))) {
+    canUse <- treatmentplan$sig<=pruneSig
+    usableVars <- intersect(usableVars,names(treatmentplan$sig)[canUse])
   }
   if(!is.null(varRestriction)) {
      usableVars <- intersect(usableVars,varRestriction)
@@ -1161,7 +1178,9 @@ prepare <- function(treatmentplan,dframe,
   if(length(usableVars)<=0) {
     stop('no usable vars')
   }
-  treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar)
+  treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar,
+                         parallelCluster)
+  # copy outcome over if it is present
   if(treatmentplan$outcomename %in% colnames(dframe)) {
     treated[[treatmentplan$outcomename]] <- dframe[[treatmentplan$outcomename]]
   }

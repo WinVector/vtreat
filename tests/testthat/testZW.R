@@ -12,14 +12,14 @@ test_that("Test Zero Weights Don't Crash", {
   dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                    weights=trainCWeights,verbose=FALSE)
-  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneLevel=c(),scale=TRUE)
+  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
   varsC <- setdiff(colnames(dTrainCTreated),'y')
   # all input variables should be mean 0
   sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
   # all slopes should be 1
   sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainCTreated)$coefficients[[2]]})
-  dTestCTreated <- prepare(treatmentsC,dTestC,pruneLevel=c(),scale=TRUE)
+  dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
   
   # numeric example
   dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
@@ -31,12 +31,12 @@ test_that("Test Zero Weights Don't Crash", {
   treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                   weights=trainNWeights,
                                   verbose=FALSE)
-  dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneLevel=c(),scale=TRUE)
+  dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=c(),scale=TRUE)
   varsN <- setdiff(colnames(dTrainNTreated),'y')
   # all input variables should be mean 0
   sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
   # all slopes should be 1
   sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainNTreated)$coefficients[[2]]}) 
-  dTestNTreated <- prepare(treatmentsN,dTestN,pruneLevel=c(),scale=TRUE)
+  dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 })

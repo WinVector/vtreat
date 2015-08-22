@@ -10,7 +10,7 @@ test_that("Numeric Var Scores as expected car", {
   pvars <- setdiff(colnames(uci.car.data),dYName)
   treatmentsC <- designTreatmentsC(uci.car.data,
                                    pvars,dYName,dYTarget,verbose=FALSE)
-  dTrainCTreated <- prepare(treatmentsC,uci.car.data)
+  dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=0.99)
   cvars <- setdiff(colnames(dTrainCTreated),dYName)
   
   

@@ -71,7 +71,7 @@ test_that("Work As Expected", {
       }
       treatmentsN <- designTreatmentsN(dTrain,vars,'yN',smFactor=smFactor,
                                        verbose=verbose)
-      dTrainNTreated <- prepare(treatmentsN,dTrain,scale=scale)
+      dTrainNTreated <- prepare(treatmentsN,dTrain,pruneSig=0.99,scale=scale)
       nvars <- setdiff(colnames(dTrainNTreated),'yN')
       if(verbose) {
         print('offsets')
@@ -81,7 +81,7 @@ test_that("Work As Expected", {
       }
       modelN <- lm(paste('yN',paste(nvars,collapse=' + '),sep=' ~ '),
                    data=dTrainNTreated)
-      dTestNTreated <- prepare(treatmentsN,dTest,scale=scale)
+      dTestNTreated <- prepare(treatmentsN,dTest,pruneSig=0.99,scale=scale)
       dTestNTreated$pred <- predict(modelN,newdata=dTestNTreated)
       if(verbose) {
         print(ggplot(data=dTestNTreated,aes(x=pred,y=yN)) + geom_point() +
@@ -94,7 +94,7 @@ test_that("Work As Expected", {
       }
       treatmentsC <- designTreatmentsC(dTrain,vars,'yC',TRUE,smFactor=smFactor,
                                        verbose=verbose)
-      dTrainCTreated <- prepare(treatmentsC,dTrain,scale=scale)
+      dTrainCTreated <- prepare(treatmentsC,dTrain,pruneSig=0.99,scale=scale)
       cvars <- setdiff(colnames(dTrainCTreated),'yC')
       if(verbose) {
         print('offsets')
@@ -104,7 +104,7 @@ test_that("Work As Expected", {
       }
       modelC <- glm(paste('yC',paste(cvars,collapse=' + '),sep=' ~ '),
                     data=dTrainCTreated,family=binomial(link='logit'))
-      dTestCTreated <- prepare(treatmentsC,dTest,scale=scale)
+      dTestCTreated <- prepare(treatmentsC,dTest,pruneSig=0.99,scale=scale)
       dTestCTreated$pred <- predict(modelC,newdata=dTestCTreated,type='response')
       if(verbose) {
         print(ggplot(data=dTestCTreated) + geom_density(aes(x=pred,color=yC)))

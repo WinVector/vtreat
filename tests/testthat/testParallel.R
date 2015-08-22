@@ -18,7 +18,8 @@ test_that("Parallel works", {
   treatmentsCP <- designTreatmentsC(uci.car.data,
                                    pvars,dYName,dYTarget,verbose=FALSE,
                                    parallelCluster=cl)
-  dTrainCTreatedP <- prepare(treatmentsCP,uci.car.data,pruneLevel=NULL)
+  dTrainCTreatedP <- prepare(treatmentsCP,uci.car.data,pruneSig=c(),
+                             parallelCluster=cl)
   if(!is.null(cl)) {
     parallel::stopCluster(cl)
     cl <- NULL
@@ -26,7 +27,7 @@ test_that("Parallel works", {
   set.seed(seedVal)
   treatmentsC <- designTreatmentsC(uci.car.data,
                                     pvars,dYName,dYTarget,verbose=FALSE)
-  dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneLevel=NULL)
+  dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=c())
   expect_true(nrow(dTrainCTreated)==nrow(dTrainCTreatedP))
   expect_true(length(colnames(dTrainCTreated))==length(colnames(dTrainCTreatedP)))
   expect_true(all(colnames(dTrainCTreated)==colnames(dTrainCTreatedP)))
