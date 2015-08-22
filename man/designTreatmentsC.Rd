@@ -6,7 +6,8 @@
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
   minFraction = 0.02, smFactor = 0, maxMissing = 0.04, collarProb = 0,
-  returnXFrame = FALSE, verbose = TRUE, parallelCluster = NULL)
+  returnXFrame = FALSE, scale = FALSE, doCollar = TRUE, verbose = TRUE,
+  parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
@@ -28,6 +29,10 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
 
 \item{returnXFrame}{optional if TRUE return out of sample transformed frame.}
+
+\item{scale}{logical optional controls scaling for scoring and returnXFrame}
+
+\item{doCollar}{logical optional controls collaring for scoring and returnXFrame}
 
 \item{verbose}{if TRUE print progress.}
 
@@ -58,8 +63,8 @@ dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
 dTestC <- data.frame(x=c('a','b','c',NA),
    z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC,dTrainC)
-dTestCTreated <- prepare(treatmentsC,dTestC)
+dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=0.99)
+dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=0.99)
 }
 \seealso{
 \code{\link{prepare}} \code{\link{designTreatmentsN}}

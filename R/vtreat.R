@@ -13,8 +13,6 @@
 #' dTestN <- data.frame(x=c('a','b','c',NA),
 #'     z=c(10,20,30,NA))
 #' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#' print(as.character(getNewVarNames(treatmentsN$treatments)))
-#' print(as.character(getNewVarNames(treatmentsN$treatments,c('x'))))
 #' 
 getNewVarNames <- function(treatments,origVarNames=c()) {
   resCount <- 0
@@ -707,7 +705,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                             weights,
                             minFraction,smFactor,maxMissing,
                             collarProb,
-                            scale,doCollar) {
+                            scale,doCollar,tryCrossVal) {
   force(outcomename)
   force(zoY)
   force(zC)
@@ -719,6 +717,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(collarProb)
   force(scale)
   force(doCollar)
+  force(tryCrossVal)
   nRows = length(zoY)
   # build a partition plan
   evalSets <- list()
@@ -733,27 +732,29 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     }
     evalSets <- as.list(seq_len(nRows))
   } else {
-    #  Try for 4-way cross val
-    ncross <- 4
-    for(tries in 1:20) {
-      evalSets <- list()
-      groups <- sample.int(ncross,nRows,replace=TRUE)
-      good <- FALSE
-      if(length(groups)>1) {
-        good <- TRUE
-        for(g in unique(groups)) {
-          evalG <- which(groups==g)
-          trainG <- which(groups!=g)
-          evalSets[[length(evalSets)+1]] <- evalG
-          if(min(zoY[trainG])>=max(zoY[trainG])) {
-            good <- FALSE
+    if(tryCrossVal) {
+      #  Try for 4-way cross val
+      ncross <- 4
+      for(tries in 1:20) {
+        evalSets <- list()
+        groups <- sample.int(ncross,nRows,replace=TRUE)
+        good <- FALSE
+        if(length(groups)>1) {
+          good <- TRUE
+          for(g in unique(groups)) {
+            evalG <- which(groups==g)
+            trainG <- which(groups!=g)
+            evalSets[[length(evalSets)+1]] <- evalG
+            if(min(zoY[trainG])>=max(zoY[trainG])) {
+              good <- FALSE
+            }
           }
         }
-      }
-      if(good) {
-        break
-      } else {
-        evalSets <- list()
+        if(good) {
+          break
+        } else {
+          evalSets <- list()
+        }
       }
     }
     if(length(evalSets)<1) {
@@ -807,7 +808,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       }
       if((length(evalGroups)>0)&&(length(setdiff(cnames,outcomename))>0)) {
         df <- do.call(rbind,lapply(evalGroups,function(d) {d[,cnames,drop=FALSE]}))
-        if(nrow(df)==nRows) {
+        if((nrow(df)==nRows)&&(requireNamespace("Matrix",quietly=TRUE))) {
           perm <- Matrix::invPerm(as.integer(rownames(df)))
           df <- df[perm,]
         }
@@ -827,7 +828,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                                weights,
                                minFraction,smFactor,maxMissing,
                                collarProb,
-                               returnXFrame,
+                               returnXFrame,scale,doCollar,
                                verbose,
                                parallelCluster) {
   if(!requireNamespace("parallel",quietly=TRUE)) {
@@ -911,7 +912,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                         weights,
                         minFraction,smFactor,maxMissing,
                         collarProb,
-                        TRUE,TRUE)
+                        scale,doCollar,returnXFrame)
   if(is.null(parallelCluster)) {
     # print("design serial")
     xFrames <- lapply(workList,sw)
@@ -1040,6 +1041,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
+#' @param scale logical optional controls scaling for scoring and returnXFrame 
+#' @param doCollar logical optional controls collaring for scoring and returnXFrame
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -1052,15 +1055,15 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' dTestC <- data.frame(x=c('a','b','c',NA),
 #'    z=c(10,20,30,NA))
 #' treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-#' dTrainCTreated <- prepare(treatmentsC,dTrainC)
-#' dTestCTreated <- prepare(treatmentsC,dTestC)
+#' dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=0.99)
+#' dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=0.99)
 #' 
 #' @export
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.00,
-                              returnXFrame=FALSE,
+                              returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
@@ -1069,7 +1072,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                      weights,
                      minFraction,smFactor,maxMissing,
                      collarProb,
-                     returnXFrame,
+                     returnXFrame,scale,doCollar,
                      verbose,
                      parallelCluster)
 }
@@ -1101,6 +1104,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
+#' @param scale logical optional controls scaling for scoring and returnXFrame 
+#' @param doCollar logical optional controls collaring for scoring and returnXFrame
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -1112,15 +1117,15 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' dTestN <- data.frame(x=c('a','b','c',NA),
 #'     z=c(10,20,30,NA))
 #' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#' dTrainNTreated <- prepare(treatmentsN,dTrainN)
-#' dTestNTreated <- prepare(treatmentsN,dTestN)
+#' dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=0.99)
+#' dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=0.99)
 #' 
 #' @export
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,maxMissing=0.04,
                               collarProb=0.00,
-                              returnXFrame=FALSE,
+                              returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   ycol <- dframe[[outcomename]]
@@ -1129,7 +1134,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      weights,
                      minFraction,smFactor,maxMissing,
                      collarProb,
-                     returnXFrame,
+                     returnXFrame,scale,doCollar,
                      verbose,
                      parallelCluster)
 }
@@ -1180,6 +1185,9 @@ prepare <- function(treatmentplan,dframe,pruneSig,
   scale=FALSE,doCollar=TRUE,
   varRestriction=c(),
   parallelCluster=NULL) {
+  if(!requireNamespace("parallel",quietly=TRUE)) {
+    parallelCluster <- NULL
+  }
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }

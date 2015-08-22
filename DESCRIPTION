@@ -1,7 +1,7 @@
 Package: vtreat
 Type: Package
 Title: vtreat: A Package for Simple Variable Treatment
-Version: 0.5.0.0100
+Version: 0.5.0.0130
 Date: 2015-08-22
 Author: John Mount, Nina Zumel
 Maintainer: <contact@win-vector.com>
@@ -9,6 +9,7 @@ Description: vtreat is a package that treats variables so that models can be use
 License: file LICENSE
 Suggests: testthat,
     knitr,
-    parallel
+    parallel,
+    Matrix
 LazyData: true
 VignetteBuilder: knitr

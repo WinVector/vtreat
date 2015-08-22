@@ -21,7 +21,7 @@ test_that("Numeric Var Scores as expected w1", {
 
   expect_true(tN$sig[['zip2_catN']]<0.05)
   expect_true(tC$sig[['zip2_catB']]<0.05)
-  expect_true(tN$sig[['zip_catN']]>0.5)
-  expect_true(tC$sig[['zip_catB']]>0.5)
+  expect_true(tN$sig[['zip_catN']]>0.1)
+  expect_true(tC$sig[['zip_catB']]>0.1)
 })
 

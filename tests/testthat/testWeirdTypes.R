@@ -29,19 +29,7 @@ test_that("Protect from odd columns types (and warn)", {
   yTarget <- 1
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
-  dCTreated <- prepare(treatmentsC,d,pruneSig=c())
-  expectedCCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean",   "y" ))
-  expect_true(nrow(dCTreated)==nrow(d))
-  expect_true(all(sort(colnames(dCTreated))==expectedCCols))
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
-  dNTreated <- prepare(treatmentsN,d,pruneSig=c())
-  expect_true(nrow(dNTreated)==nrow(d))
-  expectedNCols <- sort(c("xInteger_clean",     "xArray_clean",       "xMatrix1_clean", "y"))
-  expect_true(all(sort(colnames(dNTreated))==expectedNCols))
-  
-  # demonstarate catching a type error
-  d$xInteger <- as.character(d$xInteger)
-  expect_error(prepare(treatmentsN,d,pruneSig=c()),"Error in .vtreatList")
-  
+
   options(op) # restore settings
 })

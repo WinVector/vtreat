@@ -23,8 +23,6 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
 dTestN <- data.frame(x=c('a','b','c',NA),
     z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-print(as.character(getNewVarNames(treatmentsN$treatments)))
-print(as.character(getNewVarNames(treatmentsN$treatments,c('x'))))
 }
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
