@@ -3,6 +3,7 @@ library('vtreat')
 context("Parallel Example")
 
 test_that("Parallel works", {
+  # load('tests/testthat/uci.car.data.Rdata')
   load('uci.car.data.Rdata')
   cl <- NULL
   # This kills build check as I think you are not allowed to spawn.

@@ -116,8 +116,11 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
     }
     .vtreatA(ti,xcolClean,scale,doCollar)
   }
-  # TODO: use parralelCluster
-  gs <- lapply(toProcess,procWorker)
+  if(is.null(parallelCluster)) {
+    gs <- lapply(toProcess,procWorker)
+  } else {
+    gs <-  parallel::parLapply(parallelCluster,toProcess,procWorker)
+  }
   # pass back first error
   for(gi in gs) {
     if(is.character(gi)) {
