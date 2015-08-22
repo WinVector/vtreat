@@ -646,6 +646,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       names(subScores) <- nms
       pRsq <- vapply(subScores,function(z) z$rsq,numeric(1))
       pSig <- vapply(subScores,function(z) z$sig,numeric(1))
+      cRsq <- c()
+      cSig <- c()
       if(!is.null(treatedZC)) {
         catScores <- lapply(nms,
                             function(c) catScore(subF[[c]],
@@ -849,9 +851,11 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   treatments <- unlist(treatments,recursive=FALSE)
   treatedVarNames <- as.character(getNewVarNames(treatments))
   varMoves <- c()
-  varScores <- c()
-  catPRSquared <- c()
   PRESSRsquared <- c()
+  psig <- c()
+  catPRSquared <- c()
+  csig <- c()
+  varScores <- c()
   sig <- c()
   if (scoreVars) {
     if(length(evalTrainRows)==nrow(dframe)) {
@@ -881,8 +885,16 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     # or levels not showing up), so give them a useless score.
     varMoves <- logical(length(treatedVarNames))
     names(varMoves) <- treatedVarNames
-    PRESSRsquared <- numeric(length(treatedVarNames))
+    PRESSRsquared <- numeric(length(treatedVarNames)) + NA
     names(PRESSRsquared) <- treatedVarNames
+    psig <- numeric(length(treatedVarNames)) + NA
+    names(psig) <- treatedVarNames
+    if(!is.null(zC)) {
+      catPRSquared <- numeric(length(treatedVarNames)) + NA
+      names(catPRSquared) <- treatedVarNames
+      csig <- numeric(length(treatedVarNames)) + NA
+      names(csig) <- treatedVarNames
+    }
     varScores <- numeric(length(treatedVarNames)) + 1.0
     names(varScores) <- treatedVarNames
     sig <- numeric(length(treatedVarNames)) + 1.0
@@ -924,12 +936,14 @@ catScore <- function(x,yC,yTarget,weights=c()) {
           varMoves[[nv]] <- subMoves[[nv]]
           if(varMoves[[nv]]) {
             PRESSRsquared[[nv]] <- wpair$pRsq[[nv]]
+            psig[[nv]] <- wpair$pSig[[nv]]
             varScores[[nv]] <- 1.0 - PRESSRsquared[[nv]]
-            sig[[nv]] <- wpair$pSig[[nv]]
+            sig[[nv]] <- psig[[nv]]
             if(!is.null(catPRSquared)) {
               catPRSquared[[nv]] <- wpair$cRsq[[nv]]
               varScores[[nv]] <- 1.0 - catPRSquared[[nv]]
-              sig[[nv]] <- wpair$cSig[[nv]]
+              csig[[nv]] <- wpair$cSig[[nv]]
+              sig[[nv]] <- csig[[nv]]
             }
           }
         }
@@ -938,8 +952,10 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
   plan <- list(treatments=treatments,
                vars=treatedVarNames,
-               varScores=varScores,PRESSRsquared=PRESSRsquared,sig=sig,
                varMoves=varMoves,
+               PRESSRsquared=PRESSRsquared,psig=psig,
+               catPRSquared=catPRSquared,csig=csig,
+               varScores=varScores,sig=sig,
                outcomename=outcomename,
                meanY=.wmean(zoY,weights),ndat=length(zoY))
   if(!is.null(catPRSquared)) {
