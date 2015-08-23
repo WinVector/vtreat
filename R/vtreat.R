@@ -806,6 +806,46 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 }
 
 
+.buildScores <- function(xFrame,vset,outcomename,catTarget) {
+  force(xFrame)
+  force(vset)
+  force(outcomename)
+  force(catTarget)
+  function(ti) {
+    scoreFrame <- c()
+    origName <- vorig(ti)
+    for(nv in vnames(ti)) {
+      if(nv %in% vset) {
+        varMoves <- .has.range.cn(xFrame[[nv]])
+        if(varMoves) {
+          pstat <- pressStatOfBestLinearFit(xFrame[[nv]],
+                                            xFrame[[outcomename]],
+                                            c(),  # TODO: get weights to here
+                                            'total')
+          PRESSRsquared <- pstat$rsq
+          psig <- pstat$sig
+          sig <- pstat$sig
+          scoreFrameij <- data.frame(varName=nv,
+                                   origName=origName,
+                                   varMoves=varMoves,
+                                   PRESSRsquared=PRESSRsquared,psig=psig,
+                                   sig=sig,
+                                   stringsAsFactors = FALSE)
+          if(catTarget) {
+            cstat <- catScore(xFrame[[nv]],
+                              xFrame[[outcomename]],1,
+                              c())  # TODO: get weights here
+            scoreFrameij$catPRSquared <- cstat$pRsq
+            scoreFrameij$csig <- cstat$sig
+            scoreFrameij$sig <- cstat$sig
+          }
+          scoreFrame <- rbind(scoreFrame,scoreFrameij)
+        }
+      }
+    }
+    scoreFrame
+  }
+}
 
 
 
@@ -917,71 +957,28 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   treatedVarNames <- vapply(nmMap,function(p) {p$new},character(1))
   origVarNames <- vapply(nmMap,function(p) {p$orig},character(1))
   # now score variables
-  varMoves <- logical(length(treatedVarNames))
-  names(varMoves) <- treatedVarNames
-  PRESSRsquared <- numeric(length(treatedVarNames)) + NA
-  names(PRESSRsquared) <- treatedVarNames
-  psig <- numeric(length(treatedVarNames)) + NA
-  names(psig) <- treatedVarNames
-  catPRSquared <- c()
-  csig <- c()
-  if(!is.null(zC)) {
-    catPRSquared <- numeric(length(treatedVarNames)) + NA
-    names(catPRSquared) <- treatedVarNames
-    csig <- numeric(length(treatedVarNames)) + NA
-    names(csig) <- treatedVarNames
-  }
-  sig <- numeric(length(treatedVarNames)) + 1.0
-  names(sig) <- treatedVarNames
   vset <- intersect(treatedVarNames,setdiff(colnames(xFrame),outcomename))
-  for(ti in treatments) {
-    origName <- vorig(ti)
-    for(nv in vnames(ti)) {
-      if(nv %in% vset) {
-        varMoves[[nv]] <- .has.range.cn(xFrame[[nv]])
-        if(varMoves[[nv]]) {
-          pstat <- pressStatOfBestLinearFit(xFrame[[nv]],
-                                            xFrame[[outcomename]],
-                                            c(),  # TODO: get weights to here
-                                            'total')
-          PRESSRsquared[[nv]] <- pstat$rsq
-          psig[[nv]] <- pstat$sig
-          sig[[nv]] <- psig[[nv]]
-          if(!is.null(catPRSquared)) {
-            cstat <- catScore(xFrame[[nv]],
-                              xFrame[[outcomename]],1,
-                              c())  # TODO: get weights here
-            catPRSquared[[nv]] <- cstat$pRsq
-            csig[[nv]] <- cstat$sig
-            sig[[nv]] <- csig[[nv]]
-          }
-        }
-      }
-    }
+  scrW <- .buildScores(xFrame,vset,outcomename,!is.null(zC))
+  if(is.null(parallelCluster)) {
+     sFrames <- lapply(treatments,scrW)
+  } else {
+     sFrames <- parallel::parLapply(parallelCluster,treatments,scrW)
   }
-  scoreFrame <- data.frame(varName=treatedVarNames,
-                           origName=origVarNames,
-                           varMoves=varMoves,
-                           PRESSRsquared=PRESSRsquared,psig=psig,
-                           sig=sig,
-                           stringsAsFactors = FALSE)
-  if(!is.null(catPRSquared)) {
-    scoreFrame$catPRSquared <- catPRSquared
-    scoreFrame$csig <- csig
-  }
+  sFrames <- Filter(Negate(is.null),sFrames)
+  sFrame <- do.call(rbind,sFrames)
+  varMoves <- sFrame$varMoves
+  names(varMoves) <- sFrame$varName
+  sig <- sFrame$sig
+  names(sig) <- sFrame$varName
   plan <- list(treatments=treatments,
                vars=treatedVarNames,
                varMoves=varMoves,
-               PRESSRsquared=PRESSRsquared,psig=psig,
-               catPRSquared=catPRSquared,csig=csig,
                sig=sig,
-               scoreFrame=scoreFrame,
+               scoreFrame=sFrame,
                nmMap=nmMap,
                outcomename=outcomename,
-               meanY=.wmean(zoY,weights),ndat=length(zoY))
-  if(!is.null(catPRSquared)) {
-    plan[['catPseudoRSquared']] <- catPRSquared
-  }
+               meanY=.wmean(zoY,weights),
+               ndat=length(zoY))
   class(plan) <- 'treatmentplan'
   if(returnXFrame) {
     plan[['xframe']] <- xFrame
