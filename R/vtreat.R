@@ -570,13 +570,6 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 
 
 
-
-# y = TRUE/FALSE
-# py = probilities
-.deviance <- function(y,py) {
-  -2.0*(sum(log(py[y]))+sum(log(1-py[!y])))
-}
-
 #' return a pseudo R-squared from a 1 variable logistic regression
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param yC  (no NAs/NULLs) outcome variable
@@ -598,20 +591,14 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                  family=binomial(link='logit'),
                  weights=weights)
     if(model$converged) {
-      df.null <- n
-      df.model <- n-2
-      deldf <- df.null - df.model
-      null.dev <- .deviance(tf$y,numeric(n)+mean(tf$y))
-      py <- predict(model,type='response',
-                    newdata=tf)
-      resid.dev <- .deviance(tf$y,py)
-      pseudoR2 <- 1.0 - resid.dev/null.dev
+      delta_deviance = model$null.deviance - model$deviance
+      delta_df = model$df.null - model$df.residual
       sig <- 1.0
-      if(resid.dev<null.dev) {
-         delDev <- null.dev - resid.dev
-         sig <- pchisq(delDev,deldf,lower.tail=F)
+      pRsq <- 1.0 - model$deviance/model$null.deviance
+      if(pRsq>0) {
+        sig <- pchisq(delta_deviance, delta_df, lower.tail=FALSE)
       }
-      return(list(pRsq=pseudoR2,sig=sig))
+      return(list(pRsq=pRsq,sig=sig))
     }
   },
   error=function(e){})
