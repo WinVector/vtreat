@@ -795,9 +795,15 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       }
       if((length(evalGroups)>0)&&(length(setdiff(cnames,outcomename))>0)) {
         df <- do.call(rbind,lapply(evalGroups,function(d) {d[,cnames,drop=FALSE]}))
-        if((nrow(df)==nRows)&&(requireNamespace("Matrix",quietly=TRUE))) {
-          perm <- Matrix::invPerm(as.integer(rownames(df)))
-          df <- df[perm,]
+        if(nrow(df)==nRows) {
+          perm <- as.integer(rownames(df))
+          if(requireNamespace("Matrix",quietly=TRUE)) {
+            invperm <- Matrix::invPerm(perm)
+          } else {
+            invperm <- seq_len(length(perm))
+            invperm[perm] <- seq_len(length(perm))
+          }
+          df <- df[invperm,]
         }
       }
     }
