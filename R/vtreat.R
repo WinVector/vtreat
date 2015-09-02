@@ -760,8 +760,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
-     evalGroups <- list()
-    cnames <- c()
+    evalGroups <- list()
     for(evalSet in evalSets) {
       trainSet <- setdiff(seq_len(nRows),evalSet)
       vDesigner <- .varDesigner(zoY[trainSet],
@@ -771,7 +770,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                                 collarProb,
                                 trainSet,nRows,
                                 FALSE)
-      df <- c()
       xcolClean <- .cleanColumn(vcolOrig,nRows)[evalSet]
       ti <- vDesigner(argpair)
       if((length(xcolClean)>0)&&(length(ti)>0)) {
@@ -786,25 +784,36 @@ catScore <- function(x,yC,yTarget,weights=c()) {
         }
         rownames(subF) <- evalSet
         subF[[outcomename]] <- zoY[evalSet]
-        if(length(evalGroups)<=0) {
-          cnames <- colnames(subF)
-        } else {
-          cnames <- intersect(cnames,colnames(subF))
-        }
         evalGroups[[1+length(evalGroups)]] <- subF
       }
-      if((length(evalGroups)>0)&&(length(setdiff(cnames,outcomename))>0)) {
-        df <- do.call(rbind,lapply(evalGroups,function(d) {d[,cnames,drop=FALSE]}))
-        if(nrow(df)==nRows) {
-          perm <- as.integer(rownames(df))
-          if(requireNamespace("Matrix",quietly=TRUE)) {
-            invperm <- Matrix::invPerm(perm)
-          } else {
-            invperm <- seq_len(length(perm))
-            invperm[perm] <- seq_len(length(perm))
+    }
+    df <- c()
+    if(length(evalGroups)>0) {
+      colset <- c(setdiff(unique(unlist(lapply(evalGroups,function(d) colnames(d)))),
+                        outcomename),outcomename)
+      df <- do.call(rbind,lapply(evalGroups,function(d) { 
+        d[,setdiff(colset,colnames(d))] <- NA
+        d[,colset,drop=FALSE]
+        }))
+      for(v in colnames(df)) {
+        naPosn <- is.na(df[[v]])
+        if(sum(naPosn)>0) {
+          rv <- mean(df[[v]],na.rm=TRUE)
+          if(is.na(rv)) {
+            rv <- 0.0
           }
-          df <- df[invperm,]
+          df[[v]][naPosn] <- rv
         }
+      }
+      if(nrow(df)==nRows) {
+        perm <- as.integer(rownames(df))
+        if(requireNamespace("Matrix",quietly=TRUE)) {
+          invperm <- Matrix::invPerm(perm)
+        } else {
+          invperm <- seq_len(length(perm))
+          invperm[perm] <- seq_len(length(perm))
+        }
+        df <- df[invperm,]
       }
     }
     df
@@ -823,6 +832,11 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     for(nv in vnames(ti)) {
       if(nv %in% vset) {
         varMoves <- .has.range.cn(xFrame[[nv]])
+        PRESSRsquared=0.0
+        psig=1.0
+        sig=1.0
+        catPRSquared=0.0
+        csig=1.0
         if(varMoves) {
           pstat <- pressStatOfBestLinearFit(xFrame[[nv]],
                                             xFrame[[outcomename]],
@@ -831,22 +845,27 @@ catScore <- function(x,yC,yTarget,weights=c()) {
           PRESSRsquared <- pstat$rsq
           psig <- pstat$sig
           sig <- pstat$sig
-          scoreFrameij <- data.frame(varName=nv,
+          if(catTarget) {
+            cstat <- catScore(xFrame[[nv]],
+                              xFrame[[outcomename]],1,
+                              c())  # TODO: get weights here
+            catPRSquared <- cstat$pRsq
+            csig <- cstat$sig
+            sig <- cstat$sig
+          }
+        }
+        scoreFrameij <- data.frame(varName=nv,
                                    origName=origName,
                                    varMoves=varMoves,
                                    PRESSRsquared=PRESSRsquared,psig=psig,
                                    sig=sig,
                                    stringsAsFactors = FALSE)
-          if(catTarget) {
-            cstat <- catScore(xFrame[[nv]],
-                              xFrame[[outcomename]],1,
-                              c())  # TODO: get weights here
-            scoreFrameij$catPRSquared <- cstat$pRsq
-            scoreFrameij$csig <- cstat$sig
-            scoreFrameij$sig <- cstat$sig
-          }
-          scoreFrame <- rbind(scoreFrame,scoreFrameij)
+        if(catTarget) {
+          scoreFrameij$catPRSquared <- catPRSquared
+          scoreFrameij$csig <- csig
+          scoreFrameij$sig <- csig
         }
+        scoreFrame <- rbind(scoreFrame,scoreFrameij)
       }
     }
     scoreFrame
@@ -1015,9 +1034,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' The main fields are mostly vectors with names (all with the same names in the same order):
 #' 
 #' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
-#' - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
-#' - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-#' - catPseudoRSquared : the pseudo-Rsquared (deviance ratio) of each variable in turn logisticly regressed against the categorical y target.  Similar ot the PRESSRsquared this attempts to be a hold-out statistic
+#' - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
+#' - #' - sig : an estimate signficance of effect
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #'
@@ -1080,8 +1098,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' The main fields are mostly vectors with names (all with the same names in the same order):
 #' 
 #' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
-#' - varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
-#' - PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
+#' - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
+#' - sig : an estimate signficance of effect
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #' 

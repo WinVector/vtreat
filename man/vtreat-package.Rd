@@ -17,8 +17,8 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.5.0.0130\cr
-Date: \tab 2015-08-22\cr
+Version: \tab 0.5.0.0135\cr
+Date: \tab 2015-09-02\cr
 License: \tab GNU General Public License version 3\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
@@ -46,8 +46,8 @@ where the outcome or y-value is not NA, finite and not nan.
 }
 \examples{
 # categorical example
-dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
-   z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
+   z=c(1,2,3,4,NA,6,NA),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
@@ -60,8 +60,8 @@ sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 
 # numeric example
-dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
-   z=c(1,2,3,4,5,NA,7),y=c(0,0,0,1,0,1,1))
+dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA,NA),
+   z=c(1,2,3,4,5,NA,7,NA),y=c(0,0,0,1,0,1,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)

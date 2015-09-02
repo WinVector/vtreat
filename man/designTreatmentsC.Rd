@@ -50,9 +50,8 @@ except for dates (which are converted to numeric).
 The main fields are mostly vectors with names (all with the same names in the same order):
 
 - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
-- varMoves : logical TRUE if the variable varied during training, only variables that move will be in the treated frame
-- PRESSRsquared : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-- catPseudoRSquared : the pseudo-Rsquared (deviance ratio) of each variable in turn logisticly regressed against the categorical y target.  Similar ot the PRESSRsquared this attempts to be a hold-out statistic
+- varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
+- #' - sig : an estimate signficance of effect
 
 See the vtreat vignette for a bit more detail and a worked example.
 }
