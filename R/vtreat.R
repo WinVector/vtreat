@@ -807,13 +807,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       }
       if(nrow(df)==nRows) {
         perm <- as.integer(rownames(df))
-        if(requireNamespace("Matrix",quietly=TRUE)) {
-          invperm <- Matrix::invPerm(perm)
-        } else {
-          invperm <- seq_len(length(perm))
-          invperm[perm] <- seq_len(length(perm))
-        }
-        df <- df[invperm,]
+        invperm <- seq_len(length(perm))
+        invperm[perm] <- seq_len(length(perm))
+        df <- df[invperm,,drop=FALSE]
       }
     }
     df

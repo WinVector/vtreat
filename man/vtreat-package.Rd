@@ -17,8 +17,8 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.5.0.0135\cr
-Date: \tab 2015-09-02\cr
+Version: \tab 0.5.0.0137\cr
+Date: \tab 2015-09-05\cr
 License: \tab GNU General Public License version 3\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
