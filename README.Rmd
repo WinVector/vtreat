@@ -144,6 +144,7 @@ motivations, and design decisions):
     vtreat](http://www.slideshare.net/ChesterChen/vtreat)
 -   [What is new in the vtreat
     library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
+-   [How do you know if your data has signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
 
 A short example of current best practice using 'vtreat' (variable
 coding, train, test split) is
