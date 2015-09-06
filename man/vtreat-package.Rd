@@ -17,11 +17,10 @@ take the value NA (so are very safe to use in modeling).
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.5.0.0137\cr
-Date: \tab 2015-09-05\cr
+Version: \tab 0.5.14\cr
+Date: \tab 2015-09-06\cr
 License: \tab GNU General Public License version 3\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
 John Mount and Nina Zumel
@@ -30,9 +29,10 @@ Maintainer: <contact@win-vector.com>
 }
 \references{
 See: 
-http://www.win-vector.com/blog/2014/06/r-minitip-dont-use-data-matrix-when-you-mean-model-matrix/
-http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
-http://practicaldatascience.com/
+  http://www.win-vector.com/blog/2014/06/r-minitip-dont-use-data-matrix-when-you-mean-model-matrix/
+  http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
+  http://practicaldatascience.com/
+  "Effect codes" in Cohen et. al. Applied multiple regression/correlation for the behavioral sciences.
 }
 
 \keyword{ package }
@@ -40,6 +40,7 @@ http://practicaldatascience.com/
 First build a list of variable treatments from your training data using
 \code{\link{designTreatmentsC}} (for models predicting binary categorical outcomes)
 or \code{\link{designTreatmentsN}} (for models predicting numeric outcomes).
+If you have enough data we suggested running the design step on a subset of data disjoint from training and test (this avoids many issues including mis-counting degrees of freedom on effect or impact codes arising from categorical variables with a large number of levels).
 Then apply a list of treatments to a data frame to get a treated data frame using
 \code{\link{prepare}}.  All the code is assuming we are working only with rows
 where the outcome or y-value is not NA, finite and not nan.
@@ -74,5 +75,5 @@ sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 
 # for large data sets you can consider designing the treatments on 
-# a subset like: d[sample(1:dim(d)[[1]],1000),]
+# a subset like so: d[sample(1:dim(d)[[1]],1000),,drop=FALSE]
 }

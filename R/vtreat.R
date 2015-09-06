@@ -1,6 +1,9 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
+#' @importFrom stats as.formula binomial glm lm.wfit pchisq pf quantile
+NULL
+
 
 #' Return a list of new treated variable names (coresponding to optional original variable names)
 #' @param treatments the treatments slot from a treatmentplan object
@@ -225,7 +228,7 @@ print.vtreatment <- function(x,...) {
   lmaty <- matrix(data=0.0,nrow=length(ycol),ncol=1)
   meany <- .wmean(ycol,weights)
   lmaty[,1] <- ycol-meany
-  model <- lm.wfit(lmatx,lmaty,weights)
+  model <- stats::lm.wfit(lmatx,lmaty,weights)
   a <- 0.0
   b <- 0.0
   if(!is.na(model$coefficients[[2]])) {
@@ -261,7 +264,8 @@ print.vtreatment <- function(x,...) {
     return(c())
   }
   if(collarProb>0.0) {
-     cuts <- as.numeric(quantile(xcol[!napositions],probs=c(collarProb,1-collarProb)))
+     cuts <- as.numeric(stats::quantile(xcol[!napositions],
+                                        probs=c(collarProb,1-collarProb)))
   } else {
      cuts <- c(min(xcol[!napositions]),max(xcol[!napositions]))
   }
@@ -563,7 +567,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
   sig <- 1.0
   if(error<eConst) {
      Fstat <- (eConst-error)*(n-2)/(error)
-     sig <- pf(Fstat,1,n-2,lower.tail=F)
+     sig <- stats::pf(Fstat,1,n-2,lower.tail=F)
   }
   list(rsq=pRsq,sig=sig)
 }
@@ -586,9 +590,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   origOpt <- options()
   options(warn=-1)
   tryCatch({      
-    model <- glm(as.formula('y~x'),
+    model <- stats::glm(stats::as.formula('y~x'),
                  data=tf,
-                 family=binomial(link='logit'),
+                 family=stats::binomial(link='logit'),
                  weights=weights)
     if(model$converged) {
       delta_deviance = model$null.deviance - model$deviance
@@ -596,7 +600,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       sig <- 1.0
       pRsq <- 1.0 - model$deviance/model$null.deviance
       if(pRsq>0) {
-        sig <- pchisq(delta_deviance, delta_df, lower.tail=FALSE)
+        sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
       }
       return(list(pRsq=pRsq,sig=sig))
     }

@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-vtreat is a package that treats variables so that models can be used in production. Common problems vtreat defends against: NA, too many categorical values, rare categorical values, new categorical values (levels seen during application, but not during training).
+This package desing variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
 
 Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use designTreatmentsC() and for numeric regression use designTreatmentsN().
 
@@ -9,11 +9,11 @@ In application we suggest splitting your data into three sets: one for building 
 
 Trivial example:
 
-    ## [1] "desigining treatments Sat Sep  5 16:17:52 2015"
-    ## [1] "design var x Sat Sep  5 16:17:52 2015"
-    ## [1] "design var z Sat Sep  5 16:17:52 2015"
-    ## [1] "scoring treatments Sat Sep  5 16:17:52 2015"
-    ## [1] "have treatment plan Sat Sep  5 16:17:52 2015"
+    ## [1] "desigining treatments Sun Sep  6 08:52:10 2015"
+    ## [1] "design var x Sun Sep  6 08:52:10 2015"
+    ## [1] "design var z Sun Sep  6 08:52:10 2015"
+    ## [1] "scoring treatments Sun Sep  6 08:52:10 2015"
+    ## [1] "have treatment plan Sun Sep  6 08:52:10 2015"
 
     ##      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
     ## -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
@@ -34,11 +34,11 @@ Trivial example:
     ## 3 -0.1714286
     ## 4  0.4285714
 
-    ## [1] "desigining treatments Sat Sep  5 16:17:52 2015"
-    ## [1] "design var x Sat Sep  5 16:17:52 2015"
-    ## [1] "design var z Sat Sep  5 16:17:52 2015"
-    ## [1] "scoring treatments Sat Sep  5 16:17:52 2015"
-    ## [1] "have treatment plan Sat Sep  5 16:17:52 2015"
+    ## [1] "desigining treatments Sun Sep  6 08:52:10 2015"
+    ## [1] "design var x Sun Sep  6 08:52:10 2015"
+    ## [1] "design var z Sun Sep  6 08:52:10 2015"
+    ## [1] "scoring treatments Sun Sep  6 08:52:10 2015"
+    ## [1] "have treatment plan Sun Sep  6 08:52:10 2015"
 
     ##     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
     ## 9.020562e-17 0.000000e+00 0.000000e+00 7.021564e-17 1.526557e-16 

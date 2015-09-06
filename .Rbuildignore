@@ -5,3 +5,4 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^NEWS\.md$
+^LICENSE$
