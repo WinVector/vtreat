@@ -13,7 +13,7 @@ The purpose of 'vtreat' library is to reliably prepare data for supervised machi
 
 -   Categorical variables with very many levels.
 
-    We re-encode such variables as a family of indicator or dummy variables for common levels plus an additional [impact code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) (also called "effects coded" in Jacob Cohen, Patricia Cohen, *Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences*, 2nd edition, 1983). This allows principled use (including smoothing) of huge categorical variables (like zip-codes) when building models. This is critical for some libraries (such as 'randomForest', which has hard limits on the number of allowed levels.
+    We re-encode such variables as a family of indicator or dummy variables for common levels plus an additional [impact code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) (also called "effects coded" in Jacob Cohen, Patricia Cohen, *Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences*, 2nd edition, 1983). This allows principled use (including smoothing) of huge categorical variables (like zip-codes) when building models. This is critical for some libraries (such as 'randomForest', which has hard limits on the number of allowed levels).
 
 -   Novel categorical levels).
 
@@ -56,11 +56,11 @@ A short example of current best practice using 'vtreat' (variable coding, train,
 
 Trivial example:
 
-    ## [1] "desigining treatments Sun Sep  6 16:18:00 2015"
-    ## [1] "design var x Sun Sep  6 16:18:00 2015"
-    ## [1] "design var z Sun Sep  6 16:18:00 2015"
-    ## [1] "scoring treatments Sun Sep  6 16:18:00 2015"
-    ## [1] "have treatment plan Sun Sep  6 16:18:00 2015"
+    ## [1] "desigining treatments Sun Sep  6 16:57:34 2015"
+    ## [1] "design var x Sun Sep  6 16:57:34 2015"
+    ## [1] "design var z Sun Sep  6 16:57:34 2015"
+    ## [1] "scoring treatments Sun Sep  6 16:57:34 2015"
+    ## [1] "have treatment plan Sun Sep  6 16:57:35 2015"
 
     ##      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
     ## -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
@@ -81,11 +81,11 @@ Trivial example:
     ## 3 -0.1714286
     ## 4  0.4285714
 
-    ## [1] "desigining treatments Sun Sep  6 16:18:00 2015"
-    ## [1] "design var x Sun Sep  6 16:18:00 2015"
-    ## [1] "design var z Sun Sep  6 16:18:00 2015"
-    ## [1] "scoring treatments Sun Sep  6 16:18:00 2015"
-    ## [1] "have treatment plan Sun Sep  6 16:18:00 2015"
+    ## [1] "desigining treatments Sun Sep  6 16:57:35 2015"
+    ## [1] "design var x Sun Sep  6 16:57:35 2015"
+    ## [1] "design var z Sun Sep  6 16:57:35 2015"
+    ## [1] "scoring treatments Sun Sep  6 16:57:35 2015"
+    ## [1] "have treatment plan Sun Sep  6 16:57:35 2015"
 
     ##     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
     ## 9.020562e-17 0.000000e+00 0.000000e+00 7.021564e-17 1.526557e-16 

@@ -43,7 +43,7 @@ precautions to guard against the following real world data issues:
     (including smoothing) of huge categorical variables (like zip-codes)
     when building models. This is critical for some libraries (such as
     'randomForest', which has hard limits on the number of
-    allowed levels.
+    allowed levels).
 
 -   Novel categorical levels).
 
