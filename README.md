@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-This package desing variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
+This package ('vtreat', available on [CRAN](https://cran.r-project.org/web/packages/vtreat/index.html) and [Github](https://github.com/WinVector/vtreat)) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
 
 Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use designTreatmentsC() and for numeric regression use designTreatmentsN().
 
@@ -7,11 +7,13 @@ After the design step, prepare() should be used as you would use model.matrix. p
 
 In application we suggest splitting your data into three sets: one for building vtreat encodings, one for training models using these encodings, and one for test and model evaluation.
 
-The purpose of `vtreat` library is to reliably prepare data for supervised machine learning. We try to leave as much as possible to the machine learning algorithms themselves, but cover most of the truly necessary typically ignored precautions. The library is designed to produce a `data.frame` that is entirely numeric and takes common precautions to guard against the following real world data issues:
+'vtreat' is supplied by [Win-Vector LLC](http://www.win-vector.com) under a GPL-3 license, without warranty.
+
+The purpose of 'vtreat' library is to reliably prepare data for supervised machine learning. We try to leave as much as possible to the machine learning algorithms themselves, but cover most of the truly necessary typically ignored precautions. The library is designed to produce a 'data.frame' that is entirely numeric and takes common precautions to guard against the following real world data issues:
 
 -   Categorical variables with very many levels.
 
-    We re-encode such variables as a family of indicator or dummy variables for common levels plus an additional [impact code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) (also called "effects coded" in Jacob Cohen, Patricia Cohen, *Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences*, 2nd edition, 1983). This allows principled use (including smoothing) of huge categorical variables (like zip-codes) when building models. This is critical for some libraries (such as `randomForest`, which has hard limits on the number of allowed levels.
+    We re-encode such variables as a family of indicator or dummy variables for common levels plus an additional [impact code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) (also called "effects coded" in Jacob Cohen, Patricia Cohen, *Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences*, 2nd edition, 1983). This allows principled use (including smoothing) of huge categorical variables (like zip-codes) when building models. This is critical for some libraries (such as 'randomForest', which has hard limits on the number of allowed levels.
 
 -   Novel categorical levels).
 
@@ -19,7 +21,7 @@ The purpose of `vtreat` library is to reliably prepare data for supervised machi
 
 -   Missing/invalid values NA, NaN, +-Inf.
 
-    Variables with these issues are re-coded as two columns. The first column is clean copy of the variable (with missing/invalid values replaced with either zero or the grand mean, depending on the user chose of the `scale` parameter). The second column is a dummy or indicator that marks if the replacement has been performed. This is simpler than imputation of missing values, and allows the downstream model to attempt to use missingness as a useful signal (which it often is in industrial data).
+    Variables with these issues are re-coded as two columns. The first column is clean copy of the variable (with missing/invalid values replaced with either zero or the grand mean, depending on the user chose of the 'scale' parameter). The second column is a dummy or indicator that marks if the replacement has been performed. This is simpler than imputation of missing values, and allows the downstream model to attempt to use missingness as a useful signal (which it often is in industrial data).
 
 -   Extreme values.
 
@@ -33,10 +35,10 @@ The purpose of `vtreat` library is to reliably prepare data for supervised machi
 
     It is a dirty secret that even popular machine learning techniques need some variable pruning (when exposed to very wide data frames, see [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/) and [here](https://www.youtube.com/watch?v=X_Rn3EOEjGE)). We make the necessary effect size estimates and significances easily available and supply initial variable pruning.
 
-The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of [*Practical Data Science with R* (Zumel, Mount; Manning 2014)](http://practicaldatascience.com/) into a [very short worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we think for understanding it is *essential* to work all the steps by hand as we did in the book). The idea is: `data.frame`s prepared with the `vtreat` library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the `vtreat` variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and `vtreat::prepare(scale=TRUE)` which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the `vtreat` library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less. The [original announcement](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/) is getting a bit out of date, so we hope to be able to write a new article on `vtreat` soon. Until then we suggest running `vignette('vtreat')` in R to produce a rendered version of the [package vignette](https://cran.r-project.org/web/packages/vtreat/vignettes/vtreat.html). You can also checkout the package manual, now [available online](https://cran.r-project.org/web/packages/vtreat/vtreat.pdf). There have been a number of recent substantial improvements to the library, including:
+The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of [*Practical Data Science with R* (Zumel, Mount; Manning 2014)](http://practicaldatascience.com/) into a [very short worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we think for understanding it is *essential* to work all the steps by hand as we did in the book). The idea is: 'data.frame's prepared with the 'vtreat' library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the 'vtreat' variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and 'vtreat::prepare(scale=TRUE)' which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the 'vtreat' library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less. The [original announcement](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/) is getting a bit out of date, so we hope to be able to write a new article on 'vtreat' soon. Until then we suggest running 'vignette('vtreat')' in R to produce a rendered version of the [package vignette](https://cran.r-project.org/web/packages/vtreat/vignettes/vtreat.html). You can also checkout the package manual, now [available online](https://cran.r-project.org/web/packages/vtreat/vtreat.pdf). There have been a number of recent substantial improvements to the library, including:
 
 -   Out of sample scoring.
--   Ability to use `parallel`.
+-   Ability to use 'parallel'.
 -   More general calculation of effect sizes and significances.
 -   Addition of collaring or [Winsorising](https://en.wikipedia.org/wiki/Winsorising) to defend from outliers.
 
@@ -49,15 +51,15 @@ Some of our related articles (which should make clear some of our motivations, a
 -   [Nina Zumel presenting on vtreat](http://www.slideshare.net/ChesterChen/vtreat)
 -   [What is new in the vtreat library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
 
-A short example of current best practice using `vtreat` (variable coding, train, test split) is [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
+A short example of current best practice using 'vtreat' (variable coding, train, test split) is [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 Trivial example:
 
-    ## [1] "desigining treatments Sun Sep  6 14:20:39 2015"
-    ## [1] "design var x Sun Sep  6 14:20:39 2015"
-    ## [1] "design var z Sun Sep  6 14:20:39 2015"
-    ## [1] "scoring treatments Sun Sep  6 14:20:39 2015"
-    ## [1] "have treatment plan Sun Sep  6 14:20:39 2015"
+    ## [1] "desigining treatments Sun Sep  6 14:29:34 2015"
+    ## [1] "design var x Sun Sep  6 14:29:34 2015"
+    ## [1] "design var z Sun Sep  6 14:29:34 2015"
+    ## [1] "scoring treatments Sun Sep  6 14:29:34 2015"
+    ## [1] "have treatment plan Sun Sep  6 14:29:34 2015"
 
     ##      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
     ## -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
@@ -78,11 +80,11 @@ Trivial example:
     ## 3 -0.1714286
     ## 4  0.4285714
 
-    ## [1] "desigining treatments Sun Sep  6 14:20:39 2015"
-    ## [1] "design var x Sun Sep  6 14:20:39 2015"
-    ## [1] "design var z Sun Sep  6 14:20:39 2015"
-    ## [1] "scoring treatments Sun Sep  6 14:20:39 2015"
-    ## [1] "have treatment plan Sun Sep  6 14:20:39 2015"
+    ## [1] "desigining treatments Sun Sep  6 14:29:34 2015"
+    ## [1] "design var x Sun Sep  6 14:29:34 2015"
+    ## [1] "design var z Sun Sep  6 14:29:34 2015"
+    ## [1] "scoring treatments Sun Sep  6 14:29:34 2015"
+    ## [1] "have treatment plan Sun Sep  6 14:29:34 2015"
 
     ##     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
     ## 9.020562e-17 0.000000e+00 0.000000e+00 7.021564e-17 1.526557e-16 
