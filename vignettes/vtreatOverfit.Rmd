@@ -1,0 +1,123 @@
+---
+title: "vtreat overfit"
+author: "John Mount, Nina Zumel"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Example showing safe "best practice" use of the [vtreat](https://cran.r-project.org/web/packages/vtreat/index.html) variable preparation library.  For more on vtreat see [here](http://www.win-vector.com/blog/2015/09/vtreat-up-on-cran/) and [here](https://github.com/WinVector/vtreat).
+
+Build an example data frame with no relation between x and y.  We are using a synthetic data set so we know what the "right answer is" (no signal).  False fitting on no-signal variables is bad for at least two reasons:
+
+ *  It creates the false impression you have a good result (which you may fail to falsify).
+ *  Complex bad variables can starve out simple weak good variables.
+ 
+This example shows things we don't want to happen, and then the additional precautions that help prevent them.
+
+```{r}
+set.seed(22626)
+d <- data.frame(x=sample(paste('level',1:1000,sep=''),2000,replace=TRUE)) # indpendent variables.
+d$y <- runif(nrow(d))>0.5  # the quantity to be predicted, notice: indpendent of variables.
+d$rgroup <- round(100*runif(nrow(d)))  # the random group used for splitting the data set, not a variable.
+```
+
+Bad practice: use same set of data to prepare variable encoding and train a model.  Leads to false belief (derived from training set) that model had a good fit.  Largely due to the treated variable appearing to consume only one degree of freedom, when it consumes many more.  In many cases a reasonable setting of pruneSig (say 0.01) will help against a variable being considered desirable, but selected variables may still be mis-used by downstream modeling.
+
+```{r}
+dTrain <- d[d$rgroup<=80,,drop=FALSE]
+dTest <- d[d$rgroup>80,,drop=FALSE]
+library('vtreat')
+treatments <- vtreat::designTreatmentsC(dTrain,'x','y',TRUE)
+dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=c())
+m1 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
+print(summary(m1))  # notice low residual deviance
+dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
+
+plotRes <- function(d,predName,yName,title) {
+  print(title)
+  tab <- table(truth=d[[yName]],pred=d[[predName]]>0.5)
+  print(tab)
+  diag <- sum(vapply(seq_len(min(dim(tab))),
+                     function(i) tab[i,i],numeric(1)))
+  acc <- diag/sum(tab)
+  print(paste('accuracy',acc))
+}
+
+plotRes(dTrain,'predM1','y','model1 on train')
+dTestTreated <- vtreat::prepare(treatments,dTest,pruneSig=c())
+dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
+plotRes(dTest,'predM1','y','model1 on test')
+```
+
+The above is bad: we saw a "significant" model fit on training data (even though there is no relation to be found).  This means the treated training data can be confusing to machine learning techniques and to the analyst.  The issue is the training data is no longer exchangeable with the test data because the training data was used to build the variable encodings.  One way to avoid this is to not use the training data for variable encoding construction, but instead use a third set for this task.
+
+First notice vtreat did thing there was any usable signal, and did not want us to use the variables (we got them by setting pruneSig=c()).  
+
+```{r}
+print(treatments$scoreFrame)
+```
+
+vteat thinks a signal as strong as the one seen on the derived variable x_catB happens at least 70% of the time for a variable with that sort of distribution: even when there is no signal.  But also notice the down-stream machine learning (in this case a standard logistic regression) used the variable wrong.  It gave it a non-negligible coefficient (around 3) and thought it had a reliable estimate of the coefficient and significant model that almost halved deviance (when in fact it was given nothing).  So any variables that do get through may have distributional issues (and misleadingly low apparent degrees of freedom).
+
+We next show how to avoid these undesirable illusory effects: better practice in partitioning and using training data.  We are doing more with our data (essentially chaining models), so we have to take a bit more care with our data.
+
+Correct example: use different sets to prepare variable encoding and train a model.  Leads to false belief (derived from training set) that model had a good fit.  Largely due to the treated variable appearing to consume only one degree of freedom, when it consumes many more.
+
+Remember, the goal isn't good performance on training- it is good performance on future data (simulated by test).  So doing well on training and bad on test is worse than doing bad on both test and training.
+
+Below is our suggested work pattern: coding/train/test split.
+
+```{r}
+dCode <- d[d$rgroup<=20,,drop=FALSE]
+dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
+treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
+dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=c())
+m2 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
+print(summary(m2)) # notice high residual deviance
+dTrain$predM2 <- predict(m2,newdata=dTrainTreated,type='response')
+plotRes(dTrain,'predM2','y','model2 on train')
+# We do not advise creating dCodeTreated for any purpose other than
+# diagnostic plotting.  You should not use the treated coding data
+# for anything (as that would undo the benefit of having a separate
+# coding data subset).
+dCodeTreated <- vtreat::prepare(treatments,dCode,pruneSig=c())
+dCode$predM2 <- predict(m2,newdata=dCodeTreated,type='response')
+plotRes(dCode,'predM2','y','model2 on coding set')
+dTestTreated <- vtreat::prepare(treatments,dTest,pruneSig=c())
+dTest$predM2 <- predict(m2,newdata=dTestTreated,type='response')
+plotRes(dTest,'predM2','y','model2 on test set')
+```
+
+In the above example we saw training and test performance are similar (and where they should be as there is no signal).  Notice the coding set (falsely) shows high performance.  This is the bad behavior we wanted to isolate out of the training set.
+
+Also be wary, on small data sets vtreat::designTreatments can not currently get accurate out-of sample estimates of variable performance (in these cases it falls back to untrustworthy in-sample estimates).   This is something we will improve over time, but vtreat is intended mostly for production applications on large data sets.
+
+Bad small example:
+
+```{r}
+treatmentsBad <- vtreat::designTreatmentsC(d[d$rgroup<=0,,drop=FALSE],'x','y',TRUE)
+print(treatmentsBad$scoreFrame[treatmentsBad$scoreFrame$sig<=0.05,,drop=FALSE])
+```
+
+We would have prefered no variables to have recieved a "good score."
+
+So even better is to perform the 3-way data split, and set pruneSig to something reasonable.
+
+```{r}
+dCode <- d[d$rgroup<=20,,drop=FALSE]
+dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
+treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
+tryCatch(
+  dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=0.01),
+  error=function(x) print(paste('caught',x))
+)
+```
+
+And in this case we are (properly) told are no variables to work with (and prevented from accidentally continuing a bad analysis).
+
+There are, of course, other possible methods to avoid the bias introduced in using the same data to generate the variable encodings and then train a model using those variables.  But we feel when you have a lot of data the simplicity (and statistical well-foundedness) of the three way split are attractive.
+
