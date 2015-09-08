@@ -52,15 +52,15 @@ Some of our related articles (which should make clear some of our motivations, a
 -   [What is new in the vtreat library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
 -   [How do you know if your data has signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
 
-A short example of current best practice using 'vtreat' (variable coding, train, test split) is [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
+Examples of current best practice using 'vtreat' (variable coding, train, test split) can be found [here](http://winvector.github.io/vtreat/Overfit.html) and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 Trivial example:
 
-    ## [1] "desigining treatments Sun Sep  6 16:57:34 2015"
-    ## [1] "design var x Sun Sep  6 16:57:34 2015"
-    ## [1] "design var z Sun Sep  6 16:57:34 2015"
-    ## [1] "scoring treatments Sun Sep  6 16:57:34 2015"
-    ## [1] "have treatment plan Sun Sep  6 16:57:35 2015"
+    ## [1] "desigining treatments Tue Sep  8 09:31:14 2015"
+    ## [1] "design var x Tue Sep  8 09:31:14 2015"
+    ## [1] "design var z Tue Sep  8 09:31:14 2015"
+    ## [1] "scoring treatments Tue Sep  8 09:31:14 2015"
+    ## [1] "have treatment plan Tue Sep  8 09:31:14 2015"
 
     ##      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
     ## -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
@@ -81,11 +81,11 @@ Trivial example:
     ## 3 -0.1714286
     ## 4  0.4285714
 
-    ## [1] "desigining treatments Sun Sep  6 16:57:35 2015"
-    ## [1] "design var x Sun Sep  6 16:57:35 2015"
-    ## [1] "design var z Sun Sep  6 16:57:35 2015"
-    ## [1] "scoring treatments Sun Sep  6 16:57:35 2015"
-    ## [1] "have treatment plan Sun Sep  6 16:57:35 2015"
+    ## [1] "desigining treatments Tue Sep  8 09:31:14 2015"
+    ## [1] "design var x Tue Sep  8 09:31:14 2015"
+    ## [1] "design var z Tue Sep  8 09:31:14 2015"
+    ## [1] "scoring treatments Tue Sep  8 09:31:14 2015"
+    ## [1] "have treatment plan Tue Sep  8 09:31:14 2015"
 
     ##     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
     ## 9.020562e-17 0.000000e+00 0.000000e+00 7.021564e-17 1.526557e-16 

@@ -146,8 +146,9 @@ motivations, and design decisions):
     library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
 -   [How do you know if your data has signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
 
-A short example of current best practice using 'vtreat' (variable
-coding, train, test split) is
+Examples of current best practice using 'vtreat' (variable
+coding, train, test split) can be found
+[here](http://winvector.github.io/vtreat/Overfit.html) and
 [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 
