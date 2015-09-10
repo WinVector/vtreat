@@ -316,18 +316,21 @@ print.vtreatment <- function(x,...) {
 
 # pre-transform categorical column
 # convert it to character, convert NA to "NA"
-.preProcCat <- function(col) {
+.preProcCat <- function(col,nonRares) {
   origna <- is.na(col)
   # don't use blank as a key and get into defendable level space
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
+  if(!is.null(nonRares)) {
+     col[!(col %in% nonRares)] <- 'rare'
+  }
   col
 }
 
 
 # return categorical indicators
 .catInd <- function(col,args,doCollar) {
-  col <- .preProcCat(col)
+  col <- .preProcCat(col,args$tracked)
   nres <- length(args$tracked)
   vals <- vector('list',nres)
   sum <- rep(0,length(col))
@@ -350,10 +353,22 @@ print.vtreatment <- function(x,...) {
 # build categorical indicators
 .mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,weights) {
   origColClass <- class(vcolin)
-  vcol <- .preProcCat(vcolin)
+  # first pass get common levels (so we know to re-map skipped to rare)
+  vcol <- .preProcCat(vcolin,c())
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
   tracked <- names(counts)[counts/totMass>=minFraction]
+  if(length(tracked)<=0) {
+    return(c())
+  }
+  # second pass, work in terms of chosen encoding
+  vcol <- .preProcCat(vcolin,tracked)
+  counts <- tapply(weights,vcol,sum)
+  totMass <- sum(counts)
+  tracked <- names(counts)[counts/totMass>=minFraction]
+  if(length(tracked)<=0) {
+    return(c())
+  }
   counts <- counts[tracked]
   missingMass <- 1 - sum(counts)/totMass
   if(missingMass>maxMissing) {
@@ -381,7 +396,7 @@ print.vtreatment <- function(x,...) {
 # apply a numeric impact model
 # replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args,doCollar) {
-  col <- .preProcCat(col)
+  col <- .preProcCat(col,args$nonRare)
   novel <- !(col %in% names(args$scores))
   keys <- col
   keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
@@ -395,17 +410,30 @@ print.vtreatment <- function(x,...) {
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,weights) {
   origColClass <- class(vcolin)
-  vcol <- .preProcCat(vcolin)
+  # first pass, find non-rare levels
+  vcol <- .preProcCat(vcolin,c())
+  counts <- tapply(weights,vcol,sum)
+  if(length(counts)<=0) {
+    return(c())
+  }
+  nonRare <- names(counts)[counts>=2]  # TODO: mincount as a parameter
+  if(length(nonRare)<=0) {
+    return(c())
+  }
+  # second pass, work in new encoding
+  vcol <- .preProcCat(vcolin,nonRare)
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
   scores <- (num+smFactor*baseMean)/(den+smFactor)-baseMean
-  novelvalue <- sum(scores*den)/sum(den)
+  novelvalue <- sum(scores*den)/sum(den)   # TODO: remap to rare value
   scores <- as.list(scores)
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catN',sep='_')),
                     f=.catNum,
-                    args=list(scores=scores,novelvalue=novelvalue),
+                    args=list(scores=scores,
+                              novelvalue=novelvalue,
+                              nonRare=nonRare),
                     treatmentName='Scalable Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -418,12 +446,12 @@ print.vtreatment <- function(x,...) {
 # apply a classification impact model
 # replace level with log(.wmean(x|category)/.wmean(x))
 .catBayes <- function(col,args,doCollar) {
-  col <- .preProcCat(col)
+  col <- .preProcCat(col,args$nonRare)
   novel <- !(col %in% names(args$logLift))
   keys <- col
   keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
   pred <- as.numeric(args$logLift[keys]) 
-  pred[novel] <- args$novelvalue  # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
+  pred[novel] <- args$novelvalue
   pred
 }
 
@@ -431,7 +459,18 @@ print.vtreatment <- function(x,...) {
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,weights) {
   origColClass <- class(vcolin)
-  vcol <- .preProcCat(vcolin)
+  # first pass get non-rare levels
+  vcol <- .preProcCat(vcolin,c())
+  counts <- tapply(weights,vcol,sum)
+  if(length(counts)<=0) {
+    return(c())
+  }
+  nonRare <- names(counts)[counts>=2]  # TODO: mincount as a parameter
+  if(length(nonRare)<=0) {
+    return(c())
+  }
+  # second pass, work in new encoding
+  vcol <- .preProcCat(vcolin,nonRare)
   smFactor <- max(smFactor,1.0e-3)
   # T/F is true false of the quantity to be predicted
   # C is the feature we are looking at
@@ -448,12 +487,14 @@ print.vtreatment <- function(x,...) {
   logLift <- log(pTgivenC/probT)  # log probability ratio (so no effect is coded as zero)
   # fall back for novel levels, use average response of model during training
   den <- tapply(weights,vcol,sum)
-  novelvalue <- sum(logLift*den)/sum(den)
+  novelvalue <- sum(logLift*den)/sum(den)  # TODO: remap to rare value
   logLift <- as.list(logLift)
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catB',sep='_')),
                     f=.catBayes,
-                    args=list(logLift=logLift,novelvalue=novelvalue),
+                    args=list(logLift=logLift,
+                              novelvalue=novelvalue,
+                              nonRare=nonRare),
                     treatmentName='Bayesian Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
