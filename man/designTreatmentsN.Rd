@@ -5,9 +5,9 @@
 \title{designTreatmentsN}
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, weights = c(),
-  minFraction = 0.02, smFactor = 0, maxMissing = 0.04, collarProb = 0,
-  returnXFrame = FALSE, scale = FALSE, doCollar = TRUE, verbose = TRUE,
-  parallelCluster = NULL)
+  minFraction = 0.02, smFactor = 0, rareCount = 4, maxMissing = 0.04,
+  collarProb = 0, returnXFrame = FALSE, scale = FALSE, doCollar = TRUE,
+  verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data).}
@@ -21,6 +21,8 @@ designTreatmentsN(dframe, varlist, outcomename, weights = c(),
 \item{minFraction}{optional minimum frequency a categorical level must have to be converted to an indicator column.}
 
 \item{smFactor}{optional smoothing factor for impact coding models.}
+
+\item{rareCount}{optional integer, supress direct effects of level of this count or less.}
 
 \item{maxMissing}{optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.}
 

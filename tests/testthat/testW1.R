@@ -4,7 +4,7 @@ context("Variable Scoring")
 
 test_that("Numeric Var Scores as expected w1", {
   set.seed(23525)
-  zip <- paste('z',1:400)
+  zip <- paste('z',1:100)
   N = 1000
   d <- data.frame(zip=sample(zip,N,replace=TRUE),
                   zip2=sample(zip,N,replace=TRUE),

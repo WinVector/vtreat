@@ -31,12 +31,14 @@ Bad practice: use same set of data to prepare variable encoding and train a mode
 dTrain <- d[d$rgroup<=80,,drop=FALSE]
 dTest <- d[d$rgroup>80,,drop=FALSE]
 library('vtreat')
-treatments <- vtreat::designTreatmentsC(dTrain,'x','y',TRUE)
+treatments <- vtreat::designTreatmentsC(dTrain,'x','y',TRUE,rareCount=0)
 dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=c())
 m1 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m1))  # notice low residual deviance
 dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
 
+# devtools::install_github("WinVector/WVPlots")
+# library('WVPlots')
 plotRes <- function(d,predName,yName,title) {
   print(title)
   tab <- table(truth=d[[yName]],pred=d[[predName]]>0.5)
@@ -44,6 +46,7 @@ plotRes <- function(d,predName,yName,title) {
   diag <- sum(vapply(seq_len(min(dim(tab))),
                      function(i) tab[i,i],numeric(1)))
   acc <- diag/sum(tab)
+  #print(WVPlots::ROCPlot(d,predName,yName,title))
   print(paste('accuracy',acc))
 }
 
@@ -55,7 +58,7 @@ plotRes(dTest,'predM1','y','model1 on test')
 
 The above is bad: we saw a "significant" model fit on training data (even though there is no relation to be found).  This means the treated training data can be confusing to machine learning techniques and to the analyst.  The issue is the training data is no longer exchangeable with the test data because the training data was used to build the variable encodings.  One way to avoid this is to not use the training data for variable encoding construction, but instead use a third set for this task.
 
-First notice vtreat did thing there was any usable signal, and did not want us to use the variables (we got them by setting pruneSig=c()).  
+First notice vtreat did thing there was any usable signal, and did not want us to use the variables (we got them by setting pruneSig=c()).  Also notice we set rareCount=0, which allows use of very rare levels (which help drive the problem).
 
 ```{r}
 print(treatments$scoreFrame)
@@ -69,13 +72,17 @@ Correct example: use different sets to prepare variable encoding and train a mod
 
 Remember, the goal isn't good performance on training- it is good performance on future data (simulated by test).  So doing well on training and bad on test is worse than doing bad on both test and training.
 
-Below is our suggested work pattern: coding/train/test split.
+Below is part of our suggested work pattern: coding/train/test split.
 
 ```{r}
 dCode <- d[d$rgroup<=20,,drop=FALSE]
 dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
-treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
-dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=c())
+treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE,
+                                        rareCount=0  # Note set this to something larger, like 5
+)
+dTrainTreated <- vtreat::prepare(treatments,dTrain,
+                                 pruneSig=c() # Note: set this to filter, like 0.05 or 1/nvars
+)
 m2 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m2)) # notice high residual deviance
 dTrain$predM2 <- predict(m2,newdata=dTrainTreated,type='response')
@@ -94,25 +101,27 @@ plotRes(dTest,'predM2','y','model2 on test set')
 
 In the above example we saw training and test performance are similar (and where they should be as there is no signal).  Notice the coding set (falsely) shows high performance.  This is the bad behavior we wanted to isolate out of the training set.
 
-Also be wary, on small data sets vtreat::designTreatments can not currently get accurate out-of sample estimates of variable performance (in these cases it falls back to untrustworthy in-sample estimates).   This is something we will improve over time, but vtreat is intended mostly for production applications on large data sets.
+Also be wary, on small data sets vtreat::designTreatments can not always get accurate out-of sample estimates of variable performance (in these cases it falls back to untrustworthy in-sample estimates).   This is something we will improve over time, but vtreat is intended mostly for production applications on large data sets.
 
 Bad small example:
 
 ```{r}
-treatmentsBad <- vtreat::designTreatmentsC(d[d$rgroup<=0,,drop=FALSE],'x','y',TRUE)
+treatmentsBad <- vtreat::designTreatmentsC(d[d$rgroup<=0,,drop=FALSE],'x','y',TRUE,
+                      rareCount=0 # Note set this to something larger, like 5
+)
 print(treatmentsBad$scoreFrame[treatmentsBad$scoreFrame$sig<=0.05,,drop=FALSE])
 ```
 
 We would have prefered no variables to have recieved a "good score."
 
-So even better is to perform the 3-way data split, and set pruneSig to something reasonable.
+So even better is to perform the 3-way data split, set pruneSig to something reasonable, and do not set rareCount to zero (leave it at the default or a reasonable count like 5 or 10).
 
 ```{r}
 dCode <- d[d$rgroup<=20,,drop=FALSE]
 dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
-treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
 tryCatch(
-  dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=0.01),
+  { treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
+  dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=0.01)},
   error=function(x) print(paste('caught',x))
 )
 ```
