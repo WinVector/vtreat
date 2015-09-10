@@ -314,11 +314,20 @@ print.vtreatment <- function(x,...) {
 }
 
 
-# return categorical indicators
-.catInd <- function(col,args,doCollar) {
+# pre-transform categorical column
+# convert it to character, convert NA to "NA"
+.preProcCat <- function(col) {
   origna <- is.na(col)
+  # don't use blank as a key and get into defendable level space
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
+  col
+}
+
+
+# return categorical indicators
+.catInd <- function(col,args,doCollar) {
+  col <- .preProcCat(col)
   nres <- length(args$tracked)
   vals <- vector('list',nres)
   sum <- rep(0,length(col))
@@ -341,9 +350,7 @@ print.vtreatment <- function(x,...) {
 # build categorical indicators
 .mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,weights) {
   origColClass <- class(vcolin)
-  origna <- is.na(vcolin)
-  vcol <- paste('x',as.character(vcolin))
-  vcol[origna] <- 'NA'
+  vcol <- .preProcCat(vcolin)
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
   tracked <- names(counts)[counts/totMass>=minFraction]
@@ -374,9 +381,7 @@ print.vtreatment <- function(x,...) {
 # apply a numeric impact model
 # replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args,doCollar) {
-  origna <- is.na(col)
-  col <- paste('x',as.character(col))  # R can't use empty string as a key
-  col[origna] <- 'NA' 
+  col <- .preProcCat(col)
   novel <- !(col %in% names(args$scores))
   keys <- col
   keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
@@ -390,9 +395,7 @@ print.vtreatment <- function(x,...) {
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,weights) {
   origColClass <- class(vcolin)
-  origna <- is.na(vcolin)
-  vcol <- paste('x',as.character(vcolin))   # R can't use empty string as a key
-  vcol[origna] <- 'NA'
+  vcol <- .preProcCat(vcolin)
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
@@ -415,9 +418,7 @@ print.vtreatment <- function(x,...) {
 # apply a classification impact model
 # replace level with log(.wmean(x|category)/.wmean(x))
 .catBayes <- function(col,args,doCollar) {
-  origna <- is.na(col)
-  col <- paste('x',as.character(col))   # R can't use empty string as a key
-  col[origna] <- 'NA' 
+  col <- .preProcCat(col)
   novel <- !(col %in% names(args$logLift))
   keys <- col
   keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
@@ -430,9 +431,7 @@ print.vtreatment <- function(x,...) {
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,weights) {
   origColClass <- class(vcolin)
-  origna <- is.na(vcolin)
-  vcol <- paste('x',as.character(vcolin))  # R can't use empty string as a key
-  vcol[origna] <- 'NA'
+  vcol <- .preProcCat(vcolin)
   smFactor <- max(smFactor,1.0e-3)
   # T/F is true false of the quantity to be predicted
   # C is the feature we are looking at
