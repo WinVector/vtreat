@@ -50,9 +50,9 @@ plotRes <- function(d,predName,yName,title) {
   diag <- sum(vapply(seq_len(min(dim(tab))),
                      function(i) tab[i,i],numeric(1)))
   acc <- diag/sum(tab)
-  if(requireNamespace("WVPlots",quietly=TRUE)) {
-     print(WVPlots::ROCPlot(d,predName,yName,title))
-  }
+#  if(requireNamespace("WVPlots",quietly=TRUE)) {
+#     print(WVPlots::ROCPlot(d,predName,yName,title))
+#  }
   print(paste('accuracy',acc))
 }
 
