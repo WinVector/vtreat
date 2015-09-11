@@ -1,9 +1,9 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 This package ('vtreat', available on [CRAN](https://cran.r-project.org/web/packages/vtreat/index.html) and [Github](https://github.com/WinVector/vtreat)) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
 
-Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use designTreatmentsC() and for numeric regression use designTreatmentsN().
+Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use 'designTreatmentsC()' and for numeric regression use 'designTreatmentsN()'.
 
-After the design step, prepare() should be used as you would use model.matrix. prepare() treated variables are all numeric and never take the value NA or +-Inf (so are very safe to use in modeling).
+After the design step, 'prepare()' should be used as you would use model.matrix. 'prepare()' treated variables are all numeric and never take the value NA or +-Inf (so are very safe to use in modeling).
 
 In application we suggest splitting your data into three sets: one for building vtreat encodings, one for training models using these encodings, and one for test and model evaluation.
 
@@ -15,7 +15,11 @@ The purpose of 'vtreat' library is to reliably prepare data for supervised machi
 
     We re-encode such variables as a family of indicator or dummy variables for common levels plus an additional [impact code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) (also called "effects coded" in Jacob Cohen, Patricia Cohen, *Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences*, 2nd edition, 1983). This allows principled use (including smoothing) of huge categorical variables (like zip-codes) when building models. This is critical for some libraries (such as 'randomForest', which has hard limits on the number of allowed levels).
 
--   Novel categorical levels).
+-   Rare categorical levels.
+
+    Levels that do not occur often during training tend not to have reliable effect estimates and contribute to over-fit. vtreat helps with 2 precautions in this case. First the 'rareLevel' argument suppresses levels with this count our below from modeling, except possibly through a grouped contribution. Also with enough data vtreat attempts to estimate out of sample performance of derived variables. Finally we suggest users reserve a portion of data for vtreat design, separate from any data used in additional training, calibration, or testing.
+
+-   Novel categorical levels.
 
     A common problem in deploying a classifier to production is: new levels (levels not seen during training) encountered during model application. We deal with this by encoding categorical variables in a possibly redundant manner: reserving a dummy variable for all levels (not the more common all but a reference level scheme). This is in fact the correct representation for regularized modeling techniques and lets us code novel levels as all dummies simultaneously zero (which is a reasonable thing to try). This encoding while limited is cheaper than the fully Bayesian solution of computing a weighted sum over previously seen levels during model application.
 
@@ -56,47 +60,40 @@ Examples of current best practice using 'vtreat' (variable coding, train, test s
 
 Trivial example:
 
-    ## [1] "desigining treatments Tue Sep  8 09:31:14 2015"
-    ## [1] "design var x Tue Sep  8 09:31:14 2015"
-    ## [1] "design var z Tue Sep  8 09:31:14 2015"
-    ## [1] "scoring treatments Tue Sep  8 09:31:14 2015"
-    ## [1] "have treatment plan Tue Sep  8 09:31:14 2015"
+    ## [1] "desigining treatments Fri Sep 11 10:26:33 2015"
+    ## [1] "design var x Fri Sep 11 10:26:33 2015"
+    ## [1] "design var z Fri Sep 11 10:26:33 2015"
+    ## [1] "scoring treatments Fri Sep 11 10:26:33 2015"
+    ## [1] "WARNING skipped vars: x"
+    ## [1] "have treatment plan Fri Sep 11 10:26:33 2015"
 
-    ##      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
-    ## -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
-    ##       z_isBAD 
-    ## -7.926292e-18
+    ##       z_clean       z_isBAD 
+    ## -3.965138e-17 -7.926292e-18
 
-    ##  x_lev_NA x_lev_x.a x_lev_x.b    x_catB   z_clean   z_isBAD 
-    ##         1         1         1         1         1         1
+    ## z_clean z_isBAD 
+    ##       1       1
 
-    ##        x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB   z_clean
-    ## 1 -1.714286e-01 -2.380952e-01  2.857143e-02 -2.619173e-01 0.4918919
-    ## 2 -1.714286e-01  1.785714e-01 -7.142857e-02 -1.479283e-02 0.4918919
-    ## 3 -2.775558e-17  2.775558e-17  3.469447e-18  1.387779e-17 0.4918919
-    ## 4  4.285714e-01  1.785714e-01  2.857143e-02  4.076688e-01 0.0000000
-    ##      z_isBAD
-    ## 1 -0.1714286
-    ## 2 -0.1714286
-    ## 3 -0.1714286
-    ## 4  0.4285714
+    ##     z_clean    z_isBAD
+    ## 1 0.4918919 -0.1714286
+    ## 2 0.4918919 -0.1714286
+    ## 3 0.4918919 -0.1714286
+    ## 4 0.0000000  0.4285714
 
-    ## [1] "desigining treatments Tue Sep  8 09:31:14 2015"
-    ## [1] "design var x Tue Sep  8 09:31:14 2015"
-    ## [1] "design var z Tue Sep  8 09:31:14 2015"
-    ## [1] "scoring treatments Tue Sep  8 09:31:14 2015"
-    ## [1] "have treatment plan Tue Sep  8 09:31:14 2015"
+    ## [1] "desigining treatments Fri Sep 11 10:26:33 2015"
+    ## [1] "design var x Fri Sep 11 10:26:33 2015"
+    ## [1] "design var z Fri Sep 11 10:26:33 2015"
+    ## [1] "scoring treatments Fri Sep 11 10:26:33 2015"
+    ## [1] "WARNING skipped vars: x"
+    ## [1] "have treatment plan Fri Sep 11 10:26:33 2015"
 
-    ##     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
-    ## 9.020562e-17 0.000000e+00 0.000000e+00 7.021564e-17 1.526557e-16 
-    ##      z_isBAD 
-    ## 7.632783e-17
+    ##      z_clean      z_isBAD 
+    ## 1.526557e-16 7.632783e-17
 
-    ##  x_lev_NA x_lev_x.a x_lev_x.b    x_catN   z_clean   z_isBAD 
-    ##         1         1        NA         1         1         1
+    ## z_clean z_isBAD 
+    ##       1       1
 
-    ##        x_lev_NA x_lev_x.a x_lev_x.b        x_catN      z_clean    z_isBAD
-    ## 1 -1.666667e-01     -0.25         0 -2.500000e-01 5.238095e-01 -0.1666667
-    ## 2 -1.666667e-01      0.25         0  5.887847e-17 5.238095e-01 -0.1666667
-    ## 3  8.326673e-17      0.00         0  5.887847e-17 5.238095e-01 -0.1666667
-    ## 4  5.000000e-01      0.25         0  5.000000e-01 1.110223e-16  0.5000000
+    ##        z_clean    z_isBAD
+    ## 1 5.238095e-01 -0.1666667
+    ## 2 5.238095e-01 -0.1666667
+    ## 3 5.238095e-01 -0.1666667
+    ## 4 1.110223e-16  0.5000000

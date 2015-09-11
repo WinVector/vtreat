@@ -13,10 +13,11 @@ new categorical levels (levels seen during application, but not during training)
 
 Data treatments are "y-aware" (use distribution relations between
 independent variables and the dependent variable).  For binary
-classification use designTreatmentsC() and for numeric regression use designTreatmentsN().
+classification use 'designTreatmentsC()' and for numeric regression
+use 'designTreatmentsN()'.
 
-After the design step, prepare() should be used as you would use
-model.matrix.  prepare() treated variables are all numeric and never
+After the design step, 'prepare()' should be used as you would use
+model.matrix.  'prepare()' treated variables are all numeric and never
 take the value NA or +-Inf (so are very safe to use in modeling).
 
 In application we suggest splitting your data into three sets: one for
@@ -45,7 +46,19 @@ precautions to guard against the following real world data issues:
     'randomForest', which has hard limits on the number of
     allowed levels).
 
--   Novel categorical levels).
+-   Rare categorical levels.
+
+    Levels that do not occur often during training tend not to have
+    reliable effect estimates and contribute to over-fit.  vtreat
+    helps with 2 precautions in this case.  First the 'rareLevel'
+    argument suppresses levels with this count our below from
+    modeling, except possibly through a grouped contribution.  Also
+    with enough data vtreat attempts to estimate out of sample
+    performance of derived variables.  Finally we suggest users
+    reserve a portion of data for vtreat design, separate from any
+    data used in additional training, calibration, or testing.
+
+-   Novel categorical levels.
 
     A common problem in deploying a classifier to production is: new
     levels (levels not seen during training) encountered during
