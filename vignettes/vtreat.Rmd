@@ -56,7 +56,7 @@ The suggested best practice is (if you have enough data) to split your randomly 
 
 The idea is: taking the extra step to perform the designTreatmentsC() or designTreatmentsN() on data disjoint from training makes the training data more exchangable with test and avoids the issue that vtreat may be hiding a large number of degrees of freedom in variables it derives from large categoricals.
 
-An trivial execution example (not demonstrating any cal/train/test split) is given below.  Varaibles that do not move during hold-out testing are considred "not to move."
+An trivial execution example (not demonstrating any cal/train/test split) is given below.  Variables that do not move during hold-out testing are considered "not to move."
 
 ```{r, tidy=FALSE}
 library(vtreat)

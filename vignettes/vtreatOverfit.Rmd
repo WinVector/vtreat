@@ -31,8 +31,12 @@ Bad practice: use same set of data to prepare variable encoding and train a mode
 dTrain <- d[d$rgroup<=80,,drop=FALSE]
 dTest <- d[d$rgroup>80,,drop=FALSE]
 library('vtreat')
-treatments <- vtreat::designTreatmentsC(dTrain,'x','y',TRUE,rareCount=0)
-dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=c())
+treatments <- vtreat::designTreatmentsC(dTrain,'x','y',TRUE,
+  rareCount=0 # Note: usually want rareCount>0, setting to zero to illustrate problem
+)
+dTrainTreated <- vtreat::prepare(treatments,dTrain,
+  pruneSig=c() # Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem
+)
 m1 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m1))  # notice low residual deviance
 dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
@@ -46,7 +50,9 @@ plotRes <- function(d,predName,yName,title) {
   diag <- sum(vapply(seq_len(min(dim(tab))),
                      function(i) tab[i,i],numeric(1)))
   acc <- diag/sum(tab)
-  #print(WVPlots::ROCPlot(d,predName,yName,title))
+  if(requireNamespace("WVPlots",quietly=TRUE)) {
+     print(WVPlots::ROCPlot(d,predName,yName,title))
+  }
   print(paste('accuracy',acc))
 }
 
@@ -65,6 +71,10 @@ print(treatments$scoreFrame)
 ```
 
 vteat thinks a signal as strong as the one seen on the derived variable x_catB happens at least 70% of the time for a variable with that sort of distribution: even when there is no signal.  But also notice the down-stream machine learning (in this case a standard logistic regression) used the variable wrong.  It gave it a non-negligible coefficient (around 3) and thought it had a reliable estimate of the coefficient and significant model that almost halved deviance (when in fact it was given nothing).  So any variables that do get through may have distributional issues (and misleadingly low apparent degrees of freedom).
+
+The biggest contributors to this distributional issue tend to be rare levels of categorical variables.  Since the individual levels are rare we have unreliable estimates for there effects, but if there are very many of them we may see quite a large effect.  To help combat this we have a control called rareLevels (defaults to 4).  Any level that is observed no more than rareLevels times during training is re-mapped to a new special level called "rare" and not allowed to directly contribute (i.e. can not generated unique indicator columns, and doesn't have a direct effect on catB or catN encodings).  If all the rare levels have a distinct behavior after grouping the "rare" level can capture that.
+
+Another undesirable effect is over-estimating significance of derived variable fit for catB and catN impact coded variables.  To fight this vtreat attempts to estimate out of sample or cross-validated effect significances (when it has enough data).  So with enough data setting the pruneSig parameter during prepare will help remove noise variables.  One can set pruneSig to something like 1/number-of-columns to ensure that with high probability only an constant number of truly useless variables make it to later modeling.  However, the significance of a given effect size for variables that actually have some signal (i.e. non-noise variables) can still be sensitive to in/out sample scoring and the hiding of degrees of freedom that occurs when a large categorical variable (that represents a large number of degrees of freedom) is re-coded as an impact or effect (which appears to have only a single degree of freedom).
 
 We next show how to avoid these undesirable illusory effects: better practice in partitioning and using training data.  We are doing more with our data (essentially chaining models), so we have to take a bit more care with our data.
 
@@ -112,7 +122,7 @@ treatmentsBad <- vtreat::designTreatmentsC(d[d$rgroup<=0,,drop=FALSE],'x','y',TR
 print(treatmentsBad$scoreFrame[treatmentsBad$scoreFrame$sig<=0.05,,drop=FALSE])
 ```
 
-We would have prefered no variables to have recieved a "good score."
+We would have preferred no variables to have received a "good score."
 
 So even better is to perform the 3-way data split, set pruneSig to something reasonable, and do not set rareCount to zero (leave it at the default or a reasonable count like 5 or 10).
 
