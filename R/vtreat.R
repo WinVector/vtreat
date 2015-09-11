@@ -316,22 +316,42 @@ print.vtreatment <- function(x,...) {
 
 # pre-transform categorical column
 # convert it to character, convert NA to "NA"
-.preProcCat <- function(col,nonRares) {
+.preProcCat <- function(col,activeLevels) {
   origna <- is.na(col)
   # don't use blank as a key and get into defendable level space
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
-  if(!is.null(nonRares)) {
+  if(!is.null(activeLevels)) {
      # map rare and novel levels to a new special level
-     col[!(col %in% nonRares)] <- 'rare'
+     col[!(col %in% activeLevels)] <- 'rare'
   }
   col
 }
 
 
+# determine non-rare and significant levels
+.safeLevels <- function(vcolin,yNumeric,weights,rareCount,rareSig) {
+  vcol <- .preProcCat(vcolin,c())
+  # first: keep only levels with enough weighted counts
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<sum(weights))]
+  if(length(safeLevs)>0) {
+    # second: keep only levels that look significantly different than grand mean
+    aovCalc <- function(level) {
+      m <- lm(yNumeric~vcol==level,weights = weights)
+      anova(m)[1,'Pr(>F)']
+    }
+    sigs <- vapply(safeLevs,aovCalc,numeric(1))
+    safeLevs <- safeLevs[sigs<=rareSig]
+  }
+  safeLevs
+}
+
+
+
 # return categorical indicators
 .catInd <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$nonRare)
+  col <- .preProcCat(col,args$activeLevels)
   nres <- length(args$tracked)
   vals <- vector('list',nres)
   sum <- rep(0,length(col))
@@ -352,19 +372,15 @@ print.vtreatment <- function(x,...) {
 }
 
 # build categorical indicators
-.mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,rareCount,weights) {
+.mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,rareCount,rareSig,weights) {
   origColClass <- class(vcolin)
   # first pass get common levels (so we know to re-map skipped to rare)
-  vcol <- .preProcCat(vcolin,c())
-  counts <- tapply(weights,vcol,sum)
-  totMass <- sum(counts)
-  tracked <- names(counts)[counts/totMass>=minFraction]
-  nonRare <- names(counts)[counts>rareCount]
-  if((length(tracked)<=0)||(length(nonRare)<=0)) {
+  activeLevels <- .safeLevels(vcolin,ynumeric,weights,rareCount,rareSig)
+  if(length(activeLevels)<=0) {
     return(c())
   }
   # second pass, work in terms of chosen encoding
-  vcol <- .preProcCat(vcolin,nonRare)
+  vcol <- .preProcCat(vcolin,activeLevels)
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
   tracked <- names(counts)[counts/totMass>=minFraction]
@@ -381,7 +397,7 @@ print.vtreatment <- function(x,...) {
                     newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
                     args=list(tracked=tracked,
-                              nonRare=nonRare,
+                              activeLevels=activeLevels,
                               dist=dist),
                     treatmentName='Categoric Indicators')
   class(treatment) <- 'vtreatment'
@@ -400,7 +416,7 @@ print.vtreatment <- function(x,...) {
 # apply a numeric impact model
 # replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$nonRare)
+  col <- .preProcCat(col,args$activeLevels)
   novel <- !(col %in% names(args$scores))
   keys <- col
   keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
@@ -412,20 +428,15 @@ print.vtreatment <- function(x,...) {
 
 # build a numeric impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
-.mkCatNum <- function(origVarName,vcolin,rescol,smFactor,rareCount,weights) {
+.mkCatNum <- function(origVarName,vcolin,rescol,smFactor,rareCount,rareSig,weights) {
   origColClass <- class(vcolin)
   # first pass, find non-rare levels
-  vcol <- .preProcCat(vcolin,c())
-  counts <- tapply(weights,vcol,sum)
-  if(length(counts)<=0) {
-    return(c())
-  }
-  nonRare <- names(counts)[counts>rareCount]
-  if(length(nonRare)<=0) {
+  activeLevels <- .safeLevels(vcolin,rescol,weights,rareCount,rareSig)
+  if(length(activeLevels)<=0) {
     return(c())
   }
   # second pass, work in new encoding
-  vcol <- .preProcCat(vcolin,nonRare)
+  vcol <- .preProcCat(vcolin,activeLevels)
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
@@ -437,7 +448,7 @@ print.vtreatment <- function(x,...) {
                     f=.catNum,
                     args=list(scores=scores,
                               novelvalue=novelvalue,
-                              nonRare=nonRare),
+                              activeLevels=activeLevels),
                     treatmentName='Scalable Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -450,7 +461,7 @@ print.vtreatment <- function(x,...) {
 # apply a classification impact model
 # replace level with log(.wmean(x|category)/.wmean(x))
 .catBayes <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$nonRare)
+  col <- .preProcCat(col,args$activeLevels)
   novel <- !(col %in% names(args$logLift))
   keys <- col
   keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
@@ -461,20 +472,15 @@ print.vtreatment <- function(x,...) {
 
 # build a classification impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
-.mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,rareCount,weights) {
+.mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,rareCount,rareSig,weights) {
   origColClass <- class(vcolin)
   # first pass get non-rare levels
-  vcol <- .preProcCat(vcolin,c())
-  counts <- tapply(weights,vcol,sum)
-  if(length(counts)<=0) {
-    return(c())
-  }
-  nonRare <- names(counts)[counts>=rareCount]
-  if(length(nonRare)<=0) {
+  activeLevels <- .safeLevels(vcolin,as.numeric(rescol==resTarget),weights,rareCount,rareSig)
+  if(length(activeLevels)<=0) {
     return(c())
   }
   # second pass, work in new encoding
-  vcol <- .preProcCat(vcolin,nonRare)
+  vcol <- .preProcCat(vcolin,activeLevels)
   smFactor <- max(smFactor,1.0e-3)
   # T/F is true false of the quantity to be predicted
   # C is the feature we are looking at
@@ -498,7 +504,7 @@ print.vtreatment <- function(x,...) {
                     f=.catBayes,
                     args=list(logLift=logLift,
                               novelvalue=novelvalue,
-                              nonRare=nonRare),
+                              activeLevels=activeLevels),
                     treatmentName='Bayesian Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -666,7 +672,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 .varDesigner <- function(zoY,
                          zC,zTarget,
                          weights,
-                         minFraction,smFactor,rareCount,maxMissing,
+                         minFraction,smFactor,rareCount,rareSig,maxMissing,
                          collarProb,
                          trainRows,origRowCount,
                          verbose) {
@@ -677,6 +683,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(minFraction)
   force(smFactor)
   force(rareCount)
+  force(rareSig)
   force(maxMissing)
   force(collarProb)
   force(trainRows)
@@ -712,15 +719,15 @@ catScore <- function(x,yC,yTarget,weights=c()) {
           acceptTreatment(ti)
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
-          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,rareCount,weights)
+          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,rareCount,rareSig,weights)
           acceptTreatment(ti)
           if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
             if(!is.null(zC)) {  # in categorical mode
-              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,rareCount,weights)
+              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,rareCount,rareSig,weights)
               acceptTreatment(ti)      
             }
             if(is.null(zC)) { # is numeric mode
-              ti <- .mkCatNum(v,vcol,zoY,smFactor,rareCount,weights)
+              ti <- .mkCatNum(v,vcol,zoY,smFactor,rareCount,rareSig,weights)
               acceptTreatment(ti)
             }
           }
@@ -739,7 +746,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 .outSampleXform <- function(outcomename,zoY,
                             zC,zTarget,
                             weights,
-                            minFraction,smFactor,rareCount,maxMissing,
+                            minFraction,smFactor,rareCount,rareSig,maxMissing,
                             collarProb,
                             scale,doCollar,tryCrossVal) {
   force(outcomename)
@@ -750,6 +757,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(minFraction)
   force(smFactor)
   force(rareCount)
+  force(rareSig)
   force(maxMissing)
   force(collarProb)
   force(scale)
@@ -816,7 +824,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       vDesigner <- .varDesigner(zoY[trainSet],
                                 zC[trainSet],zTarget,
                                 weights[trainSet],
-                                minFraction,smFactor,rareCount,maxMissing,
+                                minFraction,smFactor,rareCount,rareSig,maxMissing,
                                 collarProb,
                                 trainSet,nRows,
                                 FALSE)
@@ -925,7 +933,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                                zC,zTarget,
                                weights,
                                minFraction,smFactor,
-                               rareCount,maxMissing,
+                               rareCount,rareSig,maxMissing,
                                collarProb,
                                returnXFrame,scale,doCollar,
                                verbose,
@@ -990,7 +998,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   worker <- .varDesigner( zoY,
                           zC,zTarget,
                           weights,
-                          minFraction,smFactor,rareCount,maxMissing,
+                          minFraction,smFactor,rareCount,rareSig,maxMissing,
                           collarProb,
                           1:nrow(dframe),nrow(dframe),
                           verbose)
@@ -1013,7 +1021,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                         zC,zTarget,
                         weights,
                         minFraction,smFactor,
-                        rareCount,maxMissing,
+                        rareCount,rareSig,maxMissing,
                         collarProb,
                         scale,doCollar,returnXFrame)
   if(is.null(parallelCluster)) {
@@ -1098,6 +1106,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, supress direct effects of level of this count or less.
+#' @param rareSig optional integer, supress direct effects of level of this signficance or less.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
@@ -1122,7 +1131,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=4,maxMissing=0.04,
+                              rareCount=4,rareSig=0.1,maxMissing=0.04,
                               collarProb=0.00,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
@@ -1132,7 +1141,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                      dframe[[outcomename]],outcometarget,
                      weights,
                      minFraction,smFactor,
-                     rareCount,maxMissing,
+                     rareCount,rareSig,maxMissing,
                      collarProb,
                      returnXFrame,scale,doCollar,
                      verbose,
@@ -1164,6 +1173,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, supress direct effects of level of this count or less.
+#' @param rareSig optional integer, supress direct effects of level of this signficance or less.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
@@ -1187,7 +1197,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=4,maxMissing=0.04,
+                              rareCount=4,rareSig=0.1,maxMissing=0.04,
                               collarProb=0.00,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
@@ -1197,7 +1207,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      c(),c(),
                      weights,
                      minFraction,smFactor,
-                     rareCount,maxMissing,
+                     rareCount,rareSig,maxMissing,
                      collarProb,
                      returnXFrame,scale,doCollar,
                      verbose,

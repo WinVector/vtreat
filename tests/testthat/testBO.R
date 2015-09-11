@@ -70,8 +70,10 @@ test_that("Work As Expected", {
         print('# numeric example')
       }
       treatmentsN <- designTreatmentsN(dTrain,vars,'yN',smFactor=smFactor,
+                                       rareCount=2,rareSig=0.5,
                                        verbose=verbose)
-      dTrainNTreated <- prepare(treatmentsN,dTrain,pruneSig=0.99,scale=scale)
+      dTrainNTreated <- prepare(treatmentsN,dTrain,pruneSig=0.99,
+                                scale=scale)
       nvars <- setdiff(colnames(dTrainNTreated),'yN')
       if(verbose) {
         print('offsets')
