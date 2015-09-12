@@ -6,7 +6,10 @@
 There were no ERRORs or WARNINGs. 
 
 There were two NOTEs:
-* 
+
+* Maintainer: ‘John Mount <jmount@win-vector.com>’
+* No repository set, so cyclic dependency check skipped
+
 
 
 ## Downstream dependencies

@@ -60,12 +60,12 @@ Examples of current best practice using 'vtreat' (variable coding, train, test s
 
 Trivial example:
 
-    ## [1] "desigining treatments Sat Sep 12 09:14:28 2015"
-    ## [1] "design var x Sat Sep 12 09:14:28 2015"
-    ## [1] "design var z Sat Sep 12 09:14:28 2015"
-    ## [1] "scoring treatments Sat Sep 12 09:14:28 2015"
+    ## [1] "desigining treatments Sat Sep 12 09:20:46 2015"
+    ## [1] "design var x Sat Sep 12 09:20:46 2015"
+    ## [1] "design var z Sat Sep 12 09:20:46 2015"
+    ## [1] "scoring treatments Sat Sep 12 09:20:46 2015"
     ## [1] "WARNING skipped vars: x"
-    ## [1] "have treatment plan Sat Sep 12 09:14:28 2015"
+    ## [1] "have treatment plan Sat Sep 12 09:20:46 2015"
 
     ##       z_clean       z_isBAD 
     ## -3.965138e-17 -7.926292e-18
@@ -79,11 +79,11 @@ Trivial example:
     ## 3 0.4918919 -0.1714286
     ## 4 0.0000000  0.4285714
 
-    ## [1] "desigining treatments Sat Sep 12 09:14:28 2015"
-    ## [1] "design var x Sat Sep 12 09:14:28 2015"
-    ## [1] "design var z Sat Sep 12 09:14:28 2015"
-    ## [1] "scoring treatments Sat Sep 12 09:14:28 2015"
-    ## [1] "have treatment plan Sat Sep 12 09:14:28 2015"
+    ## [1] "desigining treatments Sat Sep 12 09:20:46 2015"
+    ## [1] "design var x Sat Sep 12 09:20:46 2015"
+    ## [1] "design var z Sat Sep 12 09:20:46 2015"
+    ## [1] "scoring treatments Sat Sep 12 09:20:46 2015"
+    ## [1] "have treatment plan Sat Sep 12 09:20:46 2015"
 
     ##   x_lev_rare    x_lev_x.a       x_catN      z_clean      z_isBAD 
     ## 1.110223e-16 0.000000e+00 2.775558e-17 1.526557e-16 7.632783e-17
