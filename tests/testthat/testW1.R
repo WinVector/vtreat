@@ -14,9 +14,11 @@ test_that("Numeric Var Scores as expected w1", {
   d$y <- d$y + del[d$zip2]
   d$yc <- d$y>=mean(d$y)
   library(vtreat)
-  tN <- designTreatmentsN(d,c('zip','zip2'),'y',verbose=FALSE)
+  tN <- designTreatmentsN(d,c('zip','zip2'),'y',verbose=FALSE,
+                          rareCount=0,rareSig=1.0)
   dTN <- prepare(tN,d,pruneSig=0.99)
-  tC <- designTreatmentsC(d,c('zip','zip2'),'yc',TRUE,verbose=FALSE)
+  tC <- designTreatmentsC(d,c('zip','zip2'),'yc',TRUE,verbose=FALSE,
+                          rareCount=0,rareSig=1.0)
   dTC <- prepare(tC,d,pruneSig=0.99)
 
   expect_true(tN$sig[['zip2_catN']]<0.05)

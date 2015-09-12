@@ -5,7 +5,7 @@
 \title{designTreatmentsC}
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
-  minFraction = 0.02, smFactor = 0, rareCount = 4, rareSig = 0.1,
+  minFraction = 0.02, smFactor = 0, rareCount = 2, rareSig = 0.3,
   maxMissing = 0.04, collarProb = 0, returnXFrame = FALSE,
   scale = FALSE, doCollar = TRUE, verbose = TRUE,
   parallelCluster = NULL)

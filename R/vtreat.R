@@ -316,25 +316,29 @@ print.vtreatment <- function(x,...) {
 
 # pre-transform categorical column
 # convert it to character, convert NA to "NA"
-.preProcCat <- function(col,activeLevels) {
+.preProcCat <- function(col,levRestriction) {
   origna <- is.na(col)
   # don't use blank as a key and get into defendable level space
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
-  if(!is.null(activeLevels)) {
-     # map rare and novel levels to a new special level
-     col[!(col %in% activeLevels)] <- 'rare'
+  if(!is.null(levRestriction)) {
+    # map rare levels to a new special level
+    rares <- !(col %in% levRestriction$safeLevs)
+    zaps <- col %in% levRestriction$supressedLevs
+    col[rares] <- 'rare'
+    col[zaps] <- 'zap'
   }
   col
 }
 
 
-# determine non-rare and significant levels
+# determine non-rare and significant levels for numeric/regression target
 .safeLevels <- function(vcolin,yNumeric,weights,rareCount,rareSig) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
   safeLevs <- names(counts)[(counts>rareCount) & (counts<sum(weights))]
+  supressedLevs <- character(0)
   if(length(safeLevs)>0) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <- function(level) {
@@ -342,16 +346,16 @@ print.vtreatment <- function(x,...) {
       anova(m)[1,'Pr(>F)']
     }
     sigs <- vapply(safeLevs,aovCalc,numeric(1))
-    safeLevs <- safeLevs[sigs<=rareSig]
+    supressedLevs <- safeLevs[sigs>rareSig]
   }
-  safeLevs
+  list(safeLevs=safeLevs,supressedLevs=supressedLevs)
 }
 
 
 
 # return categorical indicators
 .catInd <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$activeLevels)
+  col <- .preProcCat(col,args$levRestriction)
   nres <- length(args$tracked)
   vals <- vector('list',nres)
   sum <- rep(0,length(col))
@@ -372,18 +376,13 @@ print.vtreatment <- function(x,...) {
 }
 
 # build categorical indicators
-.mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,rareCount,rareSig,weights) {
+.mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,levRestriction,weights) {
   origColClass <- class(vcolin)
-  # first pass get common levels (so we know to re-map skipped to rare)
-  activeLevels <- .safeLevels(vcolin,ynumeric,weights,rareCount,rareSig)
-  if(length(activeLevels)<=0) {
-    return(c())
-  }
-  # second pass, work in terms of chosen encoding
-  vcol <- .preProcCat(vcolin,activeLevels)
+  vcol <- .preProcCat(vcolin,levRestriction)
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
   tracked <- names(counts)[counts/totMass>=minFraction]
+  tracked <- setdiff(tracked,'zap') # don't let zap group code
   if(length(tracked)<=0) {
     return(c())
   }
@@ -397,7 +396,7 @@ print.vtreatment <- function(x,...) {
                     newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
                     args=list(tracked=tracked,
-                              activeLevels=activeLevels,
+                              levRestriction=levRestriction,
                               dist=dist),
                     treatmentName='Categoric Indicators')
   class(treatment) <- 'vtreatment'
@@ -416,11 +415,14 @@ print.vtreatment <- function(x,...) {
 # apply a numeric impact model
 # replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$activeLevels)
+  col <- .preProcCat(col,args$levRestriction)
   novel <- !(col %in% names(args$scores))
   keys <- col
-  keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
-  pred <- as.numeric(args$scores[keys]) 
+  pred <- numeric(length(col))
+  if(length(args$scores)>0) {
+    keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
+    pred <- as.numeric(args$scores[keys]) 
+  }
   # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
   pred[novel] <- args$novelvalue  
   pred
@@ -428,27 +430,22 @@ print.vtreatment <- function(x,...) {
 
 # build a numeric impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
-.mkCatNum <- function(origVarName,vcolin,rescol,smFactor,rareCount,rareSig,weights) {
+.mkCatNum <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
   origColClass <- class(vcolin)
-  # first pass, find non-rare levels
-  activeLevels <- .safeLevels(vcolin,rescol,weights,rareCount,rareSig)
-  if(length(activeLevels)<=0) {
-    return(c())
-  }
-  # second pass, work in new encoding
-  vcol <- .preProcCat(vcolin,activeLevels)
+  vcol <- .preProcCat(vcolin,levRestriction)
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
   scores <- (num+smFactor*baseMean)/(den+smFactor)-baseMean
   novelvalue <- sum(scores*den)/sum(den)
   scores <- as.list(scores)
+  scores <- scores[names(scores)!='zap'] # don't let zap code
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catN',sep='_')),
                     f=.catNum,
                     args=list(scores=scores,
                               novelvalue=novelvalue,
-                              activeLevels=activeLevels),
+                              levRestriction=levRestriction),
                     treatmentName='Scalable Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -461,26 +458,23 @@ print.vtreatment <- function(x,...) {
 # apply a classification impact model
 # replace level with log(.wmean(x|category)/.wmean(x))
 .catBayes <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$activeLevels)
+  col <- .preProcCat(col,args$levRestriction)
   novel <- !(col %in% names(args$logLift))
   keys <- col
-  keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
-  pred <- as.numeric(args$logLift[keys]) 
+  pred <- numeric(length(col))
+  if(length(args$logLift)>0) {
+     keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
+     pred <- as.numeric(args$logLift[keys]) 
+  }
   pred[novel] <- args$novelvalue
   pred
 }
 
 # build a classification impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
-.mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,rareCount,rareSig,weights) {
+.mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights) {
   origColClass <- class(vcolin)
-  # first pass get non-rare levels
-  activeLevels <- .safeLevels(vcolin,as.numeric(rescol==resTarget),weights,rareCount,rareSig)
-  if(length(activeLevels)<=0) {
-    return(c())
-  }
-  # second pass, work in new encoding
-  vcol <- .preProcCat(vcolin,activeLevels)
+  vcol <- .preProcCat(vcolin,levRestriction)
   smFactor <- max(smFactor,1.0e-3)
   # T/F is true false of the quantity to be predicted
   # C is the feature we are looking at
@@ -499,12 +493,13 @@ print.vtreatment <- function(x,...) {
   den <- tapply(weights,vcol,sum)
   novelvalue <- sum(logLift*den)/sum(den)
   logLift <- as.list(logLift)
+  logLift <- logLift[names(logLift)!='zap']  # don't let zap group code
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catB',sep='_')),
                     f=.catBayes,
                     args=list(logLift=logLift,
                               novelvalue=novelvalue,
-                              activeLevels=activeLevels),
+                              levRestriction=levRestriction),
                     treatmentName='Bayesian Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -719,16 +714,19 @@ catScore <- function(x,yC,yTarget,weights=c()) {
           acceptTreatment(ti)
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
-          ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,rareCount,rareSig,weights)
-          acceptTreatment(ti)
-          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-            if(!is.null(zC)) {  # in categorical mode
-              ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,rareCount,rareSig,weights)
-              acceptTreatment(ti)      
-            }
-            if(is.null(zC)) { # is numeric mode
-              ti <- .mkCatNum(v,vcol,zoY,smFactor,rareCount,rareSig,weights)
-              acceptTreatment(ti)
+          levRestriction <- .safeLevels(vcol,zoY,weights,rareCount,rareSig)
+          if(length(levRestriction$safeLevs)>0) {
+            ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,levRestriction,weights)
+            acceptTreatment(ti)
+            if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+              if(!is.null(zC)) {  # in categorical mode
+                ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights)
+                acceptTreatment(ti)      
+              }
+              if(is.null(zC)) { # is numeric mode
+                ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
+                acceptTreatment(ti)
+              }
             }
           }
         } else {
@@ -911,7 +909,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
         scoreFrameij <- data.frame(varName=nv,
                                    origName=origName,
                                    varMoves=varMoves,
-                                   PRESSRsquared=PRESSRsquared,psig=psig,
+                                   PRESSRsquared=PRESSRsquared,
+                                   psig=psig,
                                    sig=sig,
                                    stringsAsFactors = FALSE)
         if(catTarget) {
@@ -1032,6 +1031,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     xFrames <- parallel::parLapply(parallelCluster,workList,sw)
   }
   xFrames <- Filter(Negate(is.null),xFrames)
+  prepedRows <- vapply(xFrames,function(f) nrow(f),numeric(1))
+  xFrames <- xFrames[prepedRows>=max(prepedRows)]
   xFrame <- do.call(cbind,lapply(xFrames,function(d) {
     d[,setdiff(colnames(d),outcomename),drop=FALSE]
     }))
@@ -1055,7 +1056,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   sig <- sFrame$sig
   names(sig) <- sFrame$varName
   plan <- list(treatments=treatments,
-               vars=treatedVarNames,
+               vars=vset,
                varMoves=varMoves,
                sig=sig,
                scoreFrame=sFrame,
@@ -1131,7 +1132,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=4,rareSig=0.1,maxMissing=0.04,
+                              rareCount=2,rareSig=0.3,maxMissing=0.04,
                               collarProb=0.00,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
@@ -1197,7 +1198,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 designTreatmentsN <- function(dframe,varlist,outcomename,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=4,rareSig=0.1,maxMissing=0.04,
+                              rareCount=2,rareSig=0.3,maxMissing=0.04,
                               collarProb=0.00,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,

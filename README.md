@@ -60,12 +60,12 @@ Examples of current best practice using 'vtreat' (variable coding, train, test s
 
 Trivial example:
 
-    ## [1] "desigining treatments Fri Sep 11 10:26:33 2015"
-    ## [1] "design var x Fri Sep 11 10:26:33 2015"
-    ## [1] "design var z Fri Sep 11 10:26:33 2015"
-    ## [1] "scoring treatments Fri Sep 11 10:26:33 2015"
+    ## [1] "desigining treatments Fri Sep 11 20:22:13 2015"
+    ## [1] "design var x Fri Sep 11 20:22:13 2015"
+    ## [1] "design var z Fri Sep 11 20:22:13 2015"
+    ## [1] "scoring treatments Fri Sep 11 20:22:13 2015"
     ## [1] "WARNING skipped vars: x"
-    ## [1] "have treatment plan Fri Sep 11 10:26:33 2015"
+    ## [1] "have treatment plan Fri Sep 11 20:22:13 2015"
 
     ##       z_clean       z_isBAD 
     ## -3.965138e-17 -7.926292e-18
@@ -79,21 +79,20 @@ Trivial example:
     ## 3 0.4918919 -0.1714286
     ## 4 0.0000000  0.4285714
 
-    ## [1] "desigining treatments Fri Sep 11 10:26:33 2015"
-    ## [1] "design var x Fri Sep 11 10:26:33 2015"
-    ## [1] "design var z Fri Sep 11 10:26:33 2015"
-    ## [1] "scoring treatments Fri Sep 11 10:26:33 2015"
-    ## [1] "WARNING skipped vars: x"
-    ## [1] "have treatment plan Fri Sep 11 10:26:33 2015"
+    ## [1] "desigining treatments Fri Sep 11 20:22:13 2015"
+    ## [1] "design var x Fri Sep 11 20:22:13 2015"
+    ## [1] "design var z Fri Sep 11 20:22:13 2015"
+    ## [1] "scoring treatments Fri Sep 11 20:22:13 2015"
+    ## [1] "have treatment plan Fri Sep 11 20:22:13 2015"
 
-    ##      z_clean      z_isBAD 
-    ## 1.526557e-16 7.632783e-17
+    ##   x_lev_rare    x_lev_x.a       x_catN      z_clean      z_isBAD 
+    ## 1.110223e-16 0.000000e+00 2.775558e-17 1.526557e-16 7.632783e-17
 
-    ## z_clean z_isBAD 
-    ##       1       1
+    ## x_lev_rare  x_lev_x.a     x_catN    z_clean    z_isBAD 
+    ##          1          1          1          1          1
 
-    ##        z_clean    z_isBAD
-    ## 1 5.238095e-01 -0.1666667
-    ## 2 5.238095e-01 -0.1666667
-    ## 3 5.238095e-01 -0.1666667
-    ## 4 1.110223e-16  0.5000000
+    ##   x_lev_rare x_lev_x.a x_catN      z_clean    z_isBAD
+    ## 1      -0.25     -0.25  -0.25 5.238095e-01 -0.1666667
+    ## 2       0.25      0.25   0.25 5.238095e-01 -0.1666667
+    ## 3       0.25      0.25   0.25 5.238095e-01 -0.1666667
+    ## 4       0.25      0.25   0.25 1.110223e-16  0.5000000
