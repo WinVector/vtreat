@@ -1,10 +1,12 @@
 
-'vtreat' 0.5.15 2015/09/11
+'vtreat' 0.5.16 2015/09/12
 
 Changes:
 
 -  Unified rare level treatment
+-  Separate treatment of insignificant levels
 -  Tests confirming compatibility with 'data.table'
+-  More special case hardening
 -  Over-fit vignette
 -  Minor documentation fixes
 

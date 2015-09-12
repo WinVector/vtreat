@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Example showing safe "best practice" use of the [vtreat](https://cran.r-project.org/web/packages/vtreat/index.html) variable preparation library.  For more on vtreat see [here](http://www.win-vector.com/blog/2015/09/vtreat-up-on-cran/) and [here](https://github.com/WinVector/vtreat).
+Example showing safe "best practice" use of the [vtreat](https://cran.r-project.org/package=vtreat) variable preparation library.  For more on vtreat see [here](http://www.win-vector.com/blog/2015/09/vtreat-up-on-cran/) and [here](https://github.com/WinVector/vtreat).
 
 Build an example data frame with no relation between x and y.  We are using a synthetic data set so we know what the "right answer is" (no signal).  False fitting on no-signal variables is bad for at least two reasons:
 

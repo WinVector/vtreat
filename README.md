@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-This package ('vtreat', available on [CRAN](https://cran.r-project.org/web/packages/vtreat/index.html) and [Github](https://github.com/WinVector/vtreat)) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
+This package ('vtreat', available on [CRAN](https://cran.r-project.org/package=vtreat) and [Github](https://github.com/WinVector/vtreat)) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
 
 Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use 'designTreatmentsC()' and for numeric regression use 'designTreatmentsN()'.
 
@@ -60,12 +60,12 @@ Examples of current best practice using 'vtreat' (variable coding, train, test s
 
 Trivial example:
 
-    ## [1] "desigining treatments Fri Sep 11 20:22:13 2015"
-    ## [1] "design var x Fri Sep 11 20:22:13 2015"
-    ## [1] "design var z Fri Sep 11 20:22:13 2015"
-    ## [1] "scoring treatments Fri Sep 11 20:22:13 2015"
+    ## [1] "desigining treatments Sat Sep 12 09:14:28 2015"
+    ## [1] "design var x Sat Sep 12 09:14:28 2015"
+    ## [1] "design var z Sat Sep 12 09:14:28 2015"
+    ## [1] "scoring treatments Sat Sep 12 09:14:28 2015"
     ## [1] "WARNING skipped vars: x"
-    ## [1] "have treatment plan Fri Sep 11 20:22:13 2015"
+    ## [1] "have treatment plan Sat Sep 12 09:14:28 2015"
 
     ##       z_clean       z_isBAD 
     ## -3.965138e-17 -7.926292e-18
@@ -79,11 +79,11 @@ Trivial example:
     ## 3 0.4918919 -0.1714286
     ## 4 0.0000000  0.4285714
 
-    ## [1] "desigining treatments Fri Sep 11 20:22:13 2015"
-    ## [1] "design var x Fri Sep 11 20:22:13 2015"
-    ## [1] "design var z Fri Sep 11 20:22:13 2015"
-    ## [1] "scoring treatments Fri Sep 11 20:22:13 2015"
-    ## [1] "have treatment plan Fri Sep 11 20:22:13 2015"
+    ## [1] "desigining treatments Sat Sep 12 09:14:28 2015"
+    ## [1] "design var x Sat Sep 12 09:14:28 2015"
+    ## [1] "design var z Sat Sep 12 09:14:28 2015"
+    ## [1] "scoring treatments Sat Sep 12 09:14:28 2015"
+    ## [1] "have treatment plan Sat Sep 12 09:14:28 2015"
 
     ##   x_lev_rare    x_lev_x.a       x_catN      z_clean      z_isBAD 
     ## 1.110223e-16 0.000000e+00 2.775558e-17 1.526557e-16 7.632783e-17
