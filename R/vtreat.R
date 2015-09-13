@@ -1,7 +1,7 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
-#' @importFrom stats as.formula binomial glm lm.wfit pchisq pf quantile
+#' @importFrom stats anova as.formula binomial glm lm lm.wfit pchisq pf quantile
 NULL
 
 
@@ -342,8 +342,8 @@ print.vtreatment <- function(x,...) {
   if(length(safeLevs)>0) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <- function(level) {
-      m <- lm(yNumeric~vcol==level,weights = weights)
-      anova(m)[1,'Pr(>F)']
+      m <- stats::lm(yNumeric~vcol==level,weights = weights)
+      stats::anova(m)[1,'Pr(>F)']
     }
     sigs <- vapply(safeLevs,aovCalc,numeric(1))
     supressedLevs <- safeLevs[sigs>rareSig]
