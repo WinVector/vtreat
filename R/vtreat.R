@@ -358,19 +358,9 @@ print.vtreatment <- function(x,...) {
   col <- .preProcCat(col,args$levRestriction)
   nres <- length(args$tracked)
   vals <- vector('list',nres)
-  sum <- rep(0,length(col))
-  for(j in 1:nres) {
+  for(j in seq_len(nres)) {
     vi <- ifelse(col==args$tracked[j],1.0,0.0) 
     vals[[j]] <- vi
-    sum <- sum + vi
-  }
-  if(nres>1) {
-     for(ri in which(sum==0)) { 
-        # For novel levels put fraction of time each level was on in original data
-        for(j in 1:nres) {
-           vals[[j]][[ri]] <- args$dist[[j]]
-        }
-     }
   }
   vals
 }
@@ -391,19 +381,17 @@ print.vtreatment <- function(x,...) {
   if(missingMass>maxMissing) {
     return(c())
   }
-  dist <- as.numeric(counts/sum(counts))
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
                     args=list(tracked=tracked,
-                              levRestriction=levRestriction,
-                              dist=dist),
+                              levRestriction=levRestriction),
                     treatmentName='Categoric Indicators')
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
   nvar <- length(pred)
   treatment$scales <- list('a'=rep(1.0,nvar),'b'=rep(0.0,nvar))  
-  for(j in 1:nvar) {
+  for(j in seq_len(nvar)) {
     scales <- .getScales(pred[[j]],ynumeric,weights)
     treatment$scales$a[j] <- scales$a
     treatment$scales$b[j] <- scales$b
@@ -424,7 +412,7 @@ print.vtreatment <- function(x,...) {
     pred <- as.numeric(args$scores[keys]) 
   }
   # mean delta impact averaged over all possibilities, should be zero in scaled mode, mean dist in unscaled
-  pred[novel] <- args$novelvalue  
+  pred[novel] <- 0.0 
   pred
 }
 
@@ -437,14 +425,12 @@ print.vtreatment <- function(x,...) {
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
   scores <- (num+smFactor*baseMean)/(den+smFactor)-baseMean
-  novelvalue <- sum(scores*den)/sum(den)
   scores <- as.list(scores)
   scores <- scores[names(scores)!='zap'] # don't let zap code
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catN',sep='_')),
                     f=.catNum,
                     args=list(scores=scores,
-                              novelvalue=novelvalue,
                               levRestriction=levRestriction),
                     treatmentName='Scalable Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
@@ -466,7 +452,7 @@ print.vtreatment <- function(x,...) {
      keys[novel] <- names(args$logLift)[[1]]  # just to prevent bad lookups
      pred <- as.numeric(args$logLift[keys]) 
   }
-  pred[novel] <- args$novelvalue
+  pred[novel] <- 0.0
   pred
 }
 
@@ -489,16 +475,13 @@ print.vtreatment <- function(x,...) {
   pFgivenCunnorm <- pCgivenF*(1-probT)  # Bayes law, corret missing a /pC term (which we will normalize out)
   pTgivenC <- pTgivenCunnorm/(pTgivenCunnorm+pFgivenCunnorm)
   logLift <- log(pTgivenC/probT)  # log probability ratio (so no effect is coded as zero)
-  # fall back for novel levels, use average response of model during training
-  den <- tapply(weights,vcol,sum)
-  novelvalue <- sum(logLift*den)/sum(den)
   logLift <- as.list(logLift)
   logLift <- logLift[names(logLift)!='zap']  # don't let zap group code
+  # fall back for novel levels, use zero impact
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catB',sep='_')),
                     f=.catBayes,
                     args=list(logLift=logLift,
-                              novelvalue=novelvalue,
                               levRestriction=levRestriction),
                     treatmentName='Bayesian Impact Code')
   pred <- treatment$f(vcolin,treatment$args)
@@ -578,7 +561,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
   a[1,1] <- 1.0e-5
   a[2,2] <- 1.0e-5
   b <- matrix(data=0,nrow=2,ncol=1)
-  for(i in 1:n) {
+  for(i in seq_len(n)) {
     xi <- x[i]
     yi <- y[i]
     wi <- weights[i]
@@ -591,7 +574,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
   }
   aM <- matrix(data=0,nrow=2,ncol=2)
   bM <- matrix(data=0,nrow=2,ncol=1)
-  for(i in 1:n) {
+  for(i in seq_len(n)) {
     xi <- x[i]
     yi <- y[i]
     wi <- weights[i]
@@ -778,7 +761,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     if(tryCrossVal) {
       #  Try for 4-way cross val
       ncross <- 4
-      for(tries in 1:20) {
+      for(tries in seq_len(20)) {
         evalSets <- list()
         groups <- sample.int(ncross,nRows,replace=TRUE)
         good <- FALSE
@@ -999,7 +982,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                           weights,
                           minFraction,smFactor,rareCount,rareSig,maxMissing,
                           collarProb,
-                          1:nrow(dframe),nrow(dframe),
+                          seq_len(nrow(dframe)),nrow(dframe),
                           verbose)
   if(is.null(parallelCluster)) {
     # print("design serial")
