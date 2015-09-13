@@ -1,10 +1,10 @@
 ---
-title: "vtreat"
+title: "vtreat package"
 author: "John Mount, Nina Zumel"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{vtreat package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
