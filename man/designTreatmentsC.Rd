@@ -4,10 +4,10 @@
 \alias{designTreatmentsC}
 \title{designTreatmentsC}
 \usage{
-designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
-  minFraction = 0.02, smFactor = 0, rareCount = 2, rareSig = 0.3,
-  maxMissing = 0.04, collarProb = 0, returnXFrame = FALSE,
-  scale = FALSE, doCollar = TRUE, verbose = TRUE,
+designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
+  weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 2,
+  rareSig = 0.3, maxMissing = 0.04, collarProb = 0,
+  returnXFrame = FALSE, scale = FALSE, doCollar = TRUE, verbose = TRUE,
   parallelCluster = NULL)
 }
 \arguments{
@@ -18,6 +18,8 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, weights = c(),
 \item{outcomename}{Name of column holding outcome variable.}
 
 \item{outcometarget}{Value/level of outcome to be considered "success"}
+
+\item{...}{no additional arguments, declared to forced named binding of later arguments}
 
 \item{weights}{optional training weights for each row}
 

@@ -4,8 +4,8 @@
 \alias{prepare}
 \title{prepare}
 \usage{
-prepare(treatmentplan, dframe, pruneSig, scale = FALSE, doCollar = TRUE,
-  varRestriction = c(), parallelCluster = NULL)
+prepare(treatmentplan, dframe, pruneSig, ..., scale = FALSE,
+  doCollar = TRUE, varRestriction = c(), parallelCluster = NULL)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -13,6 +13,8 @@ prepare(treatmentplan, dframe, pruneSig, scale = FALSE, doCollar = TRUE,
 \item{dframe}{Data frame to be treated}
 
 \item{pruneSig}{suppress variables with significance above this level}
+
+\item{...}{no additional arguments, declared to forced named binding of later arguments}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 

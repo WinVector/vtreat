@@ -1064,6 +1064,26 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 }
 
 
+.checkArgs <- function(dframe,varlist,outcomename,...) {
+  args <- list(...)
+  if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
+    stop("dframe must be a non-empty data frame")
+  }
+  if(missing(varlist)||(!is.character(varlist))||(length(varlist)<1)) {
+    stop("varlist must be a non-empty character vector")
+  }
+  if(missing(outcomename)||(!is.character(outcomename))||(length(outcomename)!=1)) {
+    stop("outcomename must be a length 1 character vector")
+  }
+  if(length(args)!=0) {
+    nm <- setdiff(paste(names(args),collapse=", "),'')
+    nv <- length(args)-length(nm)
+    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
+  }
+}
+
+
+
 
 # build all treatments for a data frame to predict a categorical outcome
 
@@ -1086,6 +1106,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable.
 #' @param outcometarget Value/level of outcome to be considered "success"
+#' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
@@ -1113,6 +1134,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' 
 #' @export
 designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
+                              ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
                               rareCount=2,rareSig=0.3,maxMissing=0.04,
@@ -1120,6 +1142,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
    zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   .designTreatmentsX(dframe,varlist,outcomename,zoY,
                      dframe[[outcomename]],outcometarget,
@@ -1153,6 +1176,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param dframe Data frame to learn treatments from (training data).
 #' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable.
+#' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
@@ -1179,6 +1203,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' 
 #' @export
 designTreatmentsN <- function(dframe,varlist,outcomename,
+                              ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
                               rareCount=2,rareSig=0.3,maxMissing=0.04,
@@ -1186,6 +1211,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   ycol <- dframe[[outcomename]]
   .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),
@@ -1216,6 +1242,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
 #' @param dframe Data frame to be treated
 #' @param pruneSig suppress variables with significance above this level
+#' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
@@ -1241,9 +1268,11 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' 
 #' @export
 prepare <- function(treatmentplan,dframe,pruneSig,
-  scale=FALSE,doCollar=TRUE,
-  varRestriction=c(),
-  parallelCluster=NULL) {
+                    ...,
+                    scale=FALSE,doCollar=TRUE,
+                    varRestriction=c(),
+                    parallelCluster=NULL) {
+  .checkArgs(dframe=dframe,varlist=c('x'),outcomename=c('x'),...)
   if(!requireNamespace("parallel",quietly=TRUE)) {
     parallelCluster <- NULL
   }

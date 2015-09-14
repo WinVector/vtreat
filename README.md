@@ -68,12 +68,12 @@ dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
    z=c(1,2,3,4,NA,6,NA),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-#> [1] "desigining treatments Sun Sep 13 08:15:47 2015"
-#> [1] "design var x Sun Sep 13 08:15:47 2015"
-#> [1] "design var z Sun Sep 13 08:15:47 2015"
-#> [1] "scoring treatments Sun Sep 13 08:15:47 2015"
+#> [1] "desigining treatments Mon Sep 14 14:19:54 2015"
+#> [1] "design var x Mon Sep 14 14:19:54 2015"
+#> [1] "design var z Mon Sep 14 14:19:54 2015"
+#> [1] "scoring treatments Mon Sep 14 14:19:54 2015"
 #> [1] "WARNING skipped vars: x"
-#> [1] "have treatment plan Sun Sep 13 08:15:47 2015"
+#> [1] "have treatment plan Mon Sep 14 14:19:54 2015"
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
@@ -98,11 +98,11 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA,NA),
    z=c(1,2,3,4,5,NA,7,NA),y=c(0,0,0,1,0,1,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#> [1] "desigining treatments Sun Sep 13 08:15:47 2015"
-#> [1] "design var x Sun Sep 13 08:15:47 2015"
-#> [1] "design var z Sun Sep 13 08:15:47 2015"
-#> [1] "scoring treatments Sun Sep 13 08:15:47 2015"
-#> [1] "have treatment plan Sun Sep 13 08:15:47 2015"
+#> [1] "desigining treatments Mon Sep 14 14:19:54 2015"
+#> [1] "design var x Mon Sep 14 14:19:54 2015"
+#> [1] "design var z Mon Sep 14 14:19:54 2015"
+#> [1] "scoring treatments Mon Sep 14 14:19:54 2015"
+#> [1] "have treatment plan Mon Sep 14 14:19:54 2015"
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0

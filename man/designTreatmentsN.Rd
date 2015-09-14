@@ -4,7 +4,7 @@
 \alias{designTreatmentsN}
 \title{designTreatmentsN}
 \usage{
-designTreatmentsN(dframe, varlist, outcomename, weights = c(),
+designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 2, rareSig = 0.3,
   maxMissing = 0.04, collarProb = 0, returnXFrame = FALSE,
   scale = FALSE, doCollar = TRUE, verbose = TRUE,
@@ -16,6 +16,8 @@ designTreatmentsN(dframe, varlist, outcomename, weights = c(),
 \item{varlist}{Names of columns to treat (effective variables).}
 
 \item{outcomename}{Name of column holding outcome variable.}
+
+\item{...}{no additional arguments, declared to forced named binding of later arguments}
 
 \item{weights}{optional training weights for each row}
 
