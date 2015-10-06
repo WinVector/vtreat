@@ -1,4 +1,14 @@
 
+
+'vtreat' 0.5.17 2015/10/06
+
+Changes:
+
+- Fixed bugs in cross-validated mode
+- Force out of sample calculations in more situations
+- Fix vignette titles
+
+
 'vtreat' 0.5.16 2015/09/12
 
 Changes:
