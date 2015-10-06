@@ -722,6 +722,78 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
 }
 
+# find the fairest cutpoint number sequence (similar count on each side)
+.cutPoint <- function(y) {
+  d <- data.frame(y=y,count=1,
+                  stringsAsFactors=FALSE)
+  tab <- aggregate(count~y,data=d,FUN=sum)
+  if(nrow(tab)<=1) {
+    return(tab$y[[1]])
+  }
+  if(nrow(tab)<=2) {
+    return((tab$y[[1]]+tab$y[[2]])/2)
+  }
+  tab <- tab[order(tab$y),]
+  tab$sum <- cumsum(tab$count)
+  idx <- findInterval(length(y)/2,tab$sum)
+  if(idx>=(length(y)-1)) {
+    return((tab$y[[nrow(tab)-1]]+tab$y[[nrow(tab)]])/2)
+  }
+  return((tab$y[[idx+1]]+tab$y[[idx+2]])/2)
+}
+
+
+# build sets for out of sample evaluatin, train on complement of eval
+.buildEvalSets <- function(zoY) {
+  nRows = length(zoY)
+  # build a partition plan
+  evalSets <- list()
+  if((nRows<=1) || (min(zoY)>=max(zoY))) {
+    return(evalSets) # no plan possible
+  }
+  if(nRows<=100) {
+    # small case, 1-holdout Jackknife style
+    for(i in seq_len(nRows)) {
+      evalG <- i
+      trainG <- setdiff(seq_len(nRows),evalG)
+      if(min(zoY[trainG])<max(zoY[trainG])) {
+        evalSets[[1+length(evalSets)]] <- evalG
+      }
+    }
+    return(evalSets)
+  }
+  #  Try for full k-way cross val
+  ncross <- 3
+  # stratify the cut accross "large/small" zoY
+  yCut <- .cutPoint(zoY)
+  ySmall <- which(zoY<yCut)
+  yLarge <- setdiff(seq_len(length(zoY)),ySmall)
+  rareCount <- min(length(ySmall),length(yLarge))
+  if(rareCount>=2) {
+    # permute 
+    ySmall <- sample(ySmall,length(ySmall),replace=FALSE)
+    yLarge <- sample(yLarge,length(yLarge),replace=FALSE)
+    ncross <- floor(min(ncross,rareCount/2))
+    smallChunks <- split(ySmall, ceiling(seq_along(ySmall)/(length(ySmall)/ncross)))
+    largeChunks <- split(yLarge, ceiling(seq_along(yLarge)/(length(yLarge)/ncross)))
+    evalSets <- lapply(seq_len(ncross),
+                       function(i) { c(smallChunks[[i]],largeChunks[[i]]) })
+  }
+  if(length(evalSets)<1) {
+    # fall back to test/train split
+    repeat {
+      evalTrainRows <- sort(sample.int(nRows,size=floor(0.75*nRows)))
+      # technically need to check that y is varying to gaurantee we have good sample
+      # with high probability we get on of each, so shouldn't repeat often (if at all)
+      if(min(zoY[evalTrainRows])<max(zoY[evalTrainRows])) {
+        break
+      }
+    }
+    evalSets <- list(setdiff(seq_len(nRows),evalTrainRows))
+  }
+  evalSets
+}
+
 
 # build out-of-sample treated columns, can have any number of rows
 .outSampleXform <- function(outcomename,zoY,
@@ -745,54 +817,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(doCollar)
   nRows = length(zoY)
   # build a partition plan
-  evalSets <- list()
-  if(nRows<=100) {
-    # small case, 1-holdout Jacknife style
-    for(i in seq_len(nRows)) {
-      evalG <- i
-      trainG <- setdiff(seq_len(nRows),evalG)
-      if(min(zoY[trainG])>=max(zoY[trainG])) {
-        evalSets[[1+length(evalSets)]] <- evalG
-      }
-    }
-    evalSets <- as.list(seq_len(nRows))
-  } else {
-    #  Try for full k-way cross val
-    ncross <- 10
-    for(tries in seq_len(20)) {
-      evalSets <- list()
-      groups <- sample.int(ncross,nRows,replace=TRUE)
-      good <- FALSE
-      if(length(unique(groups))>=ncross/2) {
-        good <- TRUE
-        for(g in unique(groups)) {
-          evalG <- which(groups==g)
-          trainG <- which(groups!=g)
-          evalSets[[length(evalSets)+1]] <- evalG
-          if(min(zoY[trainG])>=max(zoY[trainG])) {
-            good <- FALSE
-          }
-        }
-      }
-      if(good) {
-        break
-      } else {
-        evalSets <- list()
-      }
-    }
-    if(length(evalSets)<1) {
-      # fall back to test/train split
-      repeat {
-        evalTrainRows <- sort(sample.int(nRows,size=floor(0.75*nRows)))
-        # technically need to check that y is varying to gaurantee we have good sample
-        # with high probability we get on of each, so shouldn't repeat often (if at all)
-        if(min(zoY[evalTrainRows])<max(zoY[evalTrainRows])) {
-          break
-        }
-      }
-      evalSets <- list(setdiff(seq_len(nRows),evalTrainRows))
-    }
-  }
+  evalSets <- .buildEvalSets(zoY)
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
