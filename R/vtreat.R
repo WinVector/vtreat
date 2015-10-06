@@ -744,7 +744,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 
 
 # build sets for out of sample evaluatin, train on complement of eval
-.buildEvalSets <- function(zoY) {
+.buildEvalSets <- function(zoY,fullCross) {
   nRows = length(zoY)
   # build a partition plan
   evalSets <- list()
@@ -762,22 +762,24 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     }
     return(evalSets)
   }
-  #  Try for full k-way cross val
-  ncross <- 3
-  # stratify the cut accross "large/small" zoY
-  yCut <- .cutPoint(zoY)
-  ySmall <- which(zoY<yCut)
-  yLarge <- setdiff(seq_len(length(zoY)),ySmall)
-  rareCount <- min(length(ySmall),length(yLarge))
-  if(rareCount>=2) {
-    # permute 
-    ySmall <- sample(ySmall,length(ySmall),replace=FALSE)
-    yLarge <- sample(yLarge,length(yLarge),replace=FALSE)
-    ncross <- floor(min(ncross,rareCount/2))
-    smallChunks <- split(ySmall, ceiling(seq_along(ySmall)/(length(ySmall)/ncross)))
-    largeChunks <- split(yLarge, ceiling(seq_along(yLarge)/(length(yLarge)/ncross)))
-    evalSets <- lapply(seq_len(ncross),
-                       function(i) { c(smallChunks[[i]],largeChunks[[i]]) })
+  if(fullCross || (nRows<=1000)) {
+    #  Try for full k-way cross val
+    ncross <- 2
+    # stratify the cut accross "large/small" zoY
+    yCut <- .cutPoint(zoY)
+    ySmall <- which(zoY<yCut)
+    yLarge <- setdiff(seq_len(length(zoY)),ySmall)
+    rareCount <- min(length(ySmall),length(yLarge))
+    if(rareCount>=2) {
+      # permute 
+      ySmall <- sample(ySmall,length(ySmall),replace=FALSE)
+      yLarge <- sample(yLarge,length(yLarge),replace=FALSE)
+      ncross <- floor(min(ncross,rareCount/2))
+      smallChunks <- split(ySmall, ceiling(seq_along(ySmall)/(length(ySmall)/ncross)))
+      largeChunks <- split(yLarge, ceiling(seq_along(yLarge)/(length(yLarge)/ncross)))
+      evalSets <- lapply(seq_len(ncross),
+                         function(i) { c(smallChunks[[i]],largeChunks[[i]]) })
+    }
   }
   if(length(evalSets)<1) {
     # fall back to test/train split
@@ -801,7 +803,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                             weights,
                             minFraction,smFactor,rareCount,rareSig,maxMissing,
                             collarProb,
-                            scale,doCollar) {
+                            scale,doCollar,fullCross) {
   force(outcomename)
   force(zoY)
   force(zC)
@@ -815,9 +817,10 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(collarProb)
   force(scale)
   force(doCollar)
+  force(fullCross)
   nRows = length(zoY)
   # build a partition plan
-  evalSets <- .buildEvalSets(zoY)
+  evalSets <- .buildEvalSets(zoY,fullCross)
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
@@ -1027,7 +1030,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                         minFraction,smFactor,
                         rareCount,rareSig,maxMissing,
                         collarProb,
-                        scale,doCollar)
+                        scale,doCollar,returnXFrame)
   if(is.null(parallelCluster)) {
     # print("design serial")
     xFrames <- lapply(workList,sw)
