@@ -952,7 +952,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
-  if(nrow(dframe)<=0) {
+  if(nrow(dframe)<4) {
     stop("not enough rows in data frame")
   }
   if(collarProb>=0.5) {
@@ -997,6 +997,12 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
   if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
+  }
+  yCut <- .cutPoint(zoY)
+  nAbove <- sum(zoY>yCut)
+  nBelow <- sum(zoY<yCut)
+  if(min(nAbove,nBelow)<2) {
+    stop("there must be a cut that the outcome variable is above at least twice and below at least twice")
   }
   # In building the workList don't transform any variables (such as making
   # row selections), only select columns out of frame.  This prevents
@@ -1124,20 +1130,20 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' 
 #' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
 #' - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
-#' - #' - sig : an estimate signficance of effect
+#' - #' - sig : an estimate significance of effect
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #'
-#' @param dframe Data frame to learn treatments from (training data).
+#' @param dframe Data frame to learn treatments from (training data), must have at least 4 rows.
 #' @param varlist Names of columns to treat (effective variables).
-#' @param outcomename Name of column holding outcome variable.
-#' @param outcometarget Value/level of outcome to be considered "success"
+#' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values.
+#' @param outcometarget Value/level of outcome to be considered "success",  and there must be a cut such that dframe[[outcomename]]==outcometarget at least twice and dframe[[outcomename]]!=outcometarget at least twice.
 #' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
-#' @param rareCount optional integer, supress direct effects of level of this count or less.
-#' @param rareSig optional integer, supress direct effects of level of this signficance or less.
+#' @param rareCount optional integer, suppress direct effects of level of this count or less.
+#' @param rareSig optional integer, suppress direct effects of level of this significance or less.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
@@ -1195,19 +1201,19 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' 
 #' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
 #' - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
-#' - sig : an estimate signficance of effect
+#' - sig : an estimate significance of effect
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #' 
-#' @param dframe Data frame to learn treatments from (training data).
+#' @param dframe Data frame to learn treatments from (training data), must have at least 4 rows.
 #' @param varlist Names of columns to treat (effective variables).
-#' @param outcomename Name of column holding outcome variable.
+#' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values and there must be a cut such that dframe[[outcomename]] is both above the cut at least twice and below the cut at least twice.
 #' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
-#' @param rareCount optional integer, supress direct effects of level of this count or less.
-#' @param rareSig optional integer, supress direct effects of level of this signficance or less.
+#' @param rareCount optional integer, suppress direct effects of level of this count or less.
+#' @param rareSig optional integer, suppress direct effects of level of this significance or less.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.

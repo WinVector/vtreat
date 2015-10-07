@@ -11,11 +11,11 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   parallelCluster = NULL)
 }
 \arguments{
-\item{dframe}{Data frame to learn treatments from (training data).}
+\item{dframe}{Data frame to learn treatments from (training data), must have at least 4 rows.}
 
 \item{varlist}{Names of columns to treat (effective variables).}
 
-\item{outcomename}{Name of column holding outcome variable.}
+\item{outcomename}{Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values and there must be a cut such that dframe[[outcomename]] is both above the cut at least twice and below the cut at least twice.}
 
 \item{...}{no additional arguments, declared to forced named binding of later arguments}
 
@@ -25,9 +25,9 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{smFactor}{optional smoothing factor for impact coding models.}
 
-\item{rareCount}{optional integer, supress direct effects of level of this count or less.}
+\item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
 
-\item{rareSig}{optional integer, supress direct effects of level of this signficance or less.}
+\item{rareSig}{optional integer, suppress direct effects of level of this significance or less.}
 
 \item{maxMissing}{optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.}
 
@@ -57,7 +57,7 @@ The main fields are mostly vectors with names (all with the same names in the sa
 
 - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
 - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
-- sig : an estimate signficance of effect
+- sig : an estimate significance of effect
 
 See the vtreat vignette for a bit more detail and a worked example.
 }
