@@ -2,7 +2,7 @@
 * local OS X install, 3.2.2
 * win-builder (devel and release)
 
-## R CMD check --as-cran vtreat_0.5.17.tar.gz results
+## R CMD check --as-cran vtreat_0.5.19.tar.gz results
 * using R version 3.2.2 (2015-08-14)
 * using platform: x86_64-apple-darwin11.4.2 (64-bit)
 There were no ERRORs or WARNINGs. 
