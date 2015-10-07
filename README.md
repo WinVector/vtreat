@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-This package ('vtreat' available as [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat) and [Github 0.5.16](https://github.com/WinVector/vtreat) ) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
+This package ('vtreat' available as [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat) and [Github 0.5.17](https://github.com/WinVector/vtreat) ) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
 
 Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use 'designTreatmentsC()' and for numeric regression use 'designTreatmentsN()'.
 
@@ -68,12 +68,12 @@ dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
    z=c(1,2,3,4,NA,6,NA),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-#> [1] "desigining treatments Mon Sep 14 14:19:54 2015"
-#> [1] "design var x Mon Sep 14 14:19:54 2015"
-#> [1] "design var z Mon Sep 14 14:19:54 2015"
-#> [1] "scoring treatments Mon Sep 14 14:19:54 2015"
+#> [1] "desigining treatments Tue Oct  6 17:12:52 2015"
+#> [1] "design var x Tue Oct  6 17:12:52 2015"
+#> [1] "design var z Tue Oct  6 17:12:52 2015"
+#> [1] "scoring treatments Tue Oct  6 17:12:52 2015"
 #> [1] "WARNING skipped vars: x"
-#> [1] "have treatment plan Mon Sep 14 14:19:54 2015"
+#> [1] "have treatment plan Tue Oct  6 17:12:52 2015"
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
@@ -98,11 +98,11 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA,NA),
    z=c(1,2,3,4,5,NA,7,NA),y=c(0,0,0,1,0,1,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#> [1] "desigining treatments Mon Sep 14 14:19:54 2015"
-#> [1] "design var x Mon Sep 14 14:19:54 2015"
-#> [1] "design var z Mon Sep 14 14:19:54 2015"
-#> [1] "scoring treatments Mon Sep 14 14:19:54 2015"
-#> [1] "have treatment plan Mon Sep 14 14:19:54 2015"
+#> [1] "desigining treatments Tue Oct  6 17:12:52 2015"
+#> [1] "design var x Tue Oct  6 17:12:52 2015"
+#> [1] "design var z Tue Oct  6 17:12:52 2015"
+#> [1] "scoring treatments Tue Oct  6 17:12:52 2015"
+#> [1] "have treatment plan Tue Oct  6 17:12:52 2015"
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
