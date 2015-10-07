@@ -3,13 +3,15 @@
 * win-builder (devel and release)
 
 ## R CMD check --as-cran vtreat_0.5.17.tar.gz results
+# * using R version 3.2.2 (2015-08-14)
+# * using platform: x86_64-apple-darwin11.4.2 (64-bit)
 There were no ERRORs or WARNINGs. 
 
-There were two NOTEs:
+There were two NOTEs and one WARNING:
 
-* Maintainer: ‘John Mount <jmount@win-vector.com>’
-* No repository set, so cyclic dependency check skipped
-
+* NOTE Maintainer: ‘John Mount <jmount@win-vector.com>’
+* NOTE No repository set, so cyclic dependency check skipped
+* WARNING ‘qpdf’ is needed for checks on size reduction of PDFs
 
 
 ## Downstream dependencies
