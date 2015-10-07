@@ -1,12 +1,14 @@
 
 
-'vtreat' 0.5.18 2015/10/06
+'vtreat' 0.5.18 2015/10/07
 
 Changes:
 
 - Fixed bugs in cross-validated mode
 - Force out of sample calculations in more situations
 - Fix vignette titles
+- Fix documentation
+- Do not allow small or insufficiently varying data frames (exact conditions in documentation)
 
 
 'vtreat' 0.5.16 2015/09/12
@@ -24,4 +26,4 @@ Changes:
 
 'vtreat' 0.5.14 2015/09/06
 
-First CRAN release
+- First CRAN release
