@@ -744,6 +744,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 
 
 # build sets for out of sample evaluatin, train on complement of eval
+# ensure y varies training set (complement of eval set)
 .buildEvalSets <- function(zoY,fullCross) {
   nRows = length(zoY)
   # build a partition plan
