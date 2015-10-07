@@ -67,13 +67,9 @@ library("vtreat")
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
    z=c(1,2,3,4,NA,6,NA),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
-treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-#> [1] "desigining treatments Tue Oct  6 17:12:52 2015"
-#> [1] "design var x Tue Oct  6 17:12:52 2015"
-#> [1] "design var z Tue Oct  6 17:12:52 2015"
-#> [1] "scoring treatments Tue Oct  6 17:12:52 2015"
+treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                 verbose=FALSE)
 #> [1] "WARNING skipped vars: x"
-#> [1] "have treatment plan Tue Oct  6 17:12:52 2015"
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
@@ -97,12 +93,8 @@ print(dTestCTreated)
 dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA,NA),
    z=c(1,2,3,4,5,NA,7,NA),y=c(0,0,0,1,0,1,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
-treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#> [1] "desigining treatments Tue Oct  6 17:12:52 2015"
-#> [1] "design var x Tue Oct  6 17:12:52 2015"
-#> [1] "design var z Tue Oct  6 17:12:52 2015"
-#> [1] "scoring treatments Tue Oct  6 17:12:52 2015"
-#> [1] "have treatment plan Tue Oct  6 17:12:52 2015"
+treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
+                                verbose=FALSE)
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0

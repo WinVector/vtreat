@@ -1,7 +1,7 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
-#' @importFrom stats anova as.formula binomial glm lm lm.wfit pchisq pf quantile
+#' @importFrom stats aggregate anova as.formula binomial glm lm lm.wfit pchisq pf quantile
 NULL
 
 
