@@ -29,7 +29,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
 
-\item{rareSig}{optional integer, suppress direct effects of level of this significance or less.}
+\item{rareSig}{optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.}
 
 \item{maxMissing}{optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.}
 

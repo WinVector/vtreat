@@ -327,13 +327,35 @@ print.vtreatment <- function(x,...) {
 
 
 # determine non-rare and significant levels for numeric/regression target
-.safeLevels <- function(vcolin,yNumeric,weights,rareCount,rareSig) {
+# regression mode
+.safeLevelsR <- function(vcolin,yNumeric,weights,rareCount,rareSig) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
   safeLevs <- names(counts)[(counts>rareCount) & (counts<sum(weights))]
   supressedLevs <- character(0)
-  if(length(safeLevs)>0) {
+  if((length(safeLevs)>0)&&(rareSig<1)) {
+    # second: keep only levels that look significantly different than grand mean
+    aovCalc <- function(level) {
+      m <- stats::lm(yNumeric~vcol==level,weights = weights)
+      stats::anova(m)[1,'Pr(>F)']
+    }
+    sigs <- vapply(safeLevs,aovCalc,numeric(1))
+    supressedLevs <- safeLevs[sigs>rareSig]
+  }
+  list(safeLevs=safeLevs,supressedLevs=supressedLevs)
+}
+
+# determine non-rare and significant levels for numeric/regression target
+# classification mode
+.safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig) {
+  yNumeric <- ifelse(zC==zTarget,1,0)  # TODO: proper categorical tests here
+  vcol <- .preProcCat(vcolin,c())
+  # first: keep only levels with enough weighted counts
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<sum(weights))]
+  supressedLevs <- character(0)
+  if((length(safeLevs)>0)&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <- function(level) {
       m <- stats::lm(yNumeric~vcol==level,weights = weights)
@@ -691,7 +713,11 @@ catScore <- function(x,yC,yTarget,weights=c()) {
           acceptTreatment(ti)
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
-          levRestriction <- .safeLevels(vcol,zoY,weights,rareCount,rareSig)
+          if(!is.null(zC)) {  # in categorical mode
+            levRestriction <- .safeLevelsC(vcol,zC,zTarget,weights,rareCount,rareSig)
+          } else {
+            levRestriction <- .safeLevelsR(vcol,zoY,weights,rareCount,rareSig)
+          }
           if(length(levRestriction$safeLevs)>0) {
             ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,levRestriction,weights)
             acceptTreatment(ti)
@@ -1137,7 +1163,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param rareSig optional integer, suppress direct effects of level of this significance or less.
+#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
@@ -1207,7 +1233,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param rareSig optional integer, suppress direct effects of level of this significance or less.
+#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
