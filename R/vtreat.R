@@ -1,7 +1,7 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
-#' @importFrom stats aggregate anova as.formula binomial glm lm lm.wfit pchisq pf quantile
+#' @importFrom stats aggregate anova as.formula binomial fisher.test glm lm lm.wfit pchisq pf quantile
 NULL
 
 
@@ -358,7 +358,7 @@ print.vtreatment <- function(x,...) {
     # second: keep only levels that look significantly different than grand mean
     sigCalc <- function(level) {
       tab <- table(vcol==level,zC==zTarget)  # TODO get weights
-      fisher.test(tab)$p.value
+      stats::fisher.test(tab)$p.value
     }
     sigs <- vapply(safeLevs,sigCalc,numeric(1))
     supressedLevs <- safeLevs[sigs>rareSig]
