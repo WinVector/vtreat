@@ -88,7 +88,8 @@ Below is part of our suggested work pattern: coding/train/test split.
 dCode <- d[d$rgroup<=20,,drop=FALSE]
 dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
 treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE,
-                                        rareCount=0  # Note set this to something larger, like 5
+                                        rareCount=0,  # Note set this to something larger, like 5
+                                        rareSig=c() # Note set this to something like 0.3
 )
 dTrainTreated <- vtreat::prepare(treatments,dTrain,
                                  pruneSig=c() # Note: set this to filter, like 0.05 or 1/nvars
@@ -109,7 +110,7 @@ dTest$predM2 <- predict(m2,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM2','y','model2 on test set')
 ```
 
-In the above example we saw training and test performance are similar (and where they should be as there is no signal).  Notice the coding set (falsely) shows high performance.  This is the bad behavior we wanted to isolate out of the training set.
+In the above example we saw training and test performance are similar (and where they should be as there is no signal).  Notice the coding set can (falsely) show high performance.  This is the bad behavior we wanted to isolate out of the training set.
 
 Also be wary, on small data sets vtreat::designTreatments can not always get accurate out-of sample estimates of variable performance (in these cases it falls back to untrustworthy in-sample estimates).   This is something we will improve over time, but vtreat is intended mostly for production applications on large data sets.
 
@@ -132,7 +133,7 @@ dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
 tryCatch(
   { treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
   dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=0.01)},
-  error=function(x) print(paste('caught',x))
+  error=function(x) { print(paste('caught',x)); return(c()) }
 )
 ```
 

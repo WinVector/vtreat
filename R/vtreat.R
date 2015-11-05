@@ -332,9 +332,9 @@ print.vtreatment <- function(x,...) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<sum(weights))]
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   supressedLevs <- character(0)
-  if((length(safeLevs)>0)&&(rareSig<1)) {
+  if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <- function(level) {
       m <- stats::lm(yNumeric~vcol==level,weights = weights)
@@ -349,19 +349,18 @@ print.vtreatment <- function(x,...) {
 # determine non-rare and significant levels for numeric/regression target
 # classification mode
 .safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig) {
-  yNumeric <- ifelse(zC==zTarget,1,0)  # TODO: proper categorical tests here
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<sum(weights))]
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   supressedLevs <- character(0)
-  if((length(safeLevs)>0)&&(rareSig<1)) {
+  if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
-    aovCalc <- function(level) {
-      m <- stats::lm(yNumeric~vcol==level,weights = weights)
-      stats::anova(m)[1,'Pr(>F)']
+    sigCalc <- function(level) {
+      tab <- table(vcol==level,zC==zTarget)  # TODO get weights
+      fisher.test(tab)$p.value
     }
-    sigs <- vapply(safeLevs,aovCalc,numeric(1))
+    sigs <- vapply(safeLevs,sigCalc,numeric(1))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
   list(safeLevs=safeLevs,supressedLevs=supressedLevs)
@@ -1017,6 +1016,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
   if(min(zoY)>=max(zoY)) {
     stop("outcome variable doesn't vary")
+  }
+  if(rareCount<0) {
+    stop("rarecount must not be negative")
   }
   yCut <- .cutPoint(zoY)
   nAbove <- sum(zoY>yCut)
