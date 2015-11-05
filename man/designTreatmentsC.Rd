@@ -11,7 +11,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   parallelCluster = NULL)
 }
 \arguments{
-\item{dframe}{Data frame to learn treatments from (training data), must have at least 4 rows.}
+\item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
 
 \item{varlist}{Names of columns to treat (effective variables).}
 

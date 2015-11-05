@@ -1,7 +1,7 @@
 Package: vtreat
 Type: Package
 Title: Simple Variable Treatment
-Version: 0.5.19
+Version: 0.5.20
 Date: 2015-11-04
 Author: John Mount, Nina Zumel
 URL: https://github.com/WinVector/vtreat

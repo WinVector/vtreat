@@ -264,6 +264,9 @@ print.vtreatment <- function(x,...) {
      cuts <- c(min(xcol[!napositions]),max(xcol[!napositions]))
   }
   nadist <- .wmean(xcol[!napositions],weights[!napositions])
+  if(is.na(nadist)) {
+    nadist <- 0
+  }
   xcol[napositions] <- nadist
   if(max(xcol)<=min(xcol)) {
     return(c())
@@ -292,9 +295,6 @@ print.vtreatment <- function(x,...) {
   badIDX <- .is.bad(xcol)
   nna <- sum(badIDX)
   if((nna<=0)||(nna>=length(xcol))) {
-    return(c())
-  }
-  if(.wmean(ynumeric[badIDX],weights[badIDX])==.wmean(ynumeric[!badIDX],weights[!badIDX])) {
     return(c())
   }
   treatment <- list(origvar=origVarName,origColClass=origColClass,
@@ -768,49 +768,29 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   nRows = length(zoY)
   # build a partition plan
   evalSets <- list()
-  if((nRows<=1) || (min(zoY)>=max(zoY))) {
+  if(nRows<=1) {
     return(evalSets) # no plan possible
   }
   if(nRows<=100) {
     # small case, 1-holdout Jackknife style
-    for(i in seq_len(nRows)) {
-      evalG <- i
-      trainG <- setdiff(seq_len(nRows),evalG)
-      if(min(zoY[trainG])<max(zoY[trainG])) {
-        evalSets[[1+length(evalSets)]] <- evalG
-      }
-    }
+    evalSets <- as.list(seq_len(nRows))
     return(evalSets)
   }
   if(fullCross || (nRows<=1000)) {
     #  Try for full k-way cross val
     ncross <- 2
-    # stratify the cut accross "large/small" zoY
-    yCut <- .cutPoint(zoY)
-    ySmall <- which(zoY<yCut)
-    yLarge <- setdiff(seq_len(length(zoY)),ySmall)
-    rareCount <- min(length(ySmall),length(yLarge))
-    if(rareCount>=2) {
-      # permute 
-      ySmall <- sample(ySmall,length(ySmall),replace=FALSE)
-      yLarge <- sample(yLarge,length(yLarge),replace=FALSE)
-      ncross <- floor(min(ncross,rareCount/2))
-      smallChunks <- split(ySmall, ceiling(seq_along(ySmall)/(length(ySmall)/ncross)))
-      largeChunks <- split(yLarge, ceiling(seq_along(yLarge)/(length(yLarge)/ncross)))
-      evalSets <- lapply(seq_len(ncross),
-                         function(i) { c(smallChunks[[i]],largeChunks[[i]]) })
+    done = FALSE
+    while(!done) {
+      groups <- sample.int(ncross,nRows,replace=TRUE)
+      if(length(unique(groups))==ncross) {
+        done = TRUE
+      }
     }
+    evalSets <- lapply(seq_len(ncross),function(i) which(groups==i))
   }
   if(length(evalSets)<1) {
     # fall back to test/train split
-    repeat {
-      evalTrainRows <- sort(sample.int(nRows,size=floor(0.75*nRows)))
-      # technically need to check that y is varying to gaurantee we have good sample
-      # with high probability we get on of each, so shouldn't repeat often (if at all)
-      if(min(zoY[evalTrainRows])<max(zoY[evalTrainRows])) {
-        break
-      }
-    }
+    evalTrainRows <- sort(sample.int(nRows,size=floor(0.75*nRows)))
     evalSets <- list(setdiff(seq_len(nRows),evalTrainRows))
   }
   evalSets
@@ -900,6 +880,27 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
 }
 
+.checkMoves <- function(dframe,vset) {
+  force(dframe)
+  force(vset)
+  nRows <- nrow(dframe)
+  function(ti) {
+    scoreFrame <- c()
+    origName <- vorig(ti)
+    xcolClean <- .cleanColumn(dframe[[origName]],nRows)
+    fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
+    for(nv in vnames(ti)) {
+      if(nv %in% vset) {
+        varMoves <- .has.range.cn(fi[[nv]])
+        scoreFrameij <- data.frame(varName=nv,
+                                   varMoves=varMoves,
+                                   stringsAsFactors = FALSE)
+        scoreFrame <- rbind(scoreFrame,scoreFrameij)
+      }
+    }
+    scoreFrame
+  }
+}
 
 .buildScores <- function(xFrame,vset,outcomename,catTarget) {
   force(xFrame)
@@ -971,11 +972,11 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
-  if(nrow(dframe)<4) {
-    stop("not enough rows in data frame")
-  }
   if(collarProb>=0.5) {
     stop("collarProb must be < 0.5")
+  }
+  if(nrow(dframe)<1) {
+    stop("most have rows")
   }
   if(verbose) {
     print(paste("desigining treatments",date()))
@@ -1014,30 +1015,21 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   if(sum(.is.bad(zoY))>0) {
     stop("outcome variable had NAs")
   }
-  if(min(zoY)>=max(zoY)) {
-    stop("outcome variable doesn't vary")
-  }
   if(rareCount<0) {
     stop("rarecount must not be negative")
-  }
-  yCut <- .cutPoint(zoY)
-  nAbove <- sum(zoY>yCut)
-  nBelow <- sum(zoY<yCut)
-  if(min(nAbove,nBelow)<2) {
-    stop("there must be a cut that the outcome variable is above at least twice and below at least twice")
   }
   # In building the workList don't transform any variables (such as making
   # row selections), only select columns out of frame.  This prevents
   # data growth prior to doing the work.
   workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
   # build the treatments we will return to the user
-  worker <- .varDesigner( zoY,
-                          zC,zTarget,
-                          weights,
-                          minFraction,smFactor,rareCount,rareSig,maxMissing,
-                          collarProb,
-                          seq_len(nrow(dframe)),nrow(dframe),
-                          verbose)
+  worker <- .varDesigner(zoY,
+                         zC,zTarget,
+                         weights,
+                         minFraction,smFactor,rareCount,rareSig,maxMissing,
+                         collarProb,
+                         seq_len(nrow(dframe)),nrow(dframe),
+                         verbose)
   if(is.null(parallelCluster)) {
     # print("design serial")
     treatments <- lapply(workList,worker)
@@ -1081,19 +1073,38 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   # now score variables
   vset <- intersect(treatedVarNames,setdiff(colnames(xFrame),outcomename))
   scrW <- .buildScores(xFrame,vset,outcomename,!is.null(zC))
+  checkMovesW <- .checkMoves(dframe,vset)
   if(is.null(parallelCluster)) {
      sFrames <- lapply(treatments,scrW)
+     mFrames <- lapply(treatments,checkMovesW)
   } else {
      sFrames <- parallel::parLapply(parallelCluster,treatments,scrW)
+     mFrames <- parallel::parLapply(parallelCluster,treatments,checkMovesW)
   }
   sFrames <- Filter(Negate(is.null),sFrames)
   sFrame <- do.call(rbind,sFrames)
+  mFrames <- Filter(Negate(is.null),mFrames)
+  mFrame <- do.call(rbind,mFrames)
+  # make "varMoves" fact about the variable
+  sMap <- list()
+  mMap <- list()
+  for(vi in seq_len(nrow(mFrame))) {
+    mMap[[mFrame$varName[[vi]]]] <- vi
+  }
+  for(vi in seq_len(nrow(sFrame))) {
+    sMap[[sFrame$varName[[vi]]]] <- vi
+  }
+  commonVars <- intersect(mFrame$varName,sFrame$varName)
+  for(vi in commonVars) {
+    sFrame$varMoves[sMap[[vi]]] <- mFrame$varMoves[mMap[[vi]]]
+  }
+  # clean up sGrame a bit?
   varMoves <- sFrame$varMoves
   names(varMoves) <- sFrame$varName
   sig <- sFrame$sig
   names(sig) <- sFrame$varName
   plan <- list(treatments=treatments,
-               vars=vset,
+               vars=commonVars,
                varMoves=varMoves,
                sig=sig,
                scoreFrame=sFrame,
@@ -1156,7 +1167,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #'
-#' @param dframe Data frame to learn treatments from (training data), must have at least 4 rows.
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
 #' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values.
 #' @param outcometarget Value/level of outcome to be considered "success",  and there must be a cut such that dframe[[outcomename]]==outcometarget at least twice and dframe[[outcomename]]!=outcometarget at least twice.
@@ -1227,7 +1238,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #' 
-#' @param dframe Data frame to learn treatments from (training data), must have at least 4 rows.
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
 #' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values and there must be a cut such that dframe[[outcomename]] is both above the cut at least twice and below the cut at least twice.
 #' @param ... no additional arguments, declared to forced named binding of later arguments
