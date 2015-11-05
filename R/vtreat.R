@@ -1101,6 +1101,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   # clean up sGrame a bit?
   varMoves <- sFrame$varMoves
   names(varMoves) <- sFrame$varName
+  commonVars <- names(varMoves)[varMoves]
   sig <- sFrame$sig
   names(sig) <- sFrame$varName
   plan <- list(treatments=treatments,
