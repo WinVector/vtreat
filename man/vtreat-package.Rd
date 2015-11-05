@@ -18,7 +18,7 @@ take the value NA (so are very safe to use in modeling).
 Package: \tab vtreat\cr
 Type: \tab Package\cr
 Version: \tab 0.5.20\cr
-Date: \tab 2015-11-04\cr
+Date: \tab 2015-11-05\cr
 License: \tab GNU General Public License version 3\cr
 }
 }

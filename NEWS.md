@@ -1,5 +1,13 @@
 
 
+'vtreat' 0.5.20 2015/11/05
+
+Changes:
+
+- Simplified out of sample frame generation
+- Added "no-Y" treatment option
+- Minor documentation fixes
+
 'vtreat' 0.5.18 2015/10/07
 
 Changes:
