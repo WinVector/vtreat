@@ -1151,10 +1151,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 
 
 
-# build all treatments for a data frame to predict a categorical outcome
-
-
-#' designTreatmentsC 
+#' Build all treatments for a data frame to predict a categorical outcome.
 #' 
 #' Function to design variable treatments for binary prediction of a
 #' categorical outcome.  Data frame is assumed to have only atomic columns
@@ -1221,10 +1218,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                      parallelCluster)
 }
 
-# build all treatments for a data frame to predict a numeric outcome
-
-
-#' designTreatmentsN 
+#' build all treatments for a data frame to predict a numeric outcome
 #' 
 #' Function to design variable treatments for binary prediction of a
 #' numeric outcome.  Data frame is assumed to have only atomic columns
@@ -1292,18 +1286,77 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 
 
 
-# apply treatments and restrict to useful variables
-# copies over y if present
+
+#' Design variable treatments with no outcome variable.
+#' 
+#' Data frame is assumed to have only atomic columns
+#' except for dates (which are converted to numeric).
+#' Note: each column is processed independently of all others.
+#' 
+#' The main fields are mostly vectors with names (all with the same names in the same order):
+#' 
+#' - vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
+#' - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
+#'
+#' See the vtreat vignette for a bit more detail and a worked example.
+#' 
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
+#' @param varlist Names of columns to treat (effective variables).
+#' @param ... no additional arguments, declared to forced named binding of later arguments
+#' @param weights optional training weights for each row
+#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
+#' @param rareCount optional integer, suppress direct effects of level of this count or less.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param verbose if TRUE print progress.
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @return treatment plan (for use with prepare)
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} 
+#' @examples
+#' 
+#' dTrainZ <- data.frame(x=c('a','a','a','a','b','b','b'),
+#'     z=c(1,2,3,4,5,6,7))
+#' dTestZ <- data.frame(x=c('a','b','c',NA),
+#'     z=c(10,20,30,NA))
+#' treatmentsZ = designTreatmentsZ(dTrainZ,colnames(dTrainZ),
+#'   rareCount=0)
+#' dTrainZTreated <- prepare(treatmentsZ,dTrainZ,pruneSig=1)
+#' dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=1)
+#' 
+#' @export
+designTreatmentsZ <- function(dframe,varlist,
+                              ...,
+                              weights=c(),
+                              minFraction=0.02,smFactor=0.0,
+                              rareCount=2,
+                              collarProb=0.00,
+                              verbose=TRUE,
+                              parallelCluster=NULL) {
+  outcomename='ZZZZNonCol'
+  dframe[[outcomename]] <- 0
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  ycol <- dframe[[outcomename]]
+  .designTreatmentsX(dframe,varlist,outcomename,ycol,
+                     c(),c(),
+                     weights,
+                     minFraction,smFactor,
+                     rareCount,rareSig=1,maxMissing=1,
+                     collarProb,
+                     returnXFrame=FALSE,scale=FALSE,doCollar=FALSE,
+                     verbose,
+                     parallelCluster)
+}
 
 
-#' prepare 
+
+
+#' Apply treatments and restrict to useful variables.
 #' 
 #' Use a treatment plan to prepare a data frame for analysis.  The
 #' resulting frame will have new effective variables that are numeric
 #' and free of NaN/NA.  If the outcome column is present it will be copied over.
 #' The intent is that these frames are compatible with more machine learning
 #' techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
-#' Note: each column is processed independently of all others.
+#' Note: each column is processed independently of all others.  Also copies over outcome if present.
 #' 
 #' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
 #' @param dframe Data frame to be treated

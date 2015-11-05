@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{prepare}
 \alias{prepare}
-\title{prepare}
+\title{Apply treatments and restrict to useful variables.}
 \usage{
 prepare(treatmentplan, dframe, pruneSig, ..., scale = FALSE,
   doCollar = TRUE, varRestriction = c(), parallelCluster = NULL)
@@ -33,7 +33,7 @@ resulting frame will have new effective variables that are numeric
 and free of NaN/NA.  If the outcome column is present it will be copied over.
 The intent is that these frames are compatible with more machine learning
 techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
-Note: each column is processed independently of all others.
+Note: each column is processed independently of all others.  Also copies over outcome if present.
 }
 \examples{
 dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),

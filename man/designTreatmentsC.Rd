@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{designTreatmentsC}
 \alias{designTreatmentsC}
-\title{designTreatmentsC}
+\title{Build all treatments for a data frame to predict a categorical outcome.}
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 2,

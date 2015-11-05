@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{designTreatmentsN}
 \alias{designTreatmentsN}
-\title{designTreatmentsN}
+\title{build all treatments for a data frame to predict a numeric outcome}
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 2, rareSig = 0.3,
