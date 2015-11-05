@@ -1098,7 +1098,19 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   for(vi in commonVars) {
     sFrame$varMoves[sMap[[vi]]] <- mFrame$varMoves[mMap[[vi]]]
   }
-  # clean up sGrame a bit?
+  # clean up sFrame a bit
+  if(nrow(sFrame)>0) {
+    for(cname in c('PRESSRsquared','catPRSquared')) {
+      if(cname %in% colnames(sFrame)) {
+        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 0
+      }
+    }
+    for(cname in c('psig','csig','sig')) {
+      if(cname %in% colnames(sFrame)) {
+        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
+      }
+    }
+  }
   varMoves <- sFrame$varMoves
   names(varMoves) <- sFrame$varName
   commonVars <- names(varMoves)[varMoves]
