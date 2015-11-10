@@ -381,7 +381,7 @@ print.vtreatment <- function(x,...) {
 }
 
 # build categorical indicators
-.mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,maxMissing,levRestriction,weights) {
+.mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,levRestriction,weights) {
   origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   counts <- tapply(weights,vcol,sum)
@@ -393,9 +393,6 @@ print.vtreatment <- function(x,...) {
   }
   counts <- counts[tracked]
   missingMass <- 1 - sum(counts)/totMass
-  if(missingMass>maxMissing) {
-    return(c())
-  }
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
@@ -665,7 +662,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 .varDesigner <- function(zoY,
                          zC,zTarget,
                          weights,
-                         minFraction,smFactor,rareCount,rareSig,maxMissing,
+                         minFraction,smFactor,rareCount,rareSig,
                          collarProb,
                          trainRows,origRowCount,
                          verbose) {
@@ -677,7 +674,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(smFactor)
   force(rareCount)
   force(rareSig)
-  force(maxMissing)
   force(collarProb)
   force(trainRows)
   force(origRowCount)
@@ -718,7 +714,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
             levRestriction <- .safeLevelsR(vcol,zoY,weights,rareCount,rareSig)
           }
           if(length(levRestriction$safeLevs)>0) {
-            ti <- .mkCatInd(v,vcol,zoY,minFraction,maxMissing,levRestriction,weights)
+            ti <- .mkCatInd(v,vcol,zoY,minFraction,levRestriction,weights)
             acceptTreatment(ti)
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
               if(!is.null(zC)) {  # in categorical mode
@@ -801,7 +797,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 .outSampleXform <- function(outcomename,zoY,
                             zC,zTarget,
                             weights,
-                            minFraction,smFactor,rareCount,rareSig,maxMissing,
+                            minFraction,smFactor,rareCount,rareSig,
                             collarProb,
                             scale,doCollar,fullCross) {
   force(outcomename)
@@ -813,7 +809,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(smFactor)
   force(rareCount)
   force(rareSig)
-  force(maxMissing)
   force(collarProb)
   force(scale)
   force(doCollar)
@@ -830,7 +825,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       vDesigner <- .varDesigner(zoY[trainSet],
                                 zC[trainSet],zTarget,
                                 weights[trainSet],
-                                minFraction,smFactor,rareCount,rareSig,maxMissing,
+                                minFraction,smFactor,rareCount,rareSig,
                                 collarProb,
                                 trainSet,nRows,
                                 FALSE)
@@ -961,7 +956,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                                zC,zTarget,
                                weights,
                                minFraction,smFactor,
-                               rareCount,rareSig,maxMissing,
+                               rareCount,rareSig,
                                collarProb,
                                returnXFrame,scale,doCollar,
                                verbose,
@@ -1026,7 +1021,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   worker <- .varDesigner(zoY,
                          zC,zTarget,
                          weights,
-                         minFraction,smFactor,rareCount,rareSig,maxMissing,
+                         minFraction,smFactor,rareCount,rareSig,
                          collarProb,
                          seq_len(nrow(dframe)),nrow(dframe),
                          verbose)
@@ -1049,7 +1044,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                         zC,zTarget,
                         weights,
                         minFraction,smFactor,
-                        rareCount,rareSig,maxMissing,
+                        rareCount,rareSig,
                         collarProb,
                         scale,doCollar,returnXFrame)
   if(is.null(parallelCluster)) {
@@ -1187,7 +1182,6 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
-#' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
 #' @param scale logical optional controls scaling for scoring and returnXFrame 
@@ -1212,7 +1206,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=2,rareSig=0.3,maxMissing=0.04,
+                              rareCount=2,rareSig=0.3,
                               collarProb=0.00,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
@@ -1223,7 +1217,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                      dframe[[outcomename]],outcometarget,
                      weights,
                      minFraction,smFactor,
-                     rareCount,rareSig,maxMissing,
+                     rareCount,rareSig,
                      collarProb,
                      returnXFrame,scale,doCollar,
                      verbose,
@@ -1254,7 +1248,6 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
-#' @param maxMissing optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param returnXFrame optional if TRUE return out of sample transformed frame.
 #' @param scale logical optional controls scaling for scoring and returnXFrame 
@@ -1278,7 +1271,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=2,rareSig=0.3,maxMissing=0.04,
+                              rareCount=2,rareSig=0.3,
                               collarProb=0.00,
                               returnXFrame=FALSE,scale=FALSE,doCollar=TRUE,
                               verbose=TRUE,
@@ -1289,7 +1282,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      c(),c(),
                      weights,
                      minFraction,smFactor,
-                     rareCount,rareSig,maxMissing,
+                     rareCount,rareSig,
                      collarProb,
                      returnXFrame,scale,doCollar,
                      verbose,
@@ -1351,7 +1344,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      c(),c(),
                      weights,
                      minFraction,smFactor=0,
-                     rareCount,rareSig=1,maxMissing=1,
+                     rareCount,rareSig=1,
                      collarProb,
                      returnXFrame=FALSE,scale=FALSE,doCollar=FALSE,
                      verbose,

@@ -6,9 +6,8 @@
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 2,
-  rareSig = 0.3, maxMissing = 0.04, collarProb = 0,
-  returnXFrame = FALSE, scale = FALSE, doCollar = TRUE, verbose = TRUE,
-  parallelCluster = NULL)
+  rareSig = 0.3, collarProb = 0, returnXFrame = FALSE, scale = FALSE,
+  doCollar = TRUE, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -30,8 +29,6 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 \item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
 
 \item{rareSig}{optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.}
-
-\item{maxMissing}{optional maximum fraction (by data weight) of a categorical variable that are allowed before switching from indicators to impact coding.}
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
 
