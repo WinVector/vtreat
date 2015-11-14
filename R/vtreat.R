@@ -318,8 +318,8 @@ print.vtreatment <- function(x,...) {
   if(!is.null(levRestriction)) {
     # map rare levels to a new special level
     rares <- !(col %in% levRestriction$safeLevs)
-    zaps <- col %in% levRestriction$supressedLevs
     col[rares] <- 'rare'
+    zaps <- col %in% levRestriction$supressedLevs
     col[zaps] <- 'zap'
   }
   col
@@ -334,6 +334,10 @@ print.vtreatment <- function(x,...) {
   counts <- tapply(weights,vcol,sum)
   safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   supressedLevs <- character(0)
+  # re-code with rare symbol eligable
+  vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <- function(level) {
@@ -354,6 +358,10 @@ print.vtreatment <- function(x,...) {
   counts <- tapply(weights,vcol,sum)
   safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   supressedLevs <- character(0)
+  # re-code with rare symbol eligable
+  vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     sigCalc <- function(level) {
