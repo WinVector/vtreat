@@ -1086,7 +1086,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                                     FALSE,
                                     verbose,
                                     parallelCluster)
-  splitVars <- treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit]
+  splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
   if(length(splitVars)>0) {
     newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit]
     if(verbose) {
