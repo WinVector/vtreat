@@ -1,8 +1,10 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 # TODO: don't split data for variables treatment types that don't need it (everything but _cat*)
+# TODO: bind scoring closer to xframe column construction
 # TODO: test wtable
-# TODO: Jacknifed GLM significance
+# TODO: get rid of experimental cross-frame (adds code complexity)
+# Nice to have: Jacknifed GLM significance
 
 #' @importFrom stats aggregate anova as.formula binomial fisher.test glm lm lm.wfit pchisq pf quantile
 NULL
@@ -601,10 +603,13 @@ hold1OutMeans <- function(y,weights) {
 pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total') {
   n <- length(x)
   if(n<=1) {
-    return(1.0)
+    return(list(rsq=0.0,sig=1.0))
   }
   if(!.has.range.cn(x)) {
-    return(0.0)
+    return(list(rsq=0.0,sig=1.0))
+  }
+  if(!.has.range.cn(y)) {
+    return(list(rsq=1.0,sig=0.0))
   }
   if(is.null(weights)) {
     weights <- 1.0+numeric(n)
@@ -657,6 +662,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 
 
 
+
 #' return a pseudo R-squared from a 1 variable logistic regression
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param yC  (no NAs/NULLs) outcome variable
@@ -665,11 +671,20 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 #' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 #' @seealso \code{\link{hold1OutMeans}} 
 catScore <- function(x,yC,yTarget,weights=c()) {
-  tf <- data.frame(x=x,y=(yC==yTarget))
-  n <- nrow(tf)
+  n <- length(x)
+  if(n<=1) {
+    return(list(pRsq=0.0,sig=1.0))
+  }
+  if(!.has.range.cn(x)) {
+    return(list(pRsq=0.0,sig=1.0))
+  }
+  if(!.has.range(yC)) {
+    return(list(pRsq=1.0,sig=0.0))
+  }
   if(is.null(weights)) {
     weights <- 1.0+numeric(n)
   }
+  tf <- data.frame(x=x,y=(yC==yTarget))
   origOpt <- options()
   options(warn=-1)
   tryCatch({      
