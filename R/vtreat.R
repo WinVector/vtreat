@@ -803,7 +803,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
 
 # build sets for out of sample evaluatin, train on complement of eval
 # ensure y varies training set (complement of eval set)
-.buildEvalSets <- function(zoY,fullCross) {
+.buildEvalSets <- function(zoY) {
   nRows = length(zoY)
   # build a partition plan
   evalSets <- list()
@@ -815,23 +815,16 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     evalSets <- as.list(seq_len(nRows))
     return(evalSets)
   }
-  if(fullCross || (nRows<=1000)) {
-    #  Try for full k-way cross val
-    ncross <- 2
-    done = FALSE
-    while(!done) {
-      groups <- sample.int(ncross,nRows,replace=TRUE)
-      if(length(unique(groups))==ncross) {
-        done = TRUE
-      }
+  #  Try for full k-way cross val
+  ncross <- 4
+  done = FALSE
+  while(!done) {
+    groups <- sample.int(ncross,nRows,replace=TRUE)
+    if(length(unique(groups))==ncross) {
+      done = TRUE
     }
-    evalSets <- lapply(seq_len(ncross),function(i) which(groups==i))
   }
-  if(length(evalSets)<1) {
-    # fall back to test/train split
-    evalTrainRows <- sort(sample.int(nRows,size=floor(0.75*nRows)))
-    evalSets <- list(setdiff(seq_len(nRows),evalTrainRows))
-  }
+  evalSets <- lapply(seq_len(ncross),function(i) which(groups==i))
   evalSets
 }
 
@@ -842,7 +835,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                             weights,
                             minFraction,smFactor,rareCount,rareSig,
                             collarProb,
-                            scale,doCollar,fullCross) {
+                            scale,doCollar) {
   force(outcomename)
   force(zoY)
   force(zC)
@@ -855,10 +848,9 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(collarProb)
   force(scale)
   force(doCollar)
-  force(fullCross)
   nRows = length(zoY)
   # build a partition plan
-  evalSets <- .buildEvalSets(zoY,fullCross)
+  evalSets <- .buildEvalSets(zoY)
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
@@ -1089,7 +1081,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                         minFraction,smFactor,
                         rareCount,rareSig,
                         collarProb,
-                        scale,doCollar,returnXFrame)
+                        scale,doCollar)
   if(is.null(parallelCluster)) {
     # print("design serial")
     xFrames <- lapply(workList,sw)
