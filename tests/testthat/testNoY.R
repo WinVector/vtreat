@@ -8,7 +8,8 @@ test_that("Can transform without Y", {
   dTestN <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
   treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
-                                  rareCount=0,rareSig=1)
+                                  rareCount=0,rareSig=1,
+                                  verbose=FALSE)
   dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
   dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
   
@@ -19,7 +20,8 @@ test_that("Can transform without Y", {
   dTestC <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
-                                   rareCount=0,rareSig=1)
+                                   rareCount=0,rareSig=1,
+                                   verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,dTrainC,
                             pruneSig=1,doCollar=FALSE)
   dTestCTreated <- prepare(treatmentsC,dTestC,
