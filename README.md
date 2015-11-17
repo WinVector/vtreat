@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-This package ('vtreat' available as [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat) and [Github 0.5.21](https://github.com/WinVector/vtreat) ) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
+This package ('vtreat' available as [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat) and [Github 0.5.22](https://github.com/WinVector/vtreat) ) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training).
 
 Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use 'designTreatmentsC()' and for numeric regression use 'designTreatmentsN()'.
 
