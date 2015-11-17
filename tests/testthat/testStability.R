@@ -21,15 +21,15 @@ test_that("stability of estimates", {
     d
   }
   
-  # table describing data
-  tab <- matrix(data=c(1131,583,6538,2969,136,78),
-                byrow=TRUE,ncol=2)
-  rownames(tab) <- c('1','2','unknown')
-  colnames(tab) <- c(FALSE,TRUE)
-  #print(tab)
-  d <- expandTab(tab)
-  #print(table(d)) # should match tab
-  tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1,verbose=FALSE)
+#   # table describing data
+#   tab <- matrix(data=c(1131,583,6538,2969,136,78),
+#                 byrow=TRUE,ncol=2)
+#   rownames(tab) <- c('1','2','unknown')
+#   colnames(tab) <- c(FALSE,TRUE)
+#   #print(tab)
+#   d <- expandTab(tab)
+#   #print(table(d)) # should match tab
+#   tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1,verbose=FALSE)
   
   # print(tp$scoreFrame) # why did "unknown" not show up?
   tab <- matrix(
@@ -48,7 +48,7 @@ test_that("stability of estimates", {
   colnames(tab) <- c(FALSE,TRUE)
   d <- expandTab(tab)
   d$x[d$x!='Weiß'] <- 'unknown'
-  nRun <- 20
+  nRun <- 5
   set.seed(235235)
   # vtreat run: max arount 0.5 min ~ 5e-5
   csig <- numeric(nRun)
@@ -57,22 +57,22 @@ test_that("stability of estimates", {
     # looking at instability in csig of WeiB level
     csig[[i]] <- tP$scoreFrame$csig[tP$scoreFrame$varName=='x_lev_x.Weiß']
   }
-  # direct run same instability max ~ 0.5, min ~ 0.007
-  dsig <- numeric(nRun)
-  for(i in seq_len(nRun)) {
-    dsub <- d[sample(nrow(d),2859),]
-    model <- stats::glm(stats::as.formula('y~x=="Weiß"'),
-                        data=dsub,
-                        family=stats::binomial(link='logit'))
-    if(model$converged) {
-      delta_deviance = model$null.deviance - model$deviance
-      delta_df = model$df.null - model$df.residual
-      sig <- 1.0
-      pRsq <- 1.0 - model$deviance/model$null.deviance
-      if(pRsq>0) {
-        dsig[[i]] <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
-      }
-    }
-  }
-  # TODO: add stability test
+  expect_true((max(csig)-min(csig))<1.0e-5)
+#   # direct run same instability max ~ 0.5, min ~ 0.007
+#   dsig <- numeric(nRun)
+#   for(i in seq_len(nRun)) {
+#     dsub <- d[sample(nrow(d),2859),]
+#     model <- stats::glm(stats::as.formula('y~x=="Weiß"'),
+#                         data=dsub,
+#                         family=stats::binomial(link='logit'))
+#     if(model$converged) {
+#       delta_deviance = model$null.deviance - model$deviance
+#       delta_df = model$df.null - model$df.residual
+#       sig <- 1.0
+#       pRsq <- 1.0 - model$deviance/model$null.deviance
+#       if(pRsq>0) {
+#         dsig[[i]] <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
+#       }
+#     }
+#   }
  })
