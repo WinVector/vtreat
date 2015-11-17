@@ -1,5 +1,8 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
+# TODO: don't split data for variables treatment types that don't need it (everything but _cat*)
+# TODO: test wtable
+# TODO: Jacknifed GLM significance
 
 #' @importFrom stats aggregate anova as.formula binomial fisher.test glm lm lm.wfit pchisq pf quantile
 NULL
@@ -275,7 +278,8 @@ print.vtreatment <- function(x,...) {
                     newvars=make.names(paste(origVarName,'clean',sep='_')),
                     f=.passThrough,
                     args=list(nadist=nadist,cuts=cuts),
-                    treatmentName='Scalable pass through')
+                    treatmentName='Scalable pass through',
+                    needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(xcol,ycol,weights)
   treatment
@@ -301,7 +305,8 @@ print.vtreatment <- function(x,...) {
                     newvars=make.names(paste(origVarName,'isBAD',sep='_')),
                     f=.isBAD,
                     args=list(),
-                    treatmentName='is.bad')
+                    treatmentName='is.bad',
+                    needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(ifelse(badIDX,1.0,0.0),ynumeric,weights)
   treatment
@@ -350,6 +355,32 @@ print.vtreatment <- function(x,...) {
   list(safeLevs=safeLevs,supressedLevs=supressedLevs)
 }
 
+
+# build a weighted table
+.wTable <- function(v1,v2,wts) {
+  v1 <- as.character(v1)
+  v2 <- as.character(v2)
+  v1Levs <- sort(unique(v1))
+  v2Levs <- sort(unique(v2))
+  if(is.null(wts)) {
+    wts <- rep(1.0,length(v1))
+  } else {
+    wts <- as.numeric(wts)
+  }
+  d <- data.frame(v1=v1,
+                  v2=v2,
+                  weights=wts,
+                  stringsAsFactors=FALSE)
+  agg <- aggregate(weights~v1+v2,data=d,FUN=sum)
+  mat <- matrix(data=0,nrow=length(v1Levs),ncol=length(v2Levs))
+  rownames(mat) <- v1Levs
+  colnames(mat) <- v2Levs
+  for(ii in seq_len(nrow(agg))) {
+    mat[agg$v1[[ii]],agg$v2[[ii]]] <- agg$weights[[ii]]
+  }
+  as.table(mat)
+}
+
 # determine non-rare and significant levels for numeric/regression target
 # classification mode
 .safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig) {
@@ -365,7 +396,8 @@ print.vtreatment <- function(x,...) {
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     sigCalc <- function(level) {
-      tab <- table(vcol==level,zC==zTarget)  # TODO get weights
+      #tab <- table(vcol==level,zC==zTarget)  # not weighted
+      tab <- .wTable(vcol==level,zC==zTarget,weights)
       stats::fisher.test(tab)$p.value
     }
     sigs <- vapply(safeLevs,sigCalc,numeric(1))
@@ -406,7 +438,8 @@ print.vtreatment <- function(x,...) {
                     f=.catInd,
                     args=list(tracked=tracked,
                               levRestriction=levRestriction),
-                    treatmentName='Categoric Indicators')
+                    treatmentName='Categoric Indicators',
+                    needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
   nvar <- length(pred)
@@ -452,7 +485,8 @@ print.vtreatment <- function(x,...) {
                     f=.catNum,
                     args=list(scores=scores,
                               levRestriction=levRestriction),
-                    treatmentName='Scalable Impact Code')
+                    treatmentName='Scalable Impact Code',
+                    needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,rescol,weights)
@@ -503,7 +537,8 @@ print.vtreatment <- function(x,...) {
                     f=.catBayes,
                     args=list(logLift=logLift,
                               levRestriction=levRestriction),
-                    treatmentName='Bayesian Impact Code')
+                    treatmentName='Bayesian Impact Code',
+                    needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,as.numeric(rescol==resTarget),weights)

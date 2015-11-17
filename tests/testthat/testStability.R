@@ -74,4 +74,5 @@ test_that("stability of estimates", {
       }
     }
   }
+  # TODO: add stability test
  })
