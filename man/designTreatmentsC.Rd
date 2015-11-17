@@ -5,9 +5,8 @@
 \title{Build all treatments for a data frame to predict a categorical outcome.}
 \usage{
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
-  weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 2,
-  rareSig = 0.3, collarProb = 0, returnXFrame = FALSE, scale = FALSE,
-  doCollar = TRUE, verbose = TRUE, parallelCluster = NULL)
+  weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
+  rareSig = 1, collarProb = 0, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -31,12 +30,6 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 \item{rareSig}{optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.}
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
-
-\item{returnXFrame}{optional if TRUE return out of sample transformed frame.}
-
-\item{scale}{logical optional controls scaling for scoring and returnXFrame}
-
-\item{doCollar}{logical optional controls collaring for scoring and returnXFrame}
 
 \item{verbose}{if TRUE print progress.}
 

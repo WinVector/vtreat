@@ -5,7 +5,7 @@
 \title{Design variable treatments with no outcome variable.}
 \usage{
 designTreatmentsZ(dframe, varlist, ..., weights = c(), minFraction = 0.02,
-  rareCount = 2, collarProb = 0, verbose = TRUE, parallelCluster = NULL)
+  rareCount = 0, collarProb = 0, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
