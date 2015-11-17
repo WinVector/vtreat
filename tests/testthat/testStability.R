@@ -1,6 +1,6 @@
 library('vtreat')
 
-context("Test Stability")
+context("Test Score Stability")
 
 test_that("stability of estimates", {
   expandTab <- function(tab) {
@@ -29,7 +29,7 @@ test_that("stability of estimates", {
   #print(tab)
   d <- expandTab(tab)
   #print(table(d)) # should match tab
-  tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1)
+  tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1,verbose=FALSE)
   
   # print(tp$scoreFrame) # why did "unknown" not show up?
   tab <- matrix(
@@ -53,7 +53,7 @@ test_that("stability of estimates", {
   # vtreat run: max arount 0.5 min ~ 5e-5
   csig <- numeric(nRun)
   for(i in seq_len(nRun)) {
-    tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1)
+    tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1,verbose=FALSE)
     # looking at instability in csig of WeiB level
     csig[[i]] <- tP$scoreFrame$csig[tP$scoreFrame$varName=='x_lev_x.Weiß']
   }
