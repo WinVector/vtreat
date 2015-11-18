@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Variable Scoring")
 
-test_that("Numeric Var Scores as expected w1", {
+test_that("testW1: Numeric Var Scores as expected w1", {
   set.seed(23525)
   zip <- paste('z',1:100)
   N = 1000

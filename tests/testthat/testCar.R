@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Simple Example")
 
-test_that("Numeric Var Scores as expected car", {
+test_that("testCar: Numeric Var Scores as expected car", {
   load('uci.car.data.Rdata')
 
   dYName <- "rating"

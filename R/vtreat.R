@@ -280,6 +280,7 @@ print.vtreatment <- function(x,...) {
                     f=.passThrough,
                     args=list(nadist=nadist,cuts=cuts),
                     treatmentName='Scalable pass through',
+                    treatmentCode='clean',
                     needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(xcol,ycol,weights)
@@ -307,6 +308,7 @@ print.vtreatment <- function(x,...) {
                     f=.isBAD,
                     args=list(),
                     treatmentName='is.bad',
+                    treatmentCode='isBAD',
                     needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(ifelse(badIDX,1.0,0.0),ynumeric,weights)
@@ -440,6 +442,7 @@ print.vtreatment <- function(x,...) {
                     args=list(tracked=tracked,
                               levRestriction=levRestriction),
                     treatmentName='Categoric Indicators',
+                    treatmentCode='lev',
                     needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
@@ -482,6 +485,7 @@ print.vtreatment <- function(x,...) {
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Prevalence Code',
+                    treatmentCode='catP',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -522,6 +526,7 @@ print.vtreatment <- function(x,...) {
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Scalable Impact Code',
+                    treatmentCode='catN',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -532,17 +537,19 @@ print.vtreatment <- function(x,...) {
 
 
 # apply a deviation fact
-# replace level with .wmean(x|category) - .wmean(x)
+# replace level with deviance (could add other summaries such as median)
 .catD <- function(col,args,doCollar) {
-  col <- .preProcCat(col,args$levRestriction)
-  novel <- !(col %in% args$scorable)
-  keys <- col
   pred <- numeric(length(col))
-  if(length(args$scores)>0) {
-    keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
-    pred <- as.numeric(args$scores[keys]) 
+  if(length(args$scorable)>1) {
+    col <- .preProcCat(col,args$levRestriction)
+    novel <- !(col %in% args$scorable)
+    keys <- col
+    if(length(args$scores)>0) {
+      keys[novel] <- args$scorable[[1]]   # just to prevent bad lookups
+      pred <- as.numeric(args$scores[keys]) 
+    }
+    pred[novel] <- args$novelCode 
   }
-  pred[novel] <- args$novelCode 
   pred
 }
 
@@ -553,12 +560,15 @@ print.vtreatment <- function(x,...) {
   vcol <- .preProcCat(vcolin,levRestriction)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
-  scorable <- names(den)[den>=2]
+  scorable <- setdiff(names(den)[den>=2],'zap')
+  if(length(scorable)<=0) {
+    return(NULL)
+  }
   condMean <- as.list(num/den)
   resids <- rescol-as.numeric(condMean[vcol])
   scores <- sqrt(tapply(resids*resids*weights,vcol,sum)/pmax(den-1,1))
   novelCode <- 1.0
-  if(length(scores)>0) {
+  if(length(scorable)>0) {
     novelCode <- max(scores[scorable])
   }
   scores <- as.list(scores)
@@ -571,6 +581,7 @@ print.vtreatment <- function(x,...) {
                               novelCode=novelCode,
                               levRestriction=levRestriction),
                     treatmentName='Deviation Fact',
+                    treatmentCode='catD',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -624,6 +635,7 @@ print.vtreatment <- function(x,...) {
                     args=list(logLift=logLift,
                               levRestriction=levRestriction),
                     treatmentName='Bayesian Impact Code',
+                    treatmentCode='catB',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
@@ -960,6 +972,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
         }
         scoreFrameij <- data.frame(varName=nv,
                                    origName=origName,
+                                   code=ti$treatmentCode,
                                    needsSplit=ti$needsSplit,
                                    varMoves=varMoves,
                                    PRESSRsquared=PRESSRsquared,

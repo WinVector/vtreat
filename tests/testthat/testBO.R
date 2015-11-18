@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Excercise Operations")
 
-test_that("Work As Expected", {
+test_that("testBO: Works As Expected", {
   op <- options(warn = (-1)) # suppress warnings 
   # build the common column types we are likely to encounter
   synthFrame <- function(n,censorD) {

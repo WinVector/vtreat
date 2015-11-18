@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Parallel Example")
 
-test_that("Parallel works", {
+test_that("testParallel: Parallel works", {
   # load('tests/testthat/uci.car.data.Rdata')
   load('uci.car.data.Rdata')
   cl <- NULL

@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Weights")
 
-test_that("Test Zero Weights Don't Crash", {
+test_that("testZW: Test Zero Weights Don't Crash", {
   # categorical example
   dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
                         z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))

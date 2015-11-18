@@ -2,7 +2,7 @@ library('vtreat')
 
 context("DataTable Example")
 
-test_that("DataTable works", {
+test_that("testDataTable: DataTable works", {
   # load('tests/testthat/uci.car.data.Rdata')
   if(requireNamespace("data.table",quietly=TRUE)) {
     load('uci.car.data.Rdata')

@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Defensive Coding")
 
-test_that("Protect from odd columns types (and warn)", {
+test_that("testWeirdTypes: Protect from odd columns types (and warn)", {
   op <- options(warn = (-1)) # suppress warnings 
   d <- data.frame(xInteger=1:4,
                   xNumeric=0,

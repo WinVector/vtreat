@@ -73,22 +73,22 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame)
-#>     varName origName needsSplit varMoves PRESSRsquared psig        sig
-#> 1  x_lev_NA        x      FALSE     TRUE   -0.09374781    1 0.09248399
-#> 2 x_lev_x.a        x      FALSE     TRUE   -0.65277227    1 0.26490379
-#> 3 x_lev_x.b        x      FALSE     TRUE   -1.26040281    1 0.80967242
-#> 4    x_catP        x       TRUE     TRUE   -0.65261808    1 0.26490379
-#> 5    x_catB        x       TRUE     TRUE   -0.25610592    1 0.18011273
-#> 6   z_clean        z      FALSE     TRUE   -0.13404882    1 0.13176020
-#> 7   z_isBAD        z      FALSE     TRUE   -0.09374781    1 0.09248399
-#>   catPRSquared       csig
-#> 1  0.296065432 0.09248399
-#> 2  0.130005705 0.26490379
-#> 3  0.006067337 0.80967242
-#> 4  0.130005705 0.26490379
-#> 5  0.187924640 0.18011273
-#> 6  0.237601767 0.13176020
-#> 7  0.296065432 0.09248399
+#>     varName origName  code needsSplit varMoves PRESSRsquared psig
+#> 1  x_lev_NA        x   lev      FALSE     TRUE   -0.09374781    1
+#> 2 x_lev_x.a        x   lev      FALSE     TRUE   -0.65277227    1
+#> 3 x_lev_x.b        x   lev      FALSE     TRUE   -1.26040281    1
+#> 4    x_catP        x  catP       TRUE     TRUE   -0.65261808    1
+#> 5    x_catB        x  catB       TRUE     TRUE   -0.25610592    1
+#> 6   z_clean        z clean      FALSE     TRUE   -0.13404882    1
+#> 7   z_isBAD        z isBAD      FALSE     TRUE   -0.09374781    1
+#>          sig catPRSquared       csig
+#> 1 0.09248399  0.296065432 0.09248399
+#> 2 0.26490379  0.130005705 0.26490379
+#> 3 0.80967242  0.006067337 0.80967242
+#> 4 0.26490379  0.130005705 0.26490379
+#> 5 0.18011273  0.187924640 0.18011273
+#> 6 0.13176020  0.237601767 0.13176020
+#> 7 0.09248399  0.296065432 0.09248399
 
 # help("prepare")
 
@@ -128,15 +128,24 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame)
-#>     varName origName needsSplit varMoves PRESSRsquared      psig       sig
-#> 1  x_lev_NA        x      FALSE     TRUE    0.04000128 0.6348745 0.6348745
-#> 2 x_lev_x.a        x      FALSE     TRUE   -0.33333000 1.0000000 1.0000000
-#> 3 x_lev_x.b        x      FALSE     TRUE   -1.07998856 1.0000000 1.0000000
-#> 4    x_catP        x       TRUE     TRUE   -0.33330334 1.0000000 1.0000000
-#> 5    x_catN        x       TRUE     TRUE   -0.74281970 1.0000000 1.0000000
-#> 6    x_catD        x       TRUE     TRUE    0.37500344 0.1065561 0.1065561
-#> 7   z_clean        z      FALSE     TRUE   -0.02135479 1.0000000 1.0000000
-#> 8   z_isBAD        z      FALSE     TRUE    0.04000128 0.6348745 0.6348745
+#>     varName origName  code needsSplit varMoves PRESSRsquared      psig
+#> 1  x_lev_NA        x   lev      FALSE     TRUE    0.04000128 0.6348745
+#> 2 x_lev_x.a        x   lev      FALSE     TRUE   -0.33333000 1.0000000
+#> 3 x_lev_x.b        x   lev      FALSE     TRUE   -1.07998856 1.0000000
+#> 4    x_catP        x  catP       TRUE     TRUE   -0.33330334 1.0000000
+#> 5    x_catN        x  catN       TRUE     TRUE   -0.74281970 1.0000000
+#> 6    x_catD        x  catD       TRUE     TRUE   -3.26661714 1.0000000
+#> 7   z_clean        z clean      FALSE     TRUE   -0.02135479 1.0000000
+#> 8   z_isBAD        z isBAD      FALSE     TRUE    0.04000128 0.6348745
+#>         sig
+#> 1 0.6348745
+#> 2 1.0000000
+#> 3 1.0000000
+#> 4 1.0000000
+#> 5 1.0000000
+#> 6 1.0000000
+#> 7 1.0000000
+#> 8 0.6348745
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
@@ -144,7 +153,7 @@ sapply(dTrainNTreated[,varsN,drop=FALSE],mean)
 #>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
 #> 9.020562e-17 0.000000e+00 2.500000e-01 8.326673e-17 7.021564e-17 
 #>       x_catD      z_clean      z_isBAD 
-#> 1.942890e-16 1.526557e-16 7.632783e-17
+#> 8.326673e-17 1.526557e-16 7.632783e-17
 # all slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
@@ -154,11 +163,11 @@ sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
 #> 1.000000e+00 1.000000e+00 1.000000e+00
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
-#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP        x_catN     x_catD
-#> 1 -0.1666667     -0.25         0  -0.25 -2.500000e-01 -0.1250000
-#> 2 -0.1666667      0.25         1   0.25  5.887847e-17 -0.2165064
-#> 3 -0.1666667      0.25         0   0.75  5.887847e-17 -0.2165064
-#> 4  0.5000000      0.25         0   0.25  5.000000e-01  0.4665064
+#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP        x_catN      x_catD
+#> 1 -0.1666667     -0.25         0  -0.25 -2.500000e-01 -0.06743804
+#> 2 -0.1666667      0.25         1   0.25  5.887847e-17 -0.25818161
+#> 3 -0.1666667      0.25         0   0.75  5.887847e-17 -0.25818161
+#> 4  0.5000000      0.25         0   0.25  5.000000e-01  0.39305768
 #>        z_clean    z_isBAD
 #> 1 5.238095e-01 -0.1666667
 #> 2 5.238095e-01 -0.1666667

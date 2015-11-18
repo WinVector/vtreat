@@ -2,7 +2,7 @@ library('vtreat')
 
 context("Test Score Stability")
 
-test_that("stability of estimates", {
+test_that("testStability: Stability of estimates", {
   expandTab <- function(tab) {
     # expand out into data
     d <- c()

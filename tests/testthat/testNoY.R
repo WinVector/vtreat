@@ -2,7 +2,7 @@ library('vtreat')
 
 context("No Y Examples")
 
-test_that("Can transform without Y", {
+test_that("testNoY: Can transform without Y", {
   dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
                         z=c(1,2,3,4,5,NA,7),y=0)
   dTestN <- data.frame(x=c('a','b','c',NA),
