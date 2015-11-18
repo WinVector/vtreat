@@ -454,6 +454,42 @@ print.vtreatment <- function(x,...) {
 }
 
 
+# apply a prevalence fact
+.catP <- function(col,args,doCollar) {
+  col <- .preProcCat(col,NULL)
+  novel <- !(col %in% names(args$scores))
+  keys <- col
+  pred <- numeric(length(col))
+  if(length(args$scores)>0) {
+    keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
+    pred <- as.numeric(args$scores[keys]) 
+  }
+  pred[novel] <- 0.0 
+  pred
+}
+
+# build a prevalence fact
+.mkCatP <- function(origVarName,vcolin,rescol,levRestriction,weights) {
+  origColClass <- class(vcolin)
+  vcol <- .preProcCat(vcolin,c())
+  num <- tapply(weights,vcol,sum)
+  den <- sum(weights)
+  scores <- num/den
+  scores <- as.list(scores)
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
+                    newvars=make.names(paste(origVarName,'catP',sep='_')),
+                    f=.catP,
+                    args=list(scores=scores,
+                              levRestriction=levRestriction),
+                    treatmentName='Prevalence Code',
+                    needsSplit=TRUE)
+  pred <- treatment$f(vcolin,treatment$args)
+  class(treatment) <- 'vtreatment'
+  treatment$scales <- .getScales(pred,rescol,weights)
+  treatment
+}
+
+
 # apply a numeric impact model
 # replace level with .wmean(x|category) - .wmean(x)
 .catNum <- function(col,args,doCollar) {
@@ -780,6 +816,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
               acceptTreatment(ti)
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+              ti <- .mkCatP(v,vcol,zoY,levRestriction,weights)
+              acceptTreatment(ti) 
               if(!is.null(zC)) {  # in categorical mode
                 ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights)
                 acceptTreatment(ti)      
