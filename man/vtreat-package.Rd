@@ -53,9 +53,9 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
-# all input variables should be mean 0
+# all input variables should be mean 0 for significant variables
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
-# all slopes should be 1
+# all slopes should be 1 for significant variables
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)

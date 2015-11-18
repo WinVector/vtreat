@@ -72,7 +72,6 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
-#> [1] "WARNING skipped vars: x"
 
 # help("prepare")
 
@@ -80,20 +79,22 @@ dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
-#>       z_clean       z_isBAD 
-#> -3.965138e-17 -7.926292e-18
+#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
+#> -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
+#>       z_isBAD 
+#> -7.926292e-18
 # all slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
-#> z_clean z_isBAD 
-#>       1       1
+#>  x_lev_NA x_lev_x.a x_lev_x.b    x_catB   z_clean   z_isBAD 
+#>         1         1         1         1         1         1
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 print(dTestCTreated)
-#>     z_clean    z_isBAD
-#> 1 0.4918919 -0.1714286
-#> 2 0.4918919 -0.1714286
-#> 3 0.4918919 -0.1714286
-#> 4 0.0000000  0.4285714
+#>     x_lev_NA  x_lev_x.a   x_lev_x.b      x_catB   z_clean    z_isBAD
+#> 1 -0.1714286 -0.2380952  0.02857143 -0.26191735 0.4918919 -0.1714286
+#> 2 -0.1714286  0.1785714 -0.07142857 -0.01479283 0.4918919 -0.1714286
+#> 3 -0.1714286  0.1785714  0.02857143  0.06658235 0.4918919 -0.1714286
+#> 4  0.4285714  0.1785714  0.02857143  0.40766885 0.0000000  0.4285714
 ```
 
 ``` r
@@ -108,20 +109,24 @@ dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>   x_lev_rare    x_lev_x.a       x_catN      z_clean      z_isBAD 
-#> 1.110223e-16 0.000000e+00 2.775558e-17 1.526557e-16 7.632783e-17
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
+#> 9.020562e-17 0.000000e+00 2.500000e-01 7.021564e-17 1.526557e-16 
+#>      z_isBAD 
+#> 7.632783e-17
 # all slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
-#> x_lev_rare  x_lev_x.a     x_catN    z_clean    z_isBAD 
-#>          1          1          1          1          1
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
+#> 1.000000e+00 1.000000e+00 9.064933e-17 1.000000e+00 1.000000e+00 
+#>      z_isBAD 
+#> 1.000000e+00
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
-#>   x_lev_rare x_lev_x.a x_catN      z_clean    z_isBAD
-#> 1      -0.25     -0.25  -0.25 5.238095e-01 -0.1666667
-#> 2       0.25      0.25   0.25 5.238095e-01 -0.1666667
-#> 3       0.25      0.25   0.25 5.238095e-01 -0.1666667
-#> 4       0.25      0.25   0.25 1.110223e-16  0.5000000
+#>     x_lev_NA x_lev_x.a x_lev_x.b        x_catN      z_clean    z_isBAD
+#> 1 -0.1666667     -0.25         0 -2.500000e-01 5.238095e-01 -0.1666667
+#> 2 -0.1666667      0.25         1  5.887847e-17 5.238095e-01 -0.1666667
+#> 3 -0.1666667      0.25         0  5.887847e-17 5.238095e-01 -0.1666667
+#> 4  0.5000000      0.25         0  5.000000e-01 1.110223e-16  0.5000000
 
 # for large data sets you can consider designing the treatments on 
 # a subset like: d[sample(1:dim(d)[[1]],1000),]

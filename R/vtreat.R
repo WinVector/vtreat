@@ -840,7 +840,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   force(weights)
   nRows <- nrow(dframe)
   function(ti) {
-    scoreFrame <- list()
+    scoreFrame <- vector('list',length(vnames(ti)))
     origName <- vorig(ti)
     xcolClean <- .cleanColumn(dframe[[origName]],nRows)
     fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
@@ -1095,8 +1095,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     dsub <- dframe[,c(splitVars,outcomename),drop=FALSE]
     # build a partition plan
     evalSets <- .buildEvalSets(zoY)
-    scoreFrame <- list()
-    wtList <- list()
+    scoreFrame <- vector('list',length(evalSets))
+    wtList <- vector('list',length(evalSets))
     for(ei in evalSets) {
       dsubiEval <- dsub[ei,]
       dsubiBuild <- dsub[-ei,]
@@ -1117,16 +1117,15 @@ catScore <- function(x,yC,yTarget,weights=c()) {
                                 parallelCluster)
       fi <- .vtreatList(ti,dsubiEval,newVarsS,FALSE,FALSE,
                              parallelCluster)
+      # make sure each frame has the same structure
+      for(v in setdiff(newVarsS,colnames(fi))) {
+        fi[[v]] <- 0.0
+      }
+      fi <- fi[,newVarsS,drop=FALSE]
       fi[[outcomename]] <- dsubiEval[[outcomename]]
       scoreFrame[[length(scoreFrame)+1]] <- fi
       wtList[[length(wtList)+1]] <- weights[ei]
     }
-    # make sure we have exactly the same set of columns in each score frame
-    colnames <- colnames(scoreFrame[[1]])
-    for(i in seq_len(length(scoreFrame))) {
-      colnames <- intersect(colnames,colnames(scoreFrame[[i]]))
-    }
-    scoreFrame <- lapply(scoreFrame,function(x) x[,colnames,drop=FALSE])
     scoreFrame <- do.call(rbind,scoreFrame)
     scoreWeights <- do.call(c,wtList)
     # score this frame
