@@ -535,7 +535,7 @@ print.vtreatment <- function(x,...) {
 # replace level with .wmean(x|category) - .wmean(x)
 .catD <- function(col,args,doCollar) {
   col <- .preProcCat(col,args$levRestriction)
-  novel <- !(col %in% names(args$scores))
+  novel <- !(col %in% args$scorable)
   keys <- col
   pred <- numeric(length(col))
   if(length(args$scores)>0) {
@@ -553,16 +553,21 @@ print.vtreatment <- function(x,...) {
   vcol <- .preProcCat(vcolin,levRestriction)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
+  scorable <- names(den)[den>=2]
   condMean <- as.list(num/den)
   resids <- rescol-as.numeric(condMean[vcol])
-  scores <- sqrt(tapply(resids*resids*weights,vcol,sum)/den)
-  novelCode <- max(scores)
+  scores <- sqrt(tapply(resids*resids*weights,vcol,sum)/pmax(den-1,1))
+  novelCode <- 1.0
+  if(length(scores)>0) {
+    novelCode <- max(scores[scorable])
+  }
   scores <- as.list(scores)
   scores <- scores[names(scores)!='zap'] # don't let zap code
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catD',sep='_')),
                     f=.catD,
                     args=list(scores=scores,
+                              scorable=scorable,
                               novelCode=novelCode,
                               levRestriction=levRestriction),
                     treatmentName='Deviation Fact',
