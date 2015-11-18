@@ -514,8 +514,7 @@ print.vtreatment <- function(x,...) {
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
-  scores <- (num+smFactor*baseMean)/(den+smFactor)-baseMean
-  scores <- as.list(scores)
+  scores <- as.list((num+smFactor*baseMean)/(den+smFactor)-baseMean)
   scores <- scores[names(scores)!='zap'] # don't let zap code
   treatment <- list(origvar=origVarName,origColClass=origColClass,
                     newvars=make.names(paste(origVarName,'catN',sep='_')),
@@ -529,6 +528,51 @@ print.vtreatment <- function(x,...) {
   treatment$scales <- .getScales(pred,rescol,weights)
   treatment
 }
+
+
+
+# apply a deviation fact
+# replace level with .wmean(x|category) - .wmean(x)
+.catD <- function(col,args,doCollar) {
+  col <- .preProcCat(col,args$levRestriction)
+  novel <- !(col %in% names(args$scores))
+  keys <- col
+  pred <- numeric(length(col))
+  if(length(args$scores)>0) {
+    keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
+    pred <- as.numeric(args$scores[keys]) 
+  }
+  pred[novel] <- args$novelCode 
+  pred
+}
+
+# build a deviation fact
+# see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
+.mkCatD <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
+  origColClass <- class(vcolin)
+  vcol <- .preProcCat(vcolin,levRestriction)
+  num <- tapply(rescol*weights,vcol,sum)
+  den <- tapply(weights,vcol,sum)
+  condMean <- as.list(num/den)
+  resids <- rescol-as.numeric(condMean[vcol])
+  scores <- sqrt(tapply(resids*resids*weights,vcol,sum)/den)
+  novelCode <- max(scores)
+  scores <- as.list(scores)
+  scores <- scores[names(scores)!='zap'] # don't let zap code
+  treatment <- list(origvar=origVarName,origColClass=origColClass,
+                    newvars=make.names(paste(origVarName,'catD',sep='_')),
+                    f=.catD,
+                    args=list(scores=scores,
+                              novelCode=novelCode,
+                              levRestriction=levRestriction),
+                    treatmentName='Deviation Fact',
+                    needsSplit=TRUE)
+  pred <- treatment$f(vcolin,treatment$args)
+  class(treatment) <- 'vtreatment'
+  treatment$scales <- .getScales(pred,rescol,weights)
+  treatment
+}
+
 
 
 
@@ -824,6 +868,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
               }
               if(is.null(zC)) { # is numeric mode
                 ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
+                acceptTreatment(ti)
+                ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
                 acceptTreatment(ti)
               }
             }

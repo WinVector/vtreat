@@ -191,6 +191,7 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
+print(treatmentsC$scoreFrame)
 
 # help("prepare")
 
@@ -213,6 +214,7 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 # help("designTreatmentsN")
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
+print(treatmentsN$scoreFrame)
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0

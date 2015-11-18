@@ -72,6 +72,23 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
+print(treatmentsC$scoreFrame)
+#>     varName origName needsSplit varMoves PRESSRsquared psig        sig
+#> 1  x_lev_NA        x      FALSE     TRUE   -0.09374781    1 0.09248399
+#> 2 x_lev_x.a        x      FALSE     TRUE   -0.65277227    1 0.26490379
+#> 3 x_lev_x.b        x      FALSE     TRUE   -1.26040281    1 0.80967242
+#> 4    x_catP        x       TRUE     TRUE   -0.65261808    1 0.26490379
+#> 5    x_catB        x       TRUE     TRUE   -0.25610592    1 0.18011273
+#> 6   z_clean        z      FALSE     TRUE   -0.13404882    1 0.13176020
+#> 7   z_isBAD        z      FALSE     TRUE   -0.09374781    1 0.09248399
+#>   catPRSquared       csig
+#> 1  0.296065432 0.09248399
+#> 2  0.130005705 0.26490379
+#> 3  0.006067337 0.80967242
+#> 4  0.130005705 0.26490379
+#> 5  0.187924640 0.18011273
+#> 6  0.237601767 0.13176020
+#> 7  0.296065432 0.09248399
 
 # help("prepare")
 
@@ -79,22 +96,27 @@ dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=1.0,scale=TRUE)
 varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
-#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catB       z_clean 
-#> -7.930164e-18  2.379437e-17  2.974296e-18  7.922420e-18 -3.965138e-17 
-#>       z_isBAD 
-#> -7.926292e-18
+#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
+#> -7.930164e-18  2.379437e-17  2.974296e-18 -2.854898e-16  7.922420e-18 
+#>       z_clean       z_isBAD 
+#> -3.965138e-17 -7.926292e-18
 # all slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
-#>  x_lev_NA x_lev_x.a x_lev_x.b    x_catB   z_clean   z_isBAD 
-#>         1         1         1         1         1         1
+#>  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catB   z_clean   z_isBAD 
+#>         1         1         1         1         1         1         1
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 print(dTestCTreated)
-#>     x_lev_NA  x_lev_x.a   x_lev_x.b      x_catB   z_clean    z_isBAD
-#> 1 -0.1714286 -0.2380952  0.02857143 -0.26191735 0.4918919 -0.1714286
-#> 2 -0.1714286  0.1785714 -0.07142857 -0.01479283 0.4918919 -0.1714286
-#> 3 -0.1714286  0.1785714  0.02857143  0.06658235 0.4918919 -0.1714286
-#> 4  0.4285714  0.1785714  0.02857143  0.40766885 0.0000000  0.4285714
+#>     x_lev_NA  x_lev_x.a   x_lev_x.b     x_catP      x_catB   z_clean
+#> 1 -0.1714286 -0.2380952  0.02857143 -0.2380952 -0.26191735 0.4918919
+#> 2 -0.1714286  0.1785714 -0.07142857  0.1785714 -0.01479283 0.4918919
+#> 3 -0.1714286  0.1785714  0.02857143  1.0119048  0.06658235 0.4918919
+#> 4  0.4285714  0.1785714  0.02857143  0.1785714  0.40766885 0.0000000
+#>      z_isBAD
+#> 1 -0.1714286
+#> 2 -0.1714286
+#> 3 -0.1714286
+#> 4  0.4285714
 ```
 
 ``` r
@@ -105,28 +127,43 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 # help("designTreatmentsN")
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
+print(treatmentsN$scoreFrame)
+#>     varName origName needsSplit varMoves PRESSRsquared      psig       sig
+#> 1  x_lev_NA        x      FALSE     TRUE    0.04000128 0.6348745 0.6348745
+#> 2 x_lev_x.a        x      FALSE     TRUE   -0.33333000 1.0000000 1.0000000
+#> 3 x_lev_x.b        x      FALSE     TRUE   -1.07998856 1.0000000 1.0000000
+#> 4    x_catP        x       TRUE     TRUE   -0.33330334 1.0000000 1.0000000
+#> 5    x_catN        x       TRUE     TRUE   -0.74281970 1.0000000 1.0000000
+#> 6    x_catD        x       TRUE     TRUE    0.37500344 0.1065561 0.1065561
+#> 7   z_clean        z      FALSE     TRUE   -0.02135479 1.0000000 1.0000000
+#> 8   z_isBAD        z      FALSE     TRUE    0.04000128 0.6348745 0.6348745
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
-#> 9.020562e-17 0.000000e+00 2.500000e-01 7.021564e-17 1.526557e-16 
-#>      z_isBAD 
-#> 7.632783e-17
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
+#> 9.020562e-17 0.000000e+00 2.500000e-01 8.326673e-17 7.021564e-17 
+#>       x_catD      z_clean      z_isBAD 
+#> 1.942890e-16 1.526557e-16 7.632783e-17
 # all slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
-#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catN      z_clean 
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
 #> 1.000000e+00 1.000000e+00 9.064933e-17 1.000000e+00 1.000000e+00 
-#>      z_isBAD 
-#> 1.000000e+00
+#>       x_catD      z_clean      z_isBAD 
+#> 1.000000e+00 1.000000e+00 1.000000e+00
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
-#>     x_lev_NA x_lev_x.a x_lev_x.b        x_catN      z_clean    z_isBAD
-#> 1 -0.1666667     -0.25         0 -2.500000e-01 5.238095e-01 -0.1666667
-#> 2 -0.1666667      0.25         1  5.887847e-17 5.238095e-01 -0.1666667
-#> 3 -0.1666667      0.25         0  5.887847e-17 5.238095e-01 -0.1666667
-#> 4  0.5000000      0.25         0  5.000000e-01 1.110223e-16  0.5000000
+#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP        x_catN     x_catD
+#> 1 -0.1666667     -0.25         0  -0.25 -2.500000e-01 -0.1250000
+#> 2 -0.1666667      0.25         1   0.25  5.887847e-17 -0.2165064
+#> 3 -0.1666667      0.25         0   0.75  5.887847e-17 -0.2165064
+#> 4  0.5000000      0.25         0   0.25  5.000000e-01  0.4665064
+#>        z_clean    z_isBAD
+#> 1 5.238095e-01 -0.1666667
+#> 2 5.238095e-01 -0.1666667
+#> 3 5.238095e-01 -0.1666667
+#> 4 1.110223e-16  0.5000000
 
 # for large data sets you can consider designing the treatments on 
 # a subset like: d[sample(1:dim(d)[[1]],1000),]
