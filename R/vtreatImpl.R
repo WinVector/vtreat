@@ -1,0 +1,673 @@
+
+
+# Return a list of new treated variable names (coresponding to optional original variable names)
+# non-public function, use results in the scoreFrame slot of your treatment plan.
+# param treatments the treatments slot from a treatmentplan object
+# param origVarNames optional restrict to only derived variable originating from these original variables (null is no restriction)
+# return list of new treated variable names
+# seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
+getNewVarNames <- function(treatments,origVarNames=c()) {
+  resCount <- 0
+  for(ti in treatments) {
+    if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
+      resCount <- resCount + length(ti$newvars)
+    }
+  }
+  names <- vector('list',resCount)
+  j <- 1
+  for(ti in treatments) {
+    if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
+      for(ni in ti$newvars) {
+        names[[j]] <- list(new=ni,orig=ti$origvar)
+        j <- j + 1
+      }
+    }
+  }
+  names
+}
+
+
+
+.vtreatA <- function(vtreat,xcol,scale,doCollar) {
+  dout <- as.data.frame(vtreat$f(xcol,vtreat$args,doCollar),
+                        stringsAsFactors=FALSE)
+  colnames(dout) <- vtreat$newvars
+  if(scale) {
+    for(j in seq_along(vtreat$scales$a)) {
+      dout[[j]] <- dout[[j]]*vtreat$scales$a[[j]] + vtreat$scales$b[[j]]
+    }
+  }
+  dout
+}
+
+# colNames a subset of treated variable names
+.vtreatList <- function(treatments,dframe,colNames,scale,doCollar,
+                        parallelCluster) {
+  resCounts <- vapply(treatments,function(ti) { 
+    length(intersect(colNames,ti$newvars))
+  },numeric(1))
+  toProcess <- treatments[resCounts>0]
+  procWorker <- function(ti) {
+    xcolOrig <- dframe[[ti$origvar]]
+    nRows <- length(xcolOrig)
+    xcolClean <- .cleanColumn(xcolOrig,nRows)
+    if(is.null(xcolClean)) {
+      return(paste('column',ti$origvar,
+                   'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+    }
+    if(!is.null(ti$origColClass)) {
+      curColClass <- class(xcolClean)
+      if(curColClass!=ti$origColClass) {
+        return(paste('column',ti$origvar,'expected to convert to ',
+                     ti$origColClass,'saw',class(xcolOrig),curColClass))
+      }
+    }
+    .vtreatA(ti,xcolClean,scale,doCollar)
+  }
+  if(is.null(parallelCluster)) {
+    gs <- lapply(toProcess,procWorker)
+  } else {
+    gs <-  parallel::parLapply(parallelCluster,toProcess,procWorker)
+  }
+  # pass back first error
+  for(gi in gs) {
+    if(is.character(gi)) {
+      stop(gi)
+    }
+  }
+  cols <- vector('list',length(colNames))
+  names(cols) <- colNames
+  for(ii in seq_len(length(toProcess))) {
+    ti <- toProcess[[ii]]
+    gi <- gs[[ii]]
+    wants <- intersect(colNames,ti$newvars)
+    for(vi in wants) {
+      cols[[vi]] <- gi[[vi]]
+    }
+  }
+  cols <- Filter(Negate(is.null),cols)
+  as.data.frame(cols,stringsAsFactors=FALSE)
+}
+
+
+
+
+
+# xcol numeric vector of inputs (no NA/NULL/NaN)
+# ycol numeric vector of outcomes (no NA/NULL/NaN)
+# numeric vector of data weights (no NA/NULL/NaN, all>0.0)
+.getScales <- function(xcol,ycol,weights) {
+  lmatx <- matrix(data=0.0,nrow=length(ycol),ncol=2)
+  lmatx[,1] <- 1
+  lmatx[,2] <- xcol
+  lmaty <- matrix(data=0.0,nrow=length(ycol),ncol=1)
+  meany <- .wmean(ycol,weights)
+  lmaty[,1] <- ycol-meany
+  model <- stats::lm.wfit(lmatx,lmaty,weights)
+  a <- 0.0
+  if(!is.na(model$coefficients[[2]])) {
+    a <- model$coefficients[[2]]
+  }
+  if(abs(a)>1.0e-6) {
+    if(!is.na(model$coefficients[[1]])) {
+      b <- model$coefficients[[1]]
+    }
+  } else {
+    a = 1
+    b = 0
+  }
+  list(a=a,b=b)
+}
+
+
+
+
+
+
+
+
+# pre-transform categorical column
+# convert it to character, convert NA to "NA"
+.preProcCat <- function(col,levRestriction) {
+  origna <- is.na(col)
+  # don't use blank as a key and get into defendable level space
+  col <- paste('x',as.character(col))
+  col[origna] <- 'NA'
+  if(!is.null(levRestriction)) {
+    # map rare levels to a new special level
+    rares <- !(col %in% levRestriction$safeLevs)
+    col[rares] <- 'rare'
+    zaps <- col %in% levRestriction$supressedLevs
+    col[zaps] <- 'zap'
+  }
+  col
+}
+
+
+# determine non-rare and significant levels for numeric/regression target
+# regression mode
+.safeLevelsR <- function(vcolin,yNumeric,weights,rareCount,rareSig) {
+  vcol <- .preProcCat(vcolin,c())
+  # first: keep only levels with enough weighted counts
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  supressedLevs <- character(0)
+  # re-code with rare symbol eligable
+  vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
+    # second: keep only levels that look significantly different than grand mean
+    aovCalc <- function(level) {
+      m <- stats::lm(yNumeric~vcol==level,weights = weights)
+      stats::anova(m)[1,'Pr(>F)']
+    }
+    sigs <- vapply(safeLevs,aovCalc,numeric(1))
+    supressedLevs <- safeLevs[sigs>rareSig]
+  }
+  list(safeLevs=safeLevs,supressedLevs=supressedLevs)
+}
+
+
+# determine non-rare and significant levels for numeric/regression target
+# classification mode
+.safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig) {
+  vcol <- .preProcCat(vcolin,c())
+  # first: keep only levels with enough weighted counts
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  supressedLevs <- character(0)
+  # re-code with rare symbol eligable
+  vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
+  counts <- tapply(weights,vcol,sum)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
+    # second: keep only levels that look significantly different than grand mean
+    sigCalc <- function(level) {
+      #tab <- table(vcol==level,zC==zTarget)  # not weighted
+      tab <- .wTable(vcol==level,zC==zTarget,weights)
+      stats::fisher.test(tab)$p.value
+    }
+    sigs <- vapply(safeLevs,sigCalc,numeric(1))
+    supressedLevs <- safeLevs[sigs>rareSig]
+  }
+  list(safeLevs=safeLevs,supressedLevs=supressedLevs)
+}
+
+
+
+
+# TODO: pivot warnings/print out of here
+# design a treatment for a single variables
+# bind a bunch of variables, so we pass exactly what we need to sub-processes
+.varDesigner <- function(zoY,
+                         zC,zTarget,
+                         weights,
+                         minFraction,smFactor,rareCount,rareSig,
+                         collarProb,
+                         trainRows,origRowCount,
+                         impactOnly,
+                         verbose) {
+  force(zoY)
+  force(zC)
+  force(zTarget)
+  force(weights)
+  force(minFraction)
+  force(smFactor)
+  force(rareCount)
+  force(rareSig)
+  force(collarProb)
+  force(trainRows)
+  force(origRowCount)
+  force(verbose)
+  nRows = length(zoY)
+  function(argpair) {
+    v <- argpair$v
+    vcolOrig <- argpair$vcolOrig
+    if(verbose) {
+      print(paste('design var',v,date()))
+    }
+    treatments <- list()
+    vcol <- .cleanColumn(vcolOrig,origRowCount)[trainRows]
+    if(length(vcol)!=nRows) {
+      warning("wrong column length")
+      vcol <- NULL
+    }
+    acceptTreatment <- function(ti) {
+      if(!is.null(ti)) {
+        treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
+      }
+    }
+    if(is.null(vcol)) {
+      warning(paste('column',v,'is not a type/class/value vtreat can work with (',class(vcolOrig),')'))
+    } else {
+      colclass <- class(vcol)
+      if(.has.range(vcol)) {
+        if((colclass=='numeric') || (colclass=='integer')) {
+          if(!impactOnly) {
+            ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
+            acceptTreatment(ti)
+            ti <- .mkIsBAD(v,vcol,zoY,weights)
+            acceptTreatment(ti)
+          }
+        } else if((colclass=='character') || (colclass=='factor')) {
+          # expect character or factor here
+          if(!is.null(zC)) {  # in categorical mode
+            levRestriction <- .safeLevelsC(vcol,zC,zTarget,weights,rareCount,rareSig)
+          } else {
+            levRestriction <- .safeLevelsR(vcol,zoY,weights,rareCount,rareSig)
+          }
+          if(length(levRestriction$safeLevs)>0) {
+            ti = NULL
+            if(!impactOnly) {
+              ti <- .mkCatInd(v,vcol,zoY,minFraction,levRestriction,weights)
+              acceptTreatment(ti)
+            }
+            if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+              ti <- .mkCatP(v,vcol,zoY,levRestriction,weights)
+              acceptTreatment(ti) 
+              if(!is.null(zC)) {  # in categorical mode
+                ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights)
+                acceptTreatment(ti)      
+              }
+              if(is.null(zC)) { # is numeric mode
+                ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
+                acceptTreatment(ti)
+                ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
+                acceptTreatment(ti)
+              }
+            }
+          }
+        } else {
+          warning(paste('variable',v,'has unexpected class:',colclass,
+                        ', skipping, (want one of numeric,integer,character,factor)'))
+        }  
+      }
+    }
+    treatments
+  }
+}
+
+
+
+# build sets for out of sample evaluatin, train on complement of eval
+# ensure y varies training set (complement of eval set)
+.buildEvalSets <- function(zoY) {
+  nRows = length(zoY)
+  # build a partition plan
+  evalSets <- list()
+  if(nRows<=1) {
+    return(evalSets) # no plan possible
+  }
+  if(nRows<=100) {
+    # small case, 1-holdout Jackknife style
+    evalSets <- as.list(seq_len(nRows))
+    return(evalSets)
+  }
+  #  Try for full k-way cross val
+  ncross <- 3
+  done = FALSE
+  while(!done) {
+    groups <- sample.int(ncross,nRows,replace=TRUE)
+    if(length(unique(groups))==ncross) {
+      done = TRUE
+    }
+  }
+  evalSets <- lapply(seq_len(ncross),function(i) which(groups==i))
+  evalSets
+}
+
+
+
+
+.mkScoreVarWorker <- function(dframe,zoY,zC,weights) {
+  force(dframe)
+  force(zoY)
+  force(zC)
+  catTarget <- !is.null(zC)
+  force(weights)
+  nRows <- nrow(dframe)
+  function(ti) {
+    scoreFrame <- vector('list',length(vnames(ti)))
+    origName <- vorig(ti)
+    xcolClean <- .cleanColumn(dframe[[origName]],nRows)
+    fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
+    for(nv in vnames(ti)) {
+      varMoves <- .has.range.cn(fi[[nv]])
+      if(varMoves) {
+        PRESSRsquared=0.0
+        psig=1.0
+        sig=1.0
+        catPRSquared=0.0
+        csig=1.0
+        if(varMoves) {
+          pstat <- pressStatOfBestLinearFit(fi[[nv]],
+                                            zoY,
+                                            weights,
+                                            'total')
+          PRESSRsquared <- pstat$rsq
+          psig <- pstat$sig
+          sig <- pstat$sig
+          if(catTarget) {
+            cstat <- catScore(fi[[nv]],
+                              zC,1,
+                              weights)
+            catPRSquared <- cstat$pRsq
+            csig <- cstat$sig
+            sig <- cstat$sig
+          }
+        }
+        scoreFrameij <- data.frame(varName=nv,
+                                   origName=origName,
+                                   code=ti$treatmentCode,
+                                   needsSplit=ti$needsSplit,
+                                   varMoves=varMoves,
+                                   PRESSRsquared=PRESSRsquared,
+                                   psig=psig,
+                                   sig=sig,
+                                   stringsAsFactors = FALSE)
+        if(catTarget) {
+          scoreFrameij$catPRSquared <- catPRSquared
+          scoreFrameij$csig <- csig
+          scoreFrameij$sig <- csig
+        }
+        scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
+      }
+    }
+    do.call(rbind,scoreFrame)
+  }
+}
+
+
+.mkScoreColWorker <- function(dframe,zoY,zC,weights) {
+  force(dframe)
+  force(zoY)
+  force(zC)
+  catTarget <- !is.null(zC)
+  force(weights)
+  nRows <- nrow(dframe)
+  function(nv) {
+    scoreFrame <- list()
+    varMoves <- .has.range.cn(dframe[[nv]])
+    PRESSRsquared=0.0
+    psig=1.0
+    sig=1.0
+    catPRSquared=0.0
+    csig=1.0
+    if(varMoves) {
+      pstat <- pressStatOfBestLinearFit(dframe[[nv]],
+                                        zoY,
+                                        weights,
+                                        'total')
+      PRESSRsquared <- pstat$rsq
+      psig <- pstat$sig
+      sig <- pstat$sig
+      if(catTarget) {
+        cstat <- catScore(dframe[[nv]],
+                          zC,1,
+                          weights)
+        catPRSquared <- cstat$pRsq
+        csig <- cstat$sig
+        sig <- cstat$sig
+      }
+    }
+    scoreFrameij <- data.frame(varName=nv,
+                               varMoves=varMoves,
+                               PRESSRsquared=PRESSRsquared,
+                               psig=psig,
+                               sig=sig,
+                               stringsAsFactors = FALSE)
+    if(catTarget) {
+      scoreFrameij$catPRSquared <- catPRSquared
+      scoreFrameij$csig <- csig
+      scoreFrameij$sig <- csig
+    }
+    scoreFrameij
+  }
+}
+
+
+
+
+
+
+# build all treatments for a data frame to predict a given outcome
+.designTreatmentsXS <- function(dframe,varlist,outcomename,zoY,
+                                zC,zTarget,
+                                weights,
+                                minFraction,smFactor,
+                                rareCount,rareSig,
+                                collarProb,
+                                impactOnly,
+                                verbose,
+                                parallelCluster) {
+  # In building the workList don't transform any variables (such as making
+  # row selections), only select columns out of frame.  This prevents
+  # data growth prior to doing the work.
+  workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
+  # build the treatments we will return to the user
+  worker <- .varDesigner(zoY,
+                         zC,zTarget,
+                         weights,
+                         minFraction,smFactor,rareCount,rareSig,
+                         collarProb,
+                         seq_len(nrow(dframe)),nrow(dframe),
+                         impactOnly,
+                         verbose)
+  if(is.null(parallelCluster)) {
+    # print("design serial")
+    treatments <- lapply(workList,worker)
+  } else {
+    # print("design parallel")
+    treatments <- parallel::parLapply(parallelCluster,workList,worker)
+  }
+  treatments <- Filter(Negate(is.null),treatments)
+  treatments <- unlist(treatments,recursive=FALSE)
+  if(impactOnly) {
+    return(treatments)
+  }
+  if(length(treatments)<=0) {
+    stop('no usable vars')
+  }
+  # score variables
+  if(verbose) {
+    print(paste("scoring treatments",date()))
+  }
+  scrW <- .mkScoreVarWorker(dframe,zoY,zC,weights)
+  if(is.null(parallelCluster)) {
+    sFrames <- lapply(treatments,scrW)
+  } else {
+    sFrames <- parallel::parLapply(parallelCluster,treatments,scrW)
+  }
+  sFrames <- Filter(Negate(is.null),sFrames)
+  sFrame <- do.call(rbind,sFrames)
+  # clean up sFrame a bit
+  if(nrow(sFrame)>0) {
+    for(cname in c('PRESSRsquared','catPRSquared')) {
+      if(cname %in% colnames(sFrame)) {
+        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 0
+      }
+    }
+    for(cname in c('psig','csig','sig')) {
+      if(cname %in% colnames(sFrame)) {
+        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
+      }
+    }
+  }
+  plan <- list(treatments=treatments,
+               scoreFrame=sFrame,
+               outcomename=outcomename)
+  class(plan) <- 'treatmentplan'
+  if(verbose) {
+    print(paste("have treatment plan",date()))
+  }
+  plan
+}
+
+
+# build all treatments for a data frame to predict a given outcome
+.designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
+                               zC,zTarget,
+                               weights,
+                               minFraction,smFactor,
+                               rareCount,rareSig,
+                               collarProb,
+                               verbose,
+                               parallelCluster) {
+  if(!requireNamespace("parallel",quietly=TRUE)) {
+    parallelCluster <- NULL
+  }
+  if(!is.data.frame(dframe)) {
+    stop("dframe must be a data frame")
+  }
+  if(collarProb>=0.5) {
+    stop("collarProb must be < 0.5")
+  }
+  if(nrow(dframe)<1) {
+    stop("most have rows")
+  }
+  if(verbose) {
+    print(paste("desigining treatments",date()))
+  }
+  varlist <- setdiff(varlist,outcomename)
+  varlist <- intersect(varlist,colnames(dframe))
+  varlist <- as.character(varlist)
+  if(is.null(weights)) {
+    weights <- rep(1.0,nrow(dframe))
+  } else {
+    if(!is.numeric(weights)) {
+      stop("weights need to be numeric")
+    }
+    if(length(weights)!=nrow(dframe)) {
+      stop("must have same number of weights as data frame rows")
+    }
+    goodPosns <- ifelse(.is.bad(weights),FALSE,weights>0.0)
+    dframe <- dframe[goodPosns,,drop=FALSE]
+    zoY <- zoY[goodPosns]
+    weights <- weights[goodPosns]
+    if(!is.null(zC)) {
+      zC <- zC[goodPosns]
+    }
+    # the select goodPosns is duplicating the data frame, so it does cost
+    # memory
+  }
+  if(nrow(dframe)<=0) {
+    stop("no rows")
+  }
+  if(min(weights)<0) {
+    stop("negative weights")
+  }
+  if(sum(weights)<=0) {
+    stop("no non-zero weighted rows")
+  }
+  if(sum(.is.bad(zoY))>0) {
+    stop("outcome variable had NAs")
+  }
+  if(rareCount<0) {
+    stop("rarecount must not be negative")
+  }
+  treatments <- .designTreatmentsXS(dframe,varlist,outcomename,zoY,
+                                    zC,zTarget,
+                                    weights,
+                                    minFraction,smFactor,
+                                    rareCount,rareSig,
+                                    collarProb,
+                                    FALSE,
+                                    verbose,
+                                    parallelCluster)
+  splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
+  if(length(splitVars)>0) {
+    newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit]
+    if(verbose) {
+      print(paste("rescoring complex variables",date()))
+    }
+    dsub <- dframe[,c(splitVars,outcomename),drop=FALSE]
+    # build a partition plan
+    evalSets <- .buildEvalSets(zoY)
+    scoreFrame <- vector('list',length(evalSets))
+    wtList <- vector('list',length(evalSets))
+    for(ei in evalSets) {
+      dsubiEval <- dsub[ei,]
+      dsubiBuild <- dsub[-ei,]
+      zoYBuild <- zoY[-ei]
+      zCBuild <- c()
+      if(!is.null(zC)) {
+        zCBuild <- zC[-ei]
+      }
+      wBuild <- weights[-ei]
+      ti <- .designTreatmentsXS(dsubiBuild,splitVars,outcomename,zoYBuild,
+                                zCBuild,zTarget,
+                                wBuild,
+                                minFraction,smFactor,
+                                rareCount,rareSig,
+                                collarProb,
+                                TRUE,
+                                FALSE,
+                                parallelCluster)
+      fi <- .vtreatList(ti,dsubiEval,newVarsS,FALSE,FALSE,
+                        parallelCluster)
+      # make sure each frame has the same structure
+      for(v in setdiff(newVarsS,colnames(fi))) {
+        fi[[v]] <- 0.0
+      }
+      fi <- fi[,newVarsS,drop=FALSE]
+      fi[[outcomename]] <- dsubiEval[[outcomename]]
+      scoreFrame[[length(scoreFrame)+1]] <- fi
+      wtList[[length(wtList)+1]] <- weights[ei]
+    }
+    scoreFrame <- do.call(rbind,scoreFrame)
+    scoreWeights <- do.call(c,wtList)
+    # score this frame
+    if(is.null(zC)) {
+      zoYS = scoreFrame[[outcomename]]
+      zCS = NULL
+    } else {
+      zCS = scoreFrame[[outcomename]]==zTarget
+      zoYS = ifelse(zCS,1,0)
+    }
+    swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,scoreWeights)
+    if(is.null(parallelCluster)) {
+      sframe <- lapply(newVarsS,swkr) 
+    } else {
+      sframe <- parallel::parLapply(parallelCluster,newVarsS,swkr)
+    }
+    sframe <- do.call(rbind,sframe)
+    # overlay these results into treatments$scoreFrame
+    nukeCols <- intersect(colnames(treatments$scoreFrame),
+                          c('PRESSRsquared', 'psig', 'sig', 'catPRSquared', 'csig'))
+    for(v in newVarsS) {
+      for(n in nukeCols) {
+        if(v %in% sframe$varName) {
+          treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- 
+            sframe[[n]][sframe==v]
+        } else {
+          treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- NA
+        }
+      }
+    }
+    if(verbose) {
+      print(paste("done rescoring complex variables",date()))
+    }
+  }
+  treatments
+}
+
+
+.checkArgs <- function(dframe,varlist,outcomename,...) {
+  args <- list(...)
+  if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
+    stop("dframe must be a non-empty data frame")
+  }
+  if(missing(varlist)||(!is.character(varlist))||(length(varlist)<1)) {
+    stop("varlist must be a non-empty character vector")
+  }
+  if(missing(outcomename)||(!is.character(outcomename))||(length(outcomename)!=1)) {
+    stop("outcomename must be a length 1 character vector")
+  }
+  if(length(args)!=0) {
+    nm <- setdiff(paste(names(args),collapse=", "),'')
+    nv <- length(args)-length(nm)
+    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
+  }
+}
+
