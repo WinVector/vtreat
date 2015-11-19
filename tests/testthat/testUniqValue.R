@@ -1,10 +1,11 @@
 library('vtreat')
 
-context("No Y Examples")
+context("Unique Value Examples")
 
-test_that("testNoY: Can transform without Y", {
-  dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
-                        z=c(1,2,3,4,5,NA,7),y=0)
+test_that("testUniqValue: Can work with unique values", {
+  dTrainN <- data.frame(x=c('a','a','a','a','a','a','b'),
+                        z=c(0,0,0,0,0,0,1),
+                        y=0)
   dTestN <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
   treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
@@ -14,8 +15,8 @@ test_that("testNoY: Can transform without Y", {
   dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
   
   
-  dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
-                        z=c(1,2,3,4,5,NA),
+  dTrainC <- data.frame(x=c('a','a','a','a','a','a','b'),
+                        z=c(0,0,0,0,0,0,1),
                         y=FALSE)
   dTestC <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
@@ -27,8 +28,8 @@ test_that("testNoY: Can transform without Y", {
   dTestCTreated <- prepare(treatmentsC,dTestC,
                            pruneSig=1,doCollar=FALSE)
   
-  dTrainZ <- data.frame(x=c('a','a','a','a','b','b','b'),
-                        z=c(1,2,3,4,5,NA,7))
+  dTrainZ <- data.frame(x=c('a','a','a','a','a','a','b'),
+                        z=c(0,0,0,0,0,0,1))
   dTestZ <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
   treatmentsZ = designTreatmentsZ(dTrainN,colnames(dTrainN),
@@ -36,5 +37,4 @@ test_that("testNoY: Can transform without Y", {
                                   verbose=FALSE)
   dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
   dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
-  
 })

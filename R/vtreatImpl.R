@@ -221,6 +221,7 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
   force(origRowCount)
   force(verbose)
   nRows = length(zoY)
+  yMoves <- .has.range.cn(zoY)
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
@@ -265,16 +266,18 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
               ti <- .mkCatP(v,vcol,zoY,levRestriction,weights)
-              acceptTreatment(ti) 
-              if(!is.null(zC)) {  # in categorical mode
-                ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights)
-                acceptTreatment(ti)      
-              }
-              if(is.null(zC)) { # is numeric mode
-                ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
-                acceptTreatment(ti)
-                ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
-                acceptTreatment(ti)
+              acceptTreatment(ti)
+              if(yMoves) {
+                if(!is.null(zC)) {  # in categorical mode
+                  ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights)
+                  acceptTreatment(ti)      
+                }
+                if(is.null(zC)) { # is numeric mode
+                  ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
+                  acceptTreatment(ti)
+                  ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
+                  acceptTreatment(ti)
+                }
               }
             }
           }
@@ -340,7 +343,8 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
         sig=1.0
         catPRSquared=0.0
         csig=1.0
-        if(varMoves) {
+        yMoves <- .has.range.cn(zoY)
+        if(varMoves && yMoves) {
           pstat <- pressStatOfBestLinearFit(fi[[nv]],
                                             zoY,
                                             weights,
@@ -394,7 +398,8 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
     sig=1.0
     catPRSquared=0.0
     csig=1.0
-    if(varMoves) {
+    yMoves <- .has.range.cn(zoY)
+    if(varMoves && yMoves) {
       pstat <- pressStatOfBestLinearFit(dframe[[nv]],
                                         zoY,
                                         weights,
@@ -575,78 +580,81 @@ getNewVarNames <- function(treatments,origVarNames=c()) {
                                     FALSE,
                                     verbose,
                                     parallelCluster)
-  splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
-  if(length(splitVars)>0) {
-    newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit]
-    if(verbose) {
-      print(paste("rescoring complex variables",date()))
-    }
-    dsub <- dframe[,c(splitVars,outcomename),drop=FALSE]
-    # build a partition plan
-    evalSets <- .buildEvalSets(zoY)
-    scoreFrame <- vector('list',length(evalSets))
-    wtList <- vector('list',length(evalSets))
-    for(ei in evalSets) {
-      dsubiEval <- dsub[ei,]
-      dsubiBuild <- dsub[-ei,]
-      zoYBuild <- zoY[-ei]
-      zCBuild <- c()
-      if(!is.null(zC)) {
-        zCBuild <- zC[-ei]
+  yMoves <- .has.range.cn(zoY)
+  if(yMoves) {
+    splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
+    if(length(splitVars)>0) {
+      newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit]
+      if(verbose) {
+        print(paste("rescoring complex variables",date()))
       }
-      wBuild <- weights[-ei]
-      ti <- .designTreatmentsXS(dsubiBuild,splitVars,outcomename,zoYBuild,
-                                zCBuild,zTarget,
-                                wBuild,
-                                minFraction,smFactor,
-                                rareCount,rareSig,
-                                collarProb,
-                                TRUE,
-                                FALSE,
-                                parallelCluster)
-      fi <- .vtreatList(ti,dsubiEval,newVarsS,FALSE,FALSE,
-                        parallelCluster)
-      # make sure each frame has the same structure
-      for(v in setdiff(newVarsS,colnames(fi))) {
-        fi[[v]] <- 0.0
+      dsub <- dframe[,c(splitVars,outcomename),drop=FALSE]
+      # build a partition plan
+      evalSets <- .buildEvalSets(zoY)
+      scoreFrame <- vector('list',length(evalSets))
+      wtList <- vector('list',length(evalSets))
+      for(ei in evalSets) {
+        dsubiEval <- dsub[ei,]
+        dsubiBuild <- dsub[-ei,]
+        zoYBuild <- zoY[-ei]
+        zCBuild <- c()
+        if(!is.null(zC)) {
+          zCBuild <- zC[-ei]
+        }
+        wBuild <- weights[-ei]
+        ti <- .designTreatmentsXS(dsubiBuild,splitVars,outcomename,zoYBuild,
+                                  zCBuild,zTarget,
+                                  wBuild,
+                                  minFraction,smFactor,
+                                  rareCount,rareSig,
+                                  collarProb,
+                                  TRUE,
+                                  FALSE,
+                                  parallelCluster)
+        fi <- .vtreatList(ti,dsubiEval,newVarsS,FALSE,FALSE,
+                          parallelCluster)
+        # make sure each frame has the same structure
+        for(v in setdiff(newVarsS,colnames(fi))) {
+          fi[[v]] <- 0.0
+        }
+        fi <- fi[,newVarsS,drop=FALSE]
+        fi[[outcomename]] <- dsubiEval[[outcomename]]
+        scoreFrame[[length(scoreFrame)+1]] <- fi
+        wtList[[length(wtList)+1]] <- weights[ei]
       }
-      fi <- fi[,newVarsS,drop=FALSE]
-      fi[[outcomename]] <- dsubiEval[[outcomename]]
-      scoreFrame[[length(scoreFrame)+1]] <- fi
-      wtList[[length(wtList)+1]] <- weights[ei]
-    }
-    scoreFrame <- do.call(rbind,scoreFrame)
-    scoreWeights <- do.call(c,wtList)
-    # score this frame
-    if(is.null(zC)) {
-      zoYS = scoreFrame[[outcomename]]
-      zCS = NULL
-    } else {
-      zCS = scoreFrame[[outcomename]]==zTarget
-      zoYS = ifelse(zCS,1,0)
-    }
-    swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,scoreWeights)
-    if(is.null(parallelCluster)) {
-      sframe <- lapply(newVarsS,swkr) 
-    } else {
-      sframe <- parallel::parLapply(parallelCluster,newVarsS,swkr)
-    }
-    sframe <- do.call(rbind,sframe)
-    # overlay these results into treatments$scoreFrame
-    nukeCols <- intersect(colnames(treatments$scoreFrame),
-                          c('PRESSRsquared', 'psig', 'sig', 'catPRSquared', 'csig'))
-    for(v in newVarsS) {
-      for(n in nukeCols) {
-        if(v %in% sframe$varName) {
-          treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- 
-            sframe[[n]][sframe==v]
-        } else {
-          treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- NA
+      scoreFrame <- do.call(rbind,scoreFrame)
+      scoreWeights <- do.call(c,wtList)
+      # score this frame
+      if(is.null(zC)) {
+        zoYS = scoreFrame[[outcomename]]
+        zCS = NULL
+      } else {
+        zCS = scoreFrame[[outcomename]]==zTarget
+        zoYS = ifelse(zCS,1,0)
+      }
+      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,scoreWeights)
+      if(is.null(parallelCluster)) {
+        sframe <- lapply(newVarsS,swkr) 
+      } else {
+        sframe <- parallel::parLapply(parallelCluster,newVarsS,swkr)
+      }
+      sframe <- do.call(rbind,sframe)
+      # overlay these results into treatments$scoreFrame
+      nukeCols <- intersect(colnames(treatments$scoreFrame),
+                            c('PRESSRsquared', 'psig', 'sig', 'catPRSquared', 'csig'))
+      for(v in newVarsS) {
+        for(n in nukeCols) {
+          if(v %in% sframe$varName) {
+            treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- 
+              sframe[[n]][sframe==v]
+          } else {
+            treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- NA
+          }
         }
       }
-    }
-    if(verbose) {
-      print(paste("done rescoring complex variables",date()))
+      if(verbose) {
+        print(paste("done rescoring complex variables",date()))
+      }
     }
   }
   treatments

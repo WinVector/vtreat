@@ -211,9 +211,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} 
 #' @examples
 #' 
-#' dTrainZ <- data.frame(x=c('a','a','a','a','b','b','b'),
-#'     z=c(1,2,3,4,5,6,7))
-#' dTestZ <- data.frame(x=c('a','b','c',NA),
+#' dTrainZ <- data.frame(x=c('a','a','a','a','b','b',NA,'e','e'),
+#'     z=c(1,2,3,4,5,6,7,NA,9))
+#' dTestZ <- data.frame(x=c('a','x','c',NA),
 #'     z=c(10,20,30,NA))
 #' treatmentsZ = designTreatmentsZ(dTrainZ,colnames(dTrainZ),
 #'   rareCount=0)
