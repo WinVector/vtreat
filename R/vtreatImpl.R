@@ -1,30 +1,5 @@
 
 
-# Return a list of new treated variable names (coresponding to optional original variable names)
-# non-public function, use results in the scoreFrame slot of your treatment plan.
-# param treatments the treatments slot from a treatmentplan object
-# param origVarNames optional restrict to only derived variable originating from these original variables (null is no restriction)
-# return list of new treated variable names
-# seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
-getNewVarNames <- function(treatments,origVarNames=c()) {
-  resCount <- 0
-  for(ti in treatments) {
-    if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
-      resCount <- resCount + length(ti$newvars)
-    }
-  }
-  names <- vector('list',resCount)
-  j <- 1
-  for(ti in treatments) {
-    if( is.null(origVarNames) || (ti$origvar %in% origVarNames)) {
-      for(ni in ti$newvars) {
-        names[[j]] <- list(new=ni,orig=ti$origvar)
-        j <- j + 1
-      }
-    }
-  }
-  names
-}
 
 
 
