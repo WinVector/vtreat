@@ -4,8 +4,8 @@
 \alias{designTreatmentsZ}
 \title{Design variable treatments with no outcome variable.}
 \usage{
-designTreatmentsZ(dframe, varlist, ..., weights = c(), minFraction = 0.02,
-  rareCount = 0, collarProb = 0, verbose = TRUE, parallelCluster = NULL)
+designTreatmentsZ(dframe, varlist, ..., weights = c(), rareCount = 0,
+  collarProb = 0, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -15,8 +15,6 @@ designTreatmentsZ(dframe, varlist, ..., weights = c(), minFraction = 0.02,
 \item{...}{no additional arguments, declared to forced named binding of later arguments}
 
 \item{weights}{optional training weights for each row}
-
-\item{minFraction}{optional minimum frequency a categorical level must have to be converted to an indicator column.}
 
 \item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
 
