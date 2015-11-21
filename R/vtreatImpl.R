@@ -485,6 +485,70 @@
 }
 
 
+# make a "cross frame" that is a frame where each treated row was treated only 
+# by a treatment plan not involving the given row
+.mkCrossFrame <- function(dframe,varlist,newVarsS,outcomename,zoY,
+                          zC,zTarget,
+                          weights,
+                          minFraction,smFactor,
+                          rareCount,rareSig,
+                          collarProb,
+                          impactOnly,
+                          scale,doCollar,
+                          parallelCluster) {
+  verbose <- FALSE
+  dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
+  # build a partition plan
+  evalSets <- .buildEvalSets(zoY)
+  scoreFrame <- vector('list',length(evalSets))
+  wtList <- vector('list',length(evalSets))
+  rowList <- vector('list',length(evalSets))
+  for(ei in evalSets) {
+    dsubiEval <- dsub[ei,]
+    dsubiBuild <- dsub[-ei,]
+    zoYBuild <- zoY[-ei]
+    zCBuild <- c()
+    if(!is.null(zC)) {
+      zCBuild <- zC[-ei]
+    }
+    wBuild <- weights[-ei]
+    ti <- .designTreatmentsXS(dsubiBuild,varlist,outcomename,zoYBuild,
+                              zCBuild,zTarget,
+                              wBuild,
+                              minFraction,smFactor,
+                              rareCount,rareSig,
+                              collarProb,
+                              impactOnly,
+                              verbose,
+                              parallelCluster)
+    fi <- .vtreatList(ti,dsubiEval,newVarsS,scale,doCollar,
+                      parallelCluster)
+    # make sure each frame has the same structure
+    for(v in setdiff(newVarsS,colnames(fi))) {
+      fi[[v]] <- 0.0
+    }
+    fi <- fi[,newVarsS,drop=FALSE]
+    fi[[outcomename]] <- dsubiEval[[outcomename]]
+    scoreFrame[[length(scoreFrame)+1]] <- fi
+    wtList[[length(wtList)+1]] <- weights[ei]
+    rowList[[length(rowList)+1]] <- ei
+  }
+  scoreFrame <- do.call(rbind,scoreFrame)
+  scoreWeights <- do.call(c,wtList)
+  rowList <- do.call(c,rowList)
+  if((length(rowList)==nrow(dframe))&&
+     all(sort(rowList)==(1:nrow(dframe)))&&
+     (!all(rowList==(1:nrow(dframe))))) {
+    # undo permuation
+    scoreFrame[rowList,] <- scoreFrame
+    scoreWeights[rowList] <- scoreWeights[rowList]
+  }
+  list(crossFrame=scoreFrame,crossWeights=scoreWeights)
+}
+
+
+
+
 # build all treatments for a data frame to predict a given outcome
 .designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
                                zC,zTarget,
@@ -563,42 +627,17 @@
       if(verbose) {
         print(paste("rescoring complex variables",date()))
       }
-      dsub <- dframe[,c(splitVars,outcomename),drop=FALSE]
-      # build a partition plan
-      evalSets <- .buildEvalSets(zoY)
-      scoreFrame <- vector('list',length(evalSets))
-      wtList <- vector('list',length(evalSets))
-      for(ei in evalSets) {
-        dsubiEval <- dsub[ei,]
-        dsubiBuild <- dsub[-ei,]
-        zoYBuild <- zoY[-ei]
-        zCBuild <- c()
-        if(!is.null(zC)) {
-          zCBuild <- zC[-ei]
-        }
-        wBuild <- weights[-ei]
-        ti <- .designTreatmentsXS(dsubiBuild,splitVars,outcomename,zoYBuild,
-                                  zCBuild,zTarget,
-                                  wBuild,
-                                  minFraction,smFactor,
-                                  rareCount,rareSig,
-                                  collarProb,
-                                  TRUE,
-                                  FALSE,
-                                  parallelCluster)
-        fi <- .vtreatList(ti,dsubiEval,newVarsS,FALSE,FALSE,
-                          parallelCluster)
-        # make sure each frame has the same structure
-        for(v in setdiff(newVarsS,colnames(fi))) {
-          fi[[v]] <- 0.0
-        }
-        fi <- fi[,newVarsS,drop=FALSE]
-        fi[[outcomename]] <- dsubiEval[[outcomename]]
-        scoreFrame[[length(scoreFrame)+1]] <- fi
-        wtList[[length(wtList)+1]] <- weights[ei]
-      }
-      scoreFrame <- do.call(rbind,scoreFrame)
-      scoreWeights <- do.call(c,wtList)
+      crossData <- .mkCrossFrame(dframe,splitVars,newVarsS,outcomename,zoY,
+                                zC,zTarget,
+                                weights,
+                                minFraction,smFactor,
+                                rareCount,rareSig,
+                                collarProb,
+                                TRUE,
+                                FALSE,FALSE,
+                                parallelCluster)
+      scoreFrame <- crossData$crossFrame
+      scoreWeights <- crossData$crossWeights
       # score this frame
       if(is.null(zC)) {
         zoYS = scoreFrame[[outcomename]]
