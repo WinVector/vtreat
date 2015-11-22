@@ -1,5 +1,17 @@
 
 
+# maybe run parallel
+plapply <- function(workList,worker,parallelCluster) {
+  if(is.null(parallelCluster) || (!requireNamespace("parallel",quietly=TRUE))) {
+    res <- lapply(workList,worker)
+  } else {
+    res <- parallel::parLapply(parallelCluster,workList,worker)
+  }
+  res
+}
+
+
+
 # take in a column and return a column that is safely one of the primative
 # types: numeric, character 
 # if the column is more exotic (multiple classes, AsIs, other issues) return null

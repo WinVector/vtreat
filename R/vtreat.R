@@ -289,9 +289,6 @@ prepare <- function(treatmentplan,dframe,pruneSig,
                     varRestriction=c(),
                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=c('x'),outcomename=c('x'),...)
-  if(!requireNamespace("parallel",quietly=TRUE)) {
-    parallelCluster <- NULL
-  }
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
