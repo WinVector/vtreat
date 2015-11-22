@@ -18,8 +18,8 @@
 # colNames a subset of treated variable names
 .vtreatList <- function(treatments,dframe,colNames,scale,doCollar,
                         parallelCluster) {
-  resCounts <- vapply(treatments,function(ti) { 
-    length(intersect(colNames,ti$newvars))
+  resCounts <- vapply(treatments,function(tij) { 
+    length(intersect(colNames,tij$newvars))
   },numeric(1))
   toProcess <- treatments[resCounts>0]
   procWorker <- function(ti) {
@@ -157,6 +157,9 @@
     sigCalc <- function(level) {
       #tab <- table(vcol==level,zC==zTarget)  # not weighted
       tab <- .wTable(vcol==level,zC==zTarget,weights)
+      if((nrow(tab)<=1)||(ncol(tab)<=1)) {
+        return(1.0)
+      }
       stats::fisher.test(tab)$p.value
     }
     sigs <- vapply(safeLevs,sigCalc,numeric(1))
@@ -388,7 +391,7 @@
                                 minFraction,smFactor,
                                 rareCount,rareSig,
                                 collarProb,
-                                impactOnly,
+                                impactOnly,justWantTreatments,
                                 verbose,
                                 parallelCluster) {
   # In building the workList don't transform any variables (such as making
@@ -407,7 +410,7 @@
   treatments <- plapply(workList,worker,parallelCluster)
   treatments <- Filter(Negate(is.null),treatments)
   treatments <- unlist(treatments,recursive=FALSE)
-  if(impactOnly) {
+  if(justWantTreatments) {
     return(treatments)
   }
   if(length(treatments)<=0) {
@@ -513,7 +516,7 @@
                                     minFraction,smFactor,
                                     rareCount,rareSig,
                                     collarProb,
-                                    FALSE,
+                                    FALSE,FALSE,
                                     verbose,
                                     parallelCluster)
   yMoves <- .has.range.cn(zoY)
@@ -570,6 +573,11 @@
 
 .checkArgs <- function(dframe,varlist,outcomename,...) {
   args <- list(...)
+  if(length(args)!=0) {
+    nm <- setdiff(paste(names(args),collapse=", "),'')
+    nv <- length(args)-length(nm)
+    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
+  }
   if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
     stop("dframe must be a non-empty data frame")
   }
@@ -578,11 +586,6 @@
   }
   if(missing(outcomename)||(!is.character(outcomename))||(length(outcomename)!=1)) {
     stop("outcomename must be a length 1 character vector")
-  }
-  if(length(args)!=0) {
-    nm <- setdiff(paste(names(args),collapse=", "),'')
-    nv <- length(args)-length(nm)
-    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
   }
 }
 

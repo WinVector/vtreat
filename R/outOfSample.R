@@ -60,7 +60,7 @@
                               minFraction,smFactor,
                               rareCount,rareSig,
                               collarProb,
-                              impactOnly,
+                              impactOnly,TRUE,
                               verbose,
                               parallelCluster)
     fi <- .vtreatList(ti,dsubiEval,newVarsS,scale,doCollar,
@@ -87,4 +87,5 @@
   }
   list(crossFrame=scoreFrame,crossWeights=scoreWeights)
 }
+
 

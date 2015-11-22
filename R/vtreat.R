@@ -103,6 +103,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  if(!(outcomename %in% colnames(dframe))) {
+    stop("outcomename must be a column name of dframe")
+  }
   zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,zoY,
                                    dframe[[outcomename]],outcometarget,
@@ -169,6 +172,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  if(!(outcomename %in% colnames(dframe))) {
+    stop("outcomename must be a column name of dframe")
+  }
   ycol <- dframe[[outcomename]]
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),
@@ -317,4 +323,186 @@ prepare <- function(treatmentplan,dframe,pruneSig,
   }
   treated
 }
+
+
+
+#' Run categorical cross-frame experiment.Experimental code, may or may not help depending on situation.
+#' 
+#' Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
+#' from \code{dframe} that is "cross" in the sense each row is treated using a treatment
+#' plan built from a subset of dframe disjoint from the given row.
+#' The goal is to try to and suppply a method of breaking nested model bias other than splitting
+#' into calibration, training, test sets.
+#' 
+#'
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
+#' @param varlist Names of columns to treat (effective variables).
+#' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values.
+#' @param outcometarget Value/level of outcome to be considered "success",  and there must be a cut such that dframe[[outcomename]]==outcometarget at least twice and dframe[[outcomename]]!=outcometarget at least twice.
+#' @param ... no additional arguments, declared to forced named binding of later arguments
+#' @param weights optional training weights for each row
+#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
+#' @param smFactor optional smoothing factor for impact coding models.
+#' @param rareCount optional integer, suppress direct effects of level of this count or less.
+#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
+#' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
+#' @return list with treatments and crossFrame
+#' @examples
+#' 
+#' set.seed(23525)
+#' zip <- paste('z',1:100)
+#' N = 1000
+#' d <- data.frame(zip=sample(zip,N,replace=TRUE),
+#'                 zip2=sample(zip,N,replace=TRUE),
+#'                 y=runif(N))
+#' del <- runif(length(zip))
+#' names(del) <- zip
+#' d$y <- d$y + del[d$zip2]
+#' d$yc <- d$y>=mean(d$y)
+#' cC <- mkCrossFrameCExperiment(d,c('zip','zip2'),'yc',TRUE,
+#'   rareCount=2,rareSig=0.9)
+#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)<0.1
+#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB)>0.2
+#' 
+#' @export
+mkCrossFrameCExperiment <- function(dframe,varlist,
+                                    outcomename,outcometarget,
+                                    ...,
+                                    weights=c(),
+                                    minFraction=0.02,smFactor=0.0,
+                                    rareCount=0,rareSig=1,
+                                    collarProb=0.00,
+                                    scale=FALSE,doCollar=TRUE,
+                                    parallelCluster=NULL) {
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  if(!is.data.frame(dframe)) {
+    stop("dframe must be a data frame")
+  }
+  if(collarProb>=0.5) {
+    stop("collarProb must be < 0.5")
+  }
+  if(nrow(dframe)<1) {
+    stop("most have rows")
+  }
+  if(!(outcomename %in% colnames(dframe))) {
+    stop("outcomename must be a column name of dframe")
+  }
+  if(is.null(weights)) {
+    weights <- rep(1.0,nrow(dframe))
+  }
+  treatments <- designTreatmentsC(dframe,varlist,outcomename,outcometarget,
+                                  weights=weights,
+                                  minFraction=minFraction,smFactor=smFactor,
+                                  rareCount=rareCount,rareSig=rareSig,
+                                  collarProb=collarProb,
+                                  verbose=FALSE,
+                                  parallelCluster=parallelCluster)
+  zC <- dframe[[outcomename]]
+  zoY <- ifelse(zC==outcometarget,1,0)
+  newVarsS <- unlist(lapply(treatments$treatments,function(x) x$newvars))
+  crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
+                            zC,outcometarget,
+                            weights,
+                            minFraction,smFactor,
+                            rareCount,rareSig,
+                            collarProb,
+                            FALSE,
+                            scale,doCollar,
+                            parallelCluster)
+  list(treatments=treatments,crossFrame=crossDat$crossFrame)
+}
+
+
+#' Run numeric cross frame experiment.  Experimental code, may or may not help depending on situation.
+#' 
+#' Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
+#' from \code{dframe} that is "cross" in the sense each row is treated using a treatment
+#' plan built from a subset of dframe disjoint from the given row.
+#' The goal is to try to and suppply a method of breaking nested model bias other than splitting
+#' into calibration, training, test sets.
+#'  
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
+#' @param varlist Names of columns to treat (effective variables).
+#' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values and there must be a cut such that dframe[[outcomename]] is both above the cut at least twice and below the cut at least twice.
+#' @param ... no additional arguments, declared to forced named binding of later arguments
+#' @param weights optional training weights for each row
+#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
+#' @param smFactor optional smoothing factor for impact coding models.
+#' @param rareCount optional integer, suppress direct effects of level of this count or less.
+#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param verbose if TRUE print progress.
+#' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
+#' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @return treatment plan (for use with prepare)
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
+#' @examples
+#' 
+#' set.seed(23525)
+#' zip <- paste('z',1:100)
+#' N = 1000
+#' d <- data.frame(zip=sample(zip,N,replace=TRUE),
+#'                 zip2=sample(zip,N,replace=TRUE),
+#'                 y=runif(N))
+#' del <- runif(length(zip))
+#' names(del) <- zip
+#' d$y <- d$y + del[d$zip2]
+#' d$yc <- d$y>=mean(d$y)
+#' cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
+#'    rareCount=2,rareSig=0.9)
+#' cor(cN$crossFrame$y,cN$crossFrame$zip_catN)<0.1
+#' cor(cN$crossFrame$y,cN$crossFrame$zip2_catN)>0.2
+#' 
+#' @export
+mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
+                                    ...,
+                                    weights=c(),
+                                    minFraction=0.02,smFactor=0.0,
+                                    rareCount=0,rareSig=1,
+                                    collarProb=0.00,
+                                    scale=FALSE,doCollar=TRUE,
+                                    parallelCluster=NULL) {
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  if(!is.data.frame(dframe)) {
+    stop("dframe must be a data frame")
+  }
+  if(collarProb>=0.5) {
+    stop("collarProb must be < 0.5")
+  }
+  if(nrow(dframe)<1) {
+    stop("most have rows")
+  }
+  if(!(outcomename %in% colnames(dframe))) {
+    stop("outcomename must be a column name of dframe")
+  }
+  if(is.null(weights)) {
+    weights <- rep(1.0,nrow(dframe))
+  }
+  treatments <- designTreatmentsN(dframe,varlist,outcomename,
+                                  weights=weights,
+                                  minFraction=minFraction,smFactor=smFactor,
+                                  rareCount=rareCount,rareSig=rareSig,
+                                  collarProb=collarProb,
+                                  verbose=FALSE,
+                                  parallelCluster=parallelCluster)
+  zC <- NULL
+  zoY <- dframe[[outcomename]]
+  newVarsS <- unlist(lapply(treatments$treatments,function(x) x$newvars))
+  crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
+                            zC,NULL,
+                            weights,
+                            minFraction,smFactor,
+                            rareCount,rareSig,
+                            collarProb,
+                            FALSE,
+                            scale,doCollar,
+                            parallelCluster)
+  list(treatments=treatments,crossFrame=crossDat$crossFrame)
+}
+
 
