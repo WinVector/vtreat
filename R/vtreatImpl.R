@@ -337,22 +337,28 @@
   force(weights)
   nRows <- nrow(dframe)
   function(ti) {
-    scoreFrame <- vector('list',length(vnames(ti)))
     origName <- vorig(ti)
-    xcolClean <- .cleanColumn(dframe[[origName]],nRows)
-    fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
-    for(nv in vnames(ti)) {
-      scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
-      scoreFrameij$origName <- origName
-      scoreFrameij$code <- ti$treatmentCode
-      scoreFrameij$needsSplit <- ti$needsSplit
-      scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
+    scoreFrame <- ti$scoreFrame
+    if(is.null(scoreFrame)) {
+      scoreFrame <- vector('list',length(vnames(ti)))
+      xcolClean <- .cleanColumn(dframe[[origName]],nRows)
+      fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
+      for(nv in vnames(ti)) {
+        scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
+        scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
+      }
+      scoreFrame <- Filter(Negate(is.null),scoreFrame)
+      if(length(scoreFrame)<=0) {
+        return(NULL)
+      }
+      sFrame <- do.call(rbind,scoreFrame)
+      sFrame$needsSplit <- ti$needsSplit
+    } else {
+      sFrame <- scoreFrame
+      sFrame$needsSplit <- FALSE
     }
-    scoreFrame <- Filter(Negate(is.null),scoreFrame)
-    if(length(scoreFrame)<=0) {
-      return(NULL)
-    }
-    sFrame <- do.call(rbind,scoreFrame)
+    sFrame$origName <- origName
+    sFrame$code <- ti$treatmentCode
     sFrame
   }
 }
