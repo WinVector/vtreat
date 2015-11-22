@@ -13,24 +13,39 @@
 }
 
 # build a prevalence fact
-.mkCatP <- function(origVarName,vcolin,rescol,levRestriction,weights) {
+.mkCatP <- function(origVarName,vcolin,zoY,zC,zTarget,levRestriction,weights) {
   origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,c())
   num <- tapply(weights,vcol,sum)
   den <- sum(weights)
   scores <- num/den
   scores <- as.list(scores)
+  newVarName <- make.names(paste(origVarName,'catP',sep='_'))
   treatment <- list(origvar=origVarName,origColClass=origColClass,
-                    newvars=make.names(paste(origVarName,'catP',sep='_')),
+                    newvars=newVarName,
                     f=.catP,
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Prevalence Code',
                     treatmentCode='catP',
-                    needsSplit=TRUE)
+                    needsSplit=FALSE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
-  treatment$scales <- .getScales(pred,rescol,weights)
+  treatment$scales <- .getScales(pred,zoY,weights)
+  jackPred <- .jackknifeCatP(vcolin,weights)
+  jackScore <- .scoreCol(newVarName,jackPred,zoY,zC,zTarget,weights)
+  treatment$scoreFrame <- jackScore
   treatment
 }
 
+.jackknifeCatP <- function(vcolin,weights) {
+  origColClass <- class(vcolin)
+  vcol <- .preProcCat(vcolin,c())
+  num <- tapply(weights,vcol,sum)
+  den <- sum(weights)
+  # # re-vectorize by example rows and Jacknife by pulling self out
+  num <- num[vcol] - weights
+  den <- pmax(rep(den,length(num)) - weights,1.0e-3)
+  scores <- num/den
+  scores
+}

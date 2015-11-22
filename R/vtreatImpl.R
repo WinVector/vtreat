@@ -239,7 +239,7 @@
               acceptTreatment(ti)
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-              ti <- .mkCatP(v,vcol,zoY,levRestriction,weights)
+              ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights)
               acceptTreatment(ti)
               if(yMoves) {
                 if(!is.null(zC)) {  # in categorical mode
