@@ -435,7 +435,6 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
-#' @param verbose if TRUE print progress.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow

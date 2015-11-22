@@ -35,8 +35,6 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 \item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
-
-\item{verbose}{if TRUE print progress.}
 }
 \value{
 treatment plan (for use with prepare)
