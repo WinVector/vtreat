@@ -285,11 +285,54 @@
 }
 
 
+.scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights) {
+  PRESSRsquared=0.0
+  psig=1.0
+  sig=1.0
+  catPRSquared=0.0
+  csig=1.0
+  catTarget <- !is.null(zC)
+  varMoves <- .has.range.cn(nxcol)
+  if(varMoves) {
+    yMoves <- .has.range.cn(zoY)
+    if(varMoves && yMoves) {
+      pstat <- pressStatOfBestLinearFit(nxcol,
+                                        zoY,
+                                        weights,
+                                        'total')
+      PRESSRsquared <- pstat$rsq
+      psig <- pstat$sig
+      sig <- pstat$sig
+      if(catTarget) {
+        cstat <- catScore(nxcol,
+                          zC,zTarget,
+                          weights)
+        catPRSquared <- cstat$pRsq
+        csig <- cstat$sig
+        sig <- cstat$sig
+      }
+    }
+  }
+  scoreFrameij <- data.frame(varName=varName,
+                             varMoves=varMoves,
+                             PRESSRsquared=PRESSRsquared,
+                             psig=psig,
+                             sig=psig,
+                             stringsAsFactors = FALSE)
+  if(catTarget) {
+    scoreFrameij$catPRSquared <- catPRSquared
+    scoreFrameij$csig <- csig
+    scoreFrameij$sig <- csig
+  }
+  .neatenScoreFrame(scoreFrameij)
+}
 
-.mkScoreVarWorker <- function(dframe,zoY,zC,weights) {
+
+.mkScoreVarWorker <- function(dframe,zoY,zC,zTarget,weights) {
   force(dframe)
   force(zoY)
   force(zC)
+  force(zTarget)
   catTarget <- !is.null(zC)
   force(weights)
   nRows <- nrow(dframe)
@@ -299,99 +342,30 @@
     xcolClean <- .cleanColumn(dframe[[origName]],nRows)
     fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
     for(nv in vnames(ti)) {
-      varMoves <- .has.range.cn(fi[[nv]])
-      PRESSRsquared=0.0
-      psig=1.0
-      sig=1.0
-      catPRSquared=0.0
-      csig=1.0
-      if(varMoves) {
-        yMoves <- .has.range.cn(zoY)
-        if(varMoves && yMoves) {
-          pstat <- pressStatOfBestLinearFit(fi[[nv]],
-                                            zoY,
-                                            weights,
-                                            'total')
-          PRESSRsquared <- pstat$rsq
-          psig <- pstat$sig
-          sig <- pstat$sig
-          if(catTarget) {
-            cstat <- catScore(fi[[nv]],
-                              zC,1,
-                              weights)
-            catPRSquared <- cstat$pRsq
-            csig <- cstat$sig
-            sig <- cstat$sig
-          }
-        }
-      }
-      scoreFrameij <- data.frame(varName=nv,
-                                 origName=origName,
-                                 code=ti$treatmentCode,
-                                 needsSplit=ti$needsSplit,
-                                 varMoves=varMoves,
-                                 PRESSRsquared=PRESSRsquared,
-                                 psig=psig,
-                                 sig=sig,
-                                 stringsAsFactors = FALSE)
-      if(catTarget) {
-        scoreFrameij$catPRSquared <- catPRSquared
-        scoreFrameij$csig <- csig
-        scoreFrameij$sig <- csig
-      }
+      scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
+      scoreFrameij$origName <- origName
+      scoreFrameij$code <- ti$treatmentCode
+      scoreFrameij$needsSplit <- ti$needsSplit
       scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
     }
+    scoreFrame <- Filter(Negate(is.null),scoreFrame)
     sFrame <- do.call(rbind,scoreFrame)
-    .neatenScoreFrame(sFrame)
+    sFrame
   }
 }
 
 
-.mkScoreColWorker <- function(dframe,zoY,zC,weights) {
+.mkScoreColWorker <- function(dframe,zoY,zC,zTarget,weights) {
   force(dframe)
   force(zoY)
   force(zC)
+  force(zTarget)
   catTarget <- !is.null(zC)
   force(weights)
   nRows <- nrow(dframe)
   function(nv) {
-    scoreFrame <- list()
-    varMoves <- .has.range.cn(dframe[[nv]])
-    PRESSRsquared=0.0
-    psig=1.0
-    sig=1.0
-    catPRSquared=0.0
-    csig=1.0
-    yMoves <- .has.range.cn(zoY)
-    if(varMoves && yMoves) {
-      pstat <- pressStatOfBestLinearFit(dframe[[nv]],
-                                        zoY,
-                                        weights,
-                                        'total')
-      PRESSRsquared <- pstat$rsq
-      psig <- pstat$sig
-      sig <- pstat$sig
-      if(catTarget) {
-        cstat <- catScore(dframe[[nv]],
-                          zC,1,
-                          weights)
-        catPRSquared <- cstat$pRsq
-        csig <- cstat$sig
-        sig <- cstat$sig
-      }
-    }
-    scoreFrameij <- data.frame(varName=nv,
-                               varMoves=varMoves,
-                               PRESSRsquared=PRESSRsquared,
-                               psig=psig,
-                               sig=sig,
-                               stringsAsFactors = FALSE)
-    if(catTarget) {
-      scoreFrameij$catPRSquared <- catPRSquared
-      scoreFrameij$csig <- csig
-      scoreFrameij$sig <- csig
-    }
-    .neatenScoreFrame(scoreFrameij)
+    scoreFrameij <- .scoreCol(nv,dframe[[nv]],zoY,zC,zTarget,weights)
+    scoreFrameij
   }
 }
 
@@ -436,12 +410,10 @@
   if(verbose) {
     print(paste("scoring treatments",date()))
   }
-  scrW <- .mkScoreVarWorker(dframe,zoY,zC,weights)
+  scrW <- .mkScoreVarWorker(dframe,zoY,zC,zTarget,weights)
   sFrames <- plapply(treatments,scrW,parallelCluster)
   sFrames <- Filter(Negate(is.null),sFrames)
   sFrame <- do.call(rbind,sFrames)
-  # clean up sFrame a bit
-  sFrame <- .neatenScoreFrame(sFrame)
   plan <- list(treatments=treatments,
                scoreFrame=sFrame,
                outcomename=outcomename)
@@ -553,7 +525,7 @@
         zCS = scoreFrame[[outcomename]]==zTarget
         zoYS = ifelse(zCS,1,0)
       }
-      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,scoreWeights)
+      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,zTarget,scoreWeights)
       sframe <- plapply(newVarsS,swkr,parallelCluster) 
       sframe <- Filter(Negate(is.null),sframe)
       sframe <- do.call(rbind,sframe)
