@@ -267,7 +267,22 @@
 
 
 
-
+.neatenScoreFrame <- function(sFrame) {
+  # clean up sFrame a bit
+  if(nrow(sFrame)>0) {
+    for(cname in c('PRESSRsquared','catPRSquared')) {
+      if(cname %in% colnames(sFrame)) {
+        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 0
+      }
+    }
+    for(cname in c('psig','csig','sig')) {
+      if(cname %in% colnames(sFrame)) {
+        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
+      }
+    }
+  }
+  sFrame
+}
 
 
 
@@ -285,12 +300,12 @@
     fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
     for(nv in vnames(ti)) {
       varMoves <- .has.range.cn(fi[[nv]])
+      PRESSRsquared=0.0
+      psig=1.0
+      sig=1.0
+      catPRSquared=0.0
+      csig=1.0
       if(varMoves) {
-        PRESSRsquared=0.0
-        psig=1.0
-        sig=1.0
-        catPRSquared=0.0
-        csig=1.0
         yMoves <- .has.range.cn(zoY)
         if(varMoves && yMoves) {
           pstat <- pressStatOfBestLinearFit(fi[[nv]],
@@ -309,24 +324,25 @@
             sig <- cstat$sig
           }
         }
-        scoreFrameij <- data.frame(varName=nv,
-                                   origName=origName,
-                                   code=ti$treatmentCode,
-                                   needsSplit=ti$needsSplit,
-                                   varMoves=varMoves,
-                                   PRESSRsquared=PRESSRsquared,
-                                   psig=psig,
-                                   sig=sig,
-                                   stringsAsFactors = FALSE)
-        if(catTarget) {
-          scoreFrameij$catPRSquared <- catPRSquared
-          scoreFrameij$csig <- csig
-          scoreFrameij$sig <- csig
-        }
-        scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
       }
+      scoreFrameij <- data.frame(varName=nv,
+                                 origName=origName,
+                                 code=ti$treatmentCode,
+                                 needsSplit=ti$needsSplit,
+                                 varMoves=varMoves,
+                                 PRESSRsquared=PRESSRsquared,
+                                 psig=psig,
+                                 sig=sig,
+                                 stringsAsFactors = FALSE)
+      if(catTarget) {
+        scoreFrameij$catPRSquared <- catPRSquared
+        scoreFrameij$csig <- csig
+        scoreFrameij$sig <- csig
+      }
+      scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
     }
-    do.call(rbind,scoreFrame)
+    sFrame <- do.call(rbind,scoreFrame)
+    .neatenScoreFrame(sFrame)
   }
 }
 
@@ -375,7 +391,7 @@
       scoreFrameij$csig <- csig
       scoreFrameij$sig <- csig
     }
-    scoreFrameij
+    .neatenScoreFrame(scoreFrameij)
   }
 }
 
@@ -425,18 +441,7 @@
   sFrames <- Filter(Negate(is.null),sFrames)
   sFrame <- do.call(rbind,sFrames)
   # clean up sFrame a bit
-  if(nrow(sFrame)>0) {
-    for(cname in c('PRESSRsquared','catPRSquared')) {
-      if(cname %in% colnames(sFrame)) {
-        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 0
-      }
-    }
-    for(cname in c('psig','csig','sig')) {
-      if(cname %in% colnames(sFrame)) {
-        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
-      }
-    }
-  }
+  sFrame <- .neatenScoreFrame(sFrame)
   plan <- list(treatments=treatments,
                scoreFrame=sFrame,
                outcomename=outcomename)
@@ -519,11 +524,13 @@
                                     FALSE,FALSE,
                                     verbose,
                                     parallelCluster)
+  treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
   yMoves <- .has.range.cn(zoY)
   if(yMoves) {
     splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
     if(length(splitVars)>0) {
-      newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit]
+      newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit &
+                                                  treatments$scoreFrame$varMoves]
       if(verbose) {
         print(paste("rescoring complex variables",date()))
       }
@@ -548,6 +555,7 @@
       }
       swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,scoreWeights)
       sframe <- plapply(newVarsS,swkr,parallelCluster) 
+      sframe <- Filter(Negate(is.null),sframe)
       sframe <- do.call(rbind,sframe)
       # overlay these results into treatments$scoreFrame
       nukeCols <- intersect(colnames(treatments$scoreFrame),
@@ -562,6 +570,8 @@
           }
         }
       }
+      # clean up sFrame a bit
+      treatments$scoreFrame <- .neatenScoreFrame(treatments$scoreFrame)
       if(verbose) {
         print(paste("done rescoring complex variables",date()))
       }

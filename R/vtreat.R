@@ -403,7 +403,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   parallelCluster=parallelCluster)
   zC <- dframe[[outcomename]]
   zoY <- ifelse(zC==outcometarget,1,0)
-  newVarsS <- unlist(lapply(treatments$treatments,function(x) x$newvars))
+  newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$varMoves]
   crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
                             zC,outcometarget,
                             weights,
@@ -492,7 +492,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   parallelCluster=parallelCluster)
   zC <- NULL
   zoY <- dframe[[outcomename]]
-  newVarsS <- unlist(lapply(treatments$treatments,function(x) x$newvars))
+  newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$varMoves]
   crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
                             zC,NULL,
                             weights,
