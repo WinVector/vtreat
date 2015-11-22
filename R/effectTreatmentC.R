@@ -44,8 +44,7 @@
                     args=list(logLift=logLift,
                               levRestriction=levRestriction),
                     treatmentName='Bayesian Impact Code',
-                    treatmentCode='catB',
-                    needsSplit=FALSE)
+                    treatmentCode='catB')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,as.numeric(rescol==resTarget),weights)

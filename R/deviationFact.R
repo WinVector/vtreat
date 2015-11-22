@@ -36,19 +36,22 @@
   }
   scores <- as.list(scores)
   scores <- scores[names(scores)!='zap'] # don't let zap code
+  newVarName <- make.names(paste(origVarName,'catD',sep='_'))
   treatment <- list(origvar=origVarName,origColClass=origColClass,
-                    newvars=make.names(paste(origVarName,'catD',sep='_')),
+                    newvars=newVarName,
                     f=.catD,
                     args=list(scores=scores,
                               scorable=scorable,
                               novelCode=novelCode,
                               levRestriction=levRestriction),
                     treatmentName='Deviation Fact',
-                    treatmentCode='catD',
-                    needsSplit=TRUE)
+                    treatmentCode='catD')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,rescol,weights)
+  trainScore <- .scoreCol(newVarName,pred,rescol,c(),NULL,weights)
+  treatment$scoreFrame <- trainScore # not bothering to jackknife this one, as it is likely a weak signal
+  # TODO: jackknife this calculation
   treatment
 }
 

@@ -1,3 +1,5 @@
+
+
 # apply a prevalence fact
 .catP <- function(col,args,doCollar) {
   col <- .preProcCat(col,NULL)
@@ -27,8 +29,7 @@
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Prevalence Code',
-                    treatmentCode='catP',
-                    needsSplit=FALSE)
+                    treatmentCode='catP')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,zoY,weights)

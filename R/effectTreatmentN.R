@@ -26,16 +26,34 @@
   den <- tapply(weights,vcol,sum)
   scores <- as.list((num+smFactor*baseMean)/(den+smFactor)-baseMean)
   scores <- scores[names(scores)!='zap'] # don't let zap code
+  newVarName <- make.names(paste(origVarName,'catN',sep='_'))
   treatment <- list(origvar=origVarName,origColClass=origColClass,
-                    newvars=make.names(paste(origVarName,'catN',sep='_')),
+                    newvars=newVarName,
                     f=.catNum,
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Scalable Impact Code',
-                    treatmentCode='catN',
-                    needsSplit=TRUE)
+                    treatmentCode='catN')
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,rescol,weights)
+  jackPred <- .jackknifeCatN(vcolin,rescol,smFactor,levRestriction,weights)
+  jackScore <- .scoreCol(newVarName,jackPred,rescol,c(),NULL,weights)
+  treatment$scoreFrame <- jackScore
   treatment
+}
+
+.jackknifeCatN <- function(vcolin,rescol,smFactor,levRestriction,weights) {
+  origColClass <- class(vcolin)
+  vcol <- .preProcCat(vcolin,levRestriction)
+  baseMean <- .wmean(rescol,weights)
+  num <- tapply(rescol*weights,vcol,sum)
+  den <- tapply(weights,vcol,sum)
+  # vectorize and remove self
+  baseMean <- (sum(rescol*weights)-rescol*weights)/pmax(sum(weights)-weights,1.0e-3)
+  num <- as.numeric(num[vcol]) - weights*rescol
+  den <- pmax(as.numeric(den[vcol]) - weights,1.0e-3)
+  scores <- (num+smFactor*baseMean)/(den+smFactor)-baseMean
+  scores[vcol=='zap'] <- 0.0
+  scores
 }

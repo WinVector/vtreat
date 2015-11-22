@@ -38,8 +38,7 @@
                     f=.passThrough,
                     args=list(nadist=nadist,cuts=cuts),
                     treatmentName='Scalable pass through',
-                    treatmentCode='clean',
-                    needsSplit=FALSE)
+                    treatmentCode='clean')
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(xcol,ycol,weights)
   treatment

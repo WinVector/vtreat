@@ -30,8 +30,7 @@
                     args=list(tracked=tracked,
                               levRestriction=levRestriction),
                     treatmentName='Categoric Indicators',
-                    treatmentCode='lev',
-                    needsSplit=FALSE)
+                    treatmentCode='lev')
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
   nvar <- length(pred)

@@ -17,8 +17,7 @@
                     f=.isBAD,
                     args=list(),
                     treatmentName='is.bad',
-                    treatmentCode='isBAD',
-                    needsSplit=FALSE)
+                    treatmentCode='isBAD')
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(ifelse(badIDX,1.0,0.0),ynumeric,weights)
   treatment

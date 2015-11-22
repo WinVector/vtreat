@@ -352,10 +352,8 @@
         return(NULL)
       }
       sFrame <- do.call(rbind,scoreFrame)
-      sFrame$needsSplit <- ti$needsSplit
     } else {
       sFrame <- scoreFrame
-      sFrame$needsSplit <- FALSE
     }
     sFrame$origName <- origName
     sFrame$code <- ti$treatmentCode
@@ -506,58 +504,6 @@
                                     verbose,
                                     parallelCluster)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
-  yMoves <- .has.range.cn(zoY)
-  if(yMoves) {
-    splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
-    if(length(splitVars)>0) {
-      newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$needsSplit &
-                                                  treatments$scoreFrame$varMoves]
-      if(verbose) {
-        print(paste("rescoring complex variables",date()))
-      }
-      crossData <- .mkCrossFrame(dframe,splitVars,newVarsS,outcomename,zoY,
-                                zC,zTarget,
-                                weights,
-                                minFraction,smFactor,
-                                rareCount,rareSig,
-                                collarProb,
-                                TRUE,
-                                FALSE,FALSE,
-                                parallelCluster)
-      scoreFrame <- crossData$crossFrame
-      scoreWeights <- crossData$crossWeights
-      # score this frame
-      if(is.null(zC)) {
-        zoYS = scoreFrame[[outcomename]]
-        zCS = NULL
-      } else {
-        zCS = scoreFrame[[outcomename]]==zTarget
-        zoYS = ifelse(zCS,1,0)
-      }
-      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,zTarget,scoreWeights)
-      sframe <- plapply(newVarsS,swkr,parallelCluster) 
-      sframe <- Filter(Negate(is.null),sframe)
-      sframe <- do.call(rbind,sframe)
-      # overlay these results into treatments$scoreFrame
-      nukeCols <- intersect(colnames(treatments$scoreFrame),
-                            c('PRESSRsquared', 'psig', 'sig', 'catPRSquared', 'csig'))
-      for(v in newVarsS) {
-        for(n in nukeCols) {
-          if(v %in% sframe$varName) {
-            treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- 
-              sframe[[n]][sframe==v]
-          } else {
-            treatments$scoreFrame[[n]][treatments$scoreFrame$varName==v] <- NA
-          }
-        }
-      }
-      # clean up sFrame a bit
-      treatments$scoreFrame <- .neatenScoreFrame(treatments$scoreFrame)
-      if(verbose) {
-        print(paste("done rescoring complex variables",date()))
-      }
-    }
-  }
   treatments
 }
 
