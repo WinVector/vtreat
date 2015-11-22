@@ -349,6 +349,9 @@
       scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
     }
     scoreFrame <- Filter(Negate(is.null),scoreFrame)
+    if(length(scoreFrame)<=0) {
+      return(NULL)
+    }
     sFrame <- do.call(rbind,scoreFrame)
     sFrame
   }
