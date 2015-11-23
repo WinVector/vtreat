@@ -33,7 +33,8 @@
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Scalable Impact Code',
-                    treatmentCode='catN')
+                    treatmentCode='catN',
+                    needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,rescol,weights)

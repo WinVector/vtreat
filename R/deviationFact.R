@@ -45,13 +45,13 @@
                               novelCode=novelCode,
                               levRestriction=levRestriction),
                     treatmentName='Deviation Fact',
-                    treatmentCode='catD')
+                    treatmentCode='catD',
+                    needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,rescol,weights)
-  trainScore <- .scoreCol(newVarName,pred,rescol,c(),NULL,weights)
-  treatment$scoreFrame <- trainScore # not bothering to jackknife this one, as it is likely a weak signal
-  # TODO: jackknife this calculation
+  # trainScore <- .scoreCol(newVarName,pred,rescol,c(),NULL,weights)
+  # treatment$scoreFrame <- trainScore # not bothering to jackknife this one, as it is likely a weak signal
   treatment
 }
 

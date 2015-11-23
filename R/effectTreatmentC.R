@@ -44,7 +44,8 @@
                     args=list(logLift=logLift,
                               levRestriction=levRestriction),
                     treatmentName='Bayesian Impact Code',
-                    treatmentCode='catB')
+                    treatmentCode='catB',
+                    needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,as.numeric(rescol==resTarget),weights)
@@ -53,6 +54,8 @@
   # trainScore <- .scoreCol(newVarName,pred,zoY,rescol,resTarget,weights)
   jackScore <- .scoreCol(newVarName,jackPred,zoY,rescol,resTarget,weights)
   treatment$scoreFrame <- jackScore
+  # turns out the jackknife score isn't strong enough (as it doesn't include pruning facts)
+  # for when the level pruning is turned on.
   treatment
 }
 

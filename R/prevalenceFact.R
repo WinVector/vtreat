@@ -29,7 +29,8 @@
                     args=list(scores=scores,
                               levRestriction=levRestriction),
                     treatmentName='Prevalence Code',
-                    treatmentCode='catP')
+                    treatmentCode='catP',
+                    needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,zoY,weights)
