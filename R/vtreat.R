@@ -304,6 +304,9 @@ prepare <- function(treatmentplan,dframe,pruneSig,
   if(nrow(dframe)<=0) {
     stop("no rows")
   }
+  if(treatmentplan$outcomeType=='None') {
+    pruneSig <- NULL
+  }
   usable <- treatmentplan$scoreFrame$varMoves
   if(!is.null(pruneSig)) {
     usable <- usable & (treatmentplan$scoreFrame$sig<=pruneSig)

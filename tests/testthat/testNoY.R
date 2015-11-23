@@ -31,10 +31,10 @@ test_that("testNoY: Can transform without Y", {
                         z=c(1,2,3,4,5,NA,7))
   dTestZ <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
-  treatmentsZ = designTreatmentsZ(dTrainN,colnames(dTrainN),
+  treatmentsZ = designTreatmentsZ(dTrainZ,colnames(dTrainZ),
                                   rareCount=0,
                                   verbose=FALSE)
-  dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
-  dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
+  dTrainZTreated <- prepare(treatmentsZ,dTrainZ,pruneSig=NULL)
+  dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=NULL)
   
 })

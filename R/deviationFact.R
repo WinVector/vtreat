@@ -48,6 +48,9 @@
                     treatmentCode='catD',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
+  if(!.has.range.cn(pred)) {
+    return(NULL)
+  }
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,rescol,weights)
   # trainScore <- .scoreCol(newVarName,pred,rescol,c(),NULL,weights)

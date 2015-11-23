@@ -47,6 +47,9 @@
                     treatmentCode='catB',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
+  if(!.has.range.cn(pred)) {
+    return(NULL)
+  }
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,as.numeric(rescol==resTarget),weights)
 #   jackPred <- .jackknifeCatBayes(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights)

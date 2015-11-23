@@ -32,6 +32,9 @@
                     treatmentCode='catP',
                     needsSplit=TRUE)
   pred <- treatment$f(vcolin,treatment$args)
+  if(!.has.range.cn(pred)) {
+    return(NULL)
+  }
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,zoY,weights)
 #   jackPred <- .jackknifeCatP(vcolin,weights)
