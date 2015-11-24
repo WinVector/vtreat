@@ -1,4 +1,12 @@
 
+'vtreat' 0.5.21 2015/11/23
+
+Changes:
+
+- Isolated "cross" or "out of sample" frame generation into mkCrossFrameCExperiment() and mkCrossFrameNExperiment()
+- Calculation of non catX significances are now deterministic
+- Many small bug fixes and corner cases patched
+
 
 'vtreat' 0.5.20 2015/11/05
 
