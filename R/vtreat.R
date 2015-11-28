@@ -371,9 +371,9 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' 
 #' set.seed(23525)
 #' zip <- paste('z',1:100)
-#' N = 1000
+#' N = 200
 #' d <- data.frame(zip=sample(zip,N,replace=TRUE),
-#'                 zip2=sample(zip,N,replace=TRUE),
+#'                 zip2=sample(zip,20,replace=TRUE),
 #'                 y=runif(N))
 #' del <- runif(length(zip))
 #' names(del) <- zip
@@ -381,8 +381,8 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' d$yc <- d$y>=mean(d$y)
 #' cC <- mkCrossFrameCExperiment(d,c('zip','zip2'),'yc',TRUE,
 #'   rareCount=2,rareSig=0.9)
-#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)<0.1
-#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB)>0.2
+#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)  # poor
+#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB) # better
 #' 
 #' @export
 mkCrossFrameCExperiment <- function(dframe,varlist,
@@ -460,7 +460,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' 
 #' set.seed(23525)
 #' zip <- paste('z',1:100)
-#' N = 1000
+#' N = 200
 #' d <- data.frame(zip=sample(zip,N,replace=TRUE),
 #'                 zip2=sample(zip,N,replace=TRUE),
 #'                 y=runif(N))
@@ -470,8 +470,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' d$yc <- d$y>=mean(d$y)
 #' cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
 #'    rareCount=2,rareSig=0.9)
-#' cor(cN$crossFrame$y,cN$crossFrame$zip_catN)<0.1
-#' cor(cN$crossFrame$y,cN$crossFrame$zip2_catN)>0.2
+#' cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
+#' cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
 #' 
 #' @export
 mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,

@@ -51,9 +51,9 @@ into calibration, training, test sets.
 \examples{
 set.seed(23525)
 zip <- paste('z',1:100)
-N = 1000
+N = 200
 d <- data.frame(zip=sample(zip,N,replace=TRUE),
-                zip2=sample(zip,N,replace=TRUE),
+                zip2=sample(zip,20,replace=TRUE),
                 y=runif(N))
 del <- runif(length(zip))
 names(del) <- zip
@@ -61,8 +61,8 @@ d$y <- d$y + del[d$zip2]
 d$yc <- d$y>=mean(d$y)
 cC <- mkCrossFrameCExperiment(d,c('zip','zip2'),'yc',TRUE,
   rareCount=2,rareSig=0.9)
-cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)<0.1
-cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB)>0.2
+cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)  # poor
+cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB) # better
 }
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}

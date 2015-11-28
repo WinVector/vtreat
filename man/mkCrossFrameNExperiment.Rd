@@ -49,7 +49,7 @@ into calibration, training, test sets.
 \examples{
 set.seed(23525)
 zip <- paste('z',1:100)
-N = 1000
+N = 200
 d <- data.frame(zip=sample(zip,N,replace=TRUE),
                 zip2=sample(zip,N,replace=TRUE),
                 y=runif(N))
@@ -59,8 +59,8 @@ d$y <- d$y + del[d$zip2]
 d$yc <- d$y>=mean(d$y)
 cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
    rareCount=2,rareSig=0.9)
-cor(cN$crossFrame$y,cN$crossFrame$zip_catN)<0.1
-cor(cN$crossFrame$y,cN$crossFrame$zip2_catN)>0.2
+cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
+cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
 }
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
