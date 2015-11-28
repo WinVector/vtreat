@@ -40,7 +40,7 @@ plapply <- function(workList,worker,parallelCluster) {
     return(NULL)
   }
   if(is.factor(xcol)||is.character(xcol)) {
-    # logical, factor, character case
+    # factor, character case
     return(as.character(xcol))
   }
   if(is.logical(xcol)||is.numeric(xcol)) { # is.numeric(factor('a')) returns false, but lets not have factors here anyway
