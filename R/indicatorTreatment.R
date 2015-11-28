@@ -13,7 +13,6 @@
 
 # build categorical indicators
 .mkCatInd <- function(origVarName,vcolin,ynumeric,minFraction,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
@@ -24,7 +23,7 @@
   }
   counts <- counts[tracked]
   missingMass <- 1 - sum(counts)/totMass
-  treatment <- list(origvar=origVarName,origColClass=origColClass,
+  treatment <- list(origvar=origVarName,
                     newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
                     f=.catInd,
                     args=list(tracked=tracked,

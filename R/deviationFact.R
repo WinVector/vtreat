@@ -19,7 +19,6 @@
 # build a deviation fact
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatD <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
@@ -37,7 +36,7 @@
   scores <- as.list(scores)
   scores <- scores[names(scores)!='zap'] # don't let zap code
   newVarName <- make.names(paste(origVarName,'catD',sep='_'))
-  treatment <- list(origvar=origVarName,origColClass=origColClass,
+  treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catD,
                     args=list(scores=scores,

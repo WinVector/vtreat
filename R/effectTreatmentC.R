@@ -18,7 +18,6 @@
 # build a classification impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   smFactor <- max(smFactor,1.0e-3)
   # T/F is true false of the quantity to be predicted
@@ -38,7 +37,7 @@
   logLift <- logLift[names(logLift)!='zap']  # don't let zap group code
   # fall back for novel levels, use zero impact
   newVarName <- make.names(paste(origVarName,'catB',sep='_'))
-  treatment <- list(origvar=origVarName,origColClass=origColClass,
+  treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catBayes,
                     args=list(logLift=logLift,
@@ -64,7 +63,6 @@
 
 # make a frame of Jackknifed predictions
 .jackknifeCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   smFactor <- max(smFactor,1.0e-3)
   # T/F is true false of the quantity to be predicted

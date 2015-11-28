@@ -12,7 +12,6 @@
 }
 
 .mkPassThrough <- function(origVarName,xcol,ycol,weights,collarProb) {
-  origColClass <- class(xcol)
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)
@@ -33,7 +32,7 @@
   if(max(xcol)<=min(xcol)) {
     return(c())
   }
-  treatment <- list(origvar=origVarName,origColClass=origColClass,
+  treatment <- list(origvar=origVarName,
                     newvars=make.names(paste(origVarName,'clean',sep='_')),
                     f=.passThrough,
                     args=list(nadist=nadist,cuts=cuts),

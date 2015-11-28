@@ -31,7 +31,8 @@ vnames <- function(x) { x$newvars }
 #' @export
 format.vtreatment <- function(x,...) { paste(
   'vtreat \'',x$treatmentName,
-  '\'(\'',x$origvar,'\'->',x$origColClass,'->\'',
+  '\'(\'',x$origvar,'\'(',x$origType,',',x$origClass,')->',
+  x$convertedColClass,'->\'',
   paste(x$newvars,collapse='\',\''),
   '\')',sep='') }
 
@@ -317,6 +318,18 @@ prepare <- function(treatmentplan,dframe,pruneSig,
   }
   if(length(usableVars)<=0) {
     stop('no usable vars')
+  }
+  for(ti in treatmentplan$treatments) {
+    if(length(intersect(ti$newvars,usableVars))>0) {
+      newType <- typeof(dframe[[ti$origvar]])
+      newClass <- class(dframe[[ti$origvar]])
+      if((ti$origType!=newType) || (ti$origClass!=newClass)) {
+        warning(paste('variable',ti$origvar,'expected type/class',
+                   ti$origType,ti$origClass,
+                   'saw ',newType,newClass))
+                   
+      }
+    }
   }
   treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar,
                          parallelCluster)

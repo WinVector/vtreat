@@ -30,11 +30,11 @@
       return(paste('column',ti$origvar,
                    'is not a type/class vtreat can work with (',class(xcolOrig),')'))
     }
-    if(!is.null(ti$origColClass)) {
-      curColClass <- class(xcolClean)
-      if(curColClass!=ti$origColClass) {
+    if(!is.null(ti$convertedColClass)) {
+      curColClass <- paste(class(xcolClean),collapse='')
+      if(curColClass!=ti$convertedColClass) {
         return(paste('column',ti$origvar,'expected to convert to ',
-                     ti$origColClass,'saw',class(xcolOrig),curColClass))
+                     ti$convertedColClass,'saw',class(xcolOrig),curColClass))
       }
     }
     .vtreatA(ti,xcolClean,scale,doCollar)
@@ -210,6 +210,9 @@
     }
     acceptTreatment <- function(ti) {
       if(!is.null(ti)) {
+        ti$origType <- typeof(vcolOrig)
+        ti$origClass <- paste(class(vcolOrig),collapse='')
+        ti$convertedColClass <- paste(class(vcol),collapse='')
         treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
       }
     }

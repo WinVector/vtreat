@@ -19,7 +19,6 @@
 # build a numeric impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
@@ -27,7 +26,7 @@
   scores <- as.list((num+smFactor*baseMean)/(den+smFactor)-baseMean)
   scores <- scores[names(scores)!='zap'] # don't let zap code
   newVarName <- make.names(paste(origVarName,'catN',sep='_'))
-  treatment <- list(origvar=origVarName,origColClass=origColClass,
+  treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catNum,
                     args=list(scores=scores,
@@ -48,7 +47,6 @@
 }
 
 .jackknifeCatN <- function(vcolin,rescol,smFactor,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,levRestriction)
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)

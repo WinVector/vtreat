@@ -16,14 +16,13 @@
 
 # build a prevalence fact
 .mkCatP <- function(origVarName,vcolin,zoY,zC,zTarget,levRestriction,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,c())
   num <- tapply(weights,vcol,sum)
   den <- sum(weights)
   scores <- num/den
   scores <- as.list(scores)
   newVarName <- make.names(paste(origVarName,'catP',sep='_'))
-  treatment <- list(origvar=origVarName,origColClass=origColClass,
+  treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catP,
                     args=list(scores=scores,
@@ -44,7 +43,6 @@
 }
 
 .jackknifeCatP <- function(vcolin,weights) {
-  origColClass <- class(vcolin)
   vcol <- .preProcCat(vcolin,c())
   num <- tapply(weights,vcol,sum)
   den <- sum(weights)
