@@ -61,6 +61,8 @@ cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
    rareCount=2,rareSig=0.9)
 cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
 cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
+treatments <- cN$treatments
+dTrainV <- cN$crossFrame
 }
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}

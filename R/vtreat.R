@@ -383,6 +383,8 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #'   rareCount=2,rareSig=0.9)
 #' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)  # poor
 #' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB) # better
+#' treatments <- cC$treatments
+#' dTrainV <- cC$crossFrame
 #' 
 #' @export
 mkCrossFrameCExperiment <- function(dframe,varlist,
@@ -472,6 +474,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #'    rareCount=2,rareSig=0.9)
 #' cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
 #' cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
+#' treatments <- cN$treatments
+#' dTrainV <- cN$crossFrame
 #' 
 #' @export
 mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
