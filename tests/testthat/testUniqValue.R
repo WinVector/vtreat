@@ -5,7 +5,7 @@ context("Unique Value Examples")
 test_that("testUniqValue: Can work with unique values", {
   dTrainN <- data.frame(x=c('a','a','a','a','a','a','b'),
                         z=c(0,0,0,0,0,0,1),
-                        y=0)
+                        y=c(1,0,0,0,0,0,0))
   dTestN <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
   treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
@@ -17,7 +17,7 @@ test_that("testUniqValue: Can work with unique values", {
   
   dTrainC <- data.frame(x=c('a','a','a','a','a','a','b'),
                         z=c(0,0,0,0,0,0,1),
-                        y=FALSE)
+                        y=c(TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE))
   dTestC <- data.frame(x=c('a','b','c',NA),
                        z=c(10,20,30,NA))
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,

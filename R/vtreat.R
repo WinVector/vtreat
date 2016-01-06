@@ -103,11 +103,15 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               collarProb=0.00,
                               verbose=TRUE,
                               parallelCluster=NULL) {
+  
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
   zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
+  if(min(zoY)>=max(zoY)) {
+    stop("dframe[[outcomename]]==outcometarget must vary")
+  }
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,zoY,
                                    dframe[[outcomename]],outcometarget,
                                    weights,
@@ -177,6 +181,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
     stop("outcomename must be a column name of dframe")
   }
   ycol <- dframe[[outcomename]]
+  if(min(ycol)>=max(ycol)) {
+    stop("dframe[[outcomename]] must vary")
+  }
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),
                      weights,
@@ -295,7 +302,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
                     scale=FALSE,doCollar=TRUE,
                     varRestriction=c(),
                     parallelCluster=NULL) {
-  .checkArgs(dframe=dframe,varlist=c('x'),outcomename=c('x'),...)
+  .checkArgs1(dframe=dframe,...)
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }

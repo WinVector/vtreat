@@ -4,7 +4,8 @@
 Changes:
 
 - Isolated "cross" or "out of sample" frame generation into mkCrossFrameCExperiment() and mkCrossFrameNExperiment()
-- Calculation of non catX significances are now deterministic
+- Calculations of non catX significances are now deterministic
+- Catch mis-naming or non-varying y earlier
 - Many small bug fixes and corner cases patched
 
 

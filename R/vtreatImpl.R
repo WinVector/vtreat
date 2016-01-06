@@ -567,6 +567,17 @@
   treatments
 }
 
+.checkArgs1 <- function(dframe,...) {
+  args <- list(...)
+  if(length(args)!=0) {
+    nm <- setdiff(paste(names(args),collapse=", "),'')
+    nv <- length(args)-length(nm)
+    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
+  }
+  if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
+    stop("dframe must be a non-empty data frame")
+  }
+}
 
 .checkArgs <- function(dframe,varlist,outcomename,...) {
   args <- list(...)
@@ -578,6 +589,8 @@
   if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
     stop("dframe must be a non-empty data frame")
   }
+  varlist <- setdiff(varlist,outcomename)
+  varlist <- intersect(varlist,colnames(dframe))
   if(missing(varlist)||(!is.character(varlist))||(length(varlist)<1)) {
     stop("varlist must be a non-empty character vector")
   }
