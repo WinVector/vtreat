@@ -1,11 +1,17 @@
 
+'vtreat' 0.5.22 2016/01/07
+
+Changes:
+
+- Calculations of non catX significances are now deterministic
+- Catch mis-naming or non-varying y earlier
+
+
 'vtreat' 0.5.21 2015/11/23
 
 Changes:
 
 - Isolated "cross" or "out of sample" frame generation into mkCrossFrameCExperiment() and mkCrossFrameNExperiment()
-- Calculations of non catX significances are now deterministic
-- Catch mis-naming or non-varying y earlier
 - Many small bug fixes and corner cases patched
 
 
@@ -16,6 +22,7 @@ Changes:
 - Simplified out of sample frame generation
 - Added "no-Y" treatment option
 - Minor documentation fixes
+
 
 'vtreat' 0.5.18 2015/10/07
 
