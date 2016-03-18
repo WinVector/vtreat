@@ -10,4 +10,5 @@
 ^.*\.Rhistory$
 ^.*\.gitignore$
 ^\.git.*$
+^html$
 
