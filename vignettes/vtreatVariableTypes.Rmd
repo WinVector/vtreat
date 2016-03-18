@@ -1,0 +1,159 @@
+---
+title: "vtreat variable types"
+author: "John Mount, Nina Zumel"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat overfit}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+'vtreat' is a package that prepares arbitrary data frames into
+clean data frames that are ready for analysis (usually supervised 
+learning).  A clean data
+frame:
+
+- Only has numeric columns (other than the outcome).
+- Has no Infinite/NA/NaN in the effective variable columns.
+
+To effect this encoding 'vtreat' replaces original variables or columns with new
+derived variables.  In this note we will use variables and columns as interchangeable
+concepts.  This note describes the current family of 'vtreat' derived variable 
+types.
+
+'vtreat' usage splits into three main cases: 
+
+  *  When the target to predict is categorical.
+  *  When the target to predict is numeric.
+  *  When there is no supplied target to predict.
+  
+In all cases vtreat variable names are built by appending a notation 
+onto the original user supplied column name.  In all cases the easiest
+way to examine the derived variables is to look at the 'scoreFrame' component
+of the returned treatment plan.
+
+We will outline each of these situations below:
+
+# When the target to predict is categorical
+
+An example categorical variable treatment is demonstrated below:
+
+```{r categoricalexample, tidy=FALSE}
+library(vtreat)
+dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
+   z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE),
+   stringsAsFactors = FALSE)
+treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
+print(treatmentsC$scoreFrame[,c('origName','varName','code','varMoves','sig')])
+```
+
+For each user supplied variable or column (in this case 'x' and 'z') 'vtreat'
+proposes derived or treated variables (in this case 'x\_lev\_x.a', 
+'x\_lev\_x.b', 'x\_catP', 'x\_catB', 'z\_clean', and 'z\_isBAD').  The mapping
+from original variable name to derived variable name is given by comparing the
+columns 'origName' and 'varName'.  One can map facts about the new variables
+back to the original variables as follows:
+
+```{r map}
+# Build a map from vtreat names back to reasonable display names
+vmap <- as.list(treatmentsC$scoreFrame$origName)
+names(vmap) <- treatmentsC$scoreFrame$varName
+print(vmap['x_catB'])
+
+# Map significances back to original variables
+aggregate(sig~origName,data=treatmentsC$scoreFrame,FUN=min)
+```
+
+Essentially a derived variable name is built by concatenating an original variable name and
+a treatment type (also recorded in the 'code' column for convenience).  The codes
+give the different 'vtreat' variable types (or really meanings, as all derived
+variables are numeric).
+
+For categorical targets the possible variable types are as follows:
+
+  *  clean : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
+  *  is\_Bad : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  Form many noisy datasets this column can be more informative than the clean column!
+  *  lev : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example 'x\_lev\_x.a' is 1 when the original 'x' variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as contrasts.
+  *  cat\_B : a single variable Bayesian model of the log-ratio in outcome distribution conditioned on the observed value of the original variable.  In our example: 'x\_catB' = log(P[y|x]/P[y]).  This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.
+  *  cat\_P : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common.
+
+# When the target to predict is numeric
+
+An example numeric variable treatment is demonstrated below:
+
+```{r numericexample, tidy=FALSE}
+library(vtreat)
+dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
+   z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
+   stringsAsFactors = FALSE)
+treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y')
+print(treatmentsN$scoreFrame[,c('origName','varName','code','varMoves','sig')])
+```
+
+The treatment of numeric targets is similar to that of categorical targets.  In the numeric
+case the possible derived variable types are:
+
+  *  clean : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
+  *  is\_Bad : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  Form many noisy datasets this column can be more informative than the clean column!
+  *  lev : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example 'x\_lev\_x.a' is 1 when the original 'x' variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as contrasts.  In some cases a special level code is used to represent pooled rare values.
+  *  cat\_N : a single variable regression model of the difference in outcome expectation conditioned on the observed value of the original variable.  In our example: 'x\_catN' = E[y|x] - E[y].  This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.
+  *  cat\_P : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common.
+  *  cat\_D : a "deviation fact" about a categorical level tells us if 'y' is concentrated or diffuse when conditioned on the observed level of the original categorical variable.
+  
+Note: for categorical targets we don't need 'cat\_D' variables as this information is
+already encoded in 'cat\_B' variables.
+
+
+# When there is no supplied target to predict
+
+An example "no target" variable treatment is demonstrated below:
+
+```{r notargetexample, tidy=FALSE}
+library(vtreat)
+dTrainZ <- data.frame(x=c('a','a','a','b','b',NA),
+   z=c(1,2,3,4,NA,6),
+   stringsAsFactors = FALSE)
+treatmentsZ <- designTreatmentsZ(dTrainZ,colnames(dTrainZ))
+print(treatmentsZ$scoreFrame[,c('origName','varName','code','varMoves')])
+```
+
+Note: because there is no user supplied target the 'scoreFrame' significance
+columns are not meaningful, and are populated only for regularity of 
+code interface.  Beyond that the no-target treatments are similar to the earlier treatments.
+Possible derived variable types in this case are:
+
+  *  clean : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
+  *  is\_Bad : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  Form many noisy datasets this column can be more informative than the clean column!
+  *  lev : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example 'x\_lev\_x.a' is 1 when the original 'x' variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as contrasts. In some cases a special level code is used to represent pooled rare values.
+  *  cat\_P : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common.
+
+# Overall
+
+Variables that "do not move" (don't take on at least two values during treatment design)
+or don't achieve at least a minimal significance are suppressed.  The 'catB/catN' variables
+are essentially single variable models and are very useful for re-encoding categorical
+variables that take on a very large number of values (such as zip-codes).
+
+The intended use of 'vtreat' is as follows:
+
+  *  Data is split into three non-overlapping portions
+  *  One portion is used to "designtreatments" (we sometime informally call this calibration).
+  *  Another portion is used to train a model.
+  *  The remaining portion is used to evaluate the model.
+  
+'vtreat' attempts to compute "out of sample" significances for each varaible effect (
+the 'sig' column in 'scoreFrame' through cross-validation techniques).
+  
+'vtreat' is primarily intended to be "y-aware" processing.  Of particular interest is
+using 'vtreat::prepare()' with 'scale=TRUE' which tries to put most columns in 'y-effect'
+units which can be an important pre-processing step before attempting dimension reduction
+(such as principal components methods).
+
+# Links
+
+  *  ['vtreat' on Github'](https://github.com/WinVector/vtreat)
+  *  ['vtreat' on CRAN](https://cran.r-project.org/package=vtreat)
+  *  ['vtreat' at Win-Vector](http://www.win-vector.com/blog/tag/variable-treatment/)
+
+
