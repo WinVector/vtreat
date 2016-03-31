@@ -37,13 +37,19 @@ See:
 
 \keyword{ package }
 \seealso{
-First build a list of variable treatments from your training data using
+To use: first build a list of variable treatments from your training data using
 \code{\link{designTreatmentsC}} (for models predicting binary categorical outcomes)
 or \code{\link{designTreatmentsN}} (for models predicting numeric outcomes).
 If you have enough data we suggested running the design step on a subset of data disjoint from training and test (this avoids many issues including mis-counting degrees of freedom on effect or impact codes arising from categorical variables with a large number of levels).
 Then apply a list of treatments to a data frame to get a treated data frame using
 \code{\link{prepare}}.  All the code is assuming we are working only with rows
 where the outcome or y-value is not NA, finite and not nan.
+
+For more information: 
+  \code{vignette(package='vtreat')}, 
+  \code{RShowDoc('vtreat',package='vtreat')},
+  \code{RShowDoc('vtreatVariableTypes',package='vtreat')},
+  \code{RShowDoc('vtreatOverfit',package='vtreat')}.
 }
 \examples{
 # categorical example

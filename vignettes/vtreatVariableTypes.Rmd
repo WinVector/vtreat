@@ -1,12 +1,12 @@
 ---
-title: "vtreat variable types"
-author: "John Mount, Nina Zumel"
+title: "Variable Types"
+author: "Win-Vector LLC"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vtreat overfit}
+  %\VignetteIndexEntry{Variable Types}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 'vtreat' is a package that prepares arbitrary data frames into
