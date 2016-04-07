@@ -46,10 +46,13 @@ Then apply a list of treatments to a data frame to get a treated data frame usin
 where the outcome or y-value is not NA, finite and not nan.
 
 For more information: 
-  \code{vignette(package='vtreat')}, 
-  \code{RShowDoc('vtreat',package='vtreat')},
-  \code{RShowDoc('vtreatVariableTypes',package='vtreat')},
-  \code{RShowDoc('vtreatOverfit',package='vtreat')}.
+\itemize{
+  \item \code{vignette(package='vtreat')}
+  \item \code{RShowDoc('vtreat',package='vtreat')}
+  \item \code{RShowDoc('vtreatVariableTypes',package='vtreat')}
+  \item \code{RShowDoc('vtreatOverfit',package='vtreat')}
+  \item Website: \url{https://github.com/WinVector/vtreat}
+  }
 }
 \examples{
 # categorical example

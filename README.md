@@ -14,6 +14,13 @@ Or from GitHub:
 devtools::install_github('WinVector/vtreat', build_vignettes=TRUE)
 ```
 
+And then:
+
+``` r
+library('vtreat')
+help('vtreat')
+```
+
 Data treatments are "y-aware" (use distribution relations between independent variables and the dependent variable). For binary classification use 'designTreatmentsC()' and for numeric regression use 'designTreatmentsN()'.
 
 After the design step, 'prepare()' should be used as you would use model.matrix. 'prepare()' treated variables are all numeric and never take the value NA or +-Inf (so are very safe to use in modeling).
@@ -110,9 +117,9 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#> -7.930164e-18  2.775558e-17  2.974296e-18 -2.854898e-16  0.000000e+00 
+#> -7.930164e-18  2.379437e-17  2.974296e-18 -2.854898e-16  7.922420e-18 
 #>       z_clean       z_isBAD 
-#>  7.927952e-18 -7.926292e-18
+#> -3.965138e-17 -7.926292e-18
 # all slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
@@ -163,29 +170,29 @@ dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
-#>  2.081668e-17 -5.551115e-17  2.500000e-01  1.665335e-16  0.000000e+00 
-#>        x_catD       z_clean       z_isBAD 
-#>  8.326673e-17  4.163336e-17  8.326673e-17
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
+#> 9.020562e-17 0.000000e+00 2.500000e-01 8.326673e-17 7.021564e-17 
+#>       x_catD      z_clean      z_isBAD 
+#> 8.326673e-17 1.526557e-16 7.632783e-17
 # all slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
-#>  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catN    x_catD   z_clean 
-#>         1         1         0         1         1         1         1 
-#>   z_isBAD 
-#>         1
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
+#> 1.000000e+00 1.000000e+00 9.064933e-17 1.000000e+00 1.000000e+00 
+#>       x_catD      z_clean      z_isBAD 
+#> 1.000000e+00 1.000000e+00 1.000000e+00
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
-#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP x_catN      x_catD   z_clean
-#> 1 -0.1666667     -0.25         0  -0.25  -0.25 -0.06743804 0.5238095
-#> 2 -0.1666667      0.25         1   0.25   0.00 -0.25818161 0.5238095
-#> 3 -0.1666667      0.25         0   0.75   0.00 -0.25818161 0.5238095
-#> 4  0.5000000      0.25         0   0.25   0.50  0.39305768 0.0000000
-#>      z_isBAD
-#> 1 -0.1666667
-#> 2 -0.1666667
-#> 3 -0.1666667
-#> 4  0.5000000
+#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP        x_catN      x_catD
+#> 1 -0.1666667     -0.25         0  -0.25 -2.500000e-01 -0.06743804
+#> 2 -0.1666667      0.25         1   0.25  5.887847e-17 -0.25818161
+#> 3 -0.1666667      0.25         0   0.75  5.887847e-17 -0.25818161
+#> 4  0.5000000      0.25         0   0.25  5.000000e-01  0.39305768
+#>        z_clean    z_isBAD
+#> 1 5.238095e-01 -0.1666667
+#> 2 5.238095e-01 -0.1666667
+#> 3 5.238095e-01 -0.1666667
+#> 4 1.110223e-16  0.5000000
 
 # for large data sets you can consider designing the treatments on 
 # a subset like: d[sample(1:dim(d)[[1]],1000),]

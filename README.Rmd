@@ -32,6 +32,14 @@ Or from GitHub:
 devtools::install_github('WinVector/vtreat', build_vignettes=TRUE)
 ```
 
+And then:
+
+```{r eval=FALSE}
+library('vtreat')
+help('vtreat')
+```
+
+
 Data treatments are "y-aware" (use distribution relations between
 independent variables and the dependent variable).  For binary
 classification use 'designTreatmentsC()' and for numeric regression
