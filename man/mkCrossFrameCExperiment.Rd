@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{mkCrossFrameCExperiment}
 \alias{mkCrossFrameCExperiment}
-\title{Run categorical cross-frame experiment.Experimental code, may or may not help depending on situation.}
+\title{Run categorical cross-frame experiment.}
 \usage{
 mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,

@@ -349,7 +349,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 
 
 
-#' Run categorical cross-frame experiment.Experimental code, may or may not help depending on situation.
+#' Run categorical cross-frame experiment.
 #' 
 #' Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
 #' from \code{dframe} that is "cross" in the sense each row is treated using a treatment
@@ -442,7 +442,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 }
 
 
-#' Run numeric cross frame experiment.  Experimental code, may or may not help depending on situation.
+#' Run numeric cross frame experiment.
 #' 
 #' Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
 #' from \code{dframe} that is "cross" in the sense each row is treated using a treatment

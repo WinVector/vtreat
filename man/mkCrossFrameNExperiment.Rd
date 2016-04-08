@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{mkCrossFrameNExperiment}
 \alias{mkCrossFrameNExperiment}
-\title{Run numeric cross frame experiment.  Experimental code, may or may not help depending on situation.}
+\title{Run numeric cross frame experiment.}
 \usage{
 mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,

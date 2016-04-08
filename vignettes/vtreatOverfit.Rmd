@@ -11,8 +11,10 @@ vignette: >
 
 Example showing safe "best practice" use of the ['vtreat'](https://cran.r-project.org/package=vtreat) variable preparation library.  For more on vtreat see [here](http://www.win-vector.com/blog/2015/09/vtreat-up-on-cran/) and [here](https://github.com/WinVector/vtreat).
 
-Build an example data frame with no relation between x and y.  We are using a synthetic data set so we know what the "right answer is" (no signal).  False fitting on no-signal variables is bad for at least two reasons:
+Below we generate an example data frame with no relation between x and y.  We are using a synthetic data set so we know what the "right answer is" (no signal).  False fitting on no-signal variables is bad for at least two reasons:
 
+ *  It creates undesirable biases in variable quality estimates and in subsequent models.
+ *  It "hides degrees  of freedom" from subsequent models.
  *  It creates the false impression you have a good result (which you may fail to falsify).
  *  Complex bad variables can starve out simple weak good variables.
  
@@ -20,7 +22,7 @@ This example shows things we don't want to happen, and then the additional preca
 
 ```{r}
 set.seed(22626)
-d <- data.frame(x=sample(paste('level',1:1000,sep=''),2000,replace=TRUE)) # independent variables.
+d <- data.frame(x=sample(paste('level',1:1000,sep=''),2000,replace=TRUE)) # independent variable.
 d$y <- runif(nrow(d))>0.5  # the quantity to be predicted, notice: independent of variables.
 d$rgroup <- round(100*runif(nrow(d)))  # the random group used for splitting the data set, not a variable.
 ```
@@ -70,7 +72,7 @@ First notice vtreat did thing there was any usable signal, and did not want us t
 print(treatments$scoreFrame)
 ```
 
-'vtreat' thinks a signal as strong as the one seen on the derived variable 'x_catB' happens at least 70% of the time for a variable with that sort of distribution: even when there is no signal.  But also notice the down-stream machine learning (in this case a standard logistic regression) used the variable wrong.  It gave it a non-negligible coefficient (around 3) and thought it had a reliable estimate of the coefficient and significant model that almost halved deviance (when in fact it was given nothing).  So any variables that do get through may have distributional issues (and misleadingly low apparent degrees of freedom).
+Notice the down-stream machine learning (in this case a standard logistic regression) used the variable wrong.  It gave it a non-negligible coefficient (around 3) and thought it had a reliable estimate of the coefficient and significant model that almost halved deviance (when in fact it was given nothing).  So any variables that do get through may have distributional issues (and misleadingly low apparent degrees of freedom).
 
 The biggest contributors to this distributional issue tend to be rare levels of categorical variables.  Since the individual levels are rare we have unreliable estimates for there effects, but if there are very many of them we may see quite a large effect.  To help combat this we have a control called 'rareLevels'.  Any level that is observed no more than 'rareLevels' times during training is re-mapped to a new special level called "rare" and not allowed to directly contribute (i.e. can not generated unique indicator columns, and doesn't have a direct effect on 'catB' or 'catN' encodings).  If all the rare levels have a distinct behavior after grouping the "rare" level can capture that.
 
@@ -112,32 +114,6 @@ plotRes(dTest,'predM2','y','model2 on test set')
 
 In the above example we saw training and test performance are similar (and where they should be as there is no signal).  Notice the coding set can (falsely) show high performance.  This is the bad behavior we wanted to isolate out of the training set.
 
-Also be wary, on small data sets vtreat::designTreatments can not always get accurate out-of sample estimates of variable performance (in these cases it falls back to untrustworthy in-sample estimates).   This is something we will improve over time, but vtreat is intended mostly for production applications on large data sets.
 
-Bad small example:
-
-```{r}
-treatmentsBad <- vtreat::designTreatmentsC(d[d$rgroup<=0,,drop=FALSE],'x','y',TRUE,
-                      rareCount=0 # Note set this to something larger, like 5
-)
-print(treatmentsBad$scoreFrame[treatmentsBad$scoreFrame$sig<=0.05,,drop=FALSE])
-```
-
-We would have preferred no variables to have received a "good score."
-
-So even better is to perform the 3-way data split, set pruneSig to something reasonable, and do not set rareCount to zero (leave it at the default or a reasonable count like 5 or 10).
-
-```{r}
-dCode <- d[d$rgroup<=20,,drop=FALSE]
-dTrain <- d[(d$rgroup>20) & (d$rgroup<=80),,drop=FALSE]
-tryCatch(
-  { treatments <- vtreat::designTreatmentsC(dCode,'x','y',TRUE)
-  dTrainTreated <- vtreat::prepare(treatments,dTrain,pruneSig=0.01)},
-  error=function(x) { print(paste('caught',x)); return(c()) }
-)
-```
-
-And in this case we are (properly) told are no variables to work with (and prevented from accidentally continuing a bad analysis).
-
-There are, of course, other methods to avoid the bias introduced in using the same data to generate the variable encodings and then train a model using those variables.  vtreat incorporates a number of these (smoothing controlled through 'smFactor', pruning of rare levels controlled through 'rareSig' and 'rareCount', and [cross-constructed training frames](http://www.win-vector.com/blog/2015/10/using-differential-privacy-to-reuse-training-data/) accessed by setting 'returnXFrame=TRUE').   But we feel when you have a lot of data the simplicity (and statistical soundness) of the three way split is attractive.
+There are, of course, other methods to avoid the bias introduced in using the same data to generate the variable encodings and then train a model using those variables.  vtreat incorporates a number of these including smoothing controlled through 'smFactor' and pruning of rare levels controlled through 'rareSig'.  A more effective technique: cross-constructed training frames can also be accessed by using 'mkCrossFrameCExperiment' or 'mkCrossFrameNExperiment'
 
