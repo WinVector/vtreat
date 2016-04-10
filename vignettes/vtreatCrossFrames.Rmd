@@ -90,7 +90,7 @@ plotRes(dTest,'predM1','y','model1 on test')
 
 Notice above that we now see a training and test accuracies of 70%.  We have defeated overfit in two: ways training performance is closer to test performance, and test performance is better.
 
-Below is a more statistically efficient practice: building a cross training frame.  The idea is: consider any trained statistical model (in this case our treatment plan and variable selection plan) as a two-argument function f(A,B).  The first argument is the training data and the second argument is the application data.  In our case f(A,B) is: designTreatmentsc(A)\$prepare(B).
+Below is a more statistically efficient practice: building a cross training frame.  The idea is: consider any trained statistical model (in this case our treatment plan and variable selection plan) as a two-argument function f(A,B).  The first argument is the training data and the second argument is the application data.  In our case f(A,B) is: designTreatmentsC(A)\$prepare(B).
 
 When we use the same data in both places to build our training frame as in TrainTreated = f(TrainData,TrainData) we are not doing a good job simulating the future application of f(,) which will be f(TrainData,FutureData).  To improve the quality of our simulation we can call f(CalibrationData,ExampleData) where CalibrationData and ExampleData are disjoint datasets (as we did in the earlier example) and expect this to be a good imitation of future f(CalibrationData,FutureData).
 

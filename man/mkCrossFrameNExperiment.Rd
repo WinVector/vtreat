@@ -43,7 +43,7 @@ treatment plan (for use with prepare)
 Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
 from \code{dframe} that is "cross" in the sense each row is treated using a treatment
 plan built from a subset of dframe disjoint from the given row.
-The goal is to try to and suppply a method of breaking nested model bias other than splitting
+The goal is to try to and supply a method of breaking nested model bias other than splitting
 into calibration, training, test sets.
 }
 \examples{

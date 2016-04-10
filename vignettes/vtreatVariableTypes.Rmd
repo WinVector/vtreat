@@ -138,11 +138,11 @@ variables that take on a very large number of values (such as zip-codes).
 The intended use of 'vtreat' is as follows:
 
   *  Data is split into three non-overlapping portions
-  *  One portion is used to "designtreatments" (we sometime informally call this calibration).
+  *  One portion is used to "design treatments" (we sometime informally call this calibration).
   *  Another portion is used to train a model.
   *  The remaining portion is used to evaluate the model.
   
-'vtreat' attempts to compute "out of sample" significances for each varaible effect (
+'vtreat' attempts to compute "out of sample" significances for each variable effect (
 the 'sig' column in 'scoreFrame' through cross-validation techniques).
   
 'vtreat' is primarily intended to be "y-aware" processing.  Of particular interest is

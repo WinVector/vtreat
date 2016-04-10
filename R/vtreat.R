@@ -1,6 +1,6 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
-# Would be nice to have: Jacknifed GLM significance
+# Would be nice to have: Jackknifed GLM significance
 
 #' @importFrom stats aggregate anova as.formula binomial fisher.test glm lm lm.wfit pchisq pf quantile
 NULL
@@ -354,7 +354,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
 #' from \code{dframe} that is "cross" in the sense each row is treated using a treatment
 #' plan built from a subset of dframe disjoint from the given row.
-#' The goal is to try to and suppply a method of breaking nested model bias other than splitting
+#' The goal is to try to and supply a method of breaking nested model bias other than splitting
 #' into calibration, training, test sets.
 #' 
 #'
@@ -447,7 +447,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
 #' from \code{dframe} that is "cross" in the sense each row is treated using a treatment
 #' plan built from a subset of dframe disjoint from the given row.
-#' The goal is to try to and suppply a method of breaking nested model bias other than splitting
+#' The goal is to try to and supply a method of breaking nested model bias other than splitting
 #' into calibration, training, test sets.
 #'  
 #' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
