@@ -11,4 +11,5 @@
 ^.*\.gitignore$
 ^\.git.*$
 ^html$
+^.*rsconnect.*$
 
