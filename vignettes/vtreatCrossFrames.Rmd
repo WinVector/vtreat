@@ -154,7 +154,7 @@ dTrainTreated <- prep$crossFrame
 
 Now fit the model to *the cross-frame* rather than to `prepare(treatments, dTrain)` (the treated training data).
 
-```{rxframemodel}
+```{r xframemodel}
 m1 <- glm(y~xBad1_catB + xBad2_catB + xBad3_catB + xGood1_clean + xGood2_clean,
           data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m1))  
