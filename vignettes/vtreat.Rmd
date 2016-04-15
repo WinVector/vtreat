@@ -24,39 +24,45 @@ To achieve this a number of techniques are used.  Principally:
 
 For more details see: [the 'vtreat' article](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/) and [update](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/).
 
-The main pattern is the use of 'designTreatmentsC()' or 'designTreatmentsN()' to design a treatment plan and then use the returned structure with 'prepare()' to apply the plan to data frames.  The main feature of 'vtreat' is all data preparation is "y-aware" or uses the relations of effective variables to the dependent or outcome variable to encode the effective variables.
+The use pattern is:
 
-The structure returned from 'designTreatmentsN()' or 'designTreatmentsC()' includes informational fields.  The main fields are mostly vectors with names (all with the same names in the same order):
+1. Use `designTreatmentsC()` or `designTreatmentsN()` to design a treatment plan 
+2. Use the returned structure with `prepare()` to apply the plan to data frames.  
 
-- 'vars' : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
-- 'varMoves' : logical TRUE if the variable varied during training, only variables that move will be in the treated frame.
-- 'sig' : significance of observed variable predictive value under an in-sample permutation test.
+The main feature of 'vtreat' is that all data preparation is "y-aware": it uses the relations of effective variables to the dependent or outcome variable to encode the effective variables.
 
-In addition to these vectors 'designTreatmentsC()' and 'designTreatmentsN()' return a data frame named 'scoreFrame' which contains columns:
-- 'varName': name of new variable
-- 'origName': name of original variable variable was derived from (can repeat)
-- 'varMoves' : logical TRUE if the variable varied during training, only variables that move will be in the treated frame.
-- 'PRESSRsquared' : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-- 'psig' : significance of observed variable 'PRESSRsquared' value under an in-sample permutation test.
-- 'catPRSquared' : for categorical outcomes: deviance based pseudo-Rsquared.
-- 'csig' : for categorical outcomes: significance of observed variable catPRSquared value under an in-sample permutation test.
-- 'sig' : 'csig' for categorical outcomes, 'psig' otherwise.
+The structure returned from `designTreatmentsN()` or `designTreatmentsC()` includes a list of "treatments": objects that encapsulate the transformation process from the original variables to the new "clean" variables.
+
+In addition to the treatment objects `designTreatmentsC()` and `designTreatmentsN()` also return a data frame named `scoreFrame` which contains columns:
+
+- `varName`: name of new variable
+- `origName`: name of original variable that the variable was derived from (can repeat)
+- `varMove` : logical TRUE if the variable varied during training; only variables that move will be in the treated frame.
+- `PRESSRsquared` : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
+- `psig` : significance of observed variable 'PRESSRsquared' value under an in-sample permutation test.
+- `catPRSquared` : for categorical outcomes: deviance based pseudo-Rsquared.
+- `csig` : for categorical outcomes: significance of observed variable catPRSquared value under an in-sample permutation test.
+- `sig` : `csig` for categorical outcomes, `psig` otherwise.
 
 
 In all cases we have two undesirable upward biases on the scores:
 
-- The treated variables view the training data during construction (for setting of NA values, missing values, levels, and more).  So this gives an upward bias when trying to measure treated variable utility on training data.  Until the data set is at least 1000 good rows we ignore this effect.  After 1000 rows we design variables on a pseudo-random chosen 80% of the rows and score on the complimentary 20% of the rows.
-- The scoring procedure itself involves a fit (linear regression for 'PRESSRsquared' or logistic regression for 'catPseudoRSquared').  So in each of these cases we would like the regression itself to be only evaluated on held-out data.  The PRESS statistic does just that (fast 1-way cross validation).   The 'catPseudoRSquared' performs explicit 1-way cross validation for small data sets and hold-out scoring for larger data sets.
+- The treated variables view the training data during construction (for setting of NA values, missing values, levels, and more).  So this gives an upward bias when trying to measure treated variable utility on training data.  Until the data set is at least 1000 good rows we ignore this effect.  After 1000 rows we design variables on a pseudo-randomly chosen 80% of the rows and score on the complimentary 20% of the rows.
+- The scoring procedure itself involves a fit (linear regression for `PRESSRsquared` or logistic regression for `catPRSquared`).  So in each of these cases we would like the regression itself to only be evaluated on held-out data.  The PRESS statistic does just that (fast 1-way cross validation).   The `catPseudoRSquared` performs explicit 1-way cross validation for small data sets and hold-out scoring for larger data sets.
 
-'vtreat' uses a number of cross-training and jackknife style procedures to try to mitigate these effects.  The suggested best practice is (if you have enough data) to split your randomly into at least the following disjoint data sets:
+'vtreat' uses a number of cross-training and jackknife style procedures to try to mitigate these effects.  The suggested best practice (if you have enough data) is to split your data randomly into at least the following disjoint data sets:
 
-- Encoding Calibration : a data set used for the 'designTreatmentsC()' or 'designTreatmentsN()' step and not used again for training or test.
-- Training : a data set used (after 'prepare()') for training your model.
-- Test : a data set used (after 'prepare()') for estimating your model's out of training performance.
+- **Encoding Calibration** : a data set used for the `designTreatmentsC()` or `designTreatmentsN()` step and not used again for training or test.
+- **Training** : a data set used (after `prepare()`) for training your model.
+- **Test** : a data set used (after `prepare()`) for estimating your model's out of training performance.
 
-The idea is: taking the extra step to perform the 'designTreatmentsC()' or 'designTreatmentsN()' on data disjoint from training makes the training data more exchangeable with test and avoids the issue that 'vtreat' may be hiding a large number of degrees of freedom in variables it derives from large categoricals.
+Taking the extra step to perform the `designTreatmentsC()` or `designTreatmentsN()` on data disjoint from training makes the training data more exchangeable with test and avoids the issue that 'vtreat' may be hiding a large number of degrees of freedom in variables it derives from large categoricals.
 
-An trivial execution example (not demonstrating any cal/train/test split) is given below.  Variables that do not move during hold-out testing are considered "not to move."
+Some trivial execution examples (not demonstrating any cal/train/test split) are given below.  Variables that do not move during hold-out testing are considered "not to move."
+
+---------------------------
+
+## A Categorical Outcome Example
 
 ```{r, tidy=FALSE}
 library(vtreat)
@@ -70,6 +76,18 @@ head(dTestC)
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
 print(treatmentsC)
 print(treatmentsC$treatments[[1]])
+```
+
+
+Here we demonstrate the optional scaling feature of `prepare()`, which
+scales and centers all the variables to mean 0, and slope 1 with respect to y:
+In other words, it rescales the variables to "y-units". This is useful for downstream
+principal components analysis.
+
+`scale=FALSE` by default.
+
+
+```{r, tidy=FALSE}
 
 dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
 head(dTrainCTreated)
@@ -83,7 +101,13 @@ sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
 
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 head(dTestCTreated)
+```
 
+--------------------------------
+
+## A Numeric Outcome Example
+
+```{r, tidy=FALSE}
 
 # numeric example
 dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),

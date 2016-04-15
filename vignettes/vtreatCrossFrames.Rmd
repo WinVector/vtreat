@@ -11,7 +11,7 @@ vignette: >
 
 Example demonstrating "cross validated training frames" (or "cross frames") in vtreat.
 
-Consider the following data frame.
+Consider the following data frame. The outcome only depends on the "good" variables, not on the (high degree of freedom) "bad" variables. Modeling such a data set runs a high risk of overfit.
 
 ```{r}
 set.seed(22626)
@@ -20,6 +20,8 @@ d <- data.frame(xBad1=sample(paste('level',1:1000,sep=''),2000,replace=TRUE),
                 xBad3=sample(paste('level',1:1000,sep=''),2000,replace=TRUE),
                 xGood1=rnorm(2000),
                 xGood2=rnorm(2000))
+
+# outcome only depends on "good" variables
 d$y <- rnorm(nrow(d))+0.2*d$xGood1 + 0.3*d$xGood2>0.5
 d$rgroup <- sample(c("cal","train","test"),nrow(d),replace=TRUE)  # the random group used for splitting the data set, not a variable.
 
@@ -39,7 +41,9 @@ plotRes <- function(d,predName,yName,title) {
 }
 ```
 
-Bad practice: use same set of data to prepare variable encoding and train a model.
+## The Wrong Thing
+
+Bad practice: use the same set of data to prepare variable encoding and train a model.
 
 ```{r badmixcalandtrain}
 dTrain <- d[d$rgroup!='test',,drop=FALSE]
@@ -64,6 +68,8 @@ plotRes(dTest,'predM1','y','model1 on test')
 
 Notice above that we see a training accuracy of 98% and a test accuracy of 60%.
 
+## The Right Thing: A Calibration Set
+
 Now try a proper calibration/train/test split:
 
 ```{r separatecalandtrain}
@@ -79,7 +85,7 @@ dTrainTreated <- vtreat::prepare(treatments,dTrain,
 )
 m1 <- glm(y~xBad1_catB + xBad2_catB + xBad3_catB + xGood1_clean + xGood2_clean,
           data=dTrainTreated,family=binomial(link='logit'))
-print(summary(m1))  # notice low residual deviance
+print(summary(m1))  
 
 dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
 plotRes(dTrain,'predM1','y','model1 on train')
@@ -88,22 +94,51 @@ dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```
 
-Notice above that we now see a training and test accuracies of 70%.  We have defeated overfit in two: ways training performance is closer to test performance, and test performance is better.
+Notice above that we now see training and test accuracies of 70%.  We have defeated overfit in two ways: training performance is closer to test performance, and test performance is better. Also we see that the model now properly considers the "bad" variables to be insignificant.
 
-Below is a more statistically efficient practice: building a cross training frame.  The idea is: consider any trained statistical model (in this case our treatment plan and variable selection plan) as a two-argument function f(A,B).  The first argument is the training data and the second argument is the application data.  In our case f(A,B) is: designTreatmentsC(A)\$prepare(B).
+## Another Right Thing: Cross-Validation
 
-When we use the same data in both places to build our training frame as in TrainTreated = f(TrainData,TrainData) we are not doing a good job simulating the future application of f(,) which will be f(TrainData,FutureData).  To improve the quality of our simulation we can call f(CalibrationData,ExampleData) where CalibrationData and ExampleData are disjoint datasets (as we did in the earlier example) and expect this to be a good imitation of future f(CalibrationData,FutureData).
+Below is a more statistically efficient practice: building a cross training frame.  
 
-Another approach is to build a "cross validated" version of f.  We split TrainData a list of 3 disjoint row intervals: Train1,Train2,Train3.  Instead of computing f(TrainData,TrainData) compute f(Train2+Train3,Train1)+f(Train1+Train3,Train2)+f(Train1+Train2,Train3) (where + denotes rbind()).  The idea is this looks a lot like f(TrainData,TrainData) except it has the important property that no row in the right-hand side is ever work on by a model built using that row (the important property future data will have) so we have a good imitation of f(TrainData,FutureData).
+### The intuition
 
-The idea is: cross validation is used to simulate future data.  The main thing we are doing different is remembering that we can apply cross validation to any two argument function f(A,B) and not only to functions of the form f(A,B) = buildModel(A)\$scoreData(B).  This formulation is in stacking or super-learning for f(A,B) of the form buildSubModels(A)\$combineModels(B) (see: "General oracle inequalities for model
-selection" Charles Mitchell and Sara van de Geer; "On Cross-Validation and Stacking:
-Building seemingly predictive models on random data" Claudia Perlich and Grzegorz Swirszcz; "Super Learner" Mark J. van der Laan, Eric C. Polley, and Alan E. Hubbard) and can be used to improve ensemble methods in general.
+Consider any trained statistical model (in this case our treatment plan and variable selection plan) as a two-argument function _f(A,B)_.  The first argument is the training data and the second argument is the application data.  In our case _f(A,B)_ is: `designTreatmentsC(A) %>% prepare(B)`, and it produces a treated data frame.
 
-In fact (though it was developed independently) you can think of vtreat as co-superlearner.  Where in a super-learner the user supplies sub-models and the super-learning framework uses cross-validated data frames to build a quality over-model.   In vtreat the the package builds the initial single-variable models and then provides a cross-frame allowing the user to reliably fit an over-model.
+When we use the same data in both places to build our training frame, as in
 
+> _TrainTreated = f(TrainData,TrainData)_, 
 
-Below is the example cross-run.
+we are not doing a good job simulating the future application of _f(,)_, which will be _f(TrainData,FutureData)_.  
+
+To improve the quality of our simulation we can call 
+
+> _TrainTreated = f(CalibrationData,TrainData)_ 
+
+where _CalibrationData_ and _TrainData_ are disjoint datasets (as we did in the earlier example) and expect this to be a good imitation of future _f(CalibrationData,FutureData)_.
+
+### Cross-Validation and vtreat: The cross-frame.
+
+Another approach is to build a "cross validated" version of _f_.  We split _TrainData_ into a list of 3 disjoint row intervals: _Train1_,_Train2_,_Train3_.  Instead of computing _f(TrainData,TrainData)_ compute:
+
+> _TrainTreated = f(Train2+Train3,Train1) + f(Train1+Train3,Train2) + f(Train1+Train2,Train3)_ 
+
+(where + denotes `rbind()`).  
+
+The idea is this looks a lot like _f(TrainData,TrainData)_ except it has the important property that no row in the right-hand side is ever worked on by a model built using that row (a key characteristic that future data will have) so we have a good imitation of _f(TrainData,FutureData)_.
+
+In other words: we use cross validation to simulate future data.  The main thing we are doing differently is remembering that we can apply cross validation to *any* two argument function _f(A,B)_ and not only to functions of the form _f(A,B)_ = `buildModel(A) %>% scoreData(B)`.  We can use this formulation in stacking or super-learning with _f(A,B)_ of the form `buildSubModels(A) %>% combineModels(B)` (to produce a stacked or ensemble model); the idea applies to improving ensemble methods in general.
+
+See: 
+
+- "General oracle inequalities for model selection" Charles Mitchell and Sara van de Geer
+- "On Cross-Validation and Stacking: Building seemingly predictive models on random data" Claudia Perlich and Grzegorz Swirszcz
+- "Super Learner" Mark J. van der Laan, Eric C. Polley, and Alan E. Hubbard
+
+In fact (though it was developed independently) you can think of vtreat as co-superlearner.  In a super-learner the user supplies sub-models and the super-learning framework uses cross-validated data frames to build a quality over-model.   In vtreat the package builds the initial single-variable models and then provides a cross-frame allowing the user to reliably fit an over-model.
+
+### Example
+
+Below is the example cross-run. The function `mkCrossFrameCExperiment` returns a treatment plan for use in preparing future data, and a cross-frame for use in fitting a model.
 
 ```{r crossframes}
 dTrain <- d[d$rgroup!='test',,drop=FALSE]
@@ -115,9 +150,14 @@ prep <- vtreat::mkCrossFrameCExperiment(dTrain,
 )
 treatments <- prep$treatments
 dTrainTreated <- prep$crossFrame
+```
+
+Now fit the model to *the cross-frame* rather than to `prepare(treatments, dTrain)` (the treated training data).
+
+```{rxframemodel}
 m1 <- glm(y~xBad1_catB + xBad2_catB + xBad3_catB + xGood1_clean + xGood2_clean,
           data=dTrainTreated,family=binomial(link='logit'))
-print(summary(m1))  # notice low residual deviance
+print(summary(m1))  
 
 dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
 plotRes(dTrain,'predM1','y','model1 on train')
@@ -126,3 +166,4 @@ dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```
 
+The model fit to the cross-frame behaves similarly to the model produced via the process _f(CalibrationData, TrainData)_.
