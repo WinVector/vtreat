@@ -1,5 +1,29 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-This package ('vtreat' available as [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat) and [Github](https://github.com/WinVector/vtreat) ) designs variable treatments so variables have fewer exceptional cases and models can be used safely in production. Common problems 'vtreat' defends against include: NA, Nan, Inf, too many categorical levels, rare categorical levels, new categorical levels (levels seen during application, but not during training). Pre-rendered documentation can be found [here](http://winvector.github.io/vtreathtml/).
+vtreat is an [R](https://cran.r-project.org) data.frame processor/conditioner package that helps prepare real-world data for predictive modeling in a statistically justifiable manner.
+
+Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are *common* data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.
+
+In particular vtreat emphasizes a concept called "y-aware pre-processing" and implements:
+
+-   Treatment of missing values through safe replacement plus indicator column (a simple but very powerful method when combined with downstream machine learning algorithms).
+-   Treatment of novel levels (new values of categorical variable seen during test or application, but not seen during training) through sub-models (or impact/effects coding of pooled rare events).
+-   Explicit coding of categorical variable levels as new indicator variables (with optional suppression of non-significant indicators).
+-   Treatment of categorical variables with very large numbers of levels through sub-models (again [impact/effects coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
+-   (optional) User specified significance pruning on levels coded into effects/impact sub-models.
+-   Correct treatment of nested models or sub-models through data split (see [here](http://winvector.github.io/vtreathtml/vtreatOverfit.html)) or through the generation of "cross validated" data frames (see [here](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html); these are issues similar to what is required to build statistically efficient stacked models or super-learners).
+-   Safe processing of "wide data" (data with very many variables, often driving common machine learning algorithms to over-fit) through [out of sample per-variable significance estimates and user controllable pruning](http://winvector.github.io/vtreathtml/vtreatSignifcance.html) (something we have lectured on previously [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS) and [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
+-   Collaring/Winsorizing of unexpected out of range numeric inputs.
+-   (optional) Conversion of all variables into effects (or "y-scale") units (through the optional `scale` argument to `vtreat::prepare()`, using some of the ideas discussed [here](http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)). This allows correct/sensible application of principal component analysis pre-processing in a machine learning context.
+-   Joining in additional training distribution data (which can be useful in analysis, called "catP" and "catD").
+
+The idea is: even with a sophisticated machine learning algorithm there are *many* ways messy real world data can defeat the modeling process, and vtreat helps with at least ten of them. We emphasize: these problems are already in your data, you simply build better and more reliable models if you attempt to mitigate them. Automated processing is no substitute for actually looking at the data, but vtreat supplies efficient, reliable, documented, and tested implementations of many of the commonly needed transforms.
+
+To help explain the methods we have prepared some documentation:
+
+-   The [vtreat package overall](http://winvector.github.io/vtreathtml/vtreat.html).
+-   The [types of new variables](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) introduced by vtreat processing (including how to limit down to domain appropriate variable types).
+-   Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): [nested over-fit issues](http://winvector.github.io/vtreathtml/vtreatOverfit.html) and a general [cross-frame solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
+-   [Principled ways to pick significance based pruning levels](http://winvector.github.io/vtreathtml/vtreatSignifcance.html).
 
 Install either from CRAN:
 
@@ -171,7 +195,7 @@ varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
-#>  2.081668e-17 -5.551115e-17  2.500000e-01 -3.053113e-16 -3.527723e-17 
+#>  2.081668e-17  0.000000e+00  2.500000e-01  1.665335e-16 -1.761829e-19 
 #>        x_catD       z_clean       z_isBAD 
 #>  0.000000e+00  1.526557e-16  2.081668e-17
 # all slopes should be 1
@@ -185,8 +209,8 @@ dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
 #>     x_lev_NA x_lev_x.a x_lev_x.b x_catP        x_catN      x_catD
 #> 1 -0.1666667     -0.25         0  -0.25 -2.500000e-01 -0.06743804
-#> 2 -0.1666667      0.25         1   0.25 -3.012179e-17 -0.25818161
-#> 3 -0.1666667      0.25         0   0.75 -3.012179e-17 -0.25818161
+#> 2 -0.1666667      0.25         1   0.25 -6.825526e-19 -0.25818161
+#> 3 -0.1666667      0.25         0   0.75 -6.825526e-19 -0.25818161
 #> 4  0.5000000      0.25         0   0.25  5.000000e-01  0.39305768
 #>        z_clean    z_isBAD
 #> 1 5.238095e-01 -0.1666667
