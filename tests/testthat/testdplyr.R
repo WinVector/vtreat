@@ -15,14 +15,14 @@ test_that("testdplyr: works with dplyr", {
     
     set.seed(seedVal)
     dT <- dplyr::as.tbl(uci.car.data)
-    treatmentsCP <- designTreatmentsC(dT,
-                                      pvars,dYName,dYTarget,verbose=FALSE)
-    dTrainCTreatedP <- prepare(treatmentsCP,dT,pruneSig=c())
+    dT %>%  designTreatmentsC(pvars,dYName,dYTarget,verbose=FALSE) -> 
+      treatmentsCP
+    treatmentsCP %>% prepare(dT,pruneSig=c()) -> dTrainCTreatedP
     
     set.seed(seedVal)
-    treatmentsC <- designTreatmentsC(dT,
-                                     pvars,dYName,dYTarget,verbose=FALSE)
-    dTrainCTreated <- prepare(treatmentsC,dT,pruneSig=c())
+    dT %>% designTreatmentsC(pvars,dYName,dYTarget,verbose=FALSE) ->
+      treatmentsC
+    treatmentsC %>% prepare(dT,pruneSig=c()) -> dTrainCTreated
     expect_true(nrow(dTrainCTreated)==nrow(dTrainCTreatedP))
     expect_true(length(colnames(dTrainCTreated))==length(colnames(dTrainCTreatedP)))
     expect_true(all(colnames(dTrainCTreated)==colnames(dTrainCTreatedP)))
