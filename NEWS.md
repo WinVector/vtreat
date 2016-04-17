@@ -1,4 +1,12 @@
 
+
+'vtreat' 0.5.23 2016/04/16
+
+Changes:
+
+- Documentation fixes, document variable types, improve vignettes.
+
+
 'vtreat' 0.5.22 2016/01/07
 
 Changes:
