@@ -1,0 +1,131 @@
+---
+title: "vtreat scale mode"
+author: "Win-Vector LLC"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat scale mode}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<code>vtreat::prepare(scale=TRUE)</code> is a variation of 
+<code>vtreat::prepare()</code> intended to prepare data frames so all 
+the derived x variables 
+(input or independent variables) are fully in y (outcome or dependent variable) units
+(in the sense of a regression, categorical/logical y's are treated as 0/1 indicators)
+and mean-zero.  
+
+This is the appropriate preparation before a geometry/metric sensitive modeling step
+such as principal components analysis or clustering (such as k-means clustering).
+
+Normally (with <code>vtreat::prepare(scale=FALSE)</code>) vtreat
+passes through a number of variables with minimal alteration (cleaned numerics),
+builds 0/1 indicator variables for various conditions (categorical levels, 
+presence of NAs, and so on), and builds some "in y-units" variables (catN, catB) that 
+are in fact sub-models.  With <code>vtreat::prepare(scale=TRUE)</code> all of these 
+numeric variables are then re-processed to have mean zero, and slope 1 (when possible)
+when numerically regressed against the y-variable.
+
+This is easiest to illustrate with a concrete example.
+
+```{r exampledata}
+library('vtreat')
+dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
+                      z=c(1,2,3,4,NA,6),
+                      y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                 verbose=FALSE)
+dTrainCTreatedUnscaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=FALSE)
+dTrainCTreatedScaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
+```
+
+The standard vtreat treated frame converts the original data from this:
+
+```{r printorig}
+print(dTrainC)
+```
+
+into this:
+
+```{r printunscaled}
+print(dTrainCTreatedUnscaled)
+```
+
+This is the "standard way" to run vtreat (with the exception of having set 
+<code>pruneSig</code> to <code>NULL</code> instead of a value in the interval
+<code>(0,1)</code>).  The idea is: even though vtreat try to have vtreat do 
+as perform as little as possible alteration on the data (which in fact turns
+out to already be a lot of alteration) leaving as much as possible to the downstream
+machine learning code.  Mostly vtreat is taking only steps that are unsafe to leave for
+later (re-encoding of large categoricals, re-coding of aberrant values, and bulk 
+pruning of variables).
+
+However some procedures (in particular principal components analysis or geometric
+clustering) assume all of the columns have been transformed in a similar fashion.  
+The usual assumption ("more honored in the breach than the observance") is the columns
+are centered (mean zero) and scaled.  Now the non y-aware meaning if "scaled" is 
+unit variance.  However, vtreat is designed to emphasize y-aware processing and we feel the y-aware sense of scaling should be: unit slope when regressed against y.  If you 
+want standard scaling you can use the standard frame produce by vtreat and scale it
+yourself.  If you want vtreat style y-aware scaling you (which we strongly think
+is the right thing to do) you can use <code>vtreat::prepare(scale=TRUE)</code> which
+produces a frame that looks like the following:
+
+```{r printscaled}
+print(dTrainCTreatedScaled)
+```
+
+First we can check the claims.  Are the variables mean-zero and slope 1 when regressed against y?
+
+```{r check}
+slopeFrame <- data.frame(varName = treatmentsC$scoreFrame$varName,
+                         stringsAsFactors = FALSE)
+slopeFrame$mean <-
+  vapply(dTrainCTreatedScaled[, slopeFrame$varName, drop = FALSE], mean,
+         numeric(1))
+slopeFrame$slope <- vapply(slopeFrame$varName,
+                           function(c) {
+                             lm(paste('y', c, sep = '~'),
+                                data = dTrainCTreatedScaled)$coefficients[[2]]
+                           },
+                           numeric(1))
+slopeFrame$sig <- vapply(slopeFrame$varName,
+                         function(c) {
+                           treatmentsC$scoreFrame[treatmentsC$scoreFrame$varName == c, 'sig']
+                         },
+                         numeric(1))
+slopeFrame$badSlope <-
+  ifelse(is.na(slopeFrame$slope), TRUE, abs(slopeFrame$slope - 1) > 1.e-8)
+print(slopeFrame)
+```
+
+This is true with the exception of the derived variable <code>x_lev_x.b</code>.
+The issue is that the outcome variable <code>y</code> has identical distribution
+when the original variable <code>x=='b'</code> and when <code>x!='b'</code> (on half the time in both cases).  This means <code>y</code> is perfectly independent 
+of <code>x=='b'</code> and the regression slope must be zero.  vtreat now treats
+this as needing to scale by a multiplicative factor of zero, which if you look up
+set the value of <code>x_lev_x.b</code> to identically zero in the scaled frame.
+This is subtle, but it is what is safest for downstream analysis.  We don't want
+useless (or nearly useless) variables taking on infinitesimal values that might 
+be inverted into ridiculously large coefficients.
+
+Note also the "varMoves" and significance
+facts in <code>treatmentsC\$scoreFrame</code> are about the unscaled frame (where <code>x_lev_x.b</code> does in fact move).  However the only exceptional cases
+in scaling are variables that don't achieve any modeling significance, so filtering
+on <code>treatmentsC$scoreFrame$sig</code> eliminates any exceptional cases (and
+prevents the needless passing of effective constants to downstream modeling).
+
+Previous versions of vtreat used to copy (unaltered) variables that
+could not be sensibly scaled.  This was considered the "most faithful"
+thing to do.  However we feel unscalable variables are more usefully
+and safely (to downstream procedures) represented as a column of zeros
+(especially for the package authors intended/anticipated applications of scaled frames: principal
+components analysis and geometric clustering).  This is essentially
+what vtreat now does.  This does preclude using such variables in
+interactions or trees (where they may actually have value), so an
+analyst wishing to preserve such variables must either not scale or
+introduce the interaction before variable treatment.
+
+
+
+

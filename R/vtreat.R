@@ -273,7 +273,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param dframe Data frame to be treated
 #' @param pruneSig suppress variables with significance above this level
 #' @param ... no additional arguments, declared to forced named binding of later arguments
-#' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
+#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed against outcome.
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @return treated data frame (all columns numeric, without NA,NaN)

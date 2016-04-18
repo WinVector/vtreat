@@ -4,6 +4,7 @@
 
 Changes:
 
+- Fix issue of non-significant variables not being scaled.
 - Documentation fixes, document variable types, improve vignettes.
 
 

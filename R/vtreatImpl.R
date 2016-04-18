@@ -76,17 +76,15 @@
   lmaty[,1] <- ycol-meany
   model <- stats::lm.wfit(lmatx,lmaty,weights)
   a <- 0.0
-  if(!is.na(model$coefficients[[2]])) {
+  if((!is.na(model$coefficients[[2]]))&&
+     (!is.infinite(model$coefficients[[2]]))) {
     a <- model$coefficients[[2]]
-  }
-  if(abs(a)>1.0e-6) {
-    if(!is.na(model$coefficients[[1]])) {
-      b <- model$coefficients[[1]]
+    effect <- a*xcol
+    if((max(effect)-min(effect))<1.0e-8) {
+      a <- 0 # give up and suppress
     }
-  } else {
-    a = 1
-    b = 0
   }
+  b <- -.wmean(a*xcol,weights)
   list(a=a,b=b)
 }
 
