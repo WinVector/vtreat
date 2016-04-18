@@ -115,7 +115,7 @@ in scaling are variables that don't achieve any modeling significance, so filter
 on <code>treatmentsC$scoreFrame$sig</code> eliminates any exceptional cases (and
 prevents the needless passing of effective constants to downstream modeling).
 
-Previous versions of vtreat used to copy (unaltered) variables that
+Previous versions of vtreat (0.5.22 and earlier) would to copy (unaltered) variables that
 could not be sensibly scaled.  This was considered the "most faithful"
 thing to do.  However we feel unscalable variables are more usefully
 and safely (to downstream procedures) represented as a column of zeros
