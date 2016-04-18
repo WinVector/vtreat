@@ -126,6 +126,19 @@ interactions or trees (where they may actually have value), so an
 analyst wishing to preserve such variables must either not scale or
 introduce the interaction before variable treatment.
 
+```{r plot}
+vars <- treatmentsC$scoreFrame$varName[treatmentsC$scoreFrame$sig<1]
+princ <- prcomp(as.matrix(dTrainCTreatedScaled[,vars]))
+ndim <- 2
+proj <- as.data.frame(predict(princ,newdata = 
+                                as.matrix(dTrainCTreatedScaled[,vars]))[,1:ndim],
+                      stringsAsFactors = FALSE)
+proj$y <- dTrainCTreatedScaled$y
+library('ggplot2')
+ggplot(data=proj,aes(x=PC1,y=PC2,color=y)) + geom_point(size=2)
+# plot should look poor, as data was just "typed in" with no strong relation
+# between y and the variables.
+```
 
 
 
