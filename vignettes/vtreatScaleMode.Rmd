@@ -143,17 +143,28 @@ yS <- list(yA,yB)
 for(i in 1:20) {
   d[[paste('x',i,sep='.')]] <- yS[[1+(i%%2)]] + rnorm(nrow(d))
 }
+
+# transform and principal y-away principal components analysis.
 treatmentsN <- designTreatmentsN(d,setdiff(colnames(d),'y'),'y',
                                  verbose=FALSE)
 dTrainNTreatedScaled <- prepare(treatmentsN,d,pruneSig=0.5,scale = TRUE)
 
 vars <- setdiff(colnames(dTrainNTreatedScaled),'y')
 princ <- prcomp(as.matrix(dTrainNTreatedScaled[,vars]))
+print(princ$sdev)
+
+# pull off the rotation.  
+# we don't use scaling terms as we don't want any duplicated variables to be
+# counted twice.  we are trying to preserve the novelty of the original geometry
+# not all of the original distances.
 ndim <- 2
 rot <- princ$rotation[,1:ndim] 
-# sign was arbitrary, so flip
+# sign was arbitrary, so flip in convenient form
 for(i in seq_len(ndim)) {
-  rot[,i] <- rot[,i]*sign(mean(rot[,i]))
+  si <- sign(mean(rot[,i]))
+  if(si!=0) {
+    rot[,i] <- rot[,i]*si
+  }
 }
 # notice even/odd loadings are recovered
 print(rot)
@@ -163,6 +174,7 @@ proj <- as.data.frame(as.matrix(dTrainNTreatedScaled[,vars]) %*% rot,
                       stringsAsFactors = FALSE)
 
 # plot data sorted by principal components
+# notice we y increases both as we move up and as we move right
 proj$y <- dTrainNTreatedScaled$y
 #library('ggplot2')
 #ggplot(data=proj,aes(x=PC1,y=PC2,color=y>0)) + geom_point(size=2,alpha=0.5)
