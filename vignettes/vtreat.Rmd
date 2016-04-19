@@ -144,3 +144,9 @@ dTestNTreatedS <- prepare(treatmentsN,dTestN,
                          pruneSig=c(),scale=TRUE)
 head(dTestNTreatedS)
 ```
+
+Related work:
+
+  * _Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences_, 2nd edition, 1983, Jacob Cohen, Patricia Cohen (called the concept “effects coded variables”).
+  * ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
+  * ["Big Learning Made Easy – with Counts!"](https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/), Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.

@@ -141,7 +141,7 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#> -7.930164e-18  0.000000e+00  2.974296e-18 -6.344519e-17 -3.972827e-18 
+#> -7.930164e-18  0.000000e+00  2.974296e-18  1.585994e-16 -3.972827e-18 
 #>       z_clean       z_isBAD 
 #>  7.927952e-18 -7.926292e-18
 # all slopes should be 1 for variables with treatmentsC$scoreFrame$sig<1
@@ -194,24 +194,24 @@ dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
-#>  0.000000e+00  0.000000e+00  3.851860e-34  5.551115e-17  0.000000e+00 
-#>        x_catD       z_clean       z_isBAD 
-#>  0.000000e+00  4.163336e-17 -6.938894e-18
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
+#> 0.000000e+00 0.000000e+00 0.000000e+00 5.551115e-17 0.000000e+00 
+#>       x_catD      z_clean      z_isBAD 
+#> 0.000000e+00 4.163336e-17 0.000000e+00
 # all slopes should be 1 for variables with treatmentsN$scoreFrame$sig<1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
 #>  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catN    x_catD   z_clean 
-#>         1         1         0         1         1         1         1 
+#>         1         1        NA         1         1         1         1 
 #>   z_isBAD 
 #>         1
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
-#>     x_lev_NA x_lev_x.a     x_lev_x.b x_catP x_catN      x_catD   z_clean
-#> 1 -0.1666667     -0.25  1.133117e-17  -0.25  -0.25 -0.06743804 0.5238095
-#> 2 -0.1666667      0.25 -3.399350e-17   0.25   0.00 -0.25818161 0.5238095
-#> 3 -0.1666667      0.25  1.133117e-17   0.75   0.00 -0.25818161 0.5238095
-#> 4  0.5000000      0.25  1.133117e-17   0.25   0.50  0.39305768 0.0000000
+#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP x_catN      x_catD   z_clean
+#> 1 -0.1666667     -0.25         0  -0.25  -0.25 -0.06743804 0.5238095
+#> 2 -0.1666667      0.25         0   0.25   0.00 -0.25818161 0.5238095
+#> 3 -0.1666667      0.25         0   0.75   0.00 -0.25818161 0.5238095
+#> 4  0.5000000      0.25         0   0.25   0.50  0.39305768 0.0000000
 #>      z_isBAD
 #> 1 -0.1666667
 #> 2 -0.1666667
@@ -221,3 +221,9 @@ print(dTestNTreated)
 # for large data sets you can consider designing the treatments on 
 # a subset like: d[sample(1:dim(d)[[1]],1000),]
 ```
+
+Related work:
+
+-   *Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences*, 2nd edition, 1983, Jacob Cohen, Patricia Cohen (called the concept “effects coded variables”).
+-   ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
+-   ["Big Learning Made Easy – with Counts!"](https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/), Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.
