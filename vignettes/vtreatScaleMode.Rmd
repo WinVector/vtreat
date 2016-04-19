@@ -141,13 +141,18 @@ yB <- rnorm(n)
 d <- data.frame(y=yA+yB+rnorm(n))
 yS <- list(yA,yB)
 for(i in 1:20) {
-  d[[paste('x',i,sep='.')]] <- yS[[1+(i%%2)]] + rnorm(nrow(d))
+  d[[paste('x',i,sep='.')]] <- (1+i)*yS[[1+(i%%2)]] + rnorm(nrow(d))
 }
+summary(d)
+
 treatmentsN <- designTreatmentsN(d,setdiff(colnames(d),'y'),'y',
                                  verbose=FALSE)
-dTrainNTreatedScaled <- prepare(treatmentsN,d,pruneSig=0.5,scale = TRUE)
+dTrainNTreatedScaled <- prepare(treatmentsN,d,pruneSig=0.5,scale=TRUE)
+# notice the more uniform variable ranges after prepare
+summary(dTrainNTreatedScaled)
 
 vars <- setdiff(colnames(dTrainNTreatedScaled),'y')
+# prcomp defaults to scale. = FALSE, but we already scaled in vtreat- so that is okay
 princ <- prcomp(as.matrix(dTrainNTreatedScaled[,vars]))
 ndim <- 2
 rot <- princ$rotation[,1:ndim] 
