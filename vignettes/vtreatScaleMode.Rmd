@@ -131,7 +131,7 @@ introduce the interaction before variable treatment.
 
 Principal components analysis example.
 
-```{r plot}
+```{r scaledplot, fig.width=7,fig.height=7}
 # build example where even and odd variables are bringing in noisy images
 # of two different signals.
 set.seed(23525)
@@ -140,10 +140,13 @@ yA <- rnorm(n)
 yB <- rnorm(n)
 d <- data.frame(y=yA+yB+rnorm(n))
 yS <- list(yA,yB)
-for(i in 1:20) {
+for(i in 1:5) {
   vi <- yS[[1+(i%%2)]] + rnorm(nrow(d))
-  vi[vi>=2] <- NA
-  d[[paste('x',i,sep='.')]] <- (1+i)*(vi)
+  d[[paste('x',i,sep='.')]] <- (1+i)*vi
+}
+for(i in 1:45) {
+  vi <- (1+i)*(rnorm(n))
+  d[[paste('noise',i,sep='.')]] <- (1+i)*vi
 }
 summary(d)
 
@@ -151,9 +154,17 @@ summary(d)
 # transform and principal y-away principal components analysis.
 treatmentsN <- designTreatmentsN(d,setdiff(colnames(d),'y'),'y',
                                  verbose=FALSE)
-print(treatmentsN$scoreFrame)
-dTrainNTreatedScaled <- prepare(treatmentsN,d,pruneSig=0.5,scale=TRUE)
-# notice the more uniform variable ranges after prepare
+print(treatmentsN$scoreFrame[,c('varName','origName','code','sig')])
+examplePruneSig = 1.0 # note set pruneSig < 1 for any real world application
+# we are setting it to 1.0 to deliberately lose the benefit of variable prune
+# to illustrate that you recover some of benefit of variable pruning due 
+# to the scaling effect (which in this case gives noise variable small range
+# meaning they don't have much of an effect in the principal components anlaysis).
+# This example is designed so we "know the right answer" (which is why it obvious
+# what to prune).
+dTrainNTreatedScaled <- prepare(treatmentsN,d,pruneSig=examplePruneSig,scale=TRUE)
+# notice the signal carrying variables have commensurate ranges and the noise 
+# variables have very small ranges.
 summary(dTrainNTreatedScaled)
 
 vars <- setdiff(colnames(dTrainNTreatedScaled),'y')
@@ -182,8 +193,46 @@ proj <- as.data.frame(as.matrix(dTrainNTreatedScaled[,vars]) %*% rot,
                       stringsAsFactors = FALSE)
 
 # plot data sorted by principal components
-# notice we y increases both as we move up and as we move right
+# notice we y increases both as we move up and as we move right.
+# we recoved two features correlating with y increase (not just smeared together to one)
 proj$y <- dTrainNTreatedScaled$y
+#library('ggplot2')
+#ggplot(data=proj,aes(x=PC1,y=PC2,color=y>0)) + geom_point(size=2,alpha=0.5)
+plot(proj$PC1,proj$PC2,col=ifelse(proj$y>=0,'blue','red'))
+```
+
+Show how, without y-aware scaling principal components can not preserved the
+y-relations (as it not designed to).
+
+```{r unscaledexample, fig.width=7,fig.height=7}
+dTrainNTreatedUnscaled <- prepare(treatmentsN,d,pruneSig=examplePruneSig,scale=FALSE)
+summary(dTrainNTreatedUnscaled)
+
+vars <- setdiff(colnames(dTrainNTreatedUnscaled),'y')
+# let prcomp try to scale (it doesn't have access to y, so it scales differently)
+princ <- prcomp(as.matrix(dTrainNTreatedUnscaled[,vars]),scale. = TRUE)
+print(princ$sdev)
+
+ndim <- 2
+rot <- princ$rotation[,1:ndim] 
+# sign was arbitrary, so flip in convenient form
+for(i in seq_len(ndim)) {
+  si <- sign(mean(rot[,i]))
+  if(si!=0) {
+    rot[,i] <- rot[,i]*si
+  }
+}
+
+# signal variables individuall still load better, but not as well
+# sperated from noise varaibles, which eventually overwhelm the projection.
+print(rot)
+
+# apply projection
+proj <- as.data.frame(as.matrix(dTrainNTreatedUnscaled[,vars]) %*% rot,
+                      stringsAsFactors = FALSE)
+
+# plot data sorted by principal components
+proj$y <- dTrainNTreatedUnscaled$y
 #library('ggplot2')
 #ggplot(data=proj,aes(x=PC1,y=PC2,color=y>0)) + geom_point(size=2,alpha=0.5)
 plot(proj$PC1,proj$PC2,col=ifelse(proj$y>=0,'blue','red'))
