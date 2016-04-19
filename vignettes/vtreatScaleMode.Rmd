@@ -126,18 +126,47 @@ interactions or trees (where they may actually have value), so an
 analyst wishing to preserve such variables must either not scale or
 introduce the interaction before variable treatment.
 
+
+*****************
+
+Principal components analysis example.
+
 ```{r plot}
-vars <- treatmentsC$scoreFrame$varName[treatmentsC$scoreFrame$sig<1]
-princ <- prcomp(as.matrix(dTrainCTreatedScaled[,vars]))
+# build example where even and odd variables are bringing in noisy images
+# of two different signals.
+set.seed(23525)
+n <- 500
+yA <- rnorm(n)
+yB <- rnorm(n)
+d <- data.frame(y=yA+yB+rnorm(n))
+yS <- list(yA,yB)
+for(i in 1:20) {
+  d[[paste('x',i,sep='.')]] <- yS[[1+(i%%2)]] + rnorm(nrow(d))
+}
+treatmentsN <- designTreatmentsN(d,setdiff(colnames(d),'y'),'y',
+                                 verbose=FALSE)
+dTrainNTreatedScaled <- prepare(treatmentsN,d,pruneSig=0.5,scale = TRUE)
+
+vars <- setdiff(colnames(dTrainNTreatedScaled),'y')
+princ <- prcomp(as.matrix(dTrainNTreatedScaled[,vars]))
 ndim <- 2
-proj <- as.data.frame(predict(princ,newdata = 
-                                as.matrix(dTrainCTreatedScaled[,vars]))[,1:ndim],
+rot <- princ$rotation[,1:ndim] 
+# sign was arbitrary, so flip
+for(i in seq_len(ndim)) {
+  rot[,i] <- rot[,i]*sign(mean(rot[,i]))
+}
+# notice even/odd loadings are recovered
+print(rot)
+
+# apply projection
+proj <- as.data.frame(as.matrix(dTrainNTreatedScaled[,vars]) %*% rot,
                       stringsAsFactors = FALSE)
-proj$y <- dTrainCTreatedScaled$y
-library('ggplot2')
-ggplot(data=proj,aes(x=PC1,y=PC2,color=y)) + geom_point(size=2)
-# plot should look poor, as data was just "typed in" with no strong relation
-# between y and the variables.
+
+# plot data sorted by principal components
+proj$y <- dTrainNTreatedScaled$y
+#library('ggplot2')
+#ggplot(data=proj,aes(x=PC1,y=PC2,color=y>0)) + geom_point(size=2,alpha=0.5)
+plot(proj$PC1,proj$PC2,col=ifelse(proj$y>=0,'blue','red'))
 ```
 
 
