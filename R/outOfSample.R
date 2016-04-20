@@ -1,19 +1,64 @@
-# build sets for out of sample evaluatin, train on complement of eval
-# ensure y varies training set (complement of eval set)
-.buildEvalSets <- function(zoY) {
-  nRows = length(zoY)
+
+
+#' Build disjoint set partition for out-of sample evaluation.
+#' 
+#' Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
+#' nested model situation (such as data prep, stacking, or super-learning).
+#' 
+#' @param nRows scalar, number of rows to sample from.
+#' @param smallN scalar if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
+#' @param ncross scalar if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
+#' @return list of disjoint sets such that do.call(union,list) = seq_len(nRows).
+#' 
+#' @examples
+#' 
+#' # helper fns
+#' # fit models using experiment plan to estimate out of sample behavior
+#' fitModelAndApply <- function(trainData,applicaitonData) {
+#'    model <- lm(y~x,data=trainData)
+#'    predict(model,newdata=applicaitonData)
+#' }
+#' simualteOutOfSampleTrainEval <- function(d,fitApplyFn) {
+#'    eSets <- buildEvalSets(nrow(d))
+#'    evals <- lapply(eSets, 
+#'       function(ei) { fitApplyFn(d[setdiff(seq_len(nrow(d)),ei),],d[ei,]) })
+#'    pred <- numeric(nrow(d))
+#'    for(eii in seq_len(length(eSets))) {
+#'      pred[eSets[[eii]]] <- evals[[eii]]
+#'    }
+#'    pred
+#' }
+#' 
+#' # run the experiment
+#' set.seed(2352356)
+#' # example data
+#' d <- data.frame(x=rnorm(5),y=rnorm(5),
+#'         outOfSampleEst=NA,inSampleEst=NA)
+#'         
+#' # fit model on all data
+#' d$inSampleEst <- fitModelAndApply(d,d)
+#' # compute in-sample R^2 (above zero, falsely shows a 
+#' #   relation until we adjust for degrees of freedom)
+#' 1-sum((d$y-d$inSampleEst)^2)/sum((d$y-mean(d$y))^2)
+#' 
+#' d$outOfSampleEst <- simualteOutOfSampleTrainEval(d,fitModelAndApply)
+#' # compute out-sample R^2 (not positive, 
+#' #  evidence of no relation)
+#' 1-sum((d$y-d$outOfSampleEst)^2)/sum((d$y-mean(d$y))^2)
+#' 
+#' @export
+buildEvalSets <- function(nRows,smallN=100,ncross=3) {
   # build a partition plan
   evalSets <- list()
   if(nRows<=1) {
-    return(evalSets) # no plan possible
+    return(list(seq_len(nRows))) # no split plan possible
   }
-  if(nRows<=100) {
+  if(nRows<=smallN) {
     # small case, 1-holdout Jackknife style
     evalSets <- as.list(seq_len(nRows))
     return(evalSets)
   }
   #  Try for full k-way cross val
-  ncross <- 3
   done = FALSE
   while(!done) {
     groups <- sample.int(ncross,nRows,replace=TRUE)
@@ -41,7 +86,7 @@
   verbose <- FALSE
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
-  evalSets <- .buildEvalSets(zoY)
+  evalSets <- buildEvalSets(length(zoY))
   scoreFrame <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rowList <- vector('list',length(evalSets))

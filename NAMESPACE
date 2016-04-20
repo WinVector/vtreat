@@ -2,6 +2,7 @@
 
 S3method(format,vtreatment)
 S3method(print,vtreatment)
+export(buildEvalSets)
 export(designTreatmentsC)
 export(designTreatmentsN)
 export(designTreatmentsZ)
