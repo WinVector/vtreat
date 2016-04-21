@@ -7,14 +7,14 @@
 buildEvalSets(nRows, smallN = 100, ncross = 3)
 }
 \arguments{
-\item{nRows}{scalar, number of rows to sample from.}
+\item{nRows}{scalar, >=1 number of rows to sample from.}
 
 \item{smallN}{scalar if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).}
 
 \item{ncross}{scalar if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).}
 }
 \value{
-list of disjoint sets such that do.call(union,list) = seq_len(nRows).
+list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
 }
 \description{
 Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
@@ -31,10 +31,10 @@ fitModelAndApply <- function(trainData,applicaitonData) {
 simualteOutOfSampleTrainEval <- function(d,fitApplyFn) {
    eSets <- buildEvalSets(nrow(d))
    evals <- lapply(eSets, 
-      function(ei) { fitApplyFn(d[setdiff(seq_len(nrow(d)),ei),],d[ei,]) })
+      function(ei) { fitApplyFn(d[ei$train,],d[ei$app,]) })
    pred <- numeric(nrow(d))
    for(eii in seq_len(length(eSets))) {
-     pred[eSets[[eii]]] <- evals[[eii]]
+     pred[eSets[[eii]]$app] <- evals[[eii]]
    }
    pred
 }

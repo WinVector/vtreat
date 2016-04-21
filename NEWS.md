@@ -14,6 +14,8 @@ Changes:
 
 - Calculations of non catX significances are now deterministic
 - Catch mis-naming or non-varying y earlier
+- Expose buildEvalSets as a public function
+- More tests
 
 
 'vtreat' 0.5.21 2015/11/23

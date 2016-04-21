@@ -5,10 +5,10 @@
 #' Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
 #' nested model situation (such as data prep, stacking, or super-learning).
 #' 
-#' @param nRows scalar, number of rows to sample from.
+#' @param nRows scalar, >=1 number of rows to sample from.
 #' @param smallN scalar if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
 #' @param ncross scalar if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
-#' @return list of disjoint sets such that do.call(union,list) = seq_len(nRows).
+#' @return list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
 #' 
 #' @examples
 #' 
@@ -21,10 +21,10 @@
 #' simualteOutOfSampleTrainEval <- function(d,fitApplyFn) {
 #'    eSets <- buildEvalSets(nrow(d))
 #'    evals <- lapply(eSets, 
-#'       function(ei) { fitApplyFn(d[setdiff(seq_len(nrow(d)),ei),],d[ei,]) })
+#'       function(ei) { fitApplyFn(d[ei$train,],d[ei$app,]) })
 #'    pred <- numeric(nrow(d))
 #'    for(eii in seq_len(length(eSets))) {
-#'      pred[eSets[[eii]]] <- evals[[eii]]
+#'      pred[eSets[[eii]]$app] <- evals[[eii]]
 #'    }
 #'    pred
 #' }
@@ -50,13 +50,17 @@
 buildEvalSets <- function(nRows,smallN=100,ncross=3) {
   # build a partition plan
   evalSets <- list()
+  fullSeq <- seq_len(nRows)
   if(nRows<=1) {
-    return(list(seq_len(nRows))) # no split plan possible
+    # no split plan possible
+    return(list(list(train=fullSeq,app=fullSeq)))
   }
   if(nRows<=smallN) {
     # small case, 1-holdout Jackknife style
-    evalSets <- as.list(seq_len(nRows))
-    return(evalSets)
+    return(lapply(fullSeq,
+                  function(i) {
+                    list(train=fullSeq[-i],app=i)
+                  }))
   }
   #  Try for full k-way cross val
   done = FALSE
@@ -66,7 +70,11 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
       done = TRUE
     }
   }
-  evalSets <- lapply(seq_len(ncross),function(i) which(groups==i))
+  evalSets <- lapply(seq_len(ncross),
+                     function(i) { 
+                       appi = which(groups==i)
+                       list(train=setdiff(fullSeq,appi),app=appi)
+                     })
   evalSets
 }
 
@@ -91,14 +99,16 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
   wtList <- vector('list',length(evalSets))
   rowList <- vector('list',length(evalSets))
   for(ei in evalSets) {
-    dsubiEval <- dsub[ei,]
-    dsubiBuild <- dsub[-ei,]
-    zoYBuild <- zoY[-ei]
+    evalIndices <- ei$app
+    buildIndices <- ei$train
+    dsubiEval <- dsub[evalIndices,]
+    dsubiBuild <- dsub[buildIndices,]
+    zoYBuild <- zoY[buildIndices]
     zCBuild <- c()
     if(!is.null(zC)) {
-      zCBuild <- zC[-ei]
+      zCBuild <- zC[buildIndices]
     }
-    wBuild <- weights[-ei]
+    wBuild <- weights[buildIndices]
     ti <- .designTreatmentsXS(dsubiBuild,varlist,outcomename,zoYBuild,
                               zCBuild,zTarget,
                               wBuild,
@@ -117,8 +127,8 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
     fi <- fi[,newVarsS,drop=FALSE]
     fi[[outcomename]] <- dsubiEval[[outcomename]]
     scoreFrame[[length(scoreFrame)+1]] <- fi
-    wtList[[length(wtList)+1]] <- weights[ei]
-    rowList[[length(rowList)+1]] <- ei
+    wtList[[length(wtList)+1]] <- weights[evalIndices]
+    rowList[[length(rowList)+1]] <- evalIndices
   }
   scoreFrame <- do.call(rbind,scoreFrame)
   scoreWeights <- do.call(c,wtList)
