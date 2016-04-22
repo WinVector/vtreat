@@ -13,16 +13,20 @@ test_that("testdplyr: works with dplyr", {
     pvars <- setdiff(colnames(uci.car.data),dYName)
     seedVal=946463L
     
+    # run on dplyr tbl
     set.seed(seedVal)
     dT <- dplyr::as.tbl(uci.car.data)
     dT %>%  designTreatmentsC(pvars,dYName,dYTarget,verbose=FALSE) -> 
       treatmentsCP
     treatmentsCP %>% prepare(dT,pruneSig=c()) -> dTrainCTreatedP
     
+    # re-run on data.frame
     set.seed(seedVal)
-    dT %>% designTreatmentsC(pvars,dYName,dYTarget,verbose=FALSE) ->
-      treatmentsC
-    treatmentsC %>% prepare(dT,pruneSig=c()) -> dTrainCTreated
+    dT <- uci.car.data
+    treatmentsC <- designTreatmentsC(dT,
+                                     pvars,dYName,dYTarget,verbose=FALSE)
+    dTrainCTreated <- prepare(treatmentsC,dT,pruneSig=c())
+    
     expect_true(nrow(dTrainCTreated)==nrow(dTrainCTreatedP))
     expect_true(length(colnames(dTrainCTreated))==length(colnames(dTrainCTreatedP)))
     expect_true(all(colnames(dTrainCTreated)==colnames(dTrainCTreatedP)))
