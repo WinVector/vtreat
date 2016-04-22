@@ -10,6 +10,7 @@ test_that("testExpmtDesign: cross frame desisgn", {
     for(ei in eSets) {
       expect_true(length(ei$train)>0)
       expect_true(length(ei$app)>0)
+      expect_true(length(ei$train)>=length(ei$app))
       all(ei$train %in% fullSeq)
       all(ei$app %in% fullSeq)
     }
