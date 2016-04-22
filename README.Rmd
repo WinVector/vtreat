@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 vtreat is an [R](https://cran.r-project.org) data.frame
 processor/conditioner package that helps prepare real-world data for
-predictive modeling in a statistically justifiable manner.
+predictive modeling in a statistically sound manner.
 
 Even with
 modern machine learning techniques (random forests, support vector
