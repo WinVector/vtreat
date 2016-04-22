@@ -143,7 +143,7 @@ See:
 
 In fact (though it was developed independently) you can think of vtreat as a superlearner.
 
-In super learing cross validation techniques are used to simulate having built 
+In super learning cross validation techniques are used to simulate having built 
 sub-model predictions on novel data.  The simulated out of sample-applications of these 
 sub models (and not the sub models themselves) are then used as input data for 
 the next stage learner.  In future application the actual sub-models are applied and
@@ -153,7 +153,7 @@ their immediate outputs is used by the super model.
 
 In vtreat the sub-models are single variable treatments and
 the outer model construction is left to the practitioner (using the cross-frames for 
-simulation and not the treatmentplan).  In applicaiton the treatment plan is used.
+simulation and not the treatmentplan).  In application the treatment plan is used.
 
 <img src="vtreatX.png" width="600">
 
