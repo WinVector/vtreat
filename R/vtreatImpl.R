@@ -1,6 +1,7 @@
 
 
-
+# TODO: put correct significance model for out of sample evalution (right now using in-sample,
+# but that is not the right distribution).
 
 
 .vtreatA <- function(vtreat,xcol,scale,doCollar) {
