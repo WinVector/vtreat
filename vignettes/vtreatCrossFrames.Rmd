@@ -149,10 +149,13 @@ sub models (and not the sub models themselves) are then used as input data for
 the next stage learner.  In future application the actual sub-models are applied and
 their immediate outputs is used by the super model.
 
+<img src="superX.png" width="600">
+
 In vtreat the sub-models are single variable treatments and
 the outer model construction is left to the practitioner (using the cross-frames for 
 simulation and not the treatmentplan).  In applicaiton the treatment plan is used.
 
+<img src="vtreatX.png" width="600">
 
 ### Example
 
