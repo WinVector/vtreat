@@ -141,7 +141,18 @@ See:
 - "On Cross-Validation and Stacking: Building seemingly predictive models on random data" Claudia Perlich and Grzegorz Swirszcz
 - "Super Learner" Mark J. van der Laan, Eric C. Polley, and Alan E. Hubbard
 
-In fact (though it was developed independently) you can think of vtreat as co-superlearner.  In a super-learner the user supplies sub-models and the super-learning framework uses cross-validated data frames to build a quality over-model.   In vtreat the package builds the initial single-variable models and then provides a cross-frame allowing the user to reliably fit an over-model.
+In fact (though it was developed independently) you can think of vtreat as a superlearner.
+
+In super learing cross validation techniques are used to simulate having built 
+sub-model predictions on novel data.  The simulated out of sample-applications of these 
+sub models (and not the sub models themselves) are then used as input data for 
+the next stage learner.  In future application the actual sub-models are applied and
+their immediate outputs is used by the super model.
+
+In vtreat the sub-models are single variable treatments and
+the outer model construction is left to the practitioner (using the cross-frames for 
+simulation and not the treatmentplan).  In applicaiton the treatment plan is used.
+
 
 ### Example
 
@@ -155,8 +166,8 @@ prep <- vtreat::mkCrossFrameCExperiment(dTrain,
                                         'y',TRUE,
   rareCount=0 # Note: usually want rareCount>0, setting to zero to illustrate problem
 )
-treatments <- prep$treatments
 dTrainTreated <- prep$crossFrame
+treatments <- prep$treatments
 ```
 
 Now fit the model to *the cross-frame* rather than to `prepare(treatments, dTrain)` (the treated training data).
