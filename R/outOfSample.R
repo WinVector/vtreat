@@ -18,7 +18,7 @@
 #'    model <- lm(y~x,data=trainData)
 #'    predict(model,newdata=applicaitonData)
 #' }
-#' simualteOutOfSampleTrainEval <- function(d,fitApplyFn) {
+#' simulateOutOfSampleTrainEval <- function(d,fitApplyFn) {
 #'    eSets <- buildEvalSets(nrow(d))
 #'    evals <- lapply(eSets, 
 #'       function(ei) { fitApplyFn(d[ei$train,],d[ei$app,]) })
@@ -41,7 +41,7 @@
 #' #   relation until we adjust for degrees of freedom)
 #' 1-sum((d$y-d$inSampleEst)^2)/sum((d$y-mean(d$y))^2)
 #' 
-#' d$outOfSampleEst <- simualteOutOfSampleTrainEval(d,fitModelAndApply)
+#' d$outOfSampleEst <- simulateOutOfSampleTrainEval(d,fitModelAndApply)
 #' # compute out-sample R^2 (not positive, 
 #' #  evidence of no relation)
 #' 1-sum((d$y-d$outOfSampleEst)^2)/sum((d$y-mean(d$y))^2)
