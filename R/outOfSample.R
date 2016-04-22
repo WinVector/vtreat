@@ -12,6 +12,10 @@
 #' 
 #' @examples
 #' 
+#' # use
+#' buildEvalSets(200)
+#' 
+#' # longer example
 #' # helper fns
 #' # fit models using experiment plan to estimate out of sample behavior
 #' fitModelAndApply <- function(trainData,applicaitonData) {
