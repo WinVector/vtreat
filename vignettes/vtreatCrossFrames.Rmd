@@ -15,15 +15,22 @@ Consider the following data frame. The outcome only depends on the "good" variab
 
 ```{r}
 set.seed(22626)
-d <- data.frame(xBad1=sample(paste('level',1:1000,sep=''),2000,replace=TRUE),
-                xBad2=sample(paste('level',1:1000,sep=''),2000,replace=TRUE),
-                xBad3=sample(paste('level',1:1000,sep=''),2000,replace=TRUE),
-                xGood1=rnorm(2000),
-                xGood2=rnorm(2000))
 
-# outcome only depends on "good" variables
-d$y <- rnorm(nrow(d))+0.2*d$xGood1 + 0.3*d$xGood2>0.5
-d$rgroup <- sample(c("cal","train","test"),nrow(d),replace=TRUE)  # the random group used for splitting the data set, not a variable.
+mkData <- function(n) {
+  d <- data.frame(xBad1=sample(paste('level',1:1000,sep=''),n,replace=TRUE),
+                  xBad2=sample(paste('level',1:1000,sep=''),n,replace=TRUE),
+                  xBad3=sample(paste('level',1:1000,sep=''),n,replace=TRUE),
+                  xGood1=rnorm(n),
+                  xGood2=rnorm(n))
+  
+  # outcome only depends on "good" variables
+  d$y <- rnorm(nrow(d))+0.2*d$xGood1 + 0.3*d$xGood2>0.5
+  # the random group used for splitting the data set, not a variable.
+  d$rgroup <- sample(c("cal","train","test"),nrow(d),replace=TRUE)  
+  d
+}
+
+d <- mkData(2000)
 
 # devtools::install_github("WinVector/WVPlots")
 # library('WVPlots')
@@ -41,7 +48,7 @@ plotRes <- function(d,predName,yName,title) {
 }
 ```
 
-## The Wrong Thing
+## The Wrong Way
 
 Bad practice: use the same set of data to prepare variable encoding and train a model.
 
