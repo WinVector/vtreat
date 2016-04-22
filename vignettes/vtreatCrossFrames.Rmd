@@ -68,7 +68,7 @@ plotRes(dTest,'predM1','y','model1 on test')
 
 Notice above that we see a training accuracy of 98% and a test accuracy of 60%.
 
-## The Right Thing: A Calibration Set
+## The Right Way: A Calibration Set
 
 Now try a proper calibration/train/test split:
 
@@ -96,7 +96,7 @@ plotRes(dTest,'predM1','y','model1 on test')
 
 Notice above that we now see training and test accuracies of 70%.  We have defeated overfit in two ways: training performance is closer to test performance, and test performance is better. Also we see that the model now properly considers the "bad" variables to be insignificant.
 
-## Another Right Thing: Cross-Validation
+## Another Right Way: Cross-Validation
 
 Below is a more statistically efficient practice: building a cross training frame.  
 
@@ -167,3 +167,6 @@ plotRes(dTest,'predM1','y','model1 on test')
 ```
 
 The model fit to the cross-frame behaves similarly to the model produced via the process _f(CalibrationData, TrainData)_.
+
+
+
