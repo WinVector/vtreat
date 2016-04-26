@@ -21,6 +21,7 @@ The idea is: even with a sophisticated machine learning algorithm there are *man
 To help explain the methods we have prepared some documentation:
 
 -   The [vtreat package overall](http://winvector.github.io/vtreathtml/vtreat.html).
+-   [Preparing data for analysis using R whitepaper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
 -   The [types of new variables](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) introduced by vtreat processing (including how to limit down to domain appropriate variable types).
 -   Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): [nested over-fit issues](http://winvector.github.io/vtreathtml/vtreatOverfit.html) and a general [cross-frame solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
 -   [Principled ways to pick significance based pruning levels](http://winvector.github.io/vtreathtml/vtreatSignifcance.html).
@@ -141,9 +142,9 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#> -7.930164e-18  0.000000e+00  2.974296e-18  1.585994e-16 -3.972827e-18 
+#> -7.930164e-18 -3.961210e-18  2.974296e-18  1.585994e-16  3.972827e-18 
 #>       z_clean       z_isBAD 
-#>  7.927952e-18 -7.926292e-18
+#> -3.965138e-17 -7.926292e-18
 # all non NA slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
@@ -194,10 +195,10 @@ dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
-#> 0.000000e+00 0.000000e+00 0.000000e+00 5.551115e-17 0.000000e+00 
-#>       x_catD      z_clean      z_isBAD 
-#> 2.775558e-17 4.163336e-17 0.000000e+00
+#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
+#>  0.000000e+00  0.000000e+00  0.000000e+00 -2.775558e-17  0.000000e+00 
+#>        x_catD       z_clean       z_isBAD 
+#>  2.775558e-17  4.163336e-17 -1.387779e-17
 # all non NA slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
