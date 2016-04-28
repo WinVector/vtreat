@@ -99,12 +99,12 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
   evalSets <- buildEvalSets(length(zoY))
-  scoreFrame <- vector('list',length(evalSets))
+  scoreFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
-  rowList <- vector('list',length(evalSets))
-  for(ei in evalSets) {
-    evalIndices <- ei$app
-    buildIndices <- ei$train
+  rList <- vector('list',length(evalSets))
+  for(ei in seq_len(length(evalSets))) {
+    evalIndices <- evalSets[[ei]]$app
+    buildIndices <- evalSets[[ei]]$train
     dsubiEval <- dsub[evalIndices,]
     dsubiBuild <- dsub[buildIndices,]
     zoYBuild <- zoY[buildIndices]
@@ -130,13 +130,13 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
     }
     fi <- fi[,newVarsS,drop=FALSE]
     fi[[outcomename]] <- dsubiEval[[outcomename]]
-    scoreFrame[[length(scoreFrame)+1]] <- fi
-    wtList[[length(wtList)+1]] <- weights[evalIndices]
-    rowList[[length(rowList)+1]] <- evalIndices
+    scoreFrameList[[ei]] <- fi
+    wtList[[ei]] <- weights[evalIndices]
+    rList[[ei]] <- evalIndices
   }
-  scoreFrame <- do.call(rbind,scoreFrame)
-  scoreWeights <- do.call(c,wtList)
-  rowList <- do.call(c,rowList)
+  scoreFrame <- .rbindListOfFrames(scoreFrameList)
+  scoreWeights <- unlist(wtList)
+  rowList <- unlist(rList)
   if((length(rowList)==nrow(dframe))&&
      all(sort(rowList)==(1:nrow(dframe)))&&
      (!all(rowList==(1:nrow(dframe))))) {

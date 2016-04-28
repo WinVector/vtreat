@@ -337,6 +337,11 @@
 }
 
 
+.rbindListOfFrames <- function(rowlist) {
+  do.call(rbind,rowlist)
+}
+
+
 .mkScoreVarWorker <- function(dframe,zoY,zC,zTarget,weights) {
   force(dframe)
   force(zoY)
@@ -363,7 +368,7 @@
       if(length(scoreFrame)<=0) {
         return(NULL)
       }
-      sFrame <- do.call(rbind,scoreFrame)
+      sFrame <- .rbindListOfFrames(scoreFrame)
       sFrame$needsSplit <- ti$needsSplit
     } else {
       sFrame <- scoreFrame
@@ -434,7 +439,7 @@
   scrW <- .mkScoreVarWorker(dframe,zoY,zC,zTarget,weights)
   sFrames <- plapply(treatments,scrW,parallelCluster)
   sFrames <- Filter(Negate(is.null),sFrames)
-  sFrame <- do.call(rbind,sFrames)
+  sFrame <- .rbindListOfFrames(sFrames)
   plan <- list(treatments=treatments,
                scoreFrame=sFrame,
                outcomename=outcomename)
@@ -549,7 +554,7 @@
       swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,zTarget,scoreWeights)
       sframe <- plapply(newVarsS,swkr,parallelCluster) 
       sframe <- Filter(Negate(is.null),sframe)
-      sframe <- do.call(rbind,sframe)
+      sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame
       nukeCols <- intersect(colnames(treatments$scoreFrame),
                             c('PRESSRsquared', 'psig', 'sig', 'catPRSquared', 'csig'))
