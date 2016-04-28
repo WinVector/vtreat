@@ -177,9 +177,9 @@
 
 
 
-# TODO: pivot warnings/print out of here
 # design a treatment for a single variables
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
+# TODO: pivot warnings/print out of here
 .varDesigner <- function(zoY,
                          zC,zTarget,
                          weights,
@@ -360,9 +360,10 @@
       scoreFrame <- vector('list',length(vnames(ti)))
       xcolClean <- .cleanColumn(dframe[[origName]],nRows)
       fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
-      for(nv in vnames(ti)) {
+      for(nvi in seq_len(length(vnames(ti)))) {
+        nv <- vnames(ti)[[nvi]]
         scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
-        scoreFrame[[length(scoreFrame)+1]] <- scoreFrameij
+        scoreFrame[[nvi]] <- scoreFrameij
       }
       scoreFrame <- Filter(Negate(is.null),scoreFrame)
       if(length(scoreFrame)<=0) {
