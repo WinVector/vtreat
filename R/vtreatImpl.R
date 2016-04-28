@@ -337,9 +337,6 @@
 }
 
 
-.rbindListOfFrames <- function(rowlist) {
-  do.call(rbind,rowlist)
-}
 
 
 .mkScoreVarWorker <- function(dframe,zoY,zC,zTarget,weights) {

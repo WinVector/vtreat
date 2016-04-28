@@ -11,6 +11,12 @@ plapply <- function(workList,worker,parallelCluster) {
 }
 
 
+# rbind a list of dataframes into one
+.rbindListOfFrames <- function(rowlist) {
+  do.call(rbind,rowlist)
+}
+
+
 
 # take in a column and return a column that is safely one of the primative
 # types: numeric, character 
@@ -251,7 +257,8 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(n)
   }
-  tf <- data.frame(x=x,y=(yC==yTarget))
+  tf <- data.frame(x=x,y=(yC==yTarget),
+                   stringsAsFactors=FALSE)
   origOpt <- options()
   options(warn=-1)
   tryCatch({      
