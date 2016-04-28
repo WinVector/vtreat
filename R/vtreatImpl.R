@@ -47,6 +47,7 @@
       stop(gi)
     }
   }
+  # unpack sub-frames into a list of columns
   cols <- vector('list',length(colNames))
   names(cols) <- colNames
   for(ii in seq_len(length(toProcess))) {
@@ -58,6 +59,12 @@
     }
   }
   cols <- Filter(Negate(is.null),cols)
+  # corner case, make sure we get the number of rows correct
+  if(length(cols)<=0) {
+    d <- data.frame(x=numeric(nrow(dframe)))
+    d[['x']] <- NULL
+    return(d)
+  }
   as.data.frame(cols,stringsAsFactors=FALSE)
 }
 

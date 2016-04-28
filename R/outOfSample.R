@@ -124,7 +124,7 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
                               parallelCluster)
     fi <- .vtreatList(ti,dsubiEval,newVarsS,scale,doCollar,
                       parallelCluster)
-    # make sure each frame has the same structure
+    # make sure each frame has the same column structure
     for(v in setdiff(newVarsS,colnames(fi))) {
       fi[[v]] <- 0.0
     }
