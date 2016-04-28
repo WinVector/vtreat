@@ -13,6 +13,19 @@ plapply <- function(workList,worker,parallelCluster) {
 
 # rbind a list of dataframes into one
 .rbindListOfFrames <- function(rowlist) {
+  # catch trivial cases
+  if(length(rowlist)<=1) {
+    if(length(rowlist)<=0) {
+      return(NULL)
+    }
+    return(rowlist[[1]])
+  }
+  # see if a library can supply a fast method
+  if(requireNamespace("dplyr", quietly = TRUE)) {
+    return(as.data.frame(dplyr::bind_rows(rowlist),
+                         stringsAsFactor=FALSE))
+  }
+  # fall back to base R
   do.call(rbind,rowlist)
 }
 

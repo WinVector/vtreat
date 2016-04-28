@@ -1,11 +1,13 @@
 
 
-'vtreat' 0.5.23 2016/04/16
+'vtreat' 0.5.23 2016/04/28
 
 Changes:
 
 - Fix issue of non-significant variables not being scaled.
 - Documentation fixes, document variable types, improve vignettes.
+- Minor performance fixes on result accumulation.
+- Add optional use of dplyr for row binding (of score report frames).
 
 
 'vtreat' 0.5.22 2016/01/07
