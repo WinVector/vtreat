@@ -61,7 +61,7 @@
   cols <- Filter(Negate(is.null),cols)
   # corner case, make sure we get the number of rows correct
   if(length(cols)<=0) {
-    d <- data.frame(x=numeric(nrow(dframe)))
+    d <- data.frame(x=numeric(nrow(dframe)),stringsAsFactors=FALSE)
     d[['x']] <- NULL
     return(d)
   }
