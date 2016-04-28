@@ -101,7 +101,7 @@ Some of our related articles (which should make clear some of our motivations, a
 -   [What is new in the vtreat library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
 -   [How do you know if your data has signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
 
-Examples of current best practice using 'vtreat' (variable coding, train, test split) can be found [here](http://winvector.github.io/vtreat/Overfit.html) and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
+Examples of current best practice using 'vtreat' (variable coding, train, test split) can be found [here](http://winvector.github.io/vtreat/vtreatOverfit.html) and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 Trivial example:
 
@@ -142,9 +142,9 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#> -7.930164e-18 -3.961210e-18  2.974296e-18  1.585994e-16  3.972827e-18 
+#> -7.930164e-18  0.000000e+00  2.974296e-18  1.585994e-16 -3.972827e-18 
 #>       z_clean       z_isBAD 
-#> -3.965138e-17 -7.926292e-18
+#>  7.927952e-18 -7.926292e-18
 # all non NA slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
@@ -195,10 +195,10 @@ dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
-#>  0.000000e+00  0.000000e+00  0.000000e+00 -2.775558e-17  0.000000e+00 
-#>        x_catD       z_clean       z_isBAD 
-#>  2.775558e-17  4.163336e-17 -1.387779e-17
+#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
+#> 0.000000e+00 0.000000e+00 0.000000e+00 2.775558e-17 0.000000e+00 
+#>       x_catD      z_clean      z_isBAD 
+#> 0.000000e+00 4.163336e-17 0.000000e+00
 # all non NA slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 

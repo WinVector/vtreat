@@ -270,7 +270,7 @@ motivations, and design decisions):
 
 Examples of current best practice using 'vtreat' (variable
 coding, train, test split) can be found
-[here](http://winvector.github.io/vtreat/Overfit.html) and
+[here](http://winvector.github.io/vtreat/vtreatOverfit.html) and
 [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 

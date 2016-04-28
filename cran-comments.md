@@ -1,15 +1,16 @@
 ## Test environments
-* local OS X install, 3.2.2
+* local OS X install, 3.2.4
 * win-builder (devel and release)
 
-## R CMD check --as-cran vtreat_0.5.22.tar.gz
-* using R version 3.2.3 (2015-12-10) -- "Wooden Christmas-Tree"
-* using platform: x86_64-apple-darwin11.4.2 (64-bit)
-There were no ERRORs or WARNINGs. 
+## R CMD check --as-cran vtreat_0.5.23.tar.gz
+* using R version 3.2.4 (2016-03-16)
+* using platform: x86_64-apple-darwin14.5.0 (64-bit)
+There were no ERRORs or NOTEs. 
 
-There was one NOTE:
+There was one WARNING:
 
-* NOTE No repository set, so cyclic dependency check skipped
+* WARNING
+* ‘qpdf’ is needed for checks on size reduction of PDFs
 
 Note_to_CRAN_maintainers
 Maintainer: ‘John Mount <jmount@win-vector.com>’
