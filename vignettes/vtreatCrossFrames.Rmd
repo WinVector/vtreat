@@ -171,6 +171,7 @@ prep <- vtreat::mkCrossFrameCExperiment(dTrain,
 )
 dTrainTreated <- prep$crossFrame
 treatments <- prep$treatments
+print(treatments$scoreFrame[,c('varName','psig','csig')])
 ```
 
 Now fit the model to *the cross-frame* rather than to `prepare(treatments, dTrain)` (the treated training data).

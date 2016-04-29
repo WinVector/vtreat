@@ -29,6 +29,7 @@ test_that("testParallel: Parallel works", {
   treatmentsC <- designTreatmentsC(uci.car.data,
                                     pvars,dYName,dYTarget,verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=c())
+  
   expect_true(nrow(dTrainCTreated)==nrow(dTrainCTreatedP))
   expect_true(length(colnames(dTrainCTreated))==length(colnames(dTrainCTreatedP)))
   expect_true(all(colnames(dTrainCTreated)==colnames(dTrainCTreatedP)))
@@ -36,8 +37,11 @@ test_that("testParallel: Parallel works", {
     ev <- max(abs(dTrainCTreated[[v]]-dTrainCTreatedP[[v]]))
     expect_true(ev<1.0e-3)
   }
-  expect_true(max(abs(pmax(0,treatmentsC$PRESSRsquared)-pmax(0,treatmentsCP$PRESSRsquared)))<=1.0e-2)
-  expect_true(max(abs(pmax(0,treatmentsC$varScore)-pmax(0,treatmentsCP$varScore)))<=1.0e-2)
+  expect_true(max(abs(pmax(0,treatmentsC$scoreFrame$PRESSRsquared)-
+                        pmax(0,treatmentsCP$scoreFrame$PRESSRsquared)))<=1.0e-2)
+  expect_true(max(abs(pmax(0,treatmentsC$scoreFrame$PRESSRsquared)-
+                        pmax(0,treatmentsCP$scoreFrame$PRESSRsquared)))<=1.0e-2)
   # this score depends strongly on pseudo random samples
-  expect_true(max(abs(pmax(0,treatmentsC$catPseudoRSquared)-pmax(0,treatmentsCP$catPseudoRSquared)))<=0.3)
+  expect_true(max(abs(pmax(0,treatmentsC$scoreFrame$catPRSquared)-
+                        pmax(0,treatmentsCP$scoreFrame$catPRSquared)))<=0.3)
 })

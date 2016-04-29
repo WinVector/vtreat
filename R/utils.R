@@ -273,9 +273,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
   }
   tf <- data.frame(x=x,y=(yC==yTarget),
                    stringsAsFactors=FALSE)
-  origOpt <- options()
-  options(warn=-1)
-  tryCatch({      
+  suppressWarnings(tryCatch({      
     model <- stats::glm(stats::as.formula('y~x'),
                         data=tf,
                         family=stats::binomial(link='logit'),
@@ -291,7 +289,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
       return(list(pRsq=pRsq,sig=sig))
     }
   },
-  error=function(e){})
+  error=function(e){}))
   return(list(pRsq=0.0,sig=1.0))
 }
 

@@ -3,7 +3,7 @@ library('vtreat')
 context("Excercise Operations")
 
 test_that("testBO: Works As Expected", {
-  op <- options(warn = (-1)) # suppress warnings 
+  suppressWarnings({
   # build the common column types we are likely to encounter
   synthFrame <- function(n,censorD) {
     stringReps = c(rep('a',100),rep('b',100),'c',rep('d',20))
@@ -114,5 +114,5 @@ test_that("testBO: Works As Expected", {
       }
     }
   }
-  options(op) # restore settings
+  })
 })

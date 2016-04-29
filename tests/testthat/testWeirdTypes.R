@@ -3,7 +3,7 @@ library('vtreat')
 context("Defensive Coding")
 
 test_that("testWeirdTypes: Protect from odd columns types (and warn)", {
-  op <- options(warn = (-1)) # suppress warnings 
+  suppressWarnings({
   d <- data.frame(xInteger=1:4,
                   xNumeric=0,
                   xCharacter='a',
@@ -30,6 +30,5 @@ test_that("testWeirdTypes: Protect from odd columns types (and warn)", {
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
-
-  options(op) # restore settings
+  })
 })
