@@ -6,10 +6,11 @@ Date: 2016-04-28
 Author: John Mount, Nina Zumel
 URL: https://github.com/WinVector/vtreat
 Maintainer: John Mount <jmount@win-vector.com>
-Description: Prepares variables so that data has fewer exceptional cases, making
+Description: A data.frame processor/conditioner that helps prepare real-world data for predictive modeling in a statistically sound manner.
+    Prepares variables so that data has fewer exceptional cases, making
     it easier to safely use models in production. Common problems 'vtreat' defends
-    against: Inf, NA, too many categorical values, rare categorical values, new
-    categorical values (levels seen during application, but not during training).
+    against: Inf, NA, too many categorical levels, rare categorical levels, new
+    categorical levels (levels seen during application, but not during training).
     'vtreat::prepare' should be used as you would use 'model.matrix'.
 License: GPL-3
 Suggests:
