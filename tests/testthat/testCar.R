@@ -12,8 +12,8 @@ test_that("testCar: Numeric Var Scores as expected car", {
                                    pvars,dYName,dYTarget,verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=0.99)
   cvars <- setdiff(colnames(dTrainCTreated),dYName)
-  
-  
-  uci.car.data$y <- ifelse(uci.car.data[,dYName]==dYTarget,1,0)
-  uci.car.data$w <- 1
+  expect_true(max(treatmentsC$scoreFrame$sig)<0.9)
+  codes <- sort(unique(treatmentsC$scoreFrame$code))
+  expect_true('catB' %in% codes)
+  expect_true('lev' %in% codes)
 })

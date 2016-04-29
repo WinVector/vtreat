@@ -258,6 +258,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 #' @seealso \code{\link{hold1OutMeans}} 
 catScore <- function(x,yC,yTarget,weights=c()) {
   n <- length(x)
+  # grab some special cases
   if(n<=1) {
     return(list(pRsq=0.0,sig=1.0))
   }

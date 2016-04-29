@@ -549,7 +549,7 @@
         zCS = scoreFrame[[outcomename]]==zTarget
         zoYS = ifelse(zCS,1,0)
       }
-      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,zTarget,scoreWeights)
+      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,TRUE,scoreWeights)
       sframe <- plapply(newVarsS,swkr,parallelCluster) 
       sframe <- Filter(Negate(is.null),sframe)
       sframe <- .rbindListOfFrames(sframe)
