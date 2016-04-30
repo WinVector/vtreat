@@ -299,7 +299,7 @@
 
 
 
-
+# used in initial scoring of variables
 .mkScoreVarWorker <- function(dframe,zoY,zC,zTarget,weights) {
   force(dframe)
   force(zoY)
@@ -340,6 +340,8 @@
 }
 
 
+# used in re-scoring needsSplit variables on simulated out of sample
+# (cross) frame
 .mkScoreColWorker <- function(dframe,zoY,zC,zTarget,weights) {
   force(dframe)
   force(zoY)
