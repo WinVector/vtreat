@@ -36,9 +36,6 @@
   }
   class(treatment) <- 'vtreatment'
   treatment$scales <- .getScales(pred,zoY,weights)
-#   jackPred <- .jackknifeCatP(vcolin,weights)
-#   jackScore <- .scoreCol(newVarName,jackPred,zoY,zC,zTarget,weights)
-#   treatment$scoreFrame <- jackScore
   treatment
 }
 

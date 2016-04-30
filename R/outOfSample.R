@@ -99,7 +99,7 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
   evalSets <- buildEvalSets(length(zoY))
-  scoreFrameList <- vector('list',length(evalSets))
+  crossFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rList <- vector('list',length(evalSets))
   for(ei in seq_len(length(evalSets))) {
@@ -130,21 +130,21 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
     }
     fi <- fi[,newVarsS,drop=FALSE]
     fi[[outcomename]] <- dsubiEval[[outcomename]]
-    scoreFrameList[[ei]] <- fi
+    crossFrameList[[ei]] <- fi
     wtList[[ei]] <- weights[evalIndices]
     rList[[ei]] <- evalIndices
   }
-  scoreFrame <- .rbindListOfFrames(scoreFrameList)
+  crossFrame <- .rbindListOfFrames(crossFrameList)
   scoreWeights <- unlist(wtList)
   rowList <- unlist(rList)
   if((length(rowList)==nrow(dframe))&&
      all(sort(rowList)==(1:nrow(dframe)))&&
      (!all(rowList==(1:nrow(dframe))))) {
     # undo permuation
-    scoreFrame[rowList,] <- scoreFrame
+    crossFrame[rowList,] <- crossFrame
     scoreWeights[rowList] <- scoreWeights[rowList]
   }
-  list(crossFrame=scoreFrame,crossWeights=scoreWeights)
+  list(crossFrame=crossFrame,crossWeights=scoreWeights)
 }
 
 

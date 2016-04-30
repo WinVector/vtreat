@@ -502,17 +502,17 @@
                                 TRUE,
                                 FALSE,FALSE,
                                 parallelCluster)
-      scoreFrame <- crossData$crossFrame
-      scoreWeights <- crossData$crossWeights
+      crossFrame <- crossData$crossFrame
+      crossWeights <- crossData$crossWeights
       # score this frame
       if(is.null(zC)) {
-        zoYS = scoreFrame[[outcomename]]
+        zoYS = crossFrame[[outcomename]]
         zCS = NULL
       } else {
-        zCS = scoreFrame[[outcomename]]==zTarget
+        zCS = crossFrame[[outcomename]]==zTarget
         zoYS = ifelse(zCS,1,0)
       }
-      swkr <- .mkScoreColWorker(scoreFrame,zoYS,zCS,TRUE,scoreWeights)
+      swkr <- .mkScoreColWorker(crossFrame,zoYS,zCS,TRUE,crossWeights)
       sframe <- plapply(newVarsS,swkr,parallelCluster) 
       sframe <- Filter(Negate(is.null),sframe)
       sframe <- .rbindListOfFrames(sframe)
