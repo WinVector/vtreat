@@ -23,8 +23,9 @@
   }
   counts <- counts[tracked]
   missingMass <- 1 - sum(counts)/totMass
+  newVarNames <- make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE)
   treatment <- list(origvar=origVarName,
-                    newvars=make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE),
+                    newvars=newVarNames,
                     f=.catInd,
                     args=list(tracked=tracked,
                               levRestriction=levRestriction),
@@ -33,16 +34,11 @@
                     needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
-  nvar <- length(pred)
-  treatment$scales <- list('a'=rep(1.0,nvar),
-                           'b'=rep(0.0,nvar),
-                           'sig'=rep(0.0,nvar))  
-  for(j in seq_len(nvar)) {
-    scales <- .getScales(pred[[j]],ynumeric,weights)
-    treatment$scales$a[j] <- scales$a
-    treatment$scales$b[j] <- scales$b
-    treatment$scales$sig[j] <- scales$sig
-  }
+  scaleList <- lapply(seq_len(length(newVarNames)),
+                      function(j) {
+                        linScore(newVarNames[[j]],pred[[j]],ynumeric,weights)
+                      })
+  treatment$scales <- .rbindListOfFrames(scaleList)
   treatment
 }
 

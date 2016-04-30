@@ -271,13 +271,15 @@
     yMoves <- .has.range.cn(zoY)
     if(varMoves && yMoves) {
       # TODO: pull this off scale fact
-      lstat <- .getScales(nxcol,
+      lstat <- linScore(varName,
+                        nxcol,
                           zoY,
                           weights)
       psig <- lstat$sig
       sig <- lstat$sig
       if(catTarget) {
-        cstat <- catScore(nxcol,
+        cstat <- catScore(varName,
+                          nxcol,
                           zC,zTarget,
                           weights)
         csig <- cstat$sig

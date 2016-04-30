@@ -39,7 +39,7 @@
     return(NULL)
   }
   class(treatment) <- 'vtreatment'
-  treatment$scales <- .getScales(pred,rescol,weights)
+  treatment$scales <- linScore(newVarName,pred,rescol,weights)
   treatment
 }
 

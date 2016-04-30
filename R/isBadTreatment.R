@@ -11,14 +11,15 @@
   if((nna<=0)||(nna>=length(xcol))) {
     return(c())
   }
+  newVarName <- make.names(paste(origVarName,'isBAD',sep='_'))
   treatment <- list(origvar=origVarName,
-                    newvars=make.names(paste(origVarName,'isBAD',sep='_')),
+                    newvars=newVarName,
                     f=.isBAD,
                     args=list(),
                     treatmentName='is.bad',
                     treatmentCode='isBAD',
                     needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
-  treatment$scales <- .getScales(ifelse(badIDX,1.0,0.0),ynumeric,weights)
+  treatment$scales <- linScore(newVarName,ifelse(badIDX,1.0,0.0),ynumeric,weights)
   treatment
 }

@@ -32,14 +32,15 @@
   if(max(xcol)<=min(xcol)) {
     return(c())
   }
+  newVarName <- make.names(paste(origVarName,'clean',sep='_'))
   treatment <- list(origvar=origVarName,
-                    newvars=make.names(paste(origVarName,'clean',sep='_')),
+                    newvars=newVarName,
                     f=.passThrough,
                     args=list(nadist=nadist,cuts=cuts),
                     treatmentName='Scalable pass through',
                     treatmentCode='clean',
                     needsSplit=FALSE)
   class(treatment) <- 'vtreatment'
-  treatment$scales <- .getScales(xcol,ycol,weights)
+  treatment$scales <- linScore(newVarName,xcol,ycol,weights)
   treatment
 }

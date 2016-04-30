@@ -4,9 +4,11 @@
 \alias{catScore}
 \title{return a pseudo R-squared from a 1 variable logistic regression}
 \usage{
-catScore(x, yC, yTarget, weights)
+catScore(varName, x, yC, yTarget, weights)
 }
 \arguments{
+\item{varName}{name of variable}
+
 \item{x}{numeric (no NAs/NULLs) effective variable}
 
 \item{yC}{(no NAs/NULLs) outcome variable}
@@ -20,8 +22,5 @@ cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 }
 \description{
 return a pseudo R-squared from a 1 variable logistic regression
-}
-\seealso{
-\code{\link{hold1OutMeans}}
 }
 

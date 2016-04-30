@@ -142,10 +142,12 @@ plapply <- function(workList,worker,parallelCluster) {
 
 
 
-# xcol numeric vector of inputs (no NA/NULL/NaN)
-# ycol numeric vector of outcomes (no NA/NULL/NaN)
-# numeric vector of data weights (no NA/NULL/NaN, all>0.0)
-.getScales <- function(xcol,ycol,weights) {
+#' Return in-sample linear stats and scaling.
+#' @param varName name of variable
+#' @param xcol numeric vector of inputs (no NA/NULL/NaN)
+#' @param ycol numeric vector of outcomes (no NA/NULL/NaN)
+#' @param weights numeric vector of data weights (no NA/NULL/NaN, all>0.0)
+linScore <- function(varName,xcol,ycol,weights) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(xcol))
   }
@@ -167,23 +169,25 @@ plapply <- function(workList,worker,parallelCluster) {
     }
   }
   b <- -.wmean(a*xcol,weights)
-  data.frame(a=a,b=b,sig=sig,stringsAsFactors=FALSE)
+  data.frame(varName=varName,
+             a=a,b=b,
+             sig=sig,
+             stringsAsFactors=FALSE)
 }
 
 
 
 #' return a pseudo R-squared from a 1 variable logistic regression
+#' @param varName name of variable
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param yC  (no NAs/NULLs) outcome variable
 #' @param yTarget scalar target for yC to match (yC==tTarget is goal)
 #' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
-#' @seealso \code{\link{hold1OutMeans}} 
-catScore <- function(x,yC,yTarget,weights) {
+catScore <- function(varName,x,yC,yTarget,weights) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(x))
   }
-  pRsq <- 0.0
   sig <- 1.0
   if(.has.range.cn(x) && 
      .has.range.cn(as.numeric(yC==yTarget))) {
@@ -205,7 +209,9 @@ catScore <- function(x,yC,yTarget,weights) {
     },
     error=function(e){}))
   }
-  data.frame(pRsq=pRsq,sig=sig,stringsAsFactors=FALSE)
+  data.frame(varName=varName,
+             sig=sig,
+             stringsAsFactors=FALSE)
 }
 
 
