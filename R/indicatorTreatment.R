@@ -34,11 +34,14 @@
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
   nvar <- length(pred)
-  treatment$scales <- list('a'=rep(1.0,nvar),'b'=rep(0.0,nvar))  
+  treatment$scales <- list('a'=rep(1.0,nvar),
+                           'b'=rep(0.0,nvar),
+                           'sig'=rep(0.0,nvar))  
   for(j in seq_len(nvar)) {
     scales <- .getScales(pred[[j]],ynumeric,weights)
     treatment$scales$a[j] <- scales$a
     treatment$scales$b[j] <- scales$b
+    treatment$scales$sig[j] <- scales$sig
   }
   treatment
 }

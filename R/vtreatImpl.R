@@ -72,34 +72,6 @@
 
 
 
-# xcol numeric vector of inputs (no NA/NULL/NaN)
-# ycol numeric vector of outcomes (no NA/NULL/NaN)
-# numeric vector of data weights (no NA/NULL/NaN, all>0.0)
-.getScales <- function(xcol,ycol,weights) {
-  lmatx <- matrix(data=0.0,nrow=length(ycol),ncol=2)
-  lmatx[,1] <- 1
-  lmatx[,2] <- xcol
-  lmaty <- matrix(data=0.0,nrow=length(ycol),ncol=1)
-  meany <- .wmean(ycol,weights)
-  lmaty[,1] <- ycol-meany
-  model <- stats::lm.wfit(lmatx,lmaty,weights)
-  a <- 0.0
-  if((!is.na(model$coefficients[[2]]))&&
-     (!is.infinite(model$coefficients[[2]]))) {
-    a <- model$coefficients[[2]]
-    effect <- a*xcol
-    if((max(effect)-min(effect))<1.0e-8) {
-      a <- 0 # give up and suppress
-    }
-  }
-  b <- -.wmean(a*xcol,weights)
-  list(a=a,b=b)
-}
-
-
-
-
-
 
 
 

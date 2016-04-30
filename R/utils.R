@@ -247,6 +247,34 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 }
 
 
+# xcol numeric vector of inputs (no NA/NULL/NaN)
+# ycol numeric vector of outcomes (no NA/NULL/NaN)
+# numeric vector of data weights (no NA/NULL/NaN, all>0.0)
+.getScales <- function(xcol,ycol,weights) {
+  if(is.null(weights)) {
+    weights <- 1.0+numeric(length(xcol))
+  }
+  a <- 0.0
+  sig <- 1.0
+  if(.has.range.cn(xcol) && .has.range.cn(ycol)) {
+    lmodel <- stats::lm(formula=y~x,
+                        data=data.frame(x=xcol,y=ycol,stringsAsFactors=FALSE),
+                        weights=weights)
+    a <- lmodel$coefficients[['x']]
+    if(is.na(a) || is.infinite(a)) {
+      a <- 0.0
+    } else {
+      smodel <- summary(lmodel)
+      sig <- stats::pf(smodel$fstatistic[['value']],
+                       smodel$fstatistic[['numdf']], 
+                       smodel$fstatistic[['dendf']],
+                       lower.tail=F)
+    }
+  }
+  b <- -.wmean(a*xcol,weights)
+  list(a=a,b=b,sig=sig)
+}
+
 
 
 #' return a pseudo R-squared from a 1 variable logistic regression
@@ -257,40 +285,32 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 #' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 #' @seealso \code{\link{hold1OutMeans}} 
 catScore <- function(x,yC,yTarget,weights=c()) {
-  n <- length(x)
-  # grab some special cases
-  if(n<=1) {
-    return(list(pRsq=0.0,sig=1.0))
-  }
-  if(!.has.range.cn(x)) {
-    return(list(pRsq=0.0,sig=1.0))
-  }
-  if(!.has.range(yC)) {
-    return(list(pRsq=1.0,sig=0.0))
-  }
   if(is.null(weights)) {
-    weights <- 1.0+numeric(n)
+    weights <- 1.0+numeric(length(x))
   }
-  tf <- data.frame(x=x,y=(yC==yTarget),
-                   stringsAsFactors=FALSE)
-  suppressWarnings(tryCatch({      
-    model <- stats::glm(stats::as.formula('y~x'),
-                        data=tf,
-                        family=stats::binomial(link='logit'),
-                        weights=weights)
-    if(model$converged) {
-      delta_deviance = model$null.deviance - model$deviance
-      delta_df = model$df.null - model$df.residual
-      sig <- 1.0
-      pRsq <- 1.0 - model$deviance/model$null.deviance
-      if(pRsq>0) {
-        sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
+  pRsq <- 0.0
+  sig <- 1.0
+  if(.has.range.cn(x) && 
+     .has.range.cn(as.numeric(yC==yTarget))) {
+    tf <- data.frame(x=x,y=(yC==yTarget),
+                     stringsAsFactors=FALSE)
+    suppressWarnings(tryCatch({      
+      model <- stats::glm(stats::as.formula('y~x'),
+                          data=tf,
+                          family=stats::binomial(link='logit'),
+                          weights=weights)
+      if(model$converged) {
+        delta_deviance <- model$null.deviance - model$deviance
+        delta_df <- model$df.null - model$df.residual
+        pRsq <- 1.0 - model$deviance/model$null.deviance
+        if(pRsq>0) {
+          sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
+        }
       }
-      return(list(pRsq=pRsq,sig=sig))
-    }
-  },
-  error=function(e){}))
-  return(list(pRsq=0.0,sig=1.0))
+    },
+    error=function(e){}))
+  }
+  return(list(pRsq=pRsq,sig=sig))
 }
 
 
