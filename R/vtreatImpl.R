@@ -1,7 +1,5 @@
 
 
-# TODO: put correct significance model for out of sample evalution (right now using in-sample,
-# but that is not the right distribution).
 
 
 .vtreatA <- function(vtreat,xcol,scale,doCollar) {
@@ -273,8 +271,8 @@
       # TODO: pull this off scale fact
       lstat <- linScore(varName,
                         nxcol,
-                          zoY,
-                          weights)
+                        zoY,
+                        weights)
       psig <- lstat$sig
       sig <- lstat$sig
       if(catTarget) {
@@ -312,29 +310,20 @@
   nRows <- nrow(dframe)
   function(ti) {
     origName <- vorig(ti)
-    scoreFrame <- NULL
-    if(!ti$needsSplit) {
-      scoreFrame <- ti$scoreFrame
+    scoreFrame <- vector('list',length(vnames(ti)))
+    xcolClean <- .cleanColumn(dframe[[origName]],nRows)
+    fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
+    for(nvi in seq_len(length(vnames(ti)))) {
+      nv <- vnames(ti)[[nvi]]
+      scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
+      scoreFrame[[nvi]] <- scoreFrameij
     }
-    if(is.null(scoreFrame)) {
-      scoreFrame <- vector('list',length(vnames(ti)))
-      xcolClean <- .cleanColumn(dframe[[origName]],nRows)
-      fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
-      for(nvi in seq_len(length(vnames(ti)))) {
-        nv <- vnames(ti)[[nvi]]
-        scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
-        scoreFrame[[nvi]] <- scoreFrameij
-      }
-      scoreFrame <- Filter(Negate(is.null),scoreFrame)
-      if(length(scoreFrame)<=0) {
-        return(NULL)
-      }
-      sFrame <- .rbindListOfFrames(scoreFrame)
-      sFrame$needsSplit <- ti$needsSplit
-    } else {
-      sFrame <- scoreFrame
-      sFrame$needsSplit <- FALSE
+    scoreFrame <- Filter(Negate(is.null),scoreFrame)
+    if(length(scoreFrame)<=0) {
+      return(NULL)
     }
+    sFrame <- .rbindListOfFrames(scoreFrame)
+    sFrame$needsSplit <- ti$needsSplit
     sFrame$origName <- origName
     sFrame$code <- ti$treatmentCode
     sFrame

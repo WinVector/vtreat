@@ -36,13 +36,13 @@ The structure returned from `designTreatmentsN()` or `designTreatmentsC()` inclu
 In addition to the treatment objects `designTreatmentsC()` and `designTreatmentsN()` also return a data frame named `scoreFrame` which contains columns:
 
 - `varName`: name of new variable
-- `origName`: name of original variable that the variable was derived from (can repeat)
-- `varMove` : logical TRUE if the variable varied during training; only variables that move will be in the treated frame.
-- `PRESSRsquared` : a PRESS-held out R-squared of a linear fit from each variable to the y-value.  Scores of zero and below are very bad, scores near one are very good.
-- `psig` : significance of observed variable 'PRESSRsquared' value under an in-sample permutation test.
-- `catPRSquared` : for categorical outcomes: deviance based pseudo-Rsquared.
-- `csig` : for categorical outcomes: significance of observed variable catPRSquared value under an in-sample permutation test.
-- `sig` : `csig` for categorical outcomes, `psig` otherwise.
+- `origName`: name of original variable that the variable was derived from (can repeat).
+- `code`: what time of treatment was performed to create the derived variable (useful for filtering).
+- `varMoves`: logical TRUE if the variable varied during training; only variables that move will be in the treated frame.
+- `psig`: linear significnace of regerssing derived variable against a 0/1 indicator target.
+- `csig`: for categorical outcomes: significance of observed variable catPRSquared value under an in-sample permutation test.
+- `sig`: `csig` for categorical outcomes, `psig` otherwise.
+- `needsSplit`: is the variable a sub model and require out of sample scoring.
 
 
 In all cases we have two undesirable upward biases on the scores:
