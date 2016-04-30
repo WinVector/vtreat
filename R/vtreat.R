@@ -122,6 +122,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    parallelCluster)
   treatments$outcomeTarget <- outcometarget
   treatments$outcomeType <- 'Binary'
+  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments
 }
 
@@ -193,6 +194,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'Numeric'
+  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments
 }
 
@@ -254,6 +256,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'None'
+  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments
 }
 
@@ -305,6 +308,14 @@ prepare <- function(treatmentplan,dframe,pruneSig,
   .checkArgs1(dframe=dframe,...)
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
+  }
+  vtreatVersion <- packageVersion('vtreat')
+  if(is.null(treatmentplan$vtreatVersion) ||
+     (treatmentplan$vtreatVersion!=vtreatVersion)) {
+    warning(paste('treatments desined with vtreat version',
+               treatmentplan$vtreatVersion,
+               'and preparing data.frame with vtreat version',
+               vtreatVersion))
   }
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")

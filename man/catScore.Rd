@@ -4,7 +4,7 @@
 \alias{catScore}
 \title{return a pseudo R-squared from a 1 variable logistic regression}
 \usage{
-catScore(x, yC, yTarget, weights = c())
+catScore(x, yC, yTarget, weights)
 }
 \arguments{
 \item{x}{numeric (no NAs/NULLs) effective variable}

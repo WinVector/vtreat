@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-vtreat is an [R](https://cran.r-project.org) data.frame processor/conditioner package that helps prepare real-world data for predictive modeling in a statistically sound manner.
+[vtreat](https://github.com/WinVector/vtreat) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
 
 Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are *common* data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.
 
@@ -118,22 +118,22 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame)
-#>     varName varMoves PRESSRsquared psig        sig catPRSquared       csig
-#> 1  x_lev_NA     TRUE   -0.09374781    1 0.09248399  0.296065432 0.09248399
-#> 2 x_lev_x.a     TRUE   -0.65277227    1 0.26490379  0.130005705 0.26490379
-#> 3 x_lev_x.b     TRUE   -1.26040281    1 0.80967242  0.006067337 0.80967242
-#> 4    x_catP     TRUE   -0.65262325    1 0.26490379  0.130005705 0.26490379
-#> 5    x_catB     TRUE   -0.25610592    1 0.18011273  0.187924640 0.18011273
-#> 6   z_clean     TRUE   -0.13404882    1 0.13176020  0.237601767 0.13176020
-#> 7   z_isBAD     TRUE   -0.09374781    1 0.09248399  0.296065432 0.09248399
-#>   needsSplit origName  code
-#> 1      FALSE        x   lev
-#> 2      FALSE        x   lev
-#> 3      FALSE        x   lev
-#> 4       TRUE        x  catP
-#> 5       TRUE        x  catB
-#> 6      FALSE        z clean
-#> 7      FALSE        z isBAD
+#>     varName varMoves      psig        sig       csig needsSplit origName
+#> 1  x_lev_NA     TRUE 0.2031107 0.09248399 0.09248399      FALSE        x
+#> 2 x_lev_x.a     TRUE 0.3524132 0.26490379 0.26490379      FALSE        x
+#> 3 x_lev_x.b     TRUE 0.8456711 0.80967242 0.80967242      FALSE        x
+#> 4    x_catP     TRUE 0.3524132 0.26490379 0.26490379       TRUE        x
+#> 5    x_catB     TRUE 0.2901303 0.18011273 0.18011273       TRUE        x
+#> 6   z_clean     TRUE 0.2356201 0.13176020 0.13176020      FALSE        z
+#> 7   z_isBAD     TRUE 0.2031107 0.09248399 0.09248399      FALSE        z
+#>    code
+#> 1   lev
+#> 2   lev
+#> 3   lev
+#> 4  catP
+#> 5  catB
+#> 6 clean
+#> 7 isBAD
 
 # help("prepare")
 
@@ -142,7 +142,7 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#> -7.930164e-18  0.000000e+00  2.974296e-18  1.585994e-16 -3.972827e-18 
+#>  3.965082e-18 -1.586420e-17  9.917546e-19  1.585994e-16 -3.972827e-18 
 #>       z_clean       z_isBAD 
 #>  7.927952e-18 -7.926292e-18
 # all non NA slopes should be 1
@@ -173,32 +173,23 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame)
-#>     varName varMoves PRESSRsquared      psig       sig needsSplit origName
-#> 1  x_lev_NA     TRUE    0.04000128 0.6348745 0.6348745      FALSE        x
-#> 2 x_lev_x.a     TRUE   -0.33333000 1.0000000 1.0000000      FALSE        x
-#> 3 x_lev_x.b     TRUE   -1.07998856 1.0000000 1.0000000      FALSE        x
-#> 4    x_catP     TRUE   -0.33330334 1.0000000 1.0000000       TRUE        x
-#> 5    x_catN     TRUE   -0.74281970 1.0000000 1.0000000       TRUE        x
-#> 6    x_catD     TRUE   -3.26661714 1.0000000 1.0000000       TRUE        x
-#> 7   z_clean     TRUE   -0.02135479 1.0000000 1.0000000      FALSE        z
-#> 8   z_isBAD     TRUE    0.04000128 0.6348745 0.6348745      FALSE        z
-#>    code
-#> 1   lev
-#> 2   lev
-#> 3   lev
-#> 4  catP
-#> 5  catN
-#> 6  catD
-#> 7 clean
-#> 8 isBAD
+#>     varName varMoves      psig       sig needsSplit origName  code
+#> 1  x_lev_NA     TRUE 0.1339746 0.1339746      FALSE        x   lev
+#> 2 x_lev_x.a     TRUE 0.2070312 0.2070312      FALSE        x   lev
+#> 3 x_lev_x.b     TRUE 1.0000000 1.0000000      FALSE        x   lev
+#> 4    x_catP     TRUE 0.2070312 0.2070312       TRUE        x  catP
+#> 5    x_catN     TRUE 0.6831941 0.6831941       TRUE        x  catN
+#> 6    x_catD     TRUE 0.6528290 0.6528290       TRUE        x  catD
+#> 7   z_clean     TRUE 0.1701892 0.1701892      FALSE        z clean
+#> 8   z_isBAD     TRUE 0.1339746 0.1339746      FALSE        z isBAD
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
-#>     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catN 
-#> 0.000000e+00 0.000000e+00 0.000000e+00 2.775558e-17 0.000000e+00 
-#>       x_catD      z_clean      z_isBAD 
-#> 0.000000e+00 4.163336e-17 0.000000e+00
+#>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
+#> -1.387779e-17  0.000000e+00  0.000000e+00  5.551115e-17  0.000000e+00 
+#>        x_catD       z_clean       z_isBAD 
+#>  2.775558e-17  4.163336e-17  0.000000e+00
 # all non NA slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 

@@ -251,11 +251,6 @@
 .neatenScoreFrame <- function(sFrame) {
   # clean up sFrame a bit
   if(nrow(sFrame)>0) {
-    for(cname in c('PRESSRsquared','catPRSquared')) {
-      if(cname %in% colnames(sFrame)) {
-        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 0
-      }
-    }
     for(cname in c('psig','csig','sig')) {
       if(cname %in% colnames(sFrame)) {
         sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
@@ -267,28 +262,24 @@
 
 
 .scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights) {
-  PRESSRsquared=0.0
   psig=1.0
   sig=1.0
-  catPRSquared=0.0
   csig=1.0
   catTarget <- !is.null(zC)
   varMoves <- .has.range.cn(nxcol)
   if(varMoves) {
     yMoves <- .has.range.cn(zoY)
     if(varMoves && yMoves) {
-      pstat <- pressStatOfBestLinearFit(nxcol,
-                                        zoY,
-                                        weights,
-                                        'total')
-      PRESSRsquared <- pstat$rsq
-      psig <- pstat$sig
-      sig <- pstat$sig
+      # TODO: pull this off scale fact
+      lstat <- .getScales(nxcol,
+                          zoY,
+                          weights)
+      psig <- lstat$sig
+      sig <- lstat$sig
       if(catTarget) {
         cstat <- catScore(nxcol,
                           zC,zTarget,
                           weights)
-        catPRSquared <- cstat$pRsq
         csig <- cstat$sig
         sig <- cstat$sig
       }
@@ -296,12 +287,10 @@
   }
   scoreFrameij <- data.frame(varName=varName,
                              varMoves=varMoves,
-                             PRESSRsquared=PRESSRsquared,
                              psig=psig,
                              sig=psig,
                              stringsAsFactors = FALSE)
   if(catTarget) {
-    scoreFrameij$catPRSquared <- catPRSquared
     scoreFrameij$csig <- csig
     scoreFrameij$sig <- csig
   }
@@ -527,7 +516,7 @@
       sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame
       nukeCols <- intersect(colnames(treatments$scoreFrame),
-                            c('PRESSRsquared', 'psig', 'sig', 'catPRSquared', 'csig'))
+                            c('psig', 'sig', 'csig'))
       for(v in newVarsS) {
         for(n in nukeCols) {
           if(v %in% sframe$varName) {

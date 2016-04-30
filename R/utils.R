@@ -140,111 +140,6 @@ plapply <- function(workList,worker,parallelCluster) {
 
 
 
-# weighted PRESS statistic of a weighted mean
-# so in this case it is sum((y_i - meanAllBut(y,i))^) where mean is computed of all but the i'th datum
-# y numeric, no NAs/NULLS
-# weights numeric, non-negative, no NAs/NULLs at least two positive positions
-# all vectors same length
-#'
-#' of all but the i-th y.  Useful for normalizing PRESS style statistics.
-#' @param y values to average (should not have NAs).
-#' @param weights data weighing (should not have NAs, be non-negative and not all zero).
-#' @return a vector of length(y) where the i-th entry is the weighted mean 
-#' @seealso \code{\link{pressStatOfBestLinearFit}}
-#' @export
-hold1OutMeans <- function(y,weights) {
-  # get per-datum hold-1 out grand means
-  sumY <- sum(y*weights)
-  sumW <- sum(weights)
-  meanP <- (sumY - y*weights)/(sumW - weights)
-  meanP[is.na(meanP)] <- 0.5
-  meanP
-}
-
-
-# y: numeric vector no null/NAs
-# w: numeric vector same length as y, no negative/null/NAs at least 2 position non-zero
-# normalizationStrat: 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-.PRESSnormalization <- function(normalizationStrat,y,weights) {
-  res <- switch(normalizationStrat,
-                none = 1.0,
-                total = { meanY <- .wmean(y,weights); sum(weights*(y-meanY)^2) },
-                holdout = { meanH <- hold1OutMeans(y,weights); sum(weights*(y-meanH)^2) }
-  )
-  # switch default doesn't get called if use passes in a numeric
-  if(is.null(res)) {
-    stop("normalizationStrat must be one of 'none', 'total', or 'holdout'")
-  }
-  res
-}
-
-
-#' Compute the PRESS R-squared statistic of a 1-variable linear model
-#' @param x numeric (no NAs/NULLs) effective variable
-#' @param y numeric (no NAs/NULLs) outcome variable
-#' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @param normalizationStrat (optional) 'none': no normalization (traditional PRESS), 'total': divide by total variation, 'holdout': divide by 1-hold out variation (PRESS-line, larger than total variation)
-#' @return PRESS statistic of model y ~ a*x + b divided by pressStatOfBestConstant(y,weights), it is an R-squared so 1 is good 0 is bad
-#' @seealso \code{\link{hold1OutMeans}} 
-pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total') {
-  n <- length(x)
-  if(n<=1) {
-    return(list(rsq=0.0,sig=1.0))
-  }
-  if(!.has.range.cn(x)) {
-    return(list(rsq=0.0,sig=1.0))
-  }
-  if(!.has.range.cn(y)) {
-    return(list(rsq=1.0,sig=0.0))
-  }
-  if(is.null(weights)) {
-    weights <- 1.0+numeric(n)
-  }
-  error <- 0.0
-  # get per-datum hold-1 out grand means (used for smoothing and fallback)
-  meanP <- hold1OutMeans(y,weights)
-  a <- matrix(data=0,nrow=2,ncol=2)
-  a[1,1] <- 1.0e-5
-  a[2,2] <- 1.0e-5
-  b <- matrix(data=0,nrow=2,ncol=1)
-  for(i in seq_len(n)) {
-    xi <- x[i]
-    yi <- y[i]
-    wi <- weights[i]
-    a[1,1] <- a[1,1] + wi*1.0
-    a[1,2] <- a[1,2] + wi*xi
-    a[2,1] <- a[2,1] + wi*xi
-    a[2,2] <- a[2,2] + wi*xi*xi
-    b[1,1] <- b[1,1] + wi*yi
-    b[2,1] <- b[2,1] + wi*xi*yi
-  }
-  aM <- matrix(data=0,nrow=2,ncol=2)
-  bM <- matrix(data=0,nrow=2,ncol=1)
-  for(i in seq_len(n)) {
-    xi <- x[i]
-    yi <- y[i]
-    wi <- weights[i]
-    aM[1,1] <- a[1,1] - wi*1.0
-    aM[1,2] <- a[1,2] - wi*xi
-    aM[2,1] <- a[2,1] - wi*xi
-    aM[2,2] <- a[2,2] - wi*xi*xi
-    bM[1,1] <- b[1,1] - wi*yi
-    bM[2,1] <- b[2,1] - wi*xi*yi
-    ye <- meanP[i]  # const fn solution, for fallback
-    tryCatch(
-      ye <- sum(solve(aM,bM) * c(1,xi)),
-      error = function(e) {})
-    error <- error + wi*(yi-ye)^2
-  }
-  eConst <- .PRESSnormalization(normalizationStrat,y,weights)
-  pRsq <- 1.0 - error/eConst
-  sig <- 1.0
-  if(error<eConst) {
-    Fstat <- (eConst-error)*(n-2)/(error)
-    sig <- stats::pf(Fstat,1,n-2,lower.tail=F)
-  }
-  list(rsq=pRsq,sig=sig)
-}
 
 
 # xcol numeric vector of inputs (no NA/NULL/NaN)
@@ -272,7 +167,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
     }
   }
   b <- -.wmean(a*xcol,weights)
-  list(a=a,b=b,sig=sig)
+  data.frame(a=a,b=b,sig=sig,stringsAsFactors=FALSE)
 }
 
 
@@ -284,7 +179,7 @@ pressStatOfBestLinearFit <- function(x,y,weights=c(),normalizationStrat='total')
 #' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
 #' @seealso \code{\link{hold1OutMeans}} 
-catScore <- function(x,yC,yTarget,weights=c()) {
+catScore <- function(x,yC,yTarget,weights) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(x))
   }
@@ -310,7 +205,7 @@ catScore <- function(x,yC,yTarget,weights=c()) {
     },
     error=function(e){}))
   }
-  return(list(pRsq=pRsq,sig=sig))
+  data.frame(pRsq=pRsq,sig=sig,stringsAsFactors=FALSE)
 }
 
 

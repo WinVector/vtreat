@@ -34,12 +34,5 @@ test_that("testdplyr: works with dplyr", {
       ev <- max(abs(dTrainCTreated[[v]]-dTrainCTreatedP[[v]]))
       expect_true(ev<1.0e-3)
     }
-    expect_true(max(abs(pmax(0,treatmentsC$scoreFrame$PRESSRsquared)-
-                          pmax(0,treatmentsCP$scoreFrame$PRESSRsquared)))<=1.0e-2)
-    expect_true(max(abs(pmax(0,treatmentsC$scoreFrame$PRESSRsquared)-
-                          pmax(0,treatmentsCP$scoreFrame$PRESSRsquared)))<=1.0e-2)
-    # this score depends strongly on pseudo random samples
-    expect_true(max(abs(pmax(0,treatmentsC$scoreFrame$catPRSquared)-
-                          pmax(0,treatmentsCP$scoreFrame$catPRSquared)))<=0.3)
   }
 })
