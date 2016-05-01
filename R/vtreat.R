@@ -382,6 +382,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
+#' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
@@ -413,6 +414,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
+                                    ncross=3,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -448,6 +450,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             collarProb,
                             FALSE,
                             scale,doCollar,
+                            ncross,
                             parallelCluster)
   list(treatments=treatments,crossFrame=crossDat$crossFrame)
 }
@@ -473,6 +476,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
+#' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
@@ -503,6 +507,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
+                                    ncross=3,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -538,6 +543,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             collarProb,
                             FALSE,
                             scale,doCollar,
+                            ncross,
                             parallelCluster)
   list(treatments=treatments,crossFrame=crossDat$crossFrame)
 }

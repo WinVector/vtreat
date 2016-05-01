@@ -6,8 +6,8 @@
 #' nested model situation (such as data prep, stacking, or super-learning).
 #' 
 #' @param nRows scalar, >=1 number of rows to sample from.
-#' @param smallN scalar if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
-#' @param ncross scalar if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
+#' @param ncross scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
+#' @param smallN scalar at least 20 if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
 #' @return list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
 #' 
 #' @examples
@@ -51,7 +51,10 @@
 #' 1-sum((d$y-d$outOfSampleEst)^2)/sum((d$y-mean(d$y))^2)
 #' 
 #' @export
-buildEvalSets <- function(nRows,smallN=100,ncross=3) {
+buildEvalSets <- function(nRows,ncross=3,smallN=100) {
+  if(ncross<2) {
+    stop("buildEvalSets: ncross must be at least 2")
+  }
   # build a partition plan
   evalSets <- list()
   fullSeq <- seq_len(nRows)
@@ -59,24 +62,19 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
     # no split plan possible
     return(list(list(train=fullSeq,app=fullSeq)))
   }
-  if(nRows<=smallN) {
+  if((nRows<=20)||(nRows<=smallN)||(2*ncross>nRows)) {
     # small case, 1-holdout Jackknife style
     return(lapply(fullSeq,
                   function(i) {
                     list(train=fullSeq[-i],app=i)
                   }))
   }
+  # know 2*ncross<=nRows
   #  Try for full k-way cross val
-  done = FALSE
-  while(!done) {
-    groups <- sample.int(ncross,nRows,replace=TRUE)
-    if(length(unique(groups))==ncross) {
-      done = TRUE
-    }
-  }
-  evalSets <- lapply(seq_len(ncross),
-                     function(i) { 
-                       appi = which(groups==i)
+  perm <- sample.int(nRows,nRows,replace=FALSE)
+  splits <- split(perm,1 + (fullSeq %% ncross))
+  evalSets <- lapply(splits,
+                     function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
                      })
   evalSets
@@ -94,11 +92,12 @@ buildEvalSets <- function(nRows,smallN=100,ncross=3) {
                           collarProb,
                           impactOnly,
                           scale,doCollar,
+                          ncross,
                           parallelCluster) {
   verbose <- FALSE
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
-  evalSets <- buildEvalSets(length(zoY))
+  evalSets <- buildEvalSets(length(zoY),ncross=ncross)
   crossFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rList <- vector('list',length(evalSets))

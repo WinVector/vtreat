@@ -4,7 +4,7 @@ context("Variable Scoring")
 
 test_that("testW1: test out of sample scoring defeats nested model bias", {
   # build data
-  set.seed(23525)
+  set.seed(235)
   zip <- paste('z',1:100)
   N = 1000
   d <- data.frame(zip=sample(zip,N,replace=TRUE),
@@ -19,7 +19,7 @@ test_that("testW1: test out of sample scoring defeats nested model bias", {
   tN <- designTreatmentsN(d,c('zip','zip2'),'y',
                           verbose=FALSE,
                           rareCount=2,rareSig=0.9)
-  dTN <- prepare(tN,d,pruneSig=0.1)
+  dTN <- prepare(tN,d,pruneSig=0.01)
   expect_true('zip2_catN' %in% colnames(dTN))
   expect_false('zip_catN' %in% colnames(dTN))
 
@@ -27,7 +27,7 @@ test_that("testW1: test out of sample scoring defeats nested model bias", {
   tC <- designTreatmentsC(d,c('zip','zip2'),'yc',TRUE,
                           verbose=FALSE,
                           rareCount=2,rareSig=0.9)
-  dTC <- prepare(tC,d,pruneSig=0.1)
+  dTC <- prepare(tC,d,pruneSig=0.01)
   expect_true('zip2_catB' %in% colnames(dTC))
   expect_false('zip_catB' %in% colnames(dTC))
   

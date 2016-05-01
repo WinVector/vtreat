@@ -4,7 +4,7 @@ context("Simple Example")
 
 test_that("testCar: Numeric Var Scores as expected car", {
   load('uci.car.data.Rdata')
-
+  set.seed(2352)
   dYName <- "rating"
   dYTarget <- 'vgood'
   pvars <- setdiff(colnames(uci.car.data),dYName)

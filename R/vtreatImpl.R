@@ -488,6 +488,7 @@
                                 collarProb,
                                 TRUE,
                                 FALSE,FALSE,
+                                3,
                                 parallelCluster)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights

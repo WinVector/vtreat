@@ -4,14 +4,14 @@
 \alias{buildEvalSets}
 \title{Build disjoint set partition for out-of sample evaluation.}
 \usage{
-buildEvalSets(nRows, smallN = 100, ncross = 3)
+buildEvalSets(nRows, ncross = 3, smallN = 100)
 }
 \arguments{
 \item{nRows}{scalar, >=1 number of rows to sample from.}
 
-\item{smallN}{scalar if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).}
+\item{ncross}{scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).}
 
-\item{ncross}{scalar if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).}
+\item{smallN}{scalar at least 20 if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).}
 }
 \value{
 list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
