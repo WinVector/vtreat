@@ -305,19 +305,17 @@
   force(zoY)
   force(zC)
   force(zTarget)
-  catTarget <- !is.null(zC)
   force(weights)
   nRows <- nrow(dframe)
   function(ti) {
     origName <- vorig(ti)
-    scoreFrame <- vector('list',length(vnames(ti)))
     xcolClean <- .cleanColumn(dframe[[origName]],nRows)
     fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
-    for(nvi in seq_len(length(vnames(ti)))) {
-      nv <- vnames(ti)[[nvi]]
-      scoreFrameij <- .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
-      scoreFrame[[nvi]] <- scoreFrameij
-    }
+    scoreFrame <- lapply(seq_len(length(vnames(ti))),
+                         function(nvi) {
+                           nv <- vnames(ti)[[nvi]]
+                           .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
+                          })
     scoreFrame <- Filter(Negate(is.null),scoreFrame)
     if(length(scoreFrame)<=0) {
       return(NULL)
@@ -338,9 +336,7 @@
   force(zoY)
   force(zC)
   force(zTarget)
-  catTarget <- !is.null(zC)
   force(weights)
-  nRows <- nrow(dframe)
   function(nv) {
     scoreFrameij <- .scoreCol(nv,dframe[[nv]],zoY,zC,zTarget,weights)
     scoreFrameij
