@@ -79,6 +79,7 @@ print.vtreatment <- function(x,...) {
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -101,6 +102,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               minFraction=0.02,smFactor=0.0,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
+                              ncross=3,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   
@@ -118,6 +120,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    minFraction,smFactor,
                                    rareCount,rareSig,
                                    collarProb,
+                                   ncross,
                                    verbose,
                                    parallelCluster)
   treatments$outcomeTarget <- outcometarget
@@ -154,6 +157,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -175,6 +179,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               minFraction=0.02,smFactor=0.0,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
+                              ncross=3,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
@@ -191,6 +196,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      minFraction,smFactor,
                      rareCount,rareSig,
                      collarProb,
+                     ncross,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'Numeric'
@@ -253,6 +259,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      1.0,smFactor=0,
                      rareCount,rareSig=1,
                      collarProb,
+                     3,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'None'

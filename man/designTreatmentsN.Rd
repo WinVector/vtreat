@@ -6,7 +6,7 @@
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
-  collarProb = 0, verbose = TRUE, parallelCluster = NULL)
+  collarProb = 0, ncross = 3, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -28,6 +28,8 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 \item{rareSig}{optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.}
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
+
+\item{ncross}{optional scalar >=2 number of cross validation splits use in rescoring complex variables.}
 
 \item{verbose}{if TRUE print progress.}
 

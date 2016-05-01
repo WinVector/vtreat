@@ -410,6 +410,7 @@
                                minFraction,smFactor,
                                rareCount,rareSig,
                                collarProb,
+                               ncross,
                                verbose,
                                parallelCluster) {
   if(!is.data.frame(dframe)) {
@@ -488,7 +489,7 @@
                                 collarProb,
                                 TRUE,
                                 FALSE,FALSE,
-                                3,
+                                ncross,
                                 parallelCluster)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights
