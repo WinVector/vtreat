@@ -2,9 +2,9 @@
 % Please edit documentation in R/utils.R
 \name{catScore}
 \alias{catScore}
-\title{return a pseudo R-squared from a 1 variable logistic regression}
+\title{return significnace 1 variable logistic regression}
 \usage{
-catScore(varName, x, yC, yTarget, weights)
+catScore(varName, x, yC, yTarget, weights, numberOfHiddenDegrees = 0)
 }
 \arguments{
 \item{varName}{name of variable}
@@ -16,11 +16,13 @@ catScore(varName, x, yC, yTarget, weights)
 \item{yTarget}{scalar target for yC to match (yC==tTarget is goal)}
 
 \item{weights}{(optional) numeric, non-negative, no NAs/NULLs at least two positive positions}
+
+\item{numberOfHiddenDegrees}{optional scalar >= 0 number of additional modeling degrees of freedom to account for.}
 }
 \value{
-cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
+significance estimate of a 1-variable logistic regression
 }
 \description{
-return a pseudo R-squared from a 1 variable logistic regression
+return significnace 1 variable logistic regression
 }
 

@@ -4,7 +4,7 @@
 \alias{linScore}
 \title{Return in-sample linear stats and scaling.}
 \usage{
-linScore(varName, xcol, ycol, weights)
+linScore(varName, xcol, ycol, weights, numberOfHiddenDegrees = 0)
 }
 \arguments{
 \item{varName}{name of variable}
@@ -14,6 +14,11 @@ linScore(varName, xcol, ycol, weights)
 \item{ycol}{numeric vector of outcomes (no NA/NULL/NaN)}
 
 \item{weights}{numeric vector of data weights (no NA/NULL/NaN, all>0.0)}
+
+\item{numberOfHiddenDegrees}{optional scalar >= 0 number of additional modeling degrees of freedom to account for.}
+}
+\value{
+significance estiamte and scaling.
 }
 \description{
 Return in-sample linear stats and scaling.

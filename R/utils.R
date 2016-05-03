@@ -147,28 +147,45 @@ plapply <- function(workList,worker,parallelCluster) {
 #' @param xcol numeric vector of inputs (no NA/NULL/NaN)
 #' @param ycol numeric vector of outcomes (no NA/NULL/NaN)
 #' @param weights numeric vector of data weights (no NA/NULL/NaN, all>0.0)
-linScore <- function(varName,xcol,ycol,weights) {
+#' @param numberOfHiddenDegrees optional scalar >= 0 number of additional modeling degrees of freedom to account for.
+#' @return significance estiamte and scaling.
+linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(xcol))
   }
   a <- 0.0
   sig <- 1.0
   if(.has.range.cn(xcol) && .has.range.cn(ycol)) {
-    lmodel <- stats::lm(formula=y~x,
-                        data=data.frame(x=xcol,y=ycol,stringsAsFactors=FALSE),
-                        weights=weights)
-    a <- lmodel$coefficients[['x']]
-    if(is.na(a) || is.infinite(a)) {
-      a <- 0.0
-    } else {
-      smodel <- summary(lmodel)
-      if(smodel$fstatistic[['value']]>0) {
-        sig <- stats::pf(smodel$fstatistic[['value']],
-                         smodel$fstatistic[['numdf']], 
-                         smodel$fstatistic[['dendf']],
-                         lower.tail=F)
+    suppressWarnings(tryCatch({ 
+      d <- data.frame(x=xcol,y=ycol,stringsAsFactors=FALSE)
+      lmodel <- stats::lm(formula=y~x,
+                          data=d,
+                          weights=weights)
+      a <- lmodel$coefficients[['x']]
+      if(is.na(a) || is.infinite(a)) {
+        a <- 0.0
+      } else {
+        smodel <- summary(lmodel)
+        smodel <- summary(lmodel)
+        n <- sum(weights)
+        rss1 <- sum(weights*(d$y-mean(d$y))^2)
+        rss2 <- sum(weights*smodel$residuals^2)
+        p1 <- 1
+        p2 <- 2 + numberOfHiddenDegrees
+        if((n>p2)&&(rss1>rss2)&&(rss1>0)&&(p2>p1)) {
+          if(rss2<=0) {
+            sig <= 0.0
+          } else {
+            f = ((rss1-rss2)/(p2-p1))/(rss2/(n-p2))
+            sig <- stats::pf(f,
+                             p2-p1, 
+                             n-p2,
+                             lower.tail=F)
+          }
+        }
       }
-    }
+      },
+      error=function(e){}))
   }
   b <- -.wmean(a*xcol,weights)
   data.frame(varName=varName,
@@ -179,14 +196,15 @@ linScore <- function(varName,xcol,ycol,weights) {
 
 
 
-#' return a pseudo R-squared from a 1 variable logistic regression
+#' return significnace 1 variable logistic regression
 #' @param varName name of variable
 #' @param x numeric (no NAs/NULLs) effective variable
 #' @param yC  (no NAs/NULLs) outcome variable
 #' @param yTarget scalar target for yC to match (yC==tTarget is goal)
 #' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
-#' @return cross-validated pseudo-Rsquared estimate of a 1-variable logistic regression
-catScore <- function(varName,x,yC,yTarget,weights) {
+#' @param numberOfHiddenDegrees optional scalar >= 0 number of additional modeling degrees of freedom to account for.
+#' @return significance estimate of a 1-variable logistic regression
+catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(x))
   }
@@ -202,9 +220,9 @@ catScore <- function(varName,x,yC,yTarget,weights) {
                           weights=weights)
       if(model$converged) {
         delta_deviance <- model$null.deviance - model$deviance
-        delta_df <- model$df.null - model$df.residual
-        pRsq <- 1.0 - model$deviance/model$null.deviance
-        if((pRsq>0)&&(delta_deviance>0)) {
+        if((model$null.deviance>0)&&(delta_deviance>0)) {
+          delta_df <- model$df.null - model$df.residual + numberOfHiddenDegrees
+          pRsq <- 1.0 - model$deviance/model$null.deviance
           sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
         }
       }
