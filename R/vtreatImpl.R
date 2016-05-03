@@ -259,7 +259,8 @@
 }
 
 
-.scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights) {
+.scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights,
+                      extraModelDegrees=0) {
   psig=1.0
   sig=1.0
   csig=1.0
@@ -272,14 +273,16 @@
       lstat <- linScore(varName,
                         nxcol,
                         zoY,
-                        weights)
+                        weights,
+                        extraModelDegrees)
       psig <- lstat$sig
       sig <- lstat$sig
       if(catTarget) {
         cstat <- catScore(varName,
                           nxcol,
                           zC,zTarget,
-                          weights)
+                          weights,
+                          extraModelDegrees)
         csig <- cstat$sig
         sig <- cstat$sig
       }
@@ -314,7 +317,8 @@
     scoreFrame <- lapply(seq_len(length(vnames(ti))),
                          function(nvi) {
                            nv <- vnames(ti)[[nvi]]
-                           .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights) 
+                           .scoreCol(nv,fi[[nv]],zoY,zC,zTarget,weights,
+                                     ti$extraModelDegrees) 
                           })
     scoreFrame <- Filter(Negate(is.null),scoreFrame)
     if(length(scoreFrame)<=0) {

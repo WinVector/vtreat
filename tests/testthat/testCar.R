@@ -5,6 +5,9 @@ context("Simple Example")
 test_that("testCar: Numeric Var Scores as expected car", {
   load('uci.car.data.Rdata')
   set.seed(2352)
+  uci.car.data$noise <- sample(paste0('v',1:100),
+                               nrow(uci.car.data),
+                               replace=TRUE)
   dYName <- "rating"
   dYTarget <- 'vgood'
   pvars <- setdiff(colnames(uci.car.data),dYName)
@@ -12,7 +15,8 @@ test_that("testCar: Numeric Var Scores as expected car", {
                                    pvars,dYName,dYTarget,verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=0.99)
   cvars <- setdiff(colnames(dTrainCTreated),dYName)
-  expect_true(max(treatmentsC$scoreFrame$sig)<0.9)
+  expect_true(max(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName!='noise'])<0.9)
+  expect_true(min(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName=='noise'])>0.05)
   codes <- sort(unique(treatmentsC$scoreFrame$code))
   expect_true('catB' %in% codes)
   expect_true('lev' %in% codes)
