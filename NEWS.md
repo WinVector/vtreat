@@ -1,9 +1,11 @@
 
-'vtreat' 0.5.24 2016/04/29
+'vtreat' 0.5.25 2016/05/02
 Changes:
 
-- Fix bug that caused catB variables to be scored as "insignificant"
-- Add test to check for above bug
+- Fix bug that caused catB variables to be scored as "insignificant".
+- Add test to check for above bug.
+- Expose cross validation controls.
+- More guards on significance calculations.
 
 
 'vtreat' 0.5.23 2016/04/28
