@@ -162,10 +162,12 @@ linScore <- function(varName,xcol,ycol,weights) {
       a <- 0.0
     } else {
       smodel <- summary(lmodel)
-      sig <- stats::pf(smodel$fstatistic[['value']],
-                       smodel$fstatistic[['numdf']], 
-                       smodel$fstatistic[['dendf']],
-                       lower.tail=F)
+      if(smodel$fstatistic[['value']]>0) {
+        sig <- stats::pf(smodel$fstatistic[['value']],
+                         smodel$fstatistic[['numdf']], 
+                         smodel$fstatistic[['dendf']],
+                         lower.tail=F)
+      }
     }
   }
   b <- -.wmean(a*xcol,weights)
@@ -202,7 +204,7 @@ catScore <- function(varName,x,yC,yTarget,weights) {
         delta_deviance <- model$null.deviance - model$deviance
         delta_df <- model$df.null - model$df.residual
         pRsq <- 1.0 - model$deviance/model$null.deviance
-        if(pRsq>0) {
+        if((pRsq>0)&&(delta_deviance>0)) {
           sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
         }
       }
