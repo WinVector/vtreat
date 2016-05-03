@@ -31,7 +31,8 @@
                               levRestriction=levRestriction),
                     treatmentName='Categoric Indicators',
                     treatmentCode='lev',
-                    needsSplit=FALSE)
+                    needsSplit=FALSE,
+                    extraModelDegrees=0)
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
   scaleList <- lapply(seq_len(length(newVarNames)),

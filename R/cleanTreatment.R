@@ -39,7 +39,8 @@
                     args=list(nadist=nadist,cuts=cuts),
                     treatmentName='Scalable pass through',
                     treatmentCode='clean',
-                    needsSplit=FALSE)
+                    needsSplit=FALSE,
+                    extraModelDegrees=0)
   class(treatment) <- 'vtreatment'
   treatment$scales <- linScore(newVarName,xcol,ycol,weights)
   treatment

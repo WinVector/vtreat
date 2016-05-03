@@ -29,7 +29,8 @@
                               levRestriction=levRestriction),
                     treatmentName='Prevalence Code',
                     treatmentCode='catP',
-                    needsSplit=TRUE)
+                    needsSplit=TRUE,
+                    extraModelDegrees=max(0,length(scores)-1))
   pred <- treatment$f(vcolin,treatment$args)
   if(!.has.range.cn(pred)) {
     return(NULL)

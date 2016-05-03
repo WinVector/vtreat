@@ -18,7 +18,8 @@
                     args=list(),
                     treatmentName='is.bad',
                     treatmentCode='isBAD',
-                    needsSplit=FALSE)
+                    needsSplit=FALSE,
+                    extraModelDegrees=0)
   class(treatment) <- 'vtreatment'
   treatment$scales <- linScore(newVarName,ifelse(badIDX,1.0,0.0),ynumeric,weights)
   treatment

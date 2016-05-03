@@ -322,6 +322,7 @@
     }
     sFrame <- .rbindListOfFrames(scoreFrame)
     sFrame$needsSplit <- ti$needsSplit
+    sFrame$extraModelDegrees <- ti$extraModelDegrees
     sFrame$origName <- origName
     sFrame$code <- ti$treatmentCode
     sFrame

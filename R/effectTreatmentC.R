@@ -44,7 +44,8 @@
                               levRestriction=levRestriction),
                     treatmentName='Bayesian Impact Code',
                     treatmentCode='catB',
-                    needsSplit=TRUE)
+                    needsSplit=TRUE,
+                    extraModelDegrees=max(0,length(logLift)-1))
   pred <- treatment$f(vcolin,treatment$args)
   if(!.has.range.cn(pred)) {
     return(NULL)
