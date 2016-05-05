@@ -53,7 +53,7 @@ print(dTrainCTreatedUnscaled)
 
 This is the "standard way" to run vtreat -- with the exception that for this example we set 
 <code>pruneSig</code> to <code>NULL</code> to suppress variable pruning, instead of setting it to a value in the interval
-<code>(0,1)</code>.  The principle is: vtreats inflicts the minimal possible alterations on the data, leaving as much as possible to the downstream machine learning code. This does turn out to already be a lot of alteration.  Mostly vtreat is taking only steps that are unsafe to leave for later: re-encoding of large categoricals, re-coding of aberrant values, and bulk pruning of variables.
+<code>(0,1)</code>.  The principle is: vtreat inflicts the minimal possible alterations on the data, leaving as much as possible to the downstream machine learning code. This does turn out to already be a lot of alteration.  Mostly vtreat is taking only steps that are unsafe to leave for later: re-encoding of large categoricals, re-coding of aberrant values, and bulk pruning of variables.
 
 However some procedures, in particular principal components analysis or geometric
 clustering, assume all of the columns have been fully transformed.  The usual assumption ("more honored in the breach than the observance") is that the columns
