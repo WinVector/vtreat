@@ -249,7 +249,7 @@
 .neatenScoreFrame <- function(sFrame) {
   # clean up sFrame a bit
   if(nrow(sFrame)>0) {
-    for(cname in c('psig','csig','sig')) {
+    for(cname in c('lsig','csig','sig')) {
       if(cname %in% colnames(sFrame)) {
         sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
       }
@@ -261,7 +261,7 @@
 
 .scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights,
                       extraModelDegrees=0) {
-  psig=1.0
+  lsig=1.0
   sig=1.0
   csig=1.0
   catTarget <- !is.null(zC)
@@ -275,7 +275,7 @@
                         zoY,
                         weights,
                         extraModelDegrees)
-      psig <- lstat$sig
+      lsig <- lstat$sig
       sig <- lstat$sig
       if(catTarget) {
         cstat <- catScore(varName,
@@ -290,8 +290,8 @@
   }
   scoreFrameij <- data.frame(varName=varName,
                              varMoves=varMoves,
-                             psig=psig,
-                             sig=psig,
+                             lsig=lsig,
+                             sig=lsig,
                              stringsAsFactors = FALSE)
   if(catTarget) {
     scoreFrameij$csig <- csig
@@ -512,7 +512,7 @@
       sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame
       nukeCols <- intersect(colnames(treatments$scoreFrame),
-                            c('psig', 'sig', 'csig'))
+                            c('lsig', 'sig', 'csig'))
       for(v in newVarsS) {
         for(n in nukeCols) {
           if(v %in% sframe$varName) {

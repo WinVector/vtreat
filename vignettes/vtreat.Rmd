@@ -39,9 +39,9 @@ In addition to the treatment objects `designTreatmentsC()` and `designTreatments
 - `origName`: name of original variable that the variable was derived from (can repeat).
 - `code`: what time of treatment was performed to create the derived variable (useful for filtering).
 - `varMoves`: logical TRUE if the variable varied during training; only variables that move will be in the treated frame.
-- `psig`: linear significnace of regerssing derived variable against a 0/1 indicator target.
+- `lsig`: linear significnace of regerssing derived variable against a 0/1 indicator target.
 - `csig`: for categorical outcomes: significance of observed variable catPRSquared value under an in-sample permutation test.
-- `sig`: `csig` for categorical outcomes, `psig` otherwise.
+- `sig`: `csig` for categorical outcomes, `lsig` otherwise.
 - `needsSplit`: is the variable a sub model and require out of sample scoring.
 
 

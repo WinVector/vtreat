@@ -174,13 +174,13 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
         p2 <- 2 + numberOfHiddenDegrees
         if((n>p2)&&(rss1>rss2)&&(rss1>0)&&(p2>p1)) {
           if(rss2<=0) {
-            sig <= 0.0
+            sig <- 0.0
           } else {
             f = ((rss1-rss2)/(p2-p1))/(rss2/(n-p2))
             sig <- stats::pf(f,
                              p2-p1, 
                              n-p2,
-                             lower.tail=F)
+                             lower.tail=FALSE)
           }
         }
       }
