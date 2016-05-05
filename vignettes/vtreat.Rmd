@@ -48,7 +48,7 @@ In addition to the treatment objects `designTreatmentsC()` and `designTreatments
 In all cases we have two undesirable upward biases on the scores:
 
 - The treated variables view the training data during construction (for setting of NA values, missing values, levels, and more).  So this gives an upward bias when trying to measure treated variable utility on training data.  Until the data set is at least 1000 good rows we ignore this effect.  After 1000 rows we design variables on a pseudo-randomly chosen 80% of the rows and score on the complimentary 20% of the rows.
-- The scoring procedure itself involves a fit (linear regression for `PRESSRsquared` or logistic regression for `catPRSquared`).  So in each of these cases we would like the regression itself to only be evaluated on held-out data.  The PRESS statistic does just that (fast 1-way cross validation).   The `catPseudoRSquared` performs explicit 1-way cross validation for small data sets and hold-out scoring for larger data sets.
+- The scoring procedure itself involves a fit (linear regression for regression or logistic regression for classification).  In each of these cases we would like the scoring itself to only be evaluated on variables constructed on held-out data.  This is simulated through a cross-validation procedure.
 
 'vtreat' uses a number of cross-training and jackknife style procedures to try to mitigate these effects.  The suggested best practice (if you have enough data) is to split your data randomly into at least the following disjoint data sets:
 
