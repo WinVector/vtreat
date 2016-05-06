@@ -23,16 +23,61 @@ Example:
 
 ```{r}
 signk <- function(n,k) {
-  d <- data.frame(y=c(rep(TRUE,n/2),rep(FALSE,n/2)),v=FALSE)
-  d[seq_len(k),'v'] <- TRUE
-  vtreat::designTreatmentsC(d,'v','y',TRUE,verbose=FALSE)$scoreFrame[1,'sig']
+  sigTab <- data.frame(y=c(rep(TRUE,n/2),rep(FALSE,n/2)),v=FALSE)
+  sigTab[seq_len(k),'v'] <- TRUE
+  vtreat::designTreatmentsC(sigTab,'v','y',TRUE,verbose=FALSE)$scoreFrame[1,'sig']
 }
-d <- data.frame(k=c(1,2,3,4,5,10,20,50,100))
+sigTab <- data.frame(k=c(1,2,3,4,5,10,20,50,100))
 # If you want to see a rare but perfect indicator of positive class
 # that's only on k times out of 1000, this is the lower bound on pruneSig
-d$sigEst = vapply(d$k,function(k) signk(1000,k),numeric(1)) 
-d$minusLogSig = -log(d$sigEst) # we expect this to be approximately k
-print(d)
+sigTab$sigEst = vapply(sigTab$k,function(k) signk(1000,k),numeric(1)) 
+sigTab$minusLogSig = -log(sigTab$sigEst) # we expect this to be approximately k
+print(sigTab)
 ```
 
-For a data set with 100 variables (and 1000 rows), you might want to set `pruneSig` <= 0.01 to limit the number of pure noise variables that enter the model. Note that this value is smaller than the lower bounds given above for $k < 5$. This means that in a data set of this width and length, you may not be able to detect rare but perfect indicators that occur fewer than 5 times.
+For a data set with 100 variables (and 1000 rows), you might want to set `pruneSig` <= 0.01 to limit the number of pure noise variables that enter the model. Note that this value is smaller than the lower bounds given above for $k < 5$. This means that in a data set of this width and length, you may not be able to detect rare but perfect indicators that occur fewer than 5 times.  You would have a chance of using such rare indicators in a _catN_ or _catB_ effects coded variable.
+
+Below we design a data frame with a perfect categorical variable (completely determines
+the outcome y) where each level occurs exactly 2 times.  The individual levels are
+insignificant, but we can still extract a significant _catB_ effect coded variable.
+
+```{r}
+set.seed(3346)
+n <- 1000
+k <- 4
+d <- data.frame(y=c(rep(TRUE,n/2),rep(FALSE,n/2)))
+d$catVar <- rep(paste0('lev',sprintf("%03d",1:floor(n/k))),(k+1))[1:n]
+d$catVar <- paste0(d$catVar,substr(as.character(d$y),1,1))
+d <- d[order(d$catVar),]
+head(d)
+print(head(table(d$catVar)))
+print(min(table(d$catVar)))
+print(max(table(d$catVar)))
+treatmentsC <- vtreat::designTreatmentsC(d,'catVar','y',TRUE)
+print(treatmentsC$scoreFrame)
+summary(glm(y~d$catVar=='lev001T',data=d,family=binomial))
+
+# Estimate effect significance (not coeficient significance).
+estSigGLM <- function(xVar,yVar,numberOfHiddenDegrees=0) {
+  d <- data.frame(x=xVar,y=yVar,stringsAsFactors = FALSE)
+  model <- stats::glm(stats::as.formula('y~x'),
+                      data=d,
+                      family=stats::binomial(link='logit'))
+  delta_deviance <- model$null.deviance - model$deviance
+  delta_df <- model$df.null - model$df.residual + numberOfHiddenDegrees
+  pRsq <- 1.0 - model$deviance/model$null.deviance
+  sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
+  sig
+}
+
+prepD <- vtreat::prepare(treatmentsC,d,pruneSig=0.01)
+
+estSigGLM(prepD$catVar_catB,prepD$y,0)
+
+estSigGLM(prepD$catVar_catB,prepD$y,
+          numberOfHiddenDegrees=length(unique(d$catVar))-1)
+```
+
+Notice the vtreat simulated out of sample estimate is roughly between the
+incorrect low degree of freedom estimate and the degree of freedom corrected 
+estimate.
