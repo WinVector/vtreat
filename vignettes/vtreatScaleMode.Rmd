@@ -97,7 +97,9 @@ This is because the outcome variable <code>y</code> has identical distribution
 when the original variable <code>x=='b'</code> and when <code>x!='b'</code> (on half the time in both cases).  This means <code>y</code> is perfectly independent 
 of <code>x=='b'</code> and the regression slope must be zero (thus, cannot be 1).  vtreat now treats
 this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance
-facts in <code>treatmentsC\$scoreFrame</code> are about the unscaled frame (where <code>x_lev_x.b</code> does in fact move).  
+facts in <code>treatmentsC\$scoreFrame</code> are about the unscaled frame (where <code>x_lev_x.b</code> does in fact move). 
+
+For a good discussion of the application of *y&-aware scaling to Principal Components Analysis please see [here](http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/).
 
 Previous versions of vtreat (0.5.22 and earlier) would copy variables that
 could not be sensibly scaled into the treated frame unaltered.  This was considered the "most faithful"
