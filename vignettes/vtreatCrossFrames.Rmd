@@ -176,10 +176,10 @@ prep <- vtreat::mkCrossFrameCExperiment(dTrain,
            rareCount=0 # Note: usually want rareCount>0, setting to zero to illustrate problems
 )
 treatments <- prep$treatments
-print(treatments$scoreFrame[,c('varName','lsig','csig')])
+print(treatments$scoreFrame[,c('varName','sig')])
 # vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can
 # prune on our own.
-newvars <- treatments$scoreFrame$varName[treatments$scoreFrame$csig<=pruneSig]
+newvars <- treatments$scoreFrame$varName[treatments$scoreFrame$sig<=pruneSig]
 dTrainTreated <- prep$crossFrame
 ```
 
