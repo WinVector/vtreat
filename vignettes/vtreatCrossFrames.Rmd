@@ -73,7 +73,10 @@ dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```
 
-Notice above that we see a training accuracy of 98% and a test accuracy of 60%.
+Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice
+the downstream model (the `glm`) erroneously thinks the `xBad?_cat` variables are
+significant (due to the large number of degrees of freedom hidden from the downstream
+model by the [impact/effect coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
 
 ## The Right Way: A Calibration Set
 
@@ -181,7 +184,9 @@ print(treatments$scoreFrame[,c('varName','sig')])
 # prune on our own.
 print(pruneSig)
 newvars <- treatments$scoreFrame$varName[treatments$scoreFrame$sig<=pruneSig]
-newvars <- union(newvars,c("xBad1_catB","xBad3_catB"))
+# force in bad variables, to show we "belt and suspenders" deal with them
+# in that things go well in the cross-frame even if they sneak past pruning
+newvars <- sort(union(newvars,c("xBad1_catB","xBad2_catB","xBad3_catB")))
 print(newvars)
 dTrainTreated <- prep$crossFrame
 ```
@@ -204,6 +209,9 @@ dTestTreated <- vtreat::prepare(treatments,dTest,
 dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```
+
+We again get the better 70% test accuracy.  And this is a more statistically powerful technique as we didn't have to
+restrict some data to calibration.
 
 The model fit to the cross-frame behaves similarly to the model produced via the process _f(CalibrationData, TrainData)_.
 Notice that the  `xBad*_catB` variables fail to achieve significance in the downstream `glm` model, allowing that
