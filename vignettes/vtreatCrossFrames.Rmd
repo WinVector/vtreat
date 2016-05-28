@@ -85,7 +85,7 @@ dTrain <- d[d$rgroup=='train',,drop=FALSE]
 dTest <- d[d$rgroup=='test',,drop=FALSE]
 
 # a nice heuristic, 
-# expect only a constant number of noise variabels to sneak past
+# expect only a constant number of noise variables to sneak past
 pruneSig <- 1/ncol(dTrain) 
 treatments <- vtreat::designTreatmentsC(dCal,
                                         c('xBad1','xBad2','xBad3','xGood1','xGood2'),
@@ -179,10 +179,13 @@ treatments <- prep$treatments
 print(treatments$scoreFrame[,c('varName','sig')])
 # vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can
 # prune on our own.
+print(pruneSig)
 newvars <- treatments$scoreFrame$varName[treatments$scoreFrame$sig<=pruneSig]
+print(newvars)
 dTrainTreated <- prep$crossFrame
 ```
 
+Notice the undesirable `xBad*_catB` variables sneak in as we using a fairly lose `pruneSig`.
 Now fit the model to *the cross-frame* rather than to `prepare(treatments, dTrain)` (the treated training data).
 
 ```{r xframemodel}
@@ -193,12 +196,17 @@ print(summary(m1))
 dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
 plotRes(dTrain,'predM1','y','model1 on train')
 dTestTreated <- vtreat::prepare(treatments,dTest,
-                                pruneSig=pruneSig)
+                                pruneSig=c(),varRestriction=newvars)
 dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```
 
 The model fit to the cross-frame behaves similarly to the model produced via the process _f(CalibrationData, TrainData)_.
+Notice that the  `xBad*_catB` variables fail to achieve significance in the downstream `glm` model, allowing that
+model to give them small coefficients and even (if need be) prune them out.  This is the point of using a cross frame as
+we see in the first example the  `xBad*_catB` are hard to remove if they make it to standard (non-cross) frames as they are 
+hiding a lot of degrees of freedom from downstream modeling procedures.
+
 
 
 
