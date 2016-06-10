@@ -6,6 +6,9 @@
 #' nested model situation (such as data prep, stacking, or super-learning).
 #' 
 #' @param nRows scalar, >=1 number of rows to sample from.
+#' @param ... no additional arguments, declared to forced named binding of later arguments.
+#' @param y (optional) numeric vector of length nRows, sample will be stratified on this y (if possible).
+#' @param stratifiedSplitter (optional) function taking arguments y and ncross returning a y-stratified split.
 #' @param ncross scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
 #' @param smallN scalar at least 20 if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
 #' @return list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
@@ -51,16 +54,35 @@
 #' 1-sum((d$y-d$outOfSampleEst)^2)/sum((d$y-mean(d$y))^2)
 #' 
 #' @export
-buildEvalSets <- function(nRows,ncross=3,smallN=100) {
-  if(ncross<2) {
-    stop("buildEvalSets: ncross must be at least 2")
+buildEvalSets <- function(nRows,...,
+                          y=NULL,stratifiedSplitter=NULL,
+                          ncross=3,smallN=100) {
+  # check args
+  args <- list(...)
+  if(length(args)!=0) {
+    nm <- setdiff(paste(names(args),collapse=", "),'')
+    nv <- length(args)-length(nm)
+    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
   }
-  # build a partition plan
-  evalSets <- list()
+  if(!is.null(y)) {
+    if(!is.numeric(y)) {
+      stop('y must be numeric')
+    }
+    if(length(y)!=nRows) {
+      stop('must have length(y)==nRows')
+    }
+    if(any(.is.bad(y))) {
+      stop('y had NA/NaN entries')
+    }
+  }
+  # deal with edge cases
   fullSeq <- seq_len(nRows)
   if(nRows<=1) {
     # no split plan possible
     return(list(list(train=fullSeq,app=fullSeq)))
+  }
+  if(ncross<2) {
+    stop("buildEvalSets: ncross must be at least 2")
   }
   if((nRows<=20)||(nRows<=smallN)||(2*ncross>nRows)) {
     # small case, 1-holdout Jackknife style
@@ -69,10 +91,39 @@ buildEvalSets <- function(nRows,ncross=3,smallN=100) {
                     list(train=fullSeq[-i],app=i)
                   }))
   }
+  # build a partition plan
+  evalSets <- list()
   # know 2*ncross<=nRows
   #  Try for full k-way cross val
-  perm <- sample.int(nRows,nRows,replace=FALSE)
-  splits <- split(perm,1 + (fullSeq %% ncross))
+  if(is.null(y) || (max(y)<=min(y)) || is.null(stratifiedSplitter)) {
+    perm <- sample.int(nRows,nRows,replace=FALSE)
+    splits <- split(perm,1 + (fullSeq %% ncross))
+  } else {
+    splits <- stratifiedSplitter(y=y,ncross=ncross)
+    names(splits) <- NULL
+  }
+  # check a few things to catch errors early 
+  # (especially for user supplied stratifiedSplitter)
+  if(!is.list(splits)) {
+    stop("stratified split needs to be a list")
+  }
+  if(length(splits)!=ncross) {
+    stop("didn't get requested number of splits")
+  }
+  support <- sort(Reduce(union,splits))
+  if(length(support)!=nRows) {
+    stop("bad split (missing values)")
+  }
+  if(!all(support==fullSeq)) {
+    stop("bad split")
+  }
+  for(i in seq_len(ncross-1)) {
+    for(j in seq(i+1,ncross)) {
+      if(length(intersect(splits[[i]],splits[[j]]))!=0) {
+        stop("non-disjoint splits")
+      }
+    }
+  }
   evalSets <- lapply(splits,
                      function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
@@ -92,12 +143,13 @@ buildEvalSets <- function(nRows,ncross=3,smallN=100) {
                           collarProb,
                           impactOnly,
                           scale,doCollar,
-                          ncross,
+                          stratifiedSplitter,ncross,
                           parallelCluster) {
   verbose <- FALSE
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
-  evalSets <- buildEvalSets(length(zoY),ncross=ncross)
+  evalSets <- buildEvalSets(length(zoY),y=zoY,
+                            stratifiedSplitter=stratifiedSplitter,ncross=ncross)
   crossFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rList <- vector('list',length(evalSets))

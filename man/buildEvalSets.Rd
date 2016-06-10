@@ -4,10 +4,17 @@
 \alias{buildEvalSets}
 \title{Build disjoint set partition for out-of sample evaluation.}
 \usage{
-buildEvalSets(nRows, ncross = 3, smallN = 100)
+buildEvalSets(nRows, ..., y = NULL, stratifiedSplitter = NULL, ncross = 3,
+  smallN = 100)
 }
 \arguments{
 \item{nRows}{scalar, >=1 number of rows to sample from.}
+
+\item{...}{no additional arguments, declared to forced named binding of later arguments.}
+
+\item{y}{(optional) numeric vector of length nRows, sample will be stratified on this y (if possible).}
+
+\item{stratifiedSplitter}{(optional) function taking arguments y and ncross returning a y-stratified split.}
 
 \item{ncross}{scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).}
 

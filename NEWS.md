@@ -1,5 +1,13 @@
 
+'vtreat' 0.5.26 2016/06/10
+
+Changes:
+
+- Start adding facilities for y-stratified splitting (useful for unbalanced classes).
+
+
 'vtreat' 0.5.25 2016/05/02
+
 Changes:
 
 - Fix bug that caused catB variables to be scored as "insignificant".
