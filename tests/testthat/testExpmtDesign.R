@@ -27,15 +27,16 @@ test_that("testExpmtDesign: cross frame design", {
 
 test_that("testExpmtDesign: cross frame design caret", {
   if(requireNamespace("caret",quietly=TRUE)) {
-    stratFn <- function(y,ncross) {
+    stratFn <- function(y,origRowNumber,ncross) {
       caret::createFolds(y=y,k=ncross,list=TRUE)
     }
     set.seed(2325235)
-    for(nrowd in c(1,3,5,10,100,200,1000)) {
+    for(nrowd in c(200,1000)) {
       y <- rnorm(nrowd)
       eSets <- buildEvalSets(nrowd,y=y,
                              stratifiedSplitter=stratFn,
                              smallN=20)
+      expect_true(attr(eSets,'splitmethod')=='userfunction')
       fullSeq <- seq_len(nrowd)
       expect_true(length(eSets)>0)
       for(ei in eSets) {

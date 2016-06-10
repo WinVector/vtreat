@@ -14,7 +14,7 @@ buildEvalSets(nRows, ..., y = NULL, stratifiedSplitter = NULL, ncross = 3,
 
 \item{y}{(optional) numeric vector of length nRows, sample will be stratified on this y (if possible).}
 
-\item{stratifiedSplitter}{(optional) function taking arguments y and ncross returning a y-stratified split.}
+\item{stratifiedSplitter}{(optional) function taking arguments y,origRowNumber, and ncross returning a y-stratified split.}
 
 \item{ncross}{scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).}
 
@@ -26,6 +26,15 @@ list of lists where the app portion of the sublists is a disjoint partion of seq
 \description{
 Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
 nested model situation (such as data prep, stacking, or super-learning).
+}
+\details{
+Also sets attribute "splitmethod" on return value that describes how the split was performed.
+attr(returnValue,'splitmethod') is one of: 'notsplit' (data was not split; corner cases
+like single row data sets), 'oneway' (leave one out holdout), 'simplepartition' (a simple
+partition), or 'userfunction' (user supplied function was actually used).  So any user
+desired properties (such as stratification on y, or preservation of groups designated by 
+original data row numbers) may not apply unless you see that 'userfunction' has been
+used.
 }
 \examples{
 

@@ -5,10 +5,18 @@
 #' Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
 #' nested model situation (such as data prep, stacking, or super-learning).
 #' 
+#' Also sets attribute "splitmethod" on return value that describes how the split was performed.
+#' attr(returnValue,'splitmethod') is one of: 'notsplit' (data was not split; corner cases
+#' like single row data sets), 'oneway' (leave one out holdout), 'simplepartition' (a simple
+#' partition), or 'userfunction' (user supplied function was actually used).  So any user
+#' desired properties (such as stratification on y, or preservation of groups designated by 
+#' original data row numbers) may not apply unless you see that 'userfunction' has been
+#' used.
+#' 
 #' @param nRows scalar, >=1 number of rows to sample from.
 #' @param ... no additional arguments, declared to forced named binding of later arguments.
 #' @param y (optional) numeric vector of length nRows, sample will be stratified on this y (if possible).
-#' @param stratifiedSplitter (optional) function taking arguments y and ncross returning a y-stratified split.
+#' @param stratifiedSplitter (optional) function taking arguments y,origRowNumber, and ncross returning a y-stratified split.
 #' @param ncross scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
 #' @param smallN scalar at least 20 if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
 #' @return list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
@@ -79,27 +87,33 @@ buildEvalSets <- function(nRows,...,
   fullSeq <- seq_len(nRows)
   if(nRows<=1) {
     # no split plan possible
-    return(list(list(train=fullSeq,app=fullSeq)))
+    r <- list(list(train=fullSeq,app=fullSeq))
+    attr(r,'splitmethod') <- 'notsplit'
+    return(r)
   }
   if(ncross<2) {
     stop("buildEvalSets: ncross must be at least 2")
   }
   if((nRows<=20)||(nRows<=smallN)||(2*ncross>nRows)) {
     # small case, 1-holdout Jackknife style
-    return(lapply(fullSeq,
-                  function(i) {
-                    list(train=fullSeq[-i],app=i)
-                  }))
+    r <- lapply(fullSeq,
+                function(i) {
+                  list(train=fullSeq[-i],app=i)
+                })
+    attr(r,'splitmethod') <- 'oneway'
+    return(r)
   }
   # build a partition plan
   evalSets <- list()
   # know 2*ncross<=nRows
   #  Try for full k-way cross val
+  splitmethod = 'simplepartition'
   if(is.null(y) || (max(y)<=min(y)) || is.null(stratifiedSplitter)) {
     perm <- sample.int(nRows,nRows,replace=FALSE)
     splits <- split(perm,1 + (fullSeq %% ncross))
   } else {
-    splits <- stratifiedSplitter(y=y,ncross=ncross)
+    splitmethod = 'userfunction'
+    splits <- stratifiedSplitter(y=y,origRowNumber=fullSeq,ncross=ncross)
     names(splits) <- NULL
   }
   # check a few things to catch errors early 
@@ -128,6 +142,7 @@ buildEvalSets <- function(nRows,...,
                      function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
                      })
+  attr(evalSets,'splitmethod') <- splitmethod
   evalSets
 }
 
