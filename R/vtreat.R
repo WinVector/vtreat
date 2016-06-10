@@ -448,6 +448,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   minFraction=minFraction,smFactor=smFactor,
                                   rareCount=rareCount,rareSig=rareSig,
                                   collarProb=collarProb,
+                                  partitionFunction=partitionFunction,ncross=ncross,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster)
   zC <- dframe[[outcomename]]
@@ -542,6 +543,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   minFraction=minFraction,smFactor=smFactor,
                                   rareCount=rareCount,rareSig=rareSig,
                                   collarProb=collarProb,
+                                  partitionFunction=partitionFunction,ncross=ncross,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster)
   zC <- NULL
