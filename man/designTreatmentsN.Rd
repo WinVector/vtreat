@@ -6,7 +6,7 @@
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
-  collarProb = 0, stratifiedSplitter = NULL, ncross = 3, verbose = TRUE,
+  collarProb = 0, partitionFunction = NULL, ncross = 3, verbose = TRUE,
   parallelCluster = NULL)
 }
 \arguments{
@@ -30,7 +30,7 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
 
-\item{stratifiedSplitter}{(optional) function taking arguments y and ncross returning a y-stratified split.}
+\item{partitionFunction}{(optional) function taking arguments y and ncross returning a y-stratified split.}
 
 \item{ncross}{optional scalar >=2 number of cross validation splits use in rescoring complex variables.}
 

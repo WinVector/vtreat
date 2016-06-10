@@ -15,8 +15,8 @@
 #' 
 #' @param nRows scalar, >=1 number of rows to sample from.
 #' @param ... no additional arguments, declared to forced named binding of later arguments.
-#' @param y (optional) numeric vector of length nRows, sample will be stratified on this y (if possible).
-#' @param stratifiedSplitter (optional) function taking arguments y,origRowNumber, and ncross returning a y-stratified split.
+#' @param y (optional) object of length nRows, will be passed to user supplied partitionFunction.
+#' @param partitionFunction (optional) function taking arguments y,origRowNumber, and ncross returning a user desired split.
 #' @param ncross scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).
 #' @param smallN scalar at least 20 if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).
 #' @return list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
@@ -63,7 +63,7 @@
 #' 
 #' @export
 buildEvalSets <- function(nRows,...,
-                          y=NULL,stratifiedSplitter=NULL,
+                          y=NULL,partitionFunction=NULL,
                           ncross=3,smallN=100) {
   # check args
   args <- list(...)
@@ -73,14 +73,8 @@ buildEvalSets <- function(nRows,...,
     stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
   }
   if(!is.null(y)) {
-    if(!is.numeric(y)) {
-      stop('y must be numeric')
-    }
     if(length(y)!=nRows) {
       stop('must have length(y)==nRows')
-    }
-    if(any(.is.bad(y))) {
-      stop('y had NA/NaN entries')
     }
   }
   # deal with edge cases
@@ -108,16 +102,16 @@ buildEvalSets <- function(nRows,...,
   # know 2*ncross<=nRows
   #  Try for full k-way cross val
   splitmethod = 'simplepartition'
-  if(is.null(y) || (max(y)<=min(y)) || is.null(stratifiedSplitter)) {
+  if(is.null(partitionFunction)) {
     perm <- sample.int(nRows,nRows,replace=FALSE)
     splits <- split(perm,1 + (fullSeq %% ncross))
   } else {
     splitmethod = 'userfunction'
-    splits <- stratifiedSplitter(y=y,origRowNumber=fullSeq,ncross=ncross)
+    splits <- partitionFunction(y=y,origRowNumber=fullSeq,ncross=ncross)
     names(splits) <- NULL
   }
   # check a few things to catch errors early 
-  # (especially for user supplied stratifiedSplitter)
+  # (especially for user supplied partitionFunction)
   if(!is.list(splits)) {
     stop("stratified split needs to be a list")
   }
@@ -158,13 +152,13 @@ buildEvalSets <- function(nRows,...,
                           collarProb,
                           impactOnly,
                           scale,doCollar,
-                          stratifiedSplitter,ncross,
+                          partitionFunction,ncross,
                           parallelCluster) {
   verbose <- FALSE
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
   evalSets <- buildEvalSets(length(zoY),y=zoY,
-                            stratifiedSplitter=stratifiedSplitter,ncross=ncross)
+                            partitionFunction=partitionFunction,ncross=ncross)
   crossFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rList <- vector('list',length(evalSets))

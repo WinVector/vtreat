@@ -415,7 +415,7 @@
                                minFraction,smFactor,
                                rareCount,rareSig,
                                collarProb,
-                               stratifiedSplitter,ncross,
+                               partitionFunction,ncross,
                                verbose,
                                parallelCluster) {
   if(!is.data.frame(dframe)) {
@@ -494,7 +494,7 @@
                                 collarProb,
                                 TRUE,
                                 FALSE,FALSE,
-                                stratifiedSplitter,ncross,
+                                partitionFunction,ncross,
                                 parallelCluster)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights

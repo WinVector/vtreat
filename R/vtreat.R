@@ -80,7 +80,7 @@ print.vtreatment <- function(x,...) {
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
-#' @param stratifiedSplitter (optional) function taking arguments y and ncross returning a y-stratified split.
+#' @param partitionFunction (optional) function taking arguments y and ncross returning a y-stratified split.
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
@@ -104,7 +104,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               minFraction=0.02,smFactor=0.0,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
-                              stratifiedSplitter=NULL,ncross=3,
+                              partitionFunction=NULL,ncross=3,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   
@@ -122,7 +122,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    minFraction,smFactor,
                                    rareCount,rareSig,
                                    collarProb,
-                                   stratifiedSplitter,ncross,
+                                   partitionFunction,ncross,
                                    verbose,
                                    parallelCluster)
   treatments$outcomeTarget <- outcometarget
@@ -159,7 +159,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
-#' @param stratifiedSplitter (optional) function taking arguments y and ncross returning a y-stratified split.
+#' @param partitionFunction (optional) function taking arguments y and ncross returning a y-stratified split.
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
@@ -182,7 +182,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               minFraction=0.02,smFactor=0.0,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
-                              stratifiedSplitter=NULL,ncross=3,
+                              partitionFunction=NULL,ncross=3,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
@@ -199,7 +199,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      minFraction,smFactor,
                      rareCount,rareSig,
                      collarProb,
-                     stratifiedSplitter,ncross,
+                     partitionFunction,ncross,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'Numeric'
@@ -392,7 +392,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
-#' @param stratifiedSplitter (optional) function taking arguments y and ncross returning a y-stratified split.
+#' @param partitionFunction (optional) function taking arguments y and ncross returning a y-stratified split.
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
@@ -425,7 +425,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
-                                    stratifiedSplitter=NULL,ncross=3,
+                                    partitionFunction=NULL,ncross=3,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -461,7 +461,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             collarProb,
                             FALSE,
                             scale,doCollar,
-                            stratifiedSplitter,ncross,
+                            partitionFunction,ncross,
                             parallelCluster)
   list(treatments=treatments,crossFrame=crossDat$crossFrame)
 }
@@ -487,7 +487,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
-#' @param stratifiedSplitter (optional) function taking arguments y and ncross returning a y-stratified split.
+#' @param partitionFunction (optional) function taking arguments y and ncross returning a y-stratified split.
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -519,7 +519,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
-                                    stratifiedSplitter=NULL,ncross=3,
+                                    partitionFunction=NULL,ncross=3,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -555,7 +555,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             collarProb,
                             FALSE,
                             scale,doCollar,
-                            stratifiedSplitter,ncross,
+                            partitionFunction,ncross,
                             parallelCluster)
   list(treatments=treatments,crossFrame=crossDat$crossFrame)
 }
