@@ -23,7 +23,7 @@ One way holdout, a splitFunction in the sense of vtreat::buildEvalSets
 }
 \examples{
 
-oneWayHoldout(3,5)
+oneWayHoldout(3,5,NULL,NULL)
 
 }
 

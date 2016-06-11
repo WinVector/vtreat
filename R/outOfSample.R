@@ -60,7 +60,7 @@ problemAppPlan <- function(nRows,nSplits,appPlan) {
 #' 
 #' @examples
 #' 
-#' oneWayHoldout(3,5)
+#' oneWayHoldout(3,5,NULL,NULL)
 #' 
 #' @export
 oneWayHoldout <- function(nRows,nSplits,dframe,y) {
@@ -83,13 +83,61 @@ oneWayHoldout <- function(nRows,nSplits,dframe,y) {
 #' 
 #' @examples
 #' 
-#' kWayCrossValidation(3,5)
+#' kWayCrossValidation(3,5,NULL,NULL)
 #' 
 #' @export
 kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
   fullSeq <- seq_len(nRows)
   perm <- sample.int(nRows,nRows,replace=FALSE)
   evalSets <- lapply(split(perm,1 + (fullSeq %% nSplits)),
+                     function(appi) { 
+                       list(train=setdiff(fullSeq,appi),app=appi)
+                     })
+  attr(evalSets,'splitmethod') <- 'kwaycross'
+  evalSets
+}
+
+
+#' k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets
+#' 
+#' @param nRows number of rows to split.
+#' @param nSplits number of groups to split into.
+#' @param dframe original data frame (ignored).
+#' @param y numeric outcome variable try to have equidistributed in each split.
+#' @return split plan
+#' 
+#' @examples
+#' 
+#' set.seed(23255)
+#' d <- data.frame(y=sin(1:100))
+#' pStrat <- kWayStratifiedY(nrow(d),5,d,d$y)
+#' getAppLabels <- function(nRow,plan) {
+#'   labels <- numeric(nRow)
+#'   for(i in seq_len(length(plan))) {
+#'     labels[plan[[i]]$app] <- i
+#'   }
+#'   labels
+#' }
+#' d$stratGroup <- getAppLabels(nrow(d),pStrat)
+#' pSimple <- kWayCrossValidation(nrow(d),5,d,d$y)
+#' d$simpleGroup <- getAppLabels(nrow(d),pSimple)
+#' summary(tapply(d$y,d$simpleGroup,mean))
+#' # ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
+#' #   geom_density() + ggtitle('simple grouping')
+#' summary(tapply(d$y,d$stratGroup,mean))
+#' # ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
+#' #   geom_density() + ggtitle('y-stratified grouping')
+#' 
+#' @export
+kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
+  fullSeq <- seq_len(nRows)
+  d <- data.frame(index=fullSeq,y=y)
+  # extra permutation in as we expect y ordering to not fully determine frame ordering
+  d <- d[order(sample.int(nRows,nRows,replace=FALSE)),]
+  d <- d[order(d$y),]
+  d$group <- (fullSeq %% nSplits) + 1
+  partition <-  split(d$index,d$group)
+  evalSets <- lapply(partition,
                      function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
                      })
@@ -234,7 +282,7 @@ buildEvalSets <- function(nRows,...,
     } else {
       # small case, 1-holdout Jackknife style
       # not necissarilly number of splits the user requested
-      evalSets <- oneWayHoldout(nRows=nRows,nSplits=nSplits,dframe=dframe,y=y)
+      evalSets <- oneWayHoldout(nRows=nRows,nSplits=nSplits,dframe=NULL,y=NULL)
       problem <- problemAppPlan(nRows,nRows,evalSets)
       if(!is.null(problem)) {
         stop(paste("problem with vtreat::buildEvalSets",problem))
@@ -242,8 +290,12 @@ buildEvalSets <- function(nRows,...,
     }
   } else {
     # know 2*nSplits<=nRows
-    #  Try for full k-way cross val
-    evalSets <- kWayCrossValidation(nRows=nRows,nSplits=nSplits,dframe=dframe,y=y)
+    if(!is.null(y)) {
+      #  Try for full y-stratified k-way cross val
+      evalSets <- kWayStratifiedY(nRows=nRows,nSplits=nSplits,dframe=NULL,y=y)
+    } else {
+      evalSets <- kWayCrossValidation(nRows=nRows,nSplits=nSplits,dframe=NULL,y=NULL)
+    }
     problem <- problemAppPlan(nRows,nSplits,evalSets)
     if(!is.null(problem)) {
       stop(paste("problem with vtreat::buildEvalSets",problem))

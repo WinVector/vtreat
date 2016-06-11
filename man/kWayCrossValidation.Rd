@@ -23,7 +23,7 @@ k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets
 }
 \examples{
 
-kWayCrossValidation(3,5)
+kWayCrossValidation(3,5,NULL,NULL)
 
 }
 
