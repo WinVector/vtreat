@@ -464,7 +464,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             scale,doCollar,
                             splitFunction,ncross,
                             parallelCluster)
-  list(treatments=treatments,crossFrame=crossDat$crossFrame)
+  list(treatments=treatments,
+       crossFrame=crossDat$crossFrame,crossWeights=crossDat$crossWeights,
+       method= crossDat$method)
 }
 
 
@@ -559,7 +561,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             scale,doCollar,
                             splitFunction,ncross,
                             parallelCluster)
-  list(treatments=treatments,crossFrame=crossDat$crossFrame)
+  list(treatments=treatments,
+       crossFrame=crossDat$crossFrame,crossWeights=crossDat$crossWeights,
+       method=crossDat$method)
 }
 
 

@@ -141,7 +141,7 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
                      function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
                      })
-  attr(evalSets,'splitmethod') <- 'kwaycross'
+  attr(evalSets,'splitmethod') <- 'kwaycrossystratified'
   evalSets
 }
 
@@ -368,7 +368,8 @@ buildEvalSets <- function(nRows,...,
     crossFrame[rowList,] <- crossFrame
     scoreWeights[rowList] <- scoreWeights[rowList]
   }
-  list(crossFrame=crossFrame,crossWeights=scoreWeights)
+  list(crossFrame=crossFrame,crossWeights=scoreWeights,
+       method=attr(evalSets,'splitmethod'))
 }
 
 
