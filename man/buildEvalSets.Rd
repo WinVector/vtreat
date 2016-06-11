@@ -4,24 +4,22 @@
 \alias{buildEvalSets}
 \title{Build disjoint set partition for out-of sample evaluation.}
 \usage{
-buildEvalSets(nRows, ..., y = NULL, partitionFunction = NULL, ncross = 3,
-  smallN = 100)
+buildEvalSets(nRows, ..., dframe = NULL, y = NULL,
+  partitionFunction = NULL, ncross = 3)
 }
 \arguments{
 \item{nRows}{scalar, >=1 number of rows to sample from.}
 
 \item{...}{no additional arguments, declared to forced named binding of later arguments.}
 
-\item{y}{(optional) object of length nRows, will be passed to user supplied partitionFunction.}
+\item{dframe}{(optional) original data.frame, passed to user partitionFunction.}
 
-\item{partitionFunction}{(optional) function taking arguments y,origRowNumber, and ncross returning a user desired split.}
+\item{y}{(optional) numeric vector, outcome variable (possibly to stratify on), passed to user partitionFunction.}
 
-\item{ncross}{scalar >=2 if nRows>smallN return a ncross-way cross validation plan (ncross disjoint partition).}
-
-\item{smallN}{scalar at least 20 if nRows<=smallN return a 1-holdout plan (nRows singletons for evaluation).}
+\item{partitionFunction}{(optional) function taking arguments ncross,nRows,dframe, and y; returning a user desired split.}
 }
 \value{
-list of lists where the app portion of the sublists is a disjoint partion of seq_len(nRows) and each list as a train portion disjoint from app.
+list of lists where the app portion of the sub-lists is a disjoint partition of seq_len(nRows) and each list as a train portion disjoint from app.
 }
 \description{
 Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
@@ -35,6 +33,18 @@ partition), or 'userfunction' (user supplied function was actually used).  So an
 desired properties (such as stratification on y, or preservation of groups designated by 
 original data row numbers) may not apply unless you see that 'userfunction' has been
 used.
+
+The intent is the user partitionFunction only needs to handle "easy cases" 
+and maintain user invariants. If the user partitionFunction returns NULL,
+throws, or returns an unacceptable partition then vtreat::buildEvalSets
+returns its own eval set plan.  The signature of partitionFunction should
+be partitionFunction(ncross,nRows,dframe,y) where ncross is the number of 
+pieces we want in the partition, nRows is the number of rows to split,
+dframe is the original dataframe (useful for any group control variables),
+and y is a numeric vector representing outcome (useful for outcome stratification).
+
+Note that buildEvalSets may not always return a partition in exceptional cases (such
+as one row dataframes).
 }
 \examples{
 
