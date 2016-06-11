@@ -149,9 +149,21 @@ kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
 kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
   fullSeq <- seq_len(nRows)
   d <- data.frame(index=fullSeq,y=y)
-  # extra permutation in as we expect y ordering to not fully determine frame ordering
+  # initial permutation in case y has large constant blocks
   d <- d[order(sample.int(nRows,nRows,replace=FALSE)),]
+  # order by y
   d <- d[order(d$y),]
+  # mix within order segments
+  for(si in seq_len(ceiling(nRows/nSplits))) {
+    leftI <- si*nSplits - (nSplits-1)
+    rightI <- min(si*nSplits,nRows)
+    widthI <- 1+rightI-leftI
+    if(widthI>1) {
+      oldIndices <- leftI:rightI
+      newIndices <- oldIndices[sample.int(widthI,widthI,replace=FALSE)]
+      d[newIndices,] <- d[oldIndices,]
+    }
+  }
   d$group <- (fullSeq %% nSplits) + 1
   partition <-  split(d$index,d$group)
   evalSets <- lapply(partition,
