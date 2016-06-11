@@ -6,8 +6,8 @@
 \usage{
 mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
-  collarProb = 0, scale = FALSE, doCollar = TRUE,
-  partitionFunction = NULL, ncross = 3, parallelCluster = NULL)
+  collarProb = 0, scale = FALSE, doCollar = TRUE, splitFunction = NULL,
+  ncross = 3, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -34,7 +34,7 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 
-\item{partitionFunction}{(optional) function taking arguments y and ncross returning a y-stratified split.}
+\item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 
 \item{ncross}{optional scalar>=2 number of cross-validation rounds to design.}
 

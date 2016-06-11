@@ -2,21 +2,21 @@
 % Please edit documentation in R/outOfSample.R
 \name{buildEvalSets}
 \alias{buildEvalSets}
-\title{Build disjoint set partition for out-of sample evaluation.}
+\title{Build set partition for out-of sample evaluation.}
 \usage{
-buildEvalSets(nRows, ..., dframe = NULL, y = NULL,
-  partitionFunction = NULL, ncross = 3)
+buildEvalSets(nRows, ..., dframe = NULL, y = NULL, splitFunction = NULL,
+  nSplits = 3)
 }
 \arguments{
 \item{nRows}{scalar, >=1 number of rows to sample from.}
 
 \item{...}{no additional arguments, declared to forced named binding of later arguments.}
 
-\item{dframe}{(optional) original data.frame, passed to user partitionFunction.}
+\item{dframe}{(optional) original data.frame, passed to user splitFunction.}
 
-\item{y}{(optional) numeric vector, outcome variable (possibly to stratify on), passed to user partitionFunction.}
+\item{y}{(optional) numeric vector, outcome variable (possibly to stratify on), passed to user splitFunction.}
 
-\item{partitionFunction}{(optional) function taking arguments ncross,nRows,dframe, and y; returning a user desired split.}
+\item{splitFunction}{(optional) function taking arguments nSplits,nRows,dframe, and y; returning a user desired split.}
 }
 \value{
 list of lists where the app portion of the sub-lists is a disjoint partition of seq_len(nRows) and each list as a train portion disjoint from app.
@@ -28,17 +28,18 @@ nested model situation (such as data prep, stacking, or super-learning).
 \details{
 Also sets attribute "splitmethod" on return value that describes how the split was performed.
 attr(returnValue,'splitmethod') is one of: 'notsplit' (data was not split; corner cases
-like single row data sets), 'oneway' (leave one out holdout), 'simplepartition' (a simple
-partition), or 'userfunction' (user supplied function was actually used).  So any user
+like single row data sets), 'oneway' (leave one out holdout), 'kwaycross' (a simple
+partition), 'userfunction' (user supplied function was actually used), or a user specified attribute.
+Any user
 desired properties (such as stratification on y, or preservation of groups designated by 
 original data row numbers) may not apply unless you see that 'userfunction' has been
 used.
 
-The intent is the user partitionFunction only needs to handle "easy cases" 
-and maintain user invariants. If the user partitionFunction returns NULL,
+The intent is the user splitFunction only needs to handle "easy cases" 
+and maintain user invariants. If the user splitFunction returns NULL,
 throws, or returns an unacceptable partition then vtreat::buildEvalSets
-returns its own eval set plan.  The signature of partitionFunction should
-be partitionFunction(ncross,nRows,dframe,y) where ncross is the number of 
+returns its own eval set plan.  The signature of splitFunction should
+be splitFunction(nSplits,nRows,dframe,y) where nSplits is the number of 
 pieces we want in the partition, nRows is the number of rows to split,
 dframe is the original dataframe (useful for any group control variables),
 and y is a numeric vector representing outcome (useful for outcome stratification).

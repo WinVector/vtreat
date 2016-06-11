@@ -1,60 +1,107 @@
 
-#' check if splits is a good partition of 1:nRows into ncross groups
+#' check if appPlan is a good partition of 1:nRows into nSplits groups
 #'
 #' @param nRows number of rows to partition
-#' @param ncross number of sets to partition into
-#' @param splits partition to critique
+#' @param nSplits number of sets to partition into
+#' @param appPlan partition to critique
 #' @return problem with partition (null if good)
-problemWithPartition <- function(nRows,ncross,splits) {
-  if(is.null(splits)) {
-    return("splits was null")
+problemAppPlan <- function(nRows,nSplits,appPlan) {
+  if(is.null(appPlan)) {
+    return("appPlan was null")
   }
-  if(!is.list(splits)) {
-    return("stratified split needs to be a list")
+  if(!is.list(appPlan)) {
+    return("appPlan needs be a list")
   }
-  if(length(splits)!=ncross) {
-    return("didn't get requested number of splits")
+  if(length(appPlan)!=nSplits) {
+    return("didn't get requested number of groups in appPlan")
   }
-  support <- sort(Reduce(union,splits))
-  if(length(support)!=nRows) {
-    return("bad split (missing values)")
-  }
-  if(!all(support==seq_len(nRows))) {
-    return("bad split")
-  }
-  for(i in seq_len(ncross)) {
-    if(length(splits[[i]])<=0) {
-      return("empty partition element")
+  fullSeq <- seq_len(nRows)
+  for(i in seq_len(nSplits)) {
+    si <- appPlan[[i]]
+    if(!is.list(si)) {
+      return("non list element in app plan")
     }
-  }
-  for(i in seq_len(ncross-1)) {
-    for(j in seq(i+1,ncross)) {
-      if(length(intersect(splits[[i]],splits[[j]]))!=0) {
-        return("non-disjoint splits")
-      }
+    ti <- si$train
+    if(is.null(ti)) {
+      return("missing train slot")
+    }
+    if(length(setdiff(ti,fullSeq))!=0) {
+      return("unexpected symbols in train slot")
+    }
+    ai <- si$app
+    if(is.null(ai)) {
+      return("missing app slot")
+    }
+    if(length(setdiff(ai,fullSeq))!=0) {
+      return("unexpected symbols in application slot")
+    }
+    if(length(intersect(ti,ai))!=0) {
+      return("train and application slots overlap")
     }
   }
   NULL
 }
 
-#' Build disjoint set partition for out-of sample evaluation.
+#' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets
+#' 
+#' @param nSplits number of groups to split into.
+#' @param nRows number of rows to split.
+#' @param dframe original data frame.
+#' @param y numeric outcome variable.
+#' @return split plan
+#' 
+#' @export
+oneWayHoldout <- function(nSplits,nRows,dframe,y) {
+  fullSeq <- seq_len(nRows)
+  evalSets <- lapply(as.list(fullSeq),
+                     function(appi) { 
+                       list(train=setdiff(fullSeq,appi),app=appi)
+                     })
+  attr(evalSets,'splitmethod') <- 'oneway'
+  evalSets
+}
+
+#' k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets
+#' 
+#' @param nSplits number of groups to split into.
+#' @param nRows number of rows to split.
+#' @param dframe original data frame.
+#' @param y numeric outcome variable.
+#' @return split plan
+#' 
+#' @export
+kWayCrossValidation <- function(nSplits,nRows,dframe,y) {
+  fullSeq <- seq_len(nRows)
+  perm <- sample.int(nRows,nRows,replace=FALSE)
+  evalSets <- lapply(split(perm,1 + (fullSeq %% nSplits)),
+                     function(appi) { 
+                       list(train=setdiff(fullSeq,appi),app=appi)
+                     })
+  attr(evalSets,'splitmethod') <- 'kwaycross'
+  evalSets
+}
+
+
+
+#' Build set partition for out-of sample evaluation.
 #' 
 #' Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
 #' nested model situation (such as data prep, stacking, or super-learning).
 #' 
 #' Also sets attribute "splitmethod" on return value that describes how the split was performed.
 #' attr(returnValue,'splitmethod') is one of: 'notsplit' (data was not split; corner cases
-#' like single row data sets), 'oneway' (leave one out holdout), 'simplepartition' (a simple
-#' partition), or 'userfunction' (user supplied function was actually used).  So any user
+#' like single row data sets), 'oneway' (leave one out holdout), 'kwaycross' (a simple
+#' partition), 'userfunction' (user supplied function was actually used), or a user specified attribute.
+#' Any user
 #' desired properties (such as stratification on y, or preservation of groups designated by 
 #' original data row numbers) may not apply unless you see that 'userfunction' has been
 #' used.
 #' 
-#' The intent is the user partitionFunction only needs to handle "easy cases" 
-#' and maintain user invariants. If the user partitionFunction returns NULL,
+#' The intent is the user splitFunction only needs to handle "easy cases" 
+#' and maintain user invariants. If the user splitFunction returns NULL,
 #' throws, or returns an unacceptable partition then vtreat::buildEvalSets
-#' returns its own eval set plan.  The signature of partitionFunction should
-#' be partitionFunction(ncross,nRows,dframe,y) where ncross is the number of 
+#' returns its own eval set plan.  The signature of splitFunction should
+#' be splitFunction(nSplits,nRows,dframe,y) where nSplits is the number of 
 #' pieces we want in the partition, nRows is the number of rows to split,
 #' dframe is the original dataframe (useful for any group control variables),
 #' and y is a numeric vector representing outcome (useful for outcome stratification).
@@ -64,9 +111,9 @@ problemWithPartition <- function(nRows,ncross,splits) {
 #' 
 #' @param nRows scalar, >=1 number of rows to sample from.
 #' @param ... no additional arguments, declared to forced named binding of later arguments.
-#' @param dframe (optional) original data.frame, passed to user partitionFunction.
-#' @param y (optional) numeric vector, outcome variable (possibly to stratify on), passed to user partitionFunction.
-#' @param partitionFunction (optional) function taking arguments ncross,nRows,dframe, and y; returning a user desired split.
+#' @param dframe (optional) original data.frame, passed to user splitFunction.
+#' @param y (optional) numeric vector, outcome variable (possibly to stratify on), passed to user splitFunction.
+#' @param splitFunction (optional) function taking arguments nSplits,nRows,dframe, and y; returning a user desired split.
 #' @return list of lists where the app portion of the sub-lists is a disjoint partition of seq_len(nRows) and each list as a train portion disjoint from app.
 #' 
 #' @examples
@@ -113,8 +160,8 @@ problemWithPartition <- function(nRows,ncross,splits) {
 buildEvalSets <- function(nRows,...,
                           dframe=NULL,
                           y=NULL,
-                          partitionFunction=NULL,
-                          ncross=3) {
+                          splitFunction=NULL,
+                          nSplits=3) {
   # check args
   args <- list(...)
   if(length(args)!=0) {
@@ -122,8 +169,8 @@ buildEvalSets <- function(nRows,...,
     nv <- length(args)-length(nm)
     stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
   }
-  if(ncross<2) {
-    stop("vtreat::buildEvalSets must of ncross>=2")
+  if(nSplits<2) {
+    stop("vtreat::buildEvalSets must have nSplits>=2")
   }
   if(!is.null(y)) {
     if(!is.numeric(y)) {
@@ -141,60 +188,51 @@ buildEvalSets <- function(nRows,...,
       stop('must have nrow(dframe)==nRows')
     }
   }
-  splitmethod = 'none'
-  splits <- NULL
   # try user partition function
-  if(!is.null(partitionFunction)) {
+  if(!is.null(splitFunction)) {
     tryCatch({
-      splits <- partitionFunction(ncross=ncross,nRows=nRows,dframe=dframe,y=y)
-      if(!is.null(splits)) {
-        names(splits) <- NULL
-      }
-      problem <- problemWithPartition(nRows,ncross,splits)
-      if(!is.null(problem)) {
-        warning(paste("vtreat::buildEvalSets user partition rejected: ",problem))
-        splits <- NULL
+      evalSets <- splitFunction(nSplits=nSplits,nRows=nRows,dframe=dframe,y=y)
+      problem <- problemAppPlan(nRows,nSplits,evalSets)
+      if(is.null(problem)) {
+        if(is.null(attr(evalSets,'splitmethod'))) {
+          attr(evalSets,'splitmethod') <- 'userfunction'
+        }
+        return(evalSets)
       } else {
-        splitmethod = 'userfunction'
+        warning(paste("vtreat::buildEvalSets user partition rejected: ",problem))
       }
     },
     error = function(e) warning(paste('vtreat::buildEvalSets caught ',
-                          as.character(e),'from user partitionFunction')
+                          as.character(e),'from user splitFunction')
     ))
   }
   # deal with it ourselves if we have to
   fullSeq <- seq_len(nRows)
-  if(is.null(splits)) {
-    # okay, we will partition on our own
-    if((nRows<=20)||(2*ncross>nRows)) {
-      # one corner case
-      if(nRows<=1) {
-        # no split plan possible
-        r <- list(list(train=fullSeq,app=fullSeq))
-        attr(r,'splitmethod') <- 'notsplit'
-        return(r)
-      } else {
-        # small case, 1-holdout Jackknife style
-        splitmethod <- 'oneway'
-        splits <- as.list(fullSeq)
-      }
+  # okay, we will partition on our own
+  if((nRows<=20)||(2*nSplits>nRows)) {
+    # one corner case
+    if(nRows<=1) {
+      # no split plan possible
+      evalSets <- list(list(train=fullSeq,app=fullSeq))
+      attr(evalSets,'splitmethod') <- 'notsplit'
     } else {
-      # know 2*ncross<=nRows
-      #  Try for full k-way cross val
-      splitmethod = 'simplepartition'
-      perm <- sample.int(nRows,nRows,replace=FALSE)
-      splits <- split(perm,1 + (fullSeq %% ncross))
-      problem <- problemWithPartition(nRows,ncross,splits)
+      # small case, 1-holdout Jackknife style
+      # not necissarilly number of splits the user requested
+      evalSets <- oneWayHoldout(nSplits=nSplits,nRows=nRows,dframe=dframe,y=y)
+      problem <- problemAppPlan(nRows,nRows,evalSets)
       if(!is.null(problem)) {
         stop(paste("problem with vtreat::buildEvalSets",problem))
       }
     }
+  } else {
+    # know 2*nSplits<=nRows
+    #  Try for full k-way cross val
+    evalSets <- kWayCrossValidation(nSplits=nSplits,nRows=nRows,dframe=dframe,y=y)
+    problem <- problemAppPlan(nRows,nSplits,evalSets)
+    if(!is.null(problem)) {
+      stop(paste("problem with vtreat::buildEvalSets",problem))
+    }
   }
-  evalSets <- lapply(splits,
-                     function(appi) { 
-                       list(train=setdiff(fullSeq,appi),app=appi)
-                     })
-  attr(evalSets,'splitmethod') <- splitmethod
   evalSets
 }
 
@@ -210,13 +248,13 @@ buildEvalSets <- function(nRows,...,
                           collarProb,
                           impactOnly,
                           scale,doCollar,
-                          partitionFunction,ncross,
+                          splitFunction,nSplits,
                           parallelCluster) {
   verbose <- FALSE
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a partition plan
   evalSets <- buildEvalSets(length(zoY),dframe=dframe,y=zoY,
-                            partitionFunction=partitionFunction,ncross=ncross)
+                            splitFunction=splitFunction,nSplits=nSplits)
   crossFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rList <- vector('list',length(evalSets))
