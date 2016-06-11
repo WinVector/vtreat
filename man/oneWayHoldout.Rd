@@ -2,7 +2,8 @@
 % Please edit documentation in R/outOfSample.R
 \name{oneWayHoldout}
 \alias{oneWayHoldout}
-\title{One way holdout, a splitFunction in the sense of vtreat::buildEvalSets}
+\title{One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
+Doesn't respect nSplits.}
 \usage{
 oneWayHoldout(nRows, nSplits, dframe, y)
 }
@@ -19,7 +20,8 @@ oneWayHoldout(nRows, nSplits, dframe, y)
 split plan
 }
 \description{
-One way holdout, a splitFunction in the sense of vtreat::buildEvalSets
+One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
+Doesn't respect nSplits.
 }
 \examples{
 

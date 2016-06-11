@@ -4,6 +4,7 @@
 #' @param nRows number of rows to partition
 #' @param nSplits number of sets to partition into
 #' @param appPlan partition to critique
+#' @param strict logical, if true expect application data to be a partition and training data to be maximal
 #' @return problem with partition (null if good)
 #' 
 #' 
@@ -13,7 +14,7 @@
 #' problemAppPlan(3,5,plan)
 #' 
 #' @export
-problemAppPlan <- function(nRows,nSplits,appPlan) {
+problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
   if(is.null(appPlan)) {
     return("appPlan was null")
   }
@@ -24,6 +25,7 @@ problemAppPlan <- function(nRows,nSplits,appPlan) {
     return("didn't get requested number of groups in appPlan")
   }
   fullSeq <- seq_len(nRows)
+  seen <- c()
   for(i in seq_len(nSplits)) {
     si <- appPlan[[i]]
     if(!is.list(si)) {
@@ -46,11 +48,26 @@ problemAppPlan <- function(nRows,nSplits,appPlan) {
     if(length(intersect(ti,ai))!=0) {
       return("train and application slots overlap")
     }
+    if(strict) {
+      if((length(ti)+length(ai))!=nRows) {
+        return("non-maximal training set")
+      }
+      if(length(intersect(seen,ai))!=0) {
+        return("repeated application row")
+      }
+      seen <- union(seen,ai)
+    }
+  }
+  if(strict) {
+    if(length(seen)!=nRows) {
+      return("not all rows appeard in application")
+    }
   }
   NULL
 }
 
-#' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets
+#' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
+#' Doesn't respect nSplits.
 #' 
 #' @param nRows number of rows to split.
 #' @param nSplits number of groups to split into (ignored).
@@ -256,7 +273,7 @@ buildEvalSets <- function(nRows,...,
   if(!is.null(splitFunction)) {
     tryCatch({
       evalSets <- splitFunction(nRows=nRows,nSplits=nSplits,dframe=dframe,y=y)
-      problem <- problemAppPlan(nRows,nSplits,evalSets)
+      problem <- problemAppPlan(nRows,nSplits,evalSets,FALSE)
       if(is.null(problem)) {
         if(is.null(attr(evalSets,'splitmethod'))) {
           attr(evalSets,'splitmethod') <- 'userfunction'
@@ -283,7 +300,7 @@ buildEvalSets <- function(nRows,...,
       # small case, 1-holdout Jackknife style
       # not necissarilly number of splits the user requested
       evalSets <- oneWayHoldout(nRows=nRows,nSplits=nSplits,dframe=NULL,y=NULL)
-      problem <- problemAppPlan(nRows,nRows,evalSets)
+      problem <- problemAppPlan(nRows,nRows,evalSets,TRUE)
       if(!is.null(problem)) {
         stop(paste("problem with vtreat::buildEvalSets",problem))
       }
@@ -296,7 +313,7 @@ buildEvalSets <- function(nRows,...,
     } else {
       evalSets <- kWayCrossValidation(nRows=nRows,nSplits=nSplits,dframe=NULL,y=NULL)
     }
-    problem <- problemAppPlan(nRows,nSplits,evalSets)
+    problem <- problemAppPlan(nRows,nSplits,evalSets,TRUE)
     if(!is.null(problem)) {
       stop(paste("problem with vtreat::buildEvalSets",problem))
     }
