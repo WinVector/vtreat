@@ -4,21 +4,26 @@
 \alias{oneWayHoldout}
 \title{One way holdout, a splitFunction in the sense of vtreat::buildEvalSets}
 \usage{
-oneWayHoldout(nSplits, nRows, dframe, y)
+oneWayHoldout(nRows, nSplits, dframe, y)
 }
 \arguments{
-\item{nSplits}{number of groups to split into.}
-
 \item{nRows}{number of rows to split.}
 
-\item{dframe}{original data frame.}
+\item{nSplits}{number of groups to split into (ignored).}
 
-\item{y}{numeric outcome variable.}
+\item{dframe}{original data frame (ignored).}
+
+\item{y}{numeric outcome variable (ignored).}
 }
 \value{
 split plan
 }
 \description{
 One way holdout, a splitFunction in the sense of vtreat::buildEvalSets
+}
+\examples{
+
+oneWayHoldout(3,5)
+
 }
 

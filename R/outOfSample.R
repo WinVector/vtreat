@@ -5,6 +5,14 @@
 #' @param nSplits number of sets to partition into
 #' @param appPlan partition to critique
 #' @return problem with partition (null if good)
+#' 
+#' 
+#' @examples
+#' 
+#' plan <- oneWayHoldout(3,5)
+#' problemAppPlan(3,5,plan)
+#' 
+#' @export
 problemAppPlan <- function(nRows,nSplits,appPlan) {
   if(is.null(appPlan)) {
     return("appPlan was null")
@@ -44,14 +52,18 @@ problemAppPlan <- function(nRows,nSplits,appPlan) {
 
 #' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets
 #' 
-#' @param nSplits number of groups to split into.
 #' @param nRows number of rows to split.
-#' @param dframe original data frame.
-#' @param y numeric outcome variable.
+#' @param nSplits number of groups to split into (ignored).
+#' @param dframe original data frame (ignored).
+#' @param y numeric outcome variable (ignored).
 #' @return split plan
 #' 
+#' @examples
+#' 
+#' oneWayHoldout(3,5)
+#' 
 #' @export
-oneWayHoldout <- function(nSplits,nRows,dframe,y) {
+oneWayHoldout <- function(nRows,nSplits,dframe,y) {
   fullSeq <- seq_len(nRows)
   evalSets <- lapply(as.list(fullSeq),
                      function(appi) { 
@@ -63,14 +75,18 @@ oneWayHoldout <- function(nSplits,nRows,dframe,y) {
 
 #' k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets
 #' 
-#' @param nSplits number of groups to split into.
 #' @param nRows number of rows to split.
-#' @param dframe original data frame.
-#' @param y numeric outcome variable.
+#' @param nSplits number of groups to split into.
+#' @param dframe original data frame (ignored).
+#' @param y numeric outcome variable (ignored).
 #' @return split plan
 #' 
+#' @examples
+#' 
+#' kWayCrossValidation(3,5)
+#' 
 #' @export
-kWayCrossValidation <- function(nSplits,nRows,dframe,y) {
+kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
   fullSeq <- seq_len(nRows)
   perm <- sample.int(nRows,nRows,replace=FALSE)
   evalSets <- lapply(split(perm,1 + (fullSeq %% nSplits)),
@@ -101,7 +117,7 @@ kWayCrossValidation <- function(nSplits,nRows,dframe,y) {
 #' and maintain user invariants. If the user splitFunction returns NULL,
 #' throws, or returns an unacceptable partition then vtreat::buildEvalSets
 #' returns its own eval set plan.  The signature of splitFunction should
-#' be splitFunction(nSplits,nRows,dframe,y) where nSplits is the number of 
+#' be splitFunction(nRows,nSplits,dframe,y) where nSplits is the number of 
 #' pieces we want in the partition, nRows is the number of rows to split,
 #' dframe is the original dataframe (useful for any group control variables),
 #' and y is a numeric vector representing outcome (useful for outcome stratification).
@@ -191,7 +207,7 @@ buildEvalSets <- function(nRows,...,
   # try user partition function
   if(!is.null(splitFunction)) {
     tryCatch({
-      evalSets <- splitFunction(nSplits=nSplits,nRows=nRows,dframe=dframe,y=y)
+      evalSets <- splitFunction(nRows=nRows,nSplits=nSplits,dframe=dframe,y=y)
       problem <- problemAppPlan(nRows,nSplits,evalSets)
       if(is.null(problem)) {
         if(is.null(attr(evalSets,'splitmethod'))) {
@@ -218,7 +234,7 @@ buildEvalSets <- function(nRows,...,
     } else {
       # small case, 1-holdout Jackknife style
       # not necissarilly number of splits the user requested
-      evalSets <- oneWayHoldout(nSplits=nSplits,nRows=nRows,dframe=dframe,y=y)
+      evalSets <- oneWayHoldout(nRows=nRows,nSplits=nSplits,dframe=dframe,y=y)
       problem <- problemAppPlan(nRows,nRows,evalSets)
       if(!is.null(problem)) {
         stop(paste("problem with vtreat::buildEvalSets",problem))
@@ -227,7 +243,7 @@ buildEvalSets <- function(nRows,...,
   } else {
     # know 2*nSplits<=nRows
     #  Try for full k-way cross val
-    evalSets <- kWayCrossValidation(nSplits=nSplits,nRows=nRows,dframe=dframe,y=y)
+    evalSets <- kWayCrossValidation(nRows=nRows,nSplits=nSplits,dframe=dframe,y=y)
     problem <- problemAppPlan(nRows,nSplits,evalSets)
     if(!is.null(problem)) {
       stop(paste("problem with vtreat::buildEvalSets",problem))

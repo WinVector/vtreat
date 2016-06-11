@@ -4,21 +4,26 @@
 \alias{kWayCrossValidation}
 \title{k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets}
 \usage{
-kWayCrossValidation(nSplits, nRows, dframe, y)
+kWayCrossValidation(nRows, nSplits, dframe, y)
 }
 \arguments{
-\item{nSplits}{number of groups to split into.}
-
 \item{nRows}{number of rows to split.}
 
-\item{dframe}{original data frame.}
+\item{nSplits}{number of groups to split into.}
 
-\item{y}{numeric outcome variable.}
+\item{dframe}{original data frame (ignored).}
+
+\item{y}{numeric outcome variable (ignored).}
 }
 \value{
 split plan
 }
 \description{
 k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets
+}
+\examples{
+
+kWayCrossValidation(3,5)
+
 }
 

@@ -39,7 +39,7 @@ The intent is the user splitFunction only needs to handle "easy cases"
 and maintain user invariants. If the user splitFunction returns NULL,
 throws, or returns an unacceptable partition then vtreat::buildEvalSets
 returns its own eval set plan.  The signature of splitFunction should
-be splitFunction(nSplits,nRows,dframe,y) where nSplits is the number of 
+be splitFunction(nRows,nSplits,dframe,y) where nSplits is the number of 
 pieces we want in the partition, nRows is the number of rows to split,
 dframe is the original dataframe (useful for any group control variables),
 and y is a numeric vector representing outcome (useful for outcome stratification).

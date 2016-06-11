@@ -27,7 +27,7 @@ test_that("testExpmtDesign: cross frame design", {
 
 test_that("testExpmtDesign: cross frame design caret", {
   if(requireNamespace("caret",quietly=TRUE)) {
-    splitFn <- function(nSplits,nRows,dframe,y) {
+    splitFn <- function(nRows,nSplits,dframe,y) {
       fullSeq <- seq_len(nRows)
       part <- caret::createFolds(y=y,k=nSplits)
       lapply(part,

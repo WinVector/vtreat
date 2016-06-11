@@ -19,4 +19,10 @@ problem with partition (null if good)
 \description{
 check if appPlan is a good partition of 1:nRows into nSplits groups
 }
+\examples{
+
+plan <- oneWayHoldout(3,5)
+problemAppPlan(3,5,plan)
+
+}
 
