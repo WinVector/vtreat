@@ -7,9 +7,9 @@
 kWayStratifiedY(nRows, nSplits, dframe, y)
 }
 \arguments{
-\item{nRows}{number of rows to split.}
+\item{nRows}{number of rows to split (>1)}
 
-\item{nSplits}{number of groups to split into.}
+\item{nSplits}{number of groups to split into (<nRows,>1).}
 
 \item{dframe}{original data frame (ignored).}
 
@@ -26,16 +26,9 @@ k-fold cross validation stratified on y, a splitFunction in the sense of vtreat:
 set.seed(23255)
 d <- data.frame(y=sin(1:100))
 pStrat <- kWayStratifiedY(nrow(d),5,d,d$y)
-getAppLabels <- function(nRow,plan) {
-  labels <- numeric(nRow)
-  for(i in seq_len(length(plan))) {
-    labels[plan[[i]]$app] <- i
-  }
-  labels
-}
-d$stratGroup <- getAppLabels(nrow(d),pStrat)
+d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
 pSimple <- kWayCrossValidation(nrow(d),5,d,d$y)
-d$simpleGroup <- getAppLabels(nrow(d),pSimple)
+d$simpleGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pSimple)
 summary(tapply(d$y,d$simpleGroup,mean))
 # ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
 #   geom_density() + ggtitle('simple grouping')

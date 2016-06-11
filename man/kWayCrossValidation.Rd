@@ -7,9 +7,9 @@
 kWayCrossValidation(nRows, nSplits, dframe, y)
 }
 \arguments{
-\item{nRows}{number of rows to split.}
+\item{nRows}{number of rows to split (>1).}
 
-\item{nSplits}{number of groups to split into.}
+\item{nSplits}{number of groups to split into (>1,<=nRows).}
 
 \item{dframe}{original data frame (ignored).}
 
@@ -23,7 +23,7 @@ k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets
 }
 \examples{
 
-kWayCrossValidation(3,5,NULL,NULL)
+kWayCrossValidation(7,2,NULL,NULL)
 
 }
 

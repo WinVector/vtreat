@@ -8,7 +8,7 @@ Doesn't respect nSplits.}
 oneWayHoldout(nRows, nSplits, dframe, y)
 }
 \arguments{
-\item{nRows}{number of rows to split.}
+\item{nRows}{number of rows to split (integer >1).}
 
 \item{nSplits}{number of groups to split into (ignored).}
 
@@ -25,7 +25,7 @@ Doesn't respect nSplits.
 }
 \examples{
 
-oneWayHoldout(3,5,NULL,NULL)
+oneWayHoldout(3,NULL,NULL,NULL)
 
 }
 

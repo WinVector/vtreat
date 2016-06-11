@@ -23,8 +23,8 @@ check if appPlan is a good partition of 1:nRows into nSplits groups
 }
 \examples{
 
-plan <- oneWayHoldout(3,5)
-problemAppPlan(3,5,plan)
+plan <- oneWayHoldout(3,NULL,NULL,NULL)
+problemAppPlan(3,3,plan,TRUE)
 
 }
 

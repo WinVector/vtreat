@@ -1,4 +1,22 @@
 
+#' read application labels off a split plan.
+#'
+#' @param nRow number of rows in original data.frame.
+#' @param plan split plan
+#' @return vector of labels
+#' 
+#' plan <- oneWayHoldout(3,NULL,NULL,NULL)
+#' getSplitPlanAppLabels(3,plan)
+#' 
+#' @export
+getSplitPlanAppLabels <- function(nRow,plan) {
+  labels <- numeric(nRow)
+  for(i in seq_len(length(plan))) {
+    labels[plan[[i]]$app] <- i
+  }
+  labels
+}
+
 #' check if appPlan is a good partition of 1:nRows into nSplits groups
 #'
 #' @param nRows number of rows to partition
@@ -10,8 +28,8 @@
 #' 
 #' @examples
 #' 
-#' plan <- oneWayHoldout(3,5)
-#' problemAppPlan(3,5,plan)
+#' plan <- oneWayHoldout(3,NULL,NULL,NULL)
+#' problemAppPlan(3,3,plan,TRUE)
 #' 
 #' @export
 problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
@@ -52,11 +70,11 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
       if((length(ti)+length(ai))!=nRows) {
         return("non-maximal training set")
       }
-      if(length(intersect(seen,ai))!=0) {
-        return("repeated application row")
-      }
-      seen <- union(seen,ai)
     }
+    if(length(intersect(seen,ai))!=0) {
+      return("repeated application row")
+    }
+    seen <- union(seen,ai)
   }
   if(strict) {
     if(length(seen)!=nRows) {
@@ -69,7 +87,7 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
 #' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
 #' Doesn't respect nSplits.
 #' 
-#' @param nRows number of rows to split.
+#' @param nRows number of rows to split (integer >1).
 #' @param nSplits number of groups to split into (ignored).
 #' @param dframe original data frame (ignored).
 #' @param y numeric outcome variable (ignored).
@@ -77,10 +95,13 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
 #' 
 #' @examples
 #' 
-#' oneWayHoldout(3,5,NULL,NULL)
+#' oneWayHoldout(3,NULL,NULL,NULL)
 #' 
 #' @export
 oneWayHoldout <- function(nRows,nSplits,dframe,y) {
+  if(nRows<=1) {
+    return(NULL)
+  }
   fullSeq <- seq_len(nRows)
   evalSets <- lapply(as.list(fullSeq),
                      function(appi) { 
@@ -92,24 +113,28 @@ oneWayHoldout <- function(nRows,nSplits,dframe,y) {
 
 #' k-fold cross validation, a splitFunction in the sense of vtreat::buildEvalSets
 #' 
-#' @param nRows number of rows to split.
-#' @param nSplits number of groups to split into.
+#' @param nRows number of rows to split (>1).
+#' @param nSplits number of groups to split into (>1,<=nRows).
 #' @param dframe original data frame (ignored).
 #' @param y numeric outcome variable (ignored).
 #' @return split plan
 #' 
 #' @examples
 #' 
-#' kWayCrossValidation(3,5,NULL,NULL)
+#' kWayCrossValidation(7,2,NULL,NULL)
 #' 
 #' @export
 kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
+  if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
+    return(NULL)
+  }
   fullSeq <- seq_len(nRows)
   perm <- sample.int(nRows,nRows,replace=FALSE)
   evalSets <- lapply(split(perm,1 + (fullSeq %% nSplits)),
                      function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
                      })
+  names(evalSets) <- NULL
   attr(evalSets,'splitmethod') <- 'kwaycross'
   evalSets
 }
@@ -117,8 +142,8 @@ kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
 
 #' k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets
 #' 
-#' @param nRows number of rows to split.
-#' @param nSplits number of groups to split into.
+#' @param nRows number of rows to split (>1)
+#' @param nSplits number of groups to split into (<nRows,>1).
 #' @param dframe original data frame (ignored).
 #' @param y numeric outcome variable try to have equidistributed in each split.
 #' @return split plan
@@ -128,16 +153,9 @@ kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
 #' set.seed(23255)
 #' d <- data.frame(y=sin(1:100))
 #' pStrat <- kWayStratifiedY(nrow(d),5,d,d$y)
-#' getAppLabels <- function(nRow,plan) {
-#'   labels <- numeric(nRow)
-#'   for(i in seq_len(length(plan))) {
-#'     labels[plan[[i]]$app] <- i
-#'   }
-#'   labels
-#' }
-#' d$stratGroup <- getAppLabels(nrow(d),pStrat)
+#' d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
 #' pSimple <- kWayCrossValidation(nrow(d),5,d,d$y)
-#' d$simpleGroup <- getAppLabels(nrow(d),pSimple)
+#' d$simpleGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pSimple)
 #' summary(tapply(d$y,d$simpleGroup,mean))
 #' # ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
 #' #   geom_density() + ggtitle('simple grouping')
@@ -147,6 +165,9 @@ kWayCrossValidation <- function(nRows,nSplits,dframe,y) {
 #' 
 #' @export
 kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
+  if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
+    return(NULL)
+  }
   fullSeq <- seq_len(nRows)
   d <- data.frame(index=fullSeq,y=y)
   # initial permutation in case y has large constant blocks
@@ -175,6 +196,54 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
 }
 
 
+
+
+#' k-fold cross validation, respecting (never splitting) groupingColumn.
+#' 
+#' @param nRows number of rows to split (>1).
+#' @param nSplits number of groups to split into (>1,<=nRows).
+#' @param groupingColumnName name of column to group by.
+#' @return split plan
+#' 
+#' @examples
+#' 
+#' d <- data.frame(y=sin(1:100))
+#' d$group <- floor(seq_len(nrow(d))/5)
+#' splitter <- makekWayCrossValidationGroupedByColumn('group')
+#' split <- splitter(nrow(d),5,d,d$y)
+#' d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),split)
+#' rowSums(table(d$group,d$splitLabel)>0)
+#' 
+#' @export
+makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
+  force(groupingColumnName) 
+  function(nRows,nSplits,dframe,y) {
+    if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
+      return(NULL)
+    }
+    groups <- unique(dframe[[groupingColumnName]])
+    d <- data.frame(index=seq_len(nRows),
+                    group=dframe[[groupingColumnName]],
+                    stringsAsFactors=FALSE)
+    groupedPlan <- kWayCrossValidation(length(groups),nSplits,NULL,NULL)
+    if(is.null(groupedPlan)) {
+      return(NULL)
+    }
+    partition <- lapply(groupedPlan,
+                        function(gi) {
+                          d$index[d$group %in% gi$app]
+                        })
+    fullSeq <- seq_len(nRows)
+    evalSets <- lapply(partition,
+                       function(appi) { 
+                         list(train=setdiff(fullSeq,appi),app=appi)
+                       })
+    attr(evalSets,'splitmethod') <- 'kwaycrossgrouped'
+    evalSets
+  }
+}
+
+# TODO: similar wrapper for ordering columns
 
 #' Build set partition for out-of sample evaluation.
 #' 
