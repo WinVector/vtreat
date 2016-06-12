@@ -4,7 +4,7 @@
 \alias{problemAppPlan}
 \title{check if appPlan is a good partition of 1:nRows into nSplits groups}
 \usage{
-problemAppPlan(nRows, nSplits, appPlan, strict)
+problemAppPlan(nRows, nSplits, appPlan, strictCheck)
 }
 \arguments{
 \item{nRows}{number of rows to partition}
@@ -13,7 +13,7 @@ problemAppPlan(nRows, nSplits, appPlan, strict)
 
 \item{appPlan}{partition to critique}
 
-\item{strict}{logical, if true expect application data to be a partition and training data to be maximal}
+\item{strictCheck}{logical, if true expect application data to be a partition and training data to be maximal and to match nSplits.}
 }
 \value{
 problem with partition (null if good)

@@ -22,7 +22,7 @@ getSplitPlanAppLabels <- function(nRow,plan) {
 #' @param nRows number of rows to partition
 #' @param nSplits number of sets to partition into
 #' @param appPlan partition to critique
-#' @param strict logical, if true expect application data to be a partition and training data to be maximal
+#' @param strictCheck logical, if true expect application data to be a partition and training data to be maximal and to match nSplits.
 #' @return problem with partition (null if good)
 #' 
 #' 
@@ -32,19 +32,21 @@ getSplitPlanAppLabels <- function(nRow,plan) {
 #' problemAppPlan(3,3,plan,TRUE)
 #' 
 #' @export
-problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
+problemAppPlan <- function(nRows,nSplits,appPlan,strictCheck) {
   if(is.null(appPlan)) {
     return("appPlan was null")
   }
   if(!is.list(appPlan)) {
     return("appPlan needs be a list")
   }
-  if(length(appPlan)!=nSplits) {
-    return("didn't get requested number of groups in appPlan")
+  if((strictCheck)&&(nRows>1)&&(nSplits<=nRows)) {
+    if(length(appPlan)!=nSplits) {
+      return("didn't get requested number of groups in appPlan")
+    }
   }
   fullSeq <- seq_len(nRows)
   seen <- c()
-  for(i in seq_len(nSplits)) {
+  for(i in seq_len(length(appPlan))) {
     si <- appPlan[[i]]
     if(!is.list(si)) {
       return("non list element in app plan")
@@ -63,11 +65,13 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
     if(length(setdiff(ai,fullSeq))!=0) {
       return("unexpected symbols in application slot")
     }
-    if(length(intersect(ti,ai))!=0) {
-      return("train and application slots overlap")
+    if(nRows>1) {
+      if(length(intersect(ti,ai))!=0) {
+        return("train and application slots overlap")
+      }
     }
-    if(strict) {
-      if((length(ti)+length(ai))!=nRows) {
+    if(strictCheck) {
+      if(length(setdiff(fullSeq,union(ai,ti)))>0) {
         return("non-maximal training set")
       }
     }
@@ -76,9 +80,9 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strict) {
     }
     seen <- union(seen,ai)
   }
-  if(strict) {
+  if(strictCheck) {
     if(length(seen)!=nRows) {
-      return("not all rows appeard in application")
+      return("not all rows appeared in application")
     }
   }
   NULL
@@ -220,17 +224,17 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
     if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
       return(NULL)
     }
-    groups <- unique(dframe[[groupingColumnName]])
     d <- data.frame(index=seq_len(nRows),
-                    group=dframe[[groupingColumnName]],
+                    group=as.character(dframe[[groupingColumnName]]),
                     stringsAsFactors=FALSE)
+    groups <- unique(d$group)
     groupedPlan <- kWayCrossValidation(length(groups),nSplits,NULL,NULL)
     if(is.null(groupedPlan)) {
       return(NULL)
     }
     partition <- lapply(groupedPlan,
                         function(gi) {
-                          d$index[d$group %in% gi$app]
+                          d$index[d$group %in% groups[gi$app]]
                         })
     fullSeq <- seq_len(nRows)
     evalSets <- lapply(partition,
