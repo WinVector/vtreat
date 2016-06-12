@@ -17,6 +17,8 @@ buildEvalSets(nRows, ..., dframe = NULL, y = NULL, splitFunction = NULL,
 \item{y}{(optional) numeric vector, outcome variable (possibly to stratify on), passed to user splitFunction.}
 
 \item{splitFunction}{(optional) function taking arguments nSplits,nRows,dframe, and y; returning a user desired split.}
+
+\item{nSplits}{integer, target number of splits.}
 }
 \value{
 list of lists where the app portion of the sub-lists is a disjoint partition of seq_len(nRows) and each list as a train portion disjoint from app.

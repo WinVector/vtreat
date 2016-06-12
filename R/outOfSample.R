@@ -191,6 +191,7 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
                      function(appi) { 
                        list(train=setdiff(fullSeq,appi),app=appi)
                      })
+  names(evalSets) <- NULL
   attr(evalSets,'splitmethod') <- 'kwaycrossystratified'
   evalSets
 }
@@ -198,12 +199,10 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
 
 
 
-#' k-fold cross validation, respecting (never splitting) groupingColumn.
+#' Build a k-fold cross validation splitter, respecting (never splitting) groupingColumn.
 #' 
-#' @param nRows number of rows to split (>1).
-#' @param nSplits number of groups to split into (>1,<=nRows).
 #' @param groupingColumnName name of column to group by.
-#' @return split plan
+#' @return splitting function in the sense of vtreat::buildEvalSets.
 #' 
 #' @examples
 #' 
@@ -238,12 +237,50 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
                        function(appi) { 
                          list(train=setdiff(fullSeq,appi),app=appi)
                        })
+    names(evalSets) <- NULL
     attr(evalSets,'splitmethod') <- 'kwaycrossgrouped'
     evalSets
   }
 }
 
-# TODO: similar wrapper for ordering columns
+#' Build a k-fold cross validation splitter, respecting (train always above test) orderColumn
+#' 
+#' @param orderColumnName name of column to order by.
+#' @return splitting function in the sense of vtreat::buildEvalSets.
+#' 
+#' @examples
+#' 
+#' d <- data.frame(y=sin(1:100))
+#' d$order <- seq_len(nrow(d))
+#' splitter <- makekWayCrossValidationOrderedByColumn('order')
+#' split <- splitter(nrow(d),5,d,d$y)
+#' for(si in split) {
+#'    print(paste(max(si$train),min(si$app)))
+#' }
+#' 
+#' @export
+makekWayCrossValidationOrderedByColumn <- function(orderColumnName) {
+  force(orderColumnName) 
+  function(nRows,nSplits,dframe,y) {
+    if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
+      return(NULL)
+    }
+    fullSeq <- seq_len(nRows)
+    partition <- split(fullSeq,floor((fullSeq-1)/(nRows/nSplits)))
+    if(length(partition)<=1) {
+      return(NULL)
+    }
+    partition <- partition[-1]
+    evalSets <- lapply(partition,
+                       function(appi) { 
+                         list(train=fullSeq[fullSeq<min(appi)],app=appi)
+                       })
+    names(evalSets) <- NULL
+    attr(evalSets,'splitmethod') <- 'kwaycrossordered'
+    evalSets
+  }
+}
+
 
 #' Build set partition for out-of sample evaluation.
 #' 
@@ -276,6 +313,7 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
 #' @param dframe (optional) original data.frame, passed to user splitFunction.
 #' @param y (optional) numeric vector, outcome variable (possibly to stratify on), passed to user splitFunction.
 #' @param splitFunction (optional) function taking arguments nSplits,nRows,dframe, and y; returning a user desired split.
+#' @param nSplits integer, target number of splits.
 #' @return list of lists where the app portion of the sub-lists is a disjoint partition of seq_len(nRows) and each list as a train portion disjoint from app.
 #' 
 #' @examples

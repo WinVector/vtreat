@@ -2,22 +2,18 @@
 % Please edit documentation in R/outOfSample.R
 \name{makekWayCrossValidationGroupedByColumn}
 \alias{makekWayCrossValidationGroupedByColumn}
-\title{k-fold cross validation, respecting (never splitting) groupingColumn.}
+\title{Build a k-fold cross validation splitter, respecting (never splitting) groupingColumn.}
 \usage{
 makekWayCrossValidationGroupedByColumn(groupingColumnName)
 }
 \arguments{
 \item{groupingColumnName}{name of column to group by.}
-
-\item{nRows}{number of rows to split (>1).}
-
-\item{nSplits}{number of groups to split into (>1,<=nRows).}
 }
 \value{
-split plan
+splitting function in the sense of vtreat::buildEvalSets.
 }
 \description{
-k-fold cross validation, respecting (never splitting) groupingColumn.
+Build a k-fold cross validation splitter, respecting (never splitting) groupingColumn.
 }
 \examples{
 
