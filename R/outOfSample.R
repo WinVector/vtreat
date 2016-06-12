@@ -227,8 +227,16 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
     d <- data.frame(index=seq_len(nRows),
                     group=as.character(dframe[[groupingColumnName]]),
                     stringsAsFactors=FALSE)
-    groups <- unique(d$group)
-    groupedPlan <- kWayCrossValidation(length(groups),nSplits,NULL,NULL)
+    groups <- sort(unique(d$group))
+    groupedPlan <- NULL
+    if(!is.null(y)) { # try for y-stratification
+      d$y <- y
+      groupedY <- aggregate(y~group,data=d,FUN=mean)$y
+      groupedPlan <- kWayStratifiedY(length(groups),nSplits,NULL,groupedY)
+    }
+    if(is.null(groupedPlan)) {
+      groupedPlan <- kWayCrossValidation(length(groups),nSplits,NULL,NULL)
+    }
     if(is.null(groupedPlan)) {
       return(NULL)
     }
