@@ -41,7 +41,7 @@ test_that("testExpmtDesign: makekWayCrossValidationGroupedByColumn", {
   splitFn <- makekWayCrossValidationGroupedByColumn('group')
   eSets <- buildEvalSets(nrowd,y=y,dframe=d,
                          splitFunction=splitFn)
-  expect_true(attr(eSets,'splitmethod')=='kwaycrossgrouped')
+  expect_true(attr(eSets,'splitmethod')=='kwaycrossystratifiedgrouped')
   fullSeq <- seq_len(nrowd)
   expect_true(length(eSets)>0)
   for(ei in eSets) {

@@ -172,6 +172,9 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
   if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
     return(NULL)
   }
+  if(is.null(y)||(length(unique(y))<=1)) {
+    return(kWayCrossValidation(nRows,nSplits,NULL,NULL))
+  }
   fullSeq <- seq_len(nRows)
   d <- data.frame(index=fullSeq,y=y)
   # initial permutation in case y has large constant blocks
@@ -229,7 +232,7 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
                     stringsAsFactors=FALSE)
     groups <- sort(unique(d$group))
     groupedPlan <- NULL
-    if(!is.null(y)) { # try for y-stratification
+    if((!is.null(y))&&(length(unique(y))>1)) { # try for y-stratification
       d$y <- y
       groupedY <- aggregate(y~group,data=d,FUN=mean)$y
       groupedPlan <- kWayStratifiedY(length(groups),nSplits,NULL,groupedY)
@@ -240,6 +243,7 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
     if(is.null(groupedPlan)) {
       return(NULL)
     }
+    splitmethod <- attr(groupedPlan,'splitmethod')
     partition <- lapply(groupedPlan,
                         function(gi) {
                           d$index[d$group %in% groups[gi$app]]
@@ -250,7 +254,7 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
                          list(train=setdiff(fullSeq,appi),app=appi)
                        })
     names(evalSets) <- NULL
-    attr(evalSets,'splitmethod') <- 'kwaycrossgrouped'
+    attr(evalSets,'splitmethod') <- paste0(splitmethod,'grouped')
     evalSets
   }
 }
