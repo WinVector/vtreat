@@ -463,7 +463,7 @@ buildEvalSets <- function(nRows,...,
     }
   } else {
     # know 2*nSplits<=nRows
-    if(!is.null(y)) {
+    if((!is.null(y))&&(max(y)>min(y))) {
       #  Try for full y-stratified k-way cross val
       evalSets <- kWayStratifiedY(nRows=nRows,nSplits=nSplits,dframe=NULL,y=y)
     } else {
