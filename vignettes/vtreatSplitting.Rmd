@@ -1,0 +1,146 @@
+---
+title: "vtreat splitting"
+author: "John Mount, Nina Zumel"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat data splitting}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 7)
+```
+
+## vtreat data set splitting
+
+### Motivation
+
+[`vtreat`](https://github.com/WinVector/vtreat) supplies a number of data set splitting or cross-validation planning facilities.  Some services are implicit such as the simulated out of sample scoring of high degree of freedom derived variables (such as `catB`, `catN`,`catD`, and `catP`; see [here](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) for a list of variable types).  Some services are explicit such as `vtreat::mkCrossFrameCExperiment` and `vtreat::mkCrossFrameNExperiment` (please see [here](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html)).  And there is even a user-facing planner in `vtreat::buildEvalSets` (try `help(buildEvalSets)` for details).
+
+We (Nina Zumel and John Mount) have written a lot of structured cross-validation.  The most relevant article is: [Random Test/Train Split is not Always Enough](http://www.win-vector.com/blog/2015/01/random-testtrain-split-is-not-always-enough/).  The point is that in retrospective studies random test/train split is *at best* a simulation of how a model will be applied in the future.  It is not an actual experimental design as in a [randomized control trial](https://en.wikipedia.org/wiki/Randomized_controlled_trial).  To be an effective simulation you must work to preserve structure that will be true in future application.
+
+The overall idea is: a better splitting plan helps build a model that actually performs better in practice.  And porting such a splitting plan back to your evaluation procedures gives you a better estimate of this future model performance.
+
+A random test/train split attempts to preserve the following:
+
+ * Future application data is exchangeable with training data (prior to model construction).
+ * Future application data remains exchangeable with test data (even after model construction, as test data is not used in model construction).
+
+Note if there is a concept change (also called issues of non-stationarity) then future data is already not statistically exchangeable with training data (so can't preserve a property you never had).  However even if your future data starts exchangeable with training data you can lose this important property even with a random test/train split as there is usually at least one unmodeled difference between training data and future application data:
+
+* Future application data tends to be formed after (or in the future of) training data.
+
+This is usually an unstated structure of your problem solving plan: use past data annotated to build a supervised model for future un-annotated data.
+
+### Examples
+
+With the above discussion under out belt we get back to the problem at hand.  We want more than a random test/train split.  We may need test/train splits that preserve all of the following:
+
+* Distribution or prevalence of outcome variable (especially important for modeling rare events, usually handled by stratification).
+* Not splitting groups closely related events into test and train (i.e. keeping all of such sets in test or train).  Typical examples are multiple events from a single customer (as you really want your model to predict behavior of new customers) or records close together in time (as latter application records will not be close in time to original training records).
+* Preserving order in time ordered events (also called structured back testing).  In finance it is considered ridiculous to use data from a Monday and a Wednesday to build a model for prices on the intervening Tuesday (but this is the kind of thing a random split would consider in its evaluation phase).
+
+Our idea is `vtreat` is supposed to be a domain agnostic `y`-aware data conditioner.  So `vtreat` should 'y'-stratify its data splits throughout.  Prior to version `0.5.26` `vtreat` used simple random splits.  Now with version `0.5.26` (currently available from [Github](https://github.com/WinVector/vtreat)) `vtreat` defaults to stratified sampling throughout.  Respecting things like locality of record grouping or ordering of time are domain issues and should be handled by the analyst.
+
+Any splitting or stratification plan should domain knowledge and should represent domain sensitive trade-off between the competing goals of:
+
+* Having a random split.
+* Stability of distribution of outcome variable across splits.
+* Not cutting into "atomic" groups of records.
+* Not using data from the future to predict the past.
+* Having a lot of data in each split.
+* Having disjoint training and testing data.
+
+As of version `0.5.26` `vtreat` supports this by allowing a user specified data splitting function (where the analyst can encode their desired domain invariants).
+
+The use can implement a function with signature `function(nRows,nSplits,dframe,y)` where `nRows` is the number of rows you are trying to split, `nSplits` is the number of split groups you want, `dframe` is the original data frame (useful as it can have any grouping or order columns you want), and `y` is the outcome variable converted to numeric (means you can stratify on `y` without having to know its column name in the data frame).  What the function is supposed to return is a list of lists.  Each list element should have slots “train” and “app” (for the i’th application group use the i’th training group is the way you read it).
+
+This is easiest to show through an example:
+
+```{r}
+vtreat::oneWayHoldout(3,NULL,NULL,NULL)
+```
+
+As we can see `vtreat::oneWayHoldout` builds three split sets where in each the "application data rows" is a single row index and the corresponding training rows are the complementary row indexes.  Or a leave-one-out [cross validation plan](https://en.wikipedia.org/wiki/Cross-validation_(statistics)).
+
+`vtreat` supplies a number of example cross validation split/plan implementations:
+
+* `oneWayHoldout`
+* `kWayCrossValidation`
+* `kWayStratifiedY`
+* `makekWayCrossValidationGroupedByColumn`
+
+However, as we said.  For issues beyond stratification the user will want to supply their own splitting plan.  For example to wrap [`caret::createFolds`](http://topepo.github.io/caret/index.html) as a splitting function we would write the following function definition.
+
+```{r}
+splitFn <- function(nRows,nSplits,dframe,y) {
+  if(requireNamespace("caret",quietly=TRUE)) {
+    fullSeq <- seq_len(nRows)
+    part <- caret::createFolds(y=y,k=nSplits)
+    lapply(part,
+           function(appi) { 
+             list(train=setdiff(fullSeq,appi),app=appi)
+           })
+  } else {
+    NULL # fall back to vtreat implementation
+  }
+}
+```
+
+This function can then be passed into any `vtreat` operation that takes a `splitFunction` argument (such as `mkCrossFrameNExperiment`, `designTreatmentsN`, and many more).  For example we can pass the user defined `splitFn` into `vtreat::buildEvalSets` as follows:
+
+```{r}
+vtreat::buildEvalSets(25,y=1:25,splitFunction=splitFn)
+```
+
+The intent is the vtreat library code uses the user function for splitting- but also takes responsibility for corner cases (few rows, user code declining and so on).  Thus the user code can assume it is in a reasonable situation (and even safely return NULL if it can’t deal with the situation it is given).
+
+The file [outOfSample.R](https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R) is full of worked examples.  In particular we would suggest running the code displayed when you type any of:
+
+* `help(oneWayHoldout)`
+* `help(kWayCrossValidation)`
+* `help(kWayStratifiedY)`
+* `help(makekWayCrossValidationGroupedByColumn)`
+
+For example from `help(kWayStratifiedY)` we can see the tigher distribution of `y` 
+in each split element once we stratify on `y`:
+
+```{r}
+library('vtreat')
+if(requireNamespace("ggplot2",quietly=TRUE)) {
+  library('ggplot2')
+}
+set.seed(23255)
+d <- data.frame(y=sin(1:100))
+pStrat <- kWayStratifiedY(nrow(d),5,d,d$y)
+problemAppPlan(nrow(d),5,pStrat,TRUE)
+d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
+pSimple <- kWayCrossValidation(nrow(d),5,d,d$y)
+problemAppPlan(nrow(d),5,pSimple,TRUE)
+d$simpleGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pSimple)
+summary(tapply(d$y,d$simpleGroup,mean))
+if(requireNamespace("ggplot2",quietly=TRUE)) {
+  ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
+    geom_density() + ggtitle('simple grouping')
+}
+summary(tapply(d$y,d$stratGroup,mean))
+if(requireNamespace("ggplot2",quietly=TRUE)) {
+  ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
+    geom_density() + ggtitle('y-stratified grouping')
+}
+```
+
+## Conclusion
+
+Controlling the way data is split in cross-validation (preserving y-distribution, groups, and even ordering) can
+improve the real world performance of models trained on such data.  Obviously this adds some complexity and "places
+to go wrong", but it is a topic worth learning about.
+
+
+
+
+
+
