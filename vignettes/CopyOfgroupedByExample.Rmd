@@ -1,8 +1,12 @@
 ---
-title: "suggested example"
-author: "nate sutton"
-date: "June 14, 2016"
-output: html_document
+title: "Grouping Example"
+author: "Nina Zumel, Nate Sutton"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat grouping example}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 
@@ -14,16 +18,31 @@ set.seed(23255)
 # panel data for concentration in multiple subjects 
 d <- datasets::Theoph
 
+# explore the data
+# 1. scatterplot of wt/dose
+# (oh interesting, I thought the dose would go up with weight)
+# ah. dose is mg/kg
+ggplot(d, aes(x=Wt, y=Dose)) + geom_point()
+ggplot(d, aes(x=Wt, y=Dose*Wt)) + geom_point()
+ggplot(d, aes(x=Dose*Wt)) + geom_density()
+
+# 2. concentration density plots by patient
+
 # stratify by patient
 splitter <- makekWayCrossValidationGroupedByColumn('Subject')
 split <- splitter(nrow(d),3,d,d$conc)
 attr(split, "splitmethod")
 d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),split)
 
+# for checking if groups split
+# table(d$Subject,d$splitLabel)
+
 # stratify by outcome
 pStrat <- kWayStratifiedY(nrow(d),3,d,d$conc)
 attr(pStrat, "splitmethod")
 d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
+
+# table(d$Subject,d$stratGroup)
 
 # compare results
 
