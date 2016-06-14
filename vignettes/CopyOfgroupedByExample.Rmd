@@ -1,0 +1,47 @@
+---
+title: "suggested example"
+author: "nate sutton"
+date: "June 14, 2016"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+library(vtreat)
+set.seed(23255)
+
+# panel data for concentration in multiple subjects 
+d <- datasets::Theoph
+
+# stratify by patient
+splitter <- makekWayCrossValidationGroupedByColumn('Subject')
+split <- splitter(nrow(d),3,d,d$conc)
+attr(split, "splitmethod")
+d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),split)
+
+# stratify by outcome
+pStrat <- kWayStratifiedY(nrow(d),3,d,d$conc)
+attr(pStrat, "splitmethod")
+d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
+
+# compare results
+
+tapply(d$conc,d$splitLabel,mean) #allows concentration to vary amount individual patients
+if(requireNamespace("ggplot2",quietly=TRUE)) {
+  # plot the distribution of y in each fold
+  pSplit <- ggplot(data=d,aes(x=conc,color=as.factor(splitLabel))) + 
+    geom_density() + ggtitle('patient-aware grouping')
+      
+  print(pSplit)
+}
+
+tapply(d$conc,d$stratGroup,mean) #forces concentration to be equivalent
+
+
+if(requireNamespace("ggplot2",quietly=TRUE)) {
+  # plot the distribution of y in each fold
+  pStrat <- ggplot(data=d,aes(x=conc,color=as.factor(stratGroup))) + 
+    geom_density() + ggtitle('y-stratified grouping')
+  print(pStrat)
+}
