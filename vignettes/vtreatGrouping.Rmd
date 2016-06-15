@@ -9,6 +9,9 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 7)
+```
 
 ```{r}
 library(ggplot2)
@@ -19,6 +22,10 @@ set.seed(23255)
 d <- datasets::Theoph
 
 # explore the data
+
+# 0. Look
+head(d)
+
 # 1. scatterplot of wt/dose
 # (oh interesting, I thought the dose would go up with weight)
 # ah. dose is mg/kg
