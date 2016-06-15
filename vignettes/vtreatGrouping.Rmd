@@ -31,9 +31,17 @@ head(d)
 # ah. dose is mg/kg
 ggplot(d, aes(x=Wt, y=Dose)) + geom_point()
 ggplot(d, aes(x=Wt, y=Dose*Wt)) + geom_point()
-ggplot(d, aes(x=Dose*Wt)) + geom_density()
 
 # 2. concentration density plots by patient
+# add an (arbitrary) group id so we get fewer plots per facet
+subnum = as.numeric(as.character(d$Subject))
+d$groupid = paste0("group", subnum %% 4)
+
+ggplot(d, aes(x=Time, y=conc, color=Subject)) + 
+  geom_line() + facet_wrap(~groupid) + theme(legend.position="none")
+
+ggplot(d, aes(x=conc, color=Subject)) + geom_density() + 
+  facet_wrap(~groupid) + theme(legend.position="none")
 
 # stratify by patient
 splitter <- makekWayCrossValidationGroupedByColumn('Subject')
@@ -41,8 +49,6 @@ split <- splitter(nrow(d),3,d,d$conc)
 attr(split, "splitmethod")
 d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),split)
 
-# for checking if groups split
-# table(d$Subject,d$splitLabel)
 
 # stratify by outcome
 pStrat <- kWayStratifiedY(nrow(d),3,d,d$conc)
@@ -51,7 +57,7 @@ d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
 
 # table(d$Subject,d$stratGroup)
 
-# compare results
+# compare results (add my somewhat arbitrary grouping to this plot series)
 
 tapply(d$conc,d$splitLabel,mean) #allows concentration to vary amount individual patients
 if(requireNamespace("ggplot2",quietly=TRUE)) {
