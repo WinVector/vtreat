@@ -68,6 +68,6 @@ tapply(d$conc,d$stratGroup,mean) #forces concentration to be equivalent
 if(requireNamespace("ggplot2",quietly=TRUE)) {
   # plot the distribution of y in each fold
   pStrat <- ggplot(data=d,aes(x=conc,color=as.factor(stratGroup))) + 
-    geom_density() + ggtitle('y-stratified grouping')
+    geom_density() + ggtitle('y-stratified patient-aware grouping')
   print(pStrat)
 }
