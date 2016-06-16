@@ -14,7 +14,13 @@ knitr::opts_chunk$set(fig.width = 7)
 ```
 
 ```{r warning=FALSE}
-library(ggplot2)
+if(requireNamespace("ggplot2", quietly=TRUE)) {
+  library(ggplot2)
+}
+if(requireNamespace("dplyr", quietly=TRUE)) {
+  library(dplyr)
+}
+
 library(vtreat)
 set.seed(23255)
 ```
@@ -41,12 +47,15 @@ showGroupingBehavior = function(groupcol, title) {
       geom_density() + ggtitle(paste("Distribution of concentration readings:\n", title))
     print(plt)
     
-  # not done. what I need to do is summarize across the dose index, not the time,
-    # because the times are all different, but everyone got the same number of
-    # doses. dplyr can do this.
-  #  plt = ggplot(data=d, aes(x=Time, y=conc, color=groupid)) + 
-  #    stat_summary(fun.y="mean", geom="point") + stat_summary(fun.y="mean", geom="line")
-    
+    if(requireNamespace("dplyr", quietly==TRUE)) {
+      dtmp %>% group_by(Subject) %>% 
+        arrange(Time) %>% mutate(timeIndex=1:n()) -> dtmp
+      
+      plt = ggplot(data=dtmp, aes_string(x="timeIndex", y="conc", color=groupcol)) + 
+        stat_summary(fun.y="mean", geom="line") + 
+        ggtitle(paste("Mean concentration over time:\n", title))
+      print(plt)
+    }
   }
 }
 
@@ -113,6 +122,6 @@ print(table(Subject=d$Subject, groupid=d$stratGroup))
 
 showGroupingBehavior("groupid", "Arbitrary grouping")
 showGroupingBehavior("splitLabel", "Group by patient, stratify on y")
-showGroupingBehavior("stratGroup", "Stratify on y only")
+
 
 
