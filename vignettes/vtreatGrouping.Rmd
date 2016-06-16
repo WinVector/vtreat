@@ -13,11 +13,46 @@ vignette: >
 knitr::opts_chunk$set(fig.width = 7)
 ```
 
-```{r}
+```{r warning=FALSE}
 library(ggplot2)
 library(vtreat)
 set.seed(23255)
+```
 
+```{r functions}
+#
+# takes the frame (d) and the outcome column (d$conc)
+# from the global environment
+#
+showGroupingBehavior = function(groupcol, title) {
+  print(title)
+  
+  # display means of each group
+  print("Group means:")
+  means = tapply(d$conc, d[[groupcol]], mean)
+  print(means)
+  print(paste("Standard deviation of group means:", sd(means)))
+ 
+  if(requireNamespace("ggplot2", quietly=TRUE)) {
+    dtmp = d
+    # because I don't think I can call as.factor through aes_string
+    dtmp[[groupcol]] = as.factor(dtmp[[groupcol]])
+    plt = ggplot(data=dtmp, aes_string(x="conc", color=groupcol)) +
+      geom_density() + ggtitle(paste("Distribution of concentration readings:\n", title))
+    print(plt)
+    
+  # not done. what I need to do is summarize across the dose index, not the time,
+    # because the times are all different, but everyone got the same number of
+    # doses. dplyr can do this.
+  #  plt = ggplot(data=d, aes(x=Time, y=conc, color=groupid)) + 
+  #    stat_summary(fun.y="mean", geom="point") + stat_summary(fun.y="mean", geom="line")
+    
+  }
+}
+
+```
+
+```{r}
 # panel data for concentration in multiple subjects 
 d <- datasets::Theoph
 
@@ -35,7 +70,7 @@ ggplot(d, aes(x=Wt, y=Dose*Wt)) + geom_point()
 # 2. concentration density plots by patient
 # add an (arbitrary) group id so we get fewer plots per facet
 subnum = as.numeric(as.character(d$Subject))
-d$groupid = paste0("group", subnum %% 4)
+d$groupid = as.factor(subnum %% 3)
 
 ggplot(d, aes(x=Time, y=conc, color=Subject)) + 
   geom_line() + facet_wrap(~groupid) + theme(legend.position="none")
@@ -43,37 +78,41 @@ ggplot(d, aes(x=Time, y=conc, color=Subject)) +
 ggplot(d, aes(x=conc, color=Subject)) + geom_density() + 
   facet_wrap(~groupid) + theme(legend.position="none")
 
-# stratify by patient
+
+# a somewhat arbitrary split of patients. According to help(Thoph):  The ordering is by increasing maximum concentration of theophylline observed.
+subnum = as.numeric(as.character(d$Subject))
+d$groupid = as.factor(subnum %% 3)
+
+# stratify by patient and outcome
+#allows concentration to vary amount individual patients
 splitter <- makekWayCrossValidationGroupedByColumn('Subject')
 split <- splitter(nrow(d),3,d,d$conc)
 attr(split, "splitmethod")
 d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),split)
 
 
-# stratify by outcome
+# stratify by outcome only
+ #forces concentration to be equivalent
 pStrat <- kWayStratifiedY(nrow(d),3,d,d$conc)
 attr(pStrat, "splitmethod")
 d$stratGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pStrat)
 
-# table(d$Subject,d$stratGroup)
 
-# compare results (add my somewhat arbitrary grouping to this plot series)
+# compare results
 
-tapply(d$conc,d$splitLabel,mean) #allows concentration to vary amount individual patients
-if(requireNamespace("ggplot2",quietly=TRUE)) {
-  # plot the distribution of y in each fold
-  pSplit <- ggplot(data=d,aes(x=conc,color=as.factor(splitLabel))) + 
-    geom_density() + ggtitle('patient-aware grouping')
-      
-  print(pSplit)
-}
+# print how the patient rows split into the groups
+# Arbitrary grouping
+print(table(Subject=d$Subject, groupid=d$groupid))
 
-tapply(d$conc,d$stratGroup,mean) #forces concentration to be equivalent
+# Grouped by patient, stratified on y
+print(table(Subject=d$Subject, groupid=d$splitLabel))
+
+# Stratified on y only
+print(table(Subject=d$Subject, groupid=d$stratGroup))
 
 
-if(requireNamespace("ggplot2",quietly=TRUE)) {
-  # plot the distribution of y in each fold
-  pStrat <- ggplot(data=d,aes(x=conc,color=as.factor(stratGroup))) + 
-    geom_density() + ggtitle('y-stratified patient-aware grouping')
-  print(pStrat)
-}
+showGroupingBehavior("groupid", "Arbitrary grouping")
+showGroupingBehavior("splitLabel", "Group by patient, stratify on y")
+showGroupingBehavior("stratGroup", "Stratify on y only")
+
+
