@@ -48,19 +48,26 @@ showGroupingBehavior = function(groupcol, title) {
     # unify the time indices
     d %>% group_by(Subject) %>% 
       arrange(Time) %>% mutate(timeIndex=1:n()) -> dtmp
+    
+    # I want the time indices to have the same spacing as the original time points
+    # dtmp$timeFrac = with(dtmp, round(100*Time/25)/100) # round to nearest 1/100th
+    dtmp %>% group_by(timeIndex) %>% summarize(approxTime=mean(Time)) -> atimef
+    dtmp$approxTime = atimef$approxTime[dtmp$timeIndex]
+    
     dtmp[[groupcol]] = as.factor(dtmp[[groupcol]])
     
-    plt = ggplot(data=dtmp, aes_string(x="timeIndex", y="conc", color=groupcol)) + 
-      stat_summary(fun.y="mean", geom="line") + 
+    plt = ggplot(data=dtmp, aes_string(x="approxTime", y="conc", color=groupcol)) + 
+      stat_summary(fun.y="mean", geom="line") +  stat_summary(fun.y="mean", geom="point") + 
       ggtitle(paste("Mean concentration over time:\n", title)) + 
       theme(legend.position="none")
     print(plt)
   }
 }
 
+
 ```
 
-For this example, we will use the `Theosph` dataset: data from an experiment on the pharmacokinetics of theophylline. This appears to be a confirmation experiment, with well predicted results, and we will use it to demonstrate the desired effects of _y_-stratification while also respecting a grouping constraint. 
+For this example, we will use the `Theosph` dataset: data from an experiment on the pharmacokinetics of theophylline. We will demonstrate the desired effects of _y_-stratification while also respecting a grouping constraint. 
 
 ## The Data
 
@@ -87,9 +94,9 @@ if(have_ggplot) {
 
 ## Partitioning the Data for Modeling
 
-Suppose we wanted to fit a model to analyze how a patient's weight affects how theophylline is metabolized, and validate that data with three-fold cross-validation. It would be important that all readings from a given patient stay in the same fold. We might also want the population in each fold to have similar distributions of theophylline concentrations curves.
+Suppose we wanted to fit a model to analyze how a patient's weight affects how theophylline is metabolized, and validate that model with three-fold cross-validation. It would be important that all readings from a given patient stay in the same fold. We might also want the population in each fold to have similar distributions of theophylline concentrations curves.
 
-Recall that the goal of _y_-stratification is to insure that all samples from the data have as close to identical  _y_ distributions as possible. This may not be possible when we also have to obey a grouping constraint.
+Recall that the goal of _y_-stratification is to insure that all samples from the data have as close to identical  _y_ distributions as possible. This becomes more difficult when we also have to obey a grouping constraint.
 
 Let's look at three ways of splitting the data into folds. First, we will split the data arbitrarily into three groups, using the modulo of the Subject id to do the splitting.
 
@@ -134,18 +141,18 @@ print(table(Subject=d$Subject, groupid=d$subjectSplit))
 
 This is again a subject-preserving partition.
 
-We can compare the mean theophylline concentration and the average pharmacokinetic profile for each fold, for both of the subject-preserving partitions.
+We can compare the mean theophylline concentration and the average pharmacokinetic profile for each fold, for both of the subject-preserving partitions. We see that the stratification reduces some of the variation between folds.
 
 
 ### Arbitrary Partition
-```{r}
+```{r echo=FALSE}
 showGroupingBehavior("modSplit", "Arbitrary grouping")
 ```
 
 ### Group-preserving, _y_-stratified Partition
-```{r}
+```{r echo=FALSE}
 showGroupingBehavior("subjectSplit", "Group by patient, stratify on y")
 ```
 
-We see that the stratification reduces some of the variation between groups.
+
 
