@@ -149,7 +149,6 @@
 
 # design a treatment for a single variables
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
-# TODO: pivot warnings/print out of here
 .varDesigner <- function(zoY,
                          zC,zTarget,
                          weights,
@@ -269,7 +268,6 @@
   if(varMoves) {
     yMoves <- .has.range.cn(zoY)
     if(varMoves && yMoves) {
-      # TODO: pull this off scale fact
       lstat <- linScore(varName,
                         nxcol,
                         zoY,

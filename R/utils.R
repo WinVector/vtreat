@@ -196,6 +196,7 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
 
 
 
+
 #' return significnace 1 variable logistic regression
 #' @param varName name of variable
 #' @param x numeric (no NAs/NULLs) effective variable
@@ -204,11 +205,19 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
 #' @param weights (optional) numeric, non-negative, no NAs/NULLs at least two positive positions
 #' @param numberOfHiddenDegrees optional scalar >= 0 number of additional modeling degrees of freedom to account for.
 #' @return significance estimate of a 1-variable logistic regression
+#' 
+#' @examples
+#' 
+#' d <- data.frame(y=c(1,1,0,0,1,1,0,0,1,1,1,1))
+#' d$x <- seq_len((nrow(d)))
+#' vtreat:::catScore('x',d$x,d$y,1,NULL)
+#' 
 catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(x))
   }
   sig <- 1.0
+  a <- 0.0
   if(.has.range.cn(x) && 
      .has.range.cn(as.numeric(yC==yTarget))) {
     tf <- data.frame(x=x,y=(yC==yTarget),
@@ -224,13 +233,19 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
           delta_df <- model$df.null - model$df.residual + numberOfHiddenDegrees
           pRsq <- 1.0 - model$deviance/model$null.deviance
           sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
+          a <- model$coefficients[['x']]
+          bg <- model$coefficients[['(Intercept)']]
+          # sigmoid <- function(x) { 1/(1+exp(-x)) }
+          # max(abs(predict(model,type='response')-sigmoid(a*x+bg))) small
         }
       }
     },
     error=function(e){}))
   }
+  b <- -.wmean(a*x,weights)
   data.frame(varName=varName,
              sig=sig,
+             a=a,b=b,
              stringsAsFactors=FALSE)
 }
 

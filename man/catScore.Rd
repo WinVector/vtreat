@@ -25,4 +25,11 @@ significance estimate of a 1-variable logistic regression
 \description{
 return significnace 1 variable logistic regression
 }
+\examples{
+
+d <- data.frame(y=c(1,1,0,0,1,1,0,0,1,1,1,1))
+d$x <- seq_len((nrow(d)))
+vtreat:::catScore('x',d$x,d$y,1,NULL)
+
+}
 
