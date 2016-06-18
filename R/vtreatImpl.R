@@ -156,6 +156,7 @@
                          collarProb,
                          trainRows,origRowCount,
                          impactOnly,
+                         catScaling,
                          verbose) {
   force(zoY)
   force(zC)
@@ -168,10 +169,10 @@
   force(collarProb)
   force(trainRows)
   force(origRowCount)
+  force(catScaling)
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
-  catScaling <- FALSE
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
@@ -360,6 +361,7 @@
                                 rareCount,rareSig,
                                 collarProb,
                                 impactOnly,justWantTreatments,
+                                catScaling,
                                 verbose,
                                 parallelCluster) {
   # In building the workList don't transform any variables (such as making
@@ -374,6 +376,7 @@
                          collarProb,
                          seq_len(nrow(dframe)),nrow(dframe),
                          impactOnly,
+                         catScaling,
                          verbose)
   treatments <- plapply(workList,worker,parallelCluster)
   treatments <- Filter(Negate(is.null),treatments)
@@ -415,6 +418,7 @@
                                rareCount,rareSig,
                                collarProb,
                                splitFunction,ncross,
+                               catScaling,
                                verbose,
                                parallelCluster) {
   if(!is.data.frame(dframe)) {
@@ -473,6 +477,7 @@
                                     rareCount,rareSig,
                                     collarProb,
                                     FALSE,FALSE,
+                                    catScaling,
                                     verbose,
                                     parallelCluster)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
@@ -494,6 +499,7 @@
                                 TRUE,
                                 FALSE,FALSE,
                                 splitFunction,ncross,
+                                catScaling,
                                 parallelCluster)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights

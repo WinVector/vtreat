@@ -82,6 +82,7 @@ print.vtreatment <- function(x,...) {
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
+#' @param catScaling optional, use glm() linkspace instead of lm() for scaling.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -105,6 +106,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
                               splitFunction=NULL,ncross=3,
+                              catScaling=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   
@@ -123,6 +125,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    rareCount,rareSig,
                                    collarProb,
                                    splitFunction,ncross,
+                                   catScaling,
                                    verbose,
                                    parallelCluster)
   treatments$outcomeTarget <- outcometarget
@@ -193,6 +196,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   if(min(ycol)>=max(ycol)) {
     stop("dframe[[outcomename]] must vary")
   }
+  catScaling=FALSE
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),
                      weights,
@@ -200,6 +204,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      rareCount,rareSig,
                      collarProb,
                      splitFunction,ncross,
+                     catScaling,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'Numeric'
@@ -253,6 +258,7 @@ designTreatmentsZ <- function(dframe,varlist,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   outcomename='ZZZZNonCol'
+  catScaling <- FALSE
   dframe[[outcomename]] <- 0
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   ycol <- dframe[[outcomename]]
@@ -263,6 +269,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      rareCount,rareSig=1,
                      collarProb,
                      NULL,3,
+                     catScaling,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'None'
@@ -394,6 +401,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
+#' @param catScaling optional, use glm() linkspace instead of lm() for scaling.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
@@ -426,6 +434,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
                                     splitFunction=NULL,ncross=3,
+                                    catScaling=FALSE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -449,6 +458,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   rareCount=rareCount,rareSig=rareSig,
                                   collarProb=collarProb,
                                   splitFunction=splitFunction,ncross=ncross,
+                                  catScaling=catScaling,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster)
   zC <- dframe[[outcomename]]
@@ -463,6 +473,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             FALSE,
                             scale,doCollar,
                             splitFunction,ncross,
+                            catScaling,
                             parallelCluster)
   list(treatments=treatments,
        crossFrame=crossDat$crossFrame,crossWeights=crossDat$crossWeights,
@@ -537,6 +548,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
+  catScaling=FALSE
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   }
@@ -560,6 +572,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             FALSE,
                             scale,doCollar,
                             splitFunction,ncross,
+                            catScaling,
                             parallelCluster)
   list(treatments=treatments,
        crossFrame=crossDat$crossFrame,crossWeights=crossDat$crossWeights,

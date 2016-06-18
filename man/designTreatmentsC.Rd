@@ -7,7 +7,7 @@
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = 1, collarProb = 0, splitFunction = NULL, ncross = 3,
-  verbose = TRUE, parallelCluster = NULL)
+  catScaling = FALSE, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -35,6 +35,8 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 \item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 
 \item{ncross}{optional scalar >=2 number of cross validation splits use in rescoring complex variables.}
+
+\item{catScaling}{optional, use glm() linkspace instead of lm() for scaling.}
 
 \item{verbose}{if TRUE print progress.}
 

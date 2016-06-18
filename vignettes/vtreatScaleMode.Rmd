@@ -99,9 +99,46 @@ of <code>x=='b'</code> and the regression slope must be zero (thus, cannot be 1)
 this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance
 facts in <code>treatmentsC\$scoreFrame</code> are about the unscaled frame (where <code>x_lev_x.b</code> does in fact move). 
 
-For a good discussion of the application of *y&-aware scaling to Principal Components Analysis please see [here](http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/).
+For a good discussion of the application of *y*-aware scaling to Principal Components Analysis please see [here](http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/).
 
 Previous versions of vtreat (0.5.22 and earlier) would copy variables that
 could not be sensibly scaled into the treated frame unaltered.  This was considered the "most faithful"
 thing to do.  However we now feel that this practice was not safe for many downstream procedures, such as principal
 components analysis and geometric clustering. 
+
+### Categorical outcome mode "catScaling=TRUE"
+
+As of version `0.5.26` `vtreat` also supports a "scaling mode for categorical outcomes."  In this mode scaling is performed using the coefficient of a logistic regression fit on a categorical instead of the coefficient of a linear fit (with the outcome encoded as a zero/one indicator).  
+
+The idea is with this mode on we are scaling as a logistic regession would- so we are in logistic regression "link space" (where logistic regressio assume effects are additive).  The mode may be well suited for principal components analysis or principal components regerssion where the target variable is a categorical (i.e. classification tasks).
+
+To get this effect we must set the argument `catScaling=TRUE` in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameCExperiment`.  WE demonstrate this below.
+
+```{r catscale}
+treatmentsC2 <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                  catScaling=TRUE,
+                                  verbose=FALSE)
+dTrainCTreatedScaled2 <- prepare(treatmentsC2,dTrainC,pruneSig=c(),scale=TRUE)
+print(dTrainCTreatedScaled2)
+```
+
+Notice the new scaled frame is in a different scale than the original scaled frame.  It likely is a function of the problem domain which scaling is more appropiate or useful.
+
+The new scaled columns are again mean-0 (so they are not exactly the logistic link values, which may not have been so shifted).
+The new scaled columns do not necissarily have linear model slope 1 as the original scaled columns did as we see below:
+
+```{r checks}
+colMeans(dTrainCTreatedScaled2)
+lm(y~x_lev_NA,data=dTrainCTreatedScaled)
+lm(y~x_lev_NA,data=dTrainCTreatedScaled2)
+```
+
+The new scaled columns, however are in good logistic link units.
+
+```{r}
+glm(y~x_lev_NA,data=dTrainCTreatedScaled,family=binomial)
+glm(y~x_lev_NA,data=dTrainCTreatedScaled2,family=binomial)
+```
+
+
+

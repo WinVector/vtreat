@@ -39,7 +39,7 @@
   if((!catScaling)||(is.null(zC))) {
     treatment$scales <- linScore(newVarName,pred,zoY,weights)
   } else {
-    treatment$scales <- linScore(newVarName,pred,zC,zTarget,weights)
+    treatment$scales <- catScore(newVarName,pred,zC,zTarget,weights)
   }
   treatment
 }

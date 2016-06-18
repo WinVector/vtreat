@@ -490,6 +490,7 @@ buildEvalSets <- function(nRows,...,
                           impactOnly,
                           scale,doCollar,
                           splitFunction,nSplits,
+                          catScaling,
                           parallelCluster) {
   verbose <- FALSE
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
@@ -517,6 +518,7 @@ buildEvalSets <- function(nRows,...,
                               rareCount,rareSig,
                               collarProb,
                               impactOnly,TRUE,
+                              catScaling,
                               verbose,
                               parallelCluster)
     fi <- .vtreatList(ti,dsubiEval,newVarsS,scale,doCollar,
