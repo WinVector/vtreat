@@ -15,7 +15,7 @@
 }
 
 # build a prevalence fact
-.mkCatP <- function(origVarName,vcolin,zoY,zC,zTarget,levRestriction,weights) {
+.mkCatP <- function(origVarName,vcolin,zoY,zC,zTarget,levRestriction,weights,catScaling) {
   vcol <- .preProcCat(vcolin,c())
   num <- tapply(weights,vcol,sum)
   den <- sum(weights)
@@ -36,17 +36,10 @@
     return(NULL)
   }
   class(treatment) <- 'vtreatment'
-  treatment$scales <- linScore(newVarName,pred,zoY,weights)
+  if((!catScaling)||(is.null(zC))) {
+    treatment$scales <- linScore(newVarName,pred,zoY,weights)
+  } else {
+    treatment$scales <- linScore(newVarName,pred,zC,zTarget,weights)
+  }
   treatment
-}
-
-.jackknifeCatP <- function(vcolin,weights) {
-  vcol <- .preProcCat(vcolin,c())
-  num <- tapply(weights,vcol,sum)
-  den <- sum(weights)
-  # # re-vectorize by example rows and Jacknife by pulling self out
-  num <- num[vcol] - weights
-  den <- pmax(rep(den,length(num)) - weights,1.0e-3)
-  scores <- num/den
-  scores
 }

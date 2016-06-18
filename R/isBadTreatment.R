@@ -5,7 +5,7 @@
   treated
 }
 
-.mkIsBAD <- function(origVarName,xcol,ynumeric,weights) {
+.mkIsBAD <- function(origVarName,xcol,ynumeric,zC,zTarget,weights,catScaling) {
   badIDX <- .is.bad(xcol)
   nna <- sum(badIDX)
   if((nna<=0)||(nna>=length(xcol))) {
@@ -21,6 +21,10 @@
                     needsSplit=FALSE,
                     extraModelDegrees=0)
   class(treatment) <- 'vtreatment'
-  treatment$scales <- linScore(newVarName,ifelse(badIDX,1.0,0.0),ynumeric,weights)
+  if((!catScaling)||(is.null(zC))) {
+    treatment$scales <- linScore(newVarName,ifelse(badIDX,1.0,0.0),ynumeric,weights)
+  } else {
+    treatment$scales <- catScore(newVarName,ifelse(badIDX,1.0,0.0),zC,zTarget,weights)
+  }
   treatment
 }

@@ -171,6 +171,7 @@
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
+  catScaling <- FALSE
   function(argpair) {
     v <- argpair$v
     vcolOrig <- argpair$vcolOrig
@@ -198,9 +199,9 @@
       if(.has.range(vcol)) {
         if((colclass=='numeric') || (colclass=='integer')) {
           if(!impactOnly) {
-            ti <- .mkPassThrough(v,vcol,zoY,weights,collarProb)
+            ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
             acceptTreatment(ti)
-            ti <- .mkIsBAD(v,vcol,zoY,weights)
+            ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
             acceptTreatment(ti)
           }
         } else if((colclass=='character') || (colclass=='factor')) {
@@ -213,15 +214,15 @@
           if(length(levRestriction$safeLevs)>0) {
             ti = NULL
             if(!impactOnly) {
-              ti <- .mkCatInd(v,vcol,zoY,minFraction,levRestriction,weights)
+              ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
               acceptTreatment(ti)
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-              ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights)
+              ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights,catScaling)
               acceptTreatment(ti)
               if(yMoves) {
                 if(!is.null(zC)) {  # in categorical mode
-                  ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights)
+                  ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights,catScaling)
                   acceptTreatment(ti)      
                 }
                 if(is.null(zC)) { # is numeric mode

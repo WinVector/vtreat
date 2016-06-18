@@ -11,7 +11,7 @@
   treated
 }
 
-.mkPassThrough <- function(origVarName,xcol,ycol,weights,collarProb) {
+.mkPassThrough <- function(origVarName,xcol,ycol,zC,zTarget,weights,collarProb,catScaling) {
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)
@@ -42,6 +42,10 @@
                     needsSplit=FALSE,
                     extraModelDegrees=0)
   class(treatment) <- 'vtreatment'
-  treatment$scales <- linScore(newVarName,xcol,ycol,weights)
+  if((!catScaling)||(is.null(zC))) {
+    treatment$scales <- linScore(newVarName,xcol,ycol,weights)
+  } else {
+    treatment$scales <- catScore(newVarName,xcol,zC,zTarget,weights)
+  }
   treatment
 }
