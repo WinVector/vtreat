@@ -13,7 +13,10 @@ vignette: >
 <code>vtreat::prepare()</code> intended to prepare data frames so all 
 the derived input or independent (x) variables 
  are fully in outcome or dependent variable (y) units
-(in the sense of a regression; categorical/logical y's are treated as 0/1 indicators)
+(in the sense of a regression; categorical/logical y's are treated as 0/1 indicators,
+version `0.5.26` and newer can [directly model categorical outcomes "in link units" using logistic regression](https://github.com/WinVector/Examples/blob/master/PCR/YAwarePCAclassification.md)
+without the 0/1 indicator encoding,
+this version is currently available [here](https://github.com/WinVector/vtreat))
 and mean-zero.  
 
 This is the appropriate preparation before a geometry/metric sensitive modeling step
