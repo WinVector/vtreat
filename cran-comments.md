@@ -11,11 +11,11 @@ There were no ERRORs, or WARNINGSs.
 
 There was one NOTE:
 
-   * checking for unstated dependencies in vignettes ... [30s/31s]
-    NOTE
-   '::' or ':::' import not declared from: ‘caret’
-   'library' or 'require' calls not declared from:
-     ‘caret’ ‘ggplot2’
+  * checking for unstated dependencies in vignettes ... NOTE
+  '::' or ':::' import not declared from: ‘caret’
+  'library' or 'require' calls not declared from:
+    ‘caret’ ‘ggplot2’
+
 
 Both of the above calls are guarded by requireNamespace calls are are there to
 illustrate how a user can use the additional caret or ggplot2 packages. 
