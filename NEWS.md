@@ -1,9 +1,10 @@
 
-'vtreat' 0.5.26 2016/06/10
+'vtreat' 0.5.26 2016/06/19
 
 Changes:
 
-- Start adding facilities for y-stratified splitting (useful for unbalanced classes).
+- Facilities for y-stratified and grouped splitting (useful for unbalanced classes).
+- catScaling=TRUE mode uses logistic regression for y-aware variable scaling.
 
 
 'vtreat' 0.5.25 2016/05/02
