@@ -55,7 +55,7 @@ In particular vtreat emphasizes a concept called
 -   Safe processing of "wide data" (data with very many variables, often
     driving common machine learning algorithms to over-fit) through [out
     of sample per-variable significance estimates and user controllable
-    pruning](http://winvector.github.io/vtreathtml/vtreatSignifcance.html)
+    pruning](http://winvector.github.io/vtreathtml/vtreatSignificance.html)
     (something we have lectured on previously
     [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS)
     and
@@ -96,7 +96,7 @@ prepared some documentation:
     and a general [cross-frame
     solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
 -   [Principled ways to pick significance based pruning
-    levels](http://winvector.github.io/vtreathtml/vtreatSignifcance.html).
+    levels](http://winvector.github.io/vtreathtml/vtreatSignificance.html).
 
 
 Install either from CRAN:

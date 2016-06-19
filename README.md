@@ -11,7 +11,7 @@ In particular vtreat emphasizes a concept called "y-aware pre-processing" and im
 -   Treatment of categorical variables with very large numbers of levels through sub-models (again [impact/effects coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
 -   (optional) User specified significance pruning on levels coded into effects/impact sub-models.
 -   Correct treatment of nested models or sub-models through data split (see [here](http://winvector.github.io/vtreathtml/vtreatOverfit.html)) or through the generation of "cross validated" data frames (see [here](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html); these are issues similar to what is required to build statistically efficient stacked models or super-learners).
--   Safe processing of "wide data" (data with very many variables, often driving common machine learning algorithms to over-fit) through [out of sample per-variable significance estimates and user controllable pruning](http://winvector.github.io/vtreathtml/vtreatSignifcance.html) (something we have lectured on previously [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS) and [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
+-   Safe processing of "wide data" (data with very many variables, often driving common machine learning algorithms to over-fit) through [out of sample per-variable significance estimates and user controllable pruning](http://winvector.github.io/vtreathtml/vtreatSignificance.html) (something we have lectured on previously [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS) and [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
 -   Collaring/Winsorizing of unexpected out of range numeric inputs.
 -   (optional) Conversion of all variables into effects (or "y-scale") units (through the optional `scale` argument to `vtreat::prepare()`, using some of the ideas discussed [here](http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)). This allows correct/sensible application of principal component analysis pre-processing in a machine learning context.
 -   Joining in additional training distribution data (which can be useful in analysis, called "catP" and "catD").
@@ -24,7 +24,7 @@ To help explain the methods we have prepared some documentation:
 -   [Preparing data for analysis using R whitepaper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
 -   The [types of new variables](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) introduced by vtreat processing (including how to limit down to domain appropriate variable types).
 -   Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): [nested over-fit issues](http://winvector.github.io/vtreathtml/vtreatOverfit.html) and a general [cross-frame solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
--   [Principled ways to pick significance based pruning levels](http://winvector.github.io/vtreathtml/vtreatSignifcance.html).
+-   [Principled ways to pick significance based pruning levels](http://winvector.github.io/vtreathtml/vtreatSignificance.html).
 
 Install either from CRAN:
 
@@ -118,22 +118,22 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame)
-#>     varName varMoves      psig        sig       csig needsSplit origName
-#> 1  x_lev_NA     TRUE 0.2031107 0.09248399 0.09248399      FALSE        x
-#> 2 x_lev_x.a     TRUE 0.3524132 0.26490379 0.26490379      FALSE        x
-#> 3 x_lev_x.b     TRUE 0.8456711 0.80967242 0.80967242      FALSE        x
-#> 4    x_catP     TRUE 0.3524132 0.26490379 0.26490379       TRUE        x
-#> 5    x_catB     TRUE 0.2901303 0.18011273 0.18011273       TRUE        x
-#> 6   z_clean     TRUE 0.2356201 0.13176020 0.13176020      FALSE        z
-#> 7   z_isBAD     TRUE 0.2031107 0.09248399 0.09248399      FALSE        z
-#>    code
-#> 1   lev
-#> 2   lev
-#> 3   lev
-#> 4  catP
-#> 5  catB
-#> 6 clean
-#> 7 isBAD
+#>     varName varMoves      lsig        sig       csig needsSplit
+#> 1  x_lev_NA     TRUE 0.2031107 0.09248399 0.09248399      FALSE
+#> 2 x_lev_x.a     TRUE 0.3524132 0.26490379 0.26490379      FALSE
+#> 3 x_lev_x.b     TRUE 0.8456711 0.80967242 0.80967242      FALSE
+#> 4    x_catP     TRUE 0.3524132 0.26490379 0.26490379       TRUE
+#> 5    x_catB     TRUE 0.2901303 0.18011273 0.18011273       TRUE
+#> 6   z_clean     TRUE 0.2356201 0.13176020 0.13176020      FALSE
+#> 7   z_isBAD     TRUE 0.2031107 0.09248399 0.09248399      FALSE
+#>   extraModelDegrees origName  code
+#> 1                 0        x   lev
+#> 2                 0        x   lev
+#> 3                 0        x   lev
+#> 4                 2        x  catP
+#> 5                 2        x  catB
+#> 6                 0        z clean
+#> 7                 0        z isBAD
 
 # help("prepare")
 
@@ -142,7 +142,7 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#>  3.965082e-18 -1.586420e-17  9.917546e-19  1.585994e-16 -3.972827e-18 
+#>  3.965082e-18 -1.982154e-17  9.917546e-19  1.585994e-16  2.378275e-17 
 #>       z_clean       z_isBAD 
 #>  7.927952e-18 -7.926292e-18
 # all non NA slopes should be 1
@@ -173,37 +173,46 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame)
-#>     varName varMoves      psig       sig needsSplit origName  code
-#> 1  x_lev_NA     TRUE 0.1339746 0.1339746      FALSE        x   lev
-#> 2 x_lev_x.a     TRUE 0.2070312 0.2070312      FALSE        x   lev
-#> 3 x_lev_x.b     TRUE 1.0000000 1.0000000      FALSE        x   lev
-#> 4    x_catP     TRUE 0.2070312 0.2070312       TRUE        x  catP
-#> 5    x_catN     TRUE 0.6831941 0.6831941       TRUE        x  catN
-#> 6    x_catD     TRUE 0.6528290 0.6528290       TRUE        x  catD
-#> 7   z_clean     TRUE 0.1701892 0.1701892      FALSE        z clean
-#> 8   z_isBAD     TRUE 0.1339746 0.1339746      FALSE        z isBAD
+#>     varName varMoves      lsig       sig needsSplit extraModelDegrees
+#> 1  x_lev_NA     TRUE 0.1339746 0.1339746      FALSE                 0
+#> 2 x_lev_x.a     TRUE 0.2070312 0.2070312      FALSE                 0
+#> 3 x_lev_x.b     TRUE 1.0000000 1.0000000      FALSE                 0
+#> 4    x_catP     TRUE 0.2070312 0.2070312       TRUE                 2
+#> 5    x_catN     TRUE 0.6831941 0.6831941       TRUE                 2
+#> 6    x_catD     TRUE 0.6528290 0.6528290       TRUE                 2
+#> 7   z_clean     TRUE 0.1701892 0.1701892      FALSE                 0
+#> 8   z_isBAD     TRUE 0.1339746 0.1339746      FALSE                 0
+#>   origName  code
+#> 1        x   lev
+#> 2        x   lev
+#> 3        x   lev
+#> 4        x  catP
+#> 5        x  catN
+#> 6        x  catD
+#> 7        z clean
+#> 8        z isBAD
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catN 
-#> -1.387779e-17  0.000000e+00  0.000000e+00  5.551115e-17  0.000000e+00 
+#>  6.938894e-18  0.000000e+00  7.703720e-34  2.775558e-17  0.000000e+00 
 #>        x_catD       z_clean       z_isBAD 
-#>  2.775558e-17  4.163336e-17  0.000000e+00
+#> -2.775558e-17  4.857226e-17  6.938894e-18
 # all non NA slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
 #>  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catN    x_catD   z_clean 
-#>         1         1        NA         1         1         1         1 
+#>         1         1         1         1         1         1         1 
 #>   z_isBAD 
 #>         1
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
-#>     x_lev_NA x_lev_x.a x_lev_x.b x_catP x_catN      x_catD   z_clean
-#> 1 -0.1666667     -0.25         0  -0.25  -0.25 -0.06743804 0.5238095
-#> 2 -0.1666667      0.25         0   0.25   0.00 -0.25818161 0.5238095
-#> 3 -0.1666667      0.25         0   0.75   0.00 -0.25818161 0.5238095
-#> 4  0.5000000      0.25         0   0.25   0.50  0.39305768 0.0000000
+#>     x_lev_NA x_lev_x.a     x_lev_x.b x_catP x_catN      x_catD   z_clean
+#> 1 -0.1666667     -0.25 -2.266233e-17  -0.25  -0.25 -0.06743804 0.5238095
+#> 2 -0.1666667      0.25  6.798700e-17   0.25   0.00 -0.25818161 0.5238095
+#> 3 -0.1666667      0.25 -2.266233e-17   0.75   0.00 -0.25818161 0.5238095
+#> 4  0.5000000      0.25 -2.266233e-17   0.25   0.50  0.39305768 0.0000000
 #>      z_isBAD
 #> 1 -0.1666667
 #> 2 -0.1666667
