@@ -75,11 +75,16 @@ test_that("testBO: Works As Expected", {
       dTrainNTreated <- prepare(treatmentsN,dTrain,pruneSig=0.99,
                                 scale=scale)
       nvars <- setdiff(colnames(dTrainNTreated),'yN')
-      if(verbose) {
-        print('offsets')
-        print(sapply(dTrainNTreated[,nvars],mean)) # all input variables should be mean 0 when scale is TRUE
-        print('slopes')
-        print(sapply(nvars,function(c) { lm(paste('yN',c,sep='~'),data=dTrainNTreated)$coefficients[[2]]})) # all slopes should be 1 when scales is TRUE and smFactor is 0
+      if(scale) {
+        # all input variables should be mean 0 when scale is TRUE
+        expect_true(max(abs(vapply(dTrainNTreated[,nvars],mean,numeric(1))))<1.0e-5)
+        # all slopes should be 1 when scales is TRUE
+        expect_true(max(abs(1-
+                              vapply(nvars,
+                                     function(c) { 
+                                       lm(paste('yN',c,sep='~'),
+                                          data=dTrainNTreated)$coefficients[[2]]},
+                                     numeric(1))))<1.0e-5)
       }
       modelN <- lm(paste('yN',paste(nvars,collapse=' + '),sep=' ~ '),
                    data=dTrainNTreated)
@@ -95,14 +100,20 @@ test_that("testBO: Works As Expected", {
         print('# caterogic example')
       }
       treatmentsC <- designTreatmentsC(dTrain,vars,'yC',TRUE,smFactor=smFactor,
+                                      catScaling=TRUE,
                                        verbose=verbose)
       dTrainCTreated <- prepare(treatmentsC,dTrain,pruneSig=0.99,scale=scale)
       cvars <- setdiff(colnames(dTrainCTreated),'yC')
-      if(verbose) {
-        print('offsets')
-        print(sapply(dTrainCTreated[,cvars],mean)) # all input variables should be mean 0 when scale is TRUE
-        print('slopes')
-        print(sapply(cvars,function(c) { lm(paste('ifelse(yC,1.0,0.0)',c,sep='~'),data=dTrainCTreated)$coefficients[[2]]})) # all slopes should be 1 when scale is TRUE and smFactor is 0
+      if(scale) {
+        # all input variables should be mean 0 when scale is TRUE
+        expect_true(max(abs(vapply(dTrainCTreated[,cvars],mean,numeric(1))))<1.0e-5)
+        # all slopes should be 1 when scales is TRUE
+        expect_true(max(abs(1-
+                              vapply(cvars,
+                                     function(c) { 
+                                       glm(paste('yC',c,sep='~'),family=binomial,
+                                          data=dTrainCTreated)$coefficients[[2]]},
+                                     numeric(1))))<1.0e-5)
       }
       modelC <- glm(paste('yC',paste(cvars,collapse=' + '),sep=' ~ '),
                     data=dTrainCTreated,family=binomial(link='logit'))

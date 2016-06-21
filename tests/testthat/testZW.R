@@ -11,6 +11,20 @@ test_that("testZW: Test Zero Weights Don't Crash", {
   trainCWeights[1:(length(trainCWeights)/2)] <- 1
   dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                   catScaling = TRUE,
+                                   weights=trainCWeights,verbose=FALSE)
+  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
+  varsC <- setdiff(colnames(dTrainCTreated),'y')
+  # all input variables should be mean 0
+  sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
+  # all slopes should be 1
+  sapply(varsC,function(c) { glm(paste('y',c,sep='~'),family='binomial',
+                                data=dTrainCTreated)$coefficients[[2]]})
+  dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
+  
+  # categorical example indicator mode
+  treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                   catScaling = FALSE,
                                    weights=trainCWeights,verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
   varsC <- setdiff(colnames(dTrainCTreated),'y')
@@ -18,7 +32,7 @@ test_that("testZW: Test Zero Weights Don't Crash", {
   sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
   # all slopes should be 1
   sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
-                                data=dTrainCTreated)$coefficients[[2]]})
+                                 data=dTrainCTreated)$coefficients[[2]]})
   dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
   
   # numeric example

@@ -8,6 +8,7 @@ test_that("testScale: check corner case on scale", {
                         z=c(1,2,3,4,NA,6),
                         y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                   catScaling=TRUE,
                                    verbose=FALSE)
   dTrainCTreatedUnscaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=FALSE)
   dTrainCTreatedScaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
@@ -17,7 +18,7 @@ test_that("testScale: check corner case on scale", {
                             numeric(1))
   slopeFrame$slope <- vapply(slopeFrame$varName,
                              function(c) { 
-                               lm(paste('y',c,sep='~'),
+                               glm(paste('y',c,sep='~'),family=binomial,
                                   data=dTrainCTreatedScaled)$coefficients[[2]]
                              },
                              numeric(1))
