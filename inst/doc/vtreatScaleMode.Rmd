@@ -1,0 +1,160 @@
+---
+title: "vtreat scale mode"
+author: "Win-Vector LLC"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat scale mode}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<code>vtreat::prepare(scale=TRUE)</code> is a variation of 
+<code>vtreat::prepare()</code> intended to prepare data frames so all 
+the derived input or independent (`x`) variables 
+ are fully in outcome or dependent variable (`y`) units.
+This is in the sense of a linear regression for numeric `y`'s (`vtreat::designTreatmentsN` and
+`vtreat::mkCrossFrameNExperiment`).  
+For classification problems (or categorical `y`'s)
+as of version `0.5.26` and newer (available [here](https://github.com/WinVector/vtreat))
+scaling is established through a 
+a logistic regression  ["in link units"](https://github.com/WinVector/Examples/blob/master/PCR/YAwarePCAclassification.md)
+or as 0/1 indicators depending on the setting of the `catScaling` argument
+in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameNExperiment`.
+Prior to this version classification the scaling calculation (and only the scaling
+calculation) was always handled as a linear regression against a 0/1 `y`-indicator.
+`catScaling=FALSE` can be a bit faster as the underlying regression can be a bit quicker than 
+ a logistic regression.
+
+This is the appropriate preparation before a geometry/metric sensitive modeling step
+such as principal components analysis or clustering (such as k-means clustering).
+
+Normally (with <code>vtreat::prepare(scale=FALSE)</code>) vtreat
+passes through a number of variables with minimal alteration (cleaned numeric),
+builds 0/1 indicator variables for various conditions (categorical levels, 
+presence of NAs, and so on), and builds some "in y-units" variables (catN, catB) that 
+are in fact sub-models.  With <code>vtreat::prepare(scale=TRUE)</code> all of these 
+numeric variables are then re-processed to have mean zero, and slope 1 (when possible)
+when appropriately regressed against the y-variable.
+
+This is easiest to illustrate with a concrete example.
+
+```{r exampledata}
+library('vtreat')
+dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
+                      y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                 catScaling=FALSE,
+                                 verbose=FALSE)
+dTrainCTreatedUnscaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=FALSE)
+dTrainCTreatedScaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
+```
+
+Note we have set `catScaling=FALSE` to ask that we treat `y` as a 0/1 indicator and scale using linear regression.
+The standard vtreat treated frame converts the original data from this:
+
+```{r printorig}
+print(dTrainC)
+```
+
+into this:
+
+```{r printunscaled}
+print(dTrainCTreatedUnscaled)
+```
+
+This is the "standard way" to run vtreat -- with the exception that for this example we set 
+<code>pruneSig</code> to <code>NULL</code> to suppress variable pruning, instead of setting it to a value in the interval
+<code>(0,1)</code>.  The principle is: vtreat inflicts the minimal possible alterations on the data, leaving as much as possible to the downstream machine learning code. This does turn out to already be a lot of alteration.  Mostly vtreat is taking only steps that are unsafe to leave for later: re-encoding of large categoricals, re-coding of aberrant values, and bulk pruning of variables.
+
+However some procedures, in particular principal components analysis or geometric
+clustering, assume all of the columns have been fully transformed.  The usual assumption ("more honored in the breach than the observance") is that the columns
+are centered (mean zero) and scaled.  The non y-aware meaning of "scaled" is 
+unit variance.  However, vtreat is designed to emphasize y-aware processing and we feel the y-aware sense of scaling should be: unit slope when regressed against y.  If you 
+want standard scaling you can use the standard frame produced by vtreat and scale it
+yourself.  If you want vtreat style y-aware scaling you (which we strongly think
+is the right thing to do) you can use <code>vtreat::prepare(scale=TRUE)</code> which
+produces a frame that looks like the following:
+
+```{r printscaled}
+print(dTrainCTreatedScaled)
+```
+
+First we can check the claims.  Are the variables mean-zero and slope 1 when regressed against y?
+
+```{r check}
+slopeFrame <- data.frame(varName = treatmentsC$scoreFrame$varName,
+                         stringsAsFactors = FALSE)
+slopeFrame$mean <-
+  vapply(dTrainCTreatedScaled[, slopeFrame$varName, drop = FALSE], mean,
+         numeric(1))
+slopeFrame$slope <- vapply(slopeFrame$varName,
+                           function(c) {
+                             lm(paste('y', c, sep = '~'),
+                                data = dTrainCTreatedScaled)$coefficients[[2]]
+                           },
+                           numeric(1))
+slopeFrame$sig <- vapply(slopeFrame$varName,
+                         function(c) {
+                           treatmentsC$scoreFrame[treatmentsC$scoreFrame$varName == c, 'sig']
+                         },
+                         numeric(1))
+slopeFrame$badSlope <-
+  ifelse(is.na(slopeFrame$slope), TRUE, abs(slopeFrame$slope - 1) > 1.e-8)
+print(slopeFrame)
+```
+
+The above claims are true with the exception of the derived variable <code>x_lev_x.b</code>.
+This is because the outcome variable <code>y</code> has identical distribution
+when the original variable <code>x=='b'</code> and when <code>x!='b'</code> (on half the time in both cases).  This means <code>y</code> is perfectly independent 
+of <code>x=='b'</code> and the regression slope must be zero (thus, cannot be 1).  vtreat now treats
+this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance
+facts in <code>treatmentsC\$scoreFrame</code> are about the unscaled frame (where <code>x_lev_x.b</code> does in fact move). 
+
+For a good discussion of the application of *y*-aware scaling to Principal Components Analysis please see [here](http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/).
+
+Previous versions of vtreat (0.5.22 and earlier) would copy variables that
+could not be sensibly scaled into the treated frame unaltered.  This was considered the "most faithful"
+thing to do.  However we now feel that this practice was not safe for many downstream procedures, such as principal
+components analysis and geometric clustering. 
+
+### Categorical outcome mode "catScaling=TRUE"
+
+As of version `0.5.26` `vtreat` also supports a "scaling mode for categorical outcomes."  In this mode scaling is performed using the coefficient of a logistic regression fit on a categorical instead of the coefficient of a linear fit (with the outcome encoded as a zero/one indicator).  
+
+The idea is with this mode on we are scaling as a logistic regession would- so we are in logistic regression "link space" (where logistic regressio assume effects are additive).  The mode may be well suited for principal components analysis or principal components regerssion where the target variable is a categorical (i.e. classification tasks).
+
+To ensure this effect we set the argument `catScaling=TRUE` in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameCExperiment`.  WE demonstrate this below.
+
+```{r catscale}
+treatmentsC2 <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                  catScaling=TRUE,
+                                  verbose=FALSE)
+dTrainCTreatedScaled2 <- prepare(treatmentsC2,dTrainC,pruneSig=c(),scale=TRUE)
+print(dTrainCTreatedScaled2)
+```
+
+Notice the new scaled frame is in a different scale than the original scaled frame.  It likely is a function of the problem domain which scaling is more appropiate or useful.
+
+The new scaled columns are again mean-0 (so they are not exactly the logistic link values, which may not have been so shifted).
+The new scaled columns do not necissarily have linear model slope 1 as the original scaled columns did as we see below:
+
+```{r checks}
+colMeans(dTrainCTreatedScaled2)
+lm(y~x_lev_NA,data=dTrainCTreatedScaled)
+lm(y~x_lev_NA,data=dTrainCTreatedScaled2)
+```
+
+The new scaled columns, however are in good logistic link units.
+
+```{r}
+ vapply(slopeFrame$varName,
+                           function(c) {
+                             glm(paste('y', c, sep = '~'),family=binomial,
+                                data = dTrainCTreatedScaled2)$coefficients[[2]]
+                           },
+                           numeric(1))
+```
+
+
+
