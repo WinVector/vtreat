@@ -23,6 +23,8 @@ or as 0/1 indicators depending on the setting of the `catScaling` argument
 in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameNExperiment`.
 Prior to this version classification the scaling calculation (and only the scaling
 calculation) was always handled as a linear regression against a 0/1 `y`-indicator.
+`catScaling=FALSE` can be a bit faster as the underlying regression can be a bit quicker than 
+ a logistic regression.
 
 This is the appropriate preparation before a geometry/metric sensitive modeling step
 such as principal components analysis or clustering (such as k-means clustering).
