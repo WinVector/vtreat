@@ -357,7 +357,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
   for(ti in treatmentplan$treatments) {
     if(length(intersect(ti$newvars,usableVars))>0) {
       newType <- typeof(dframe[[ti$origvar]])
-      newClass <- class(dframe[[ti$origvar]])
+      newClass <- paste(class(dframe[[ti$origvar]]))
       if((ti$origType!=newType) || (ti$origClass!=newClass)) {
         warning(paste('variable',ti$origvar,'expected type/class',
                    ti$origType,ti$origClass,
