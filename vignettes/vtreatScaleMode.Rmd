@@ -11,24 +11,29 @@ vignette: >
 
 <code>vtreat::prepare(scale=TRUE)</code> is a variation of 
 <code>vtreat::prepare()</code> intended to prepare data frames so all 
-the derived input or independent (x) variables 
- are fully in outcome or dependent variable (y) units
-(in the sense of a regression; categorical/logical y's are treated as 0/1 indicators,
-version `0.5.26` and newer can [directly model categorical outcomes "in link units" using logistic regression](https://github.com/WinVector/Examples/blob/master/PCR/YAwarePCAclassification.md)
-without the 0/1 indicator encoding,
-this version is currently available [here](https://github.com/WinVector/vtreat))
-and mean-zero.  
+the derived input or independent (`x`) variables 
+ are fully in outcome or dependent variable (`y`) units.
+This is in the sense of a linear regression for numeric `y`'s (`vtreat::designTreatmentsN` and
+`vtreat::mkCrossFrameNExperiment`).  
+For classification problems (or categorical `y`'s)
+as of version `0.5.26` and newer (available [here](https://github.com/WinVector/vtreat))
+scaling is established through a 
+a logistic regression  ["in link units"](https://github.com/WinVector/Examples/blob/master/PCR/YAwarePCAclassification.md)
+or as 0/1 indicators depending on the setting of the `catScaling` argument
+in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameNExperiment`.
+Prior to this version classification the scaling calculation (and only the scaling
+calculation) was always handled as a linear regression against a 0/1 `y`-indicator.
 
 This is the appropriate preparation before a geometry/metric sensitive modeling step
 such as principal components analysis or clustering (such as k-means clustering).
 
 Normally (with <code>vtreat::prepare(scale=FALSE)</code>) vtreat
-passes through a number of variables with minimal alteration (cleaned numerics),
+passes through a number of variables with minimal alteration (cleaned numeric),
 builds 0/1 indicator variables for various conditions (categorical levels, 
 presence of NAs, and so on), and builds some "in y-units" variables (catN, catB) that 
 are in fact sub-models.  With <code>vtreat::prepare(scale=TRUE)</code> all of these 
 numeric variables are then re-processed to have mean zero, and slope 1 (when possible)
-when numerically regressed against the y-variable.
+when appropriately regressed against the y-variable.
 
 This is easiest to illustrate with a concrete example.
 
@@ -37,11 +42,13 @@ library('vtreat')
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
                       y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
+                                 catScaling=FALSE,
                                  verbose=FALSE)
 dTrainCTreatedUnscaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=FALSE)
 dTrainCTreatedScaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
 ```
 
+Note we have set `catScaling=FALSE` to ask that we treat `y` as a 0/1 indicator and scale using linear regression.
 The standard vtreat treated frame converts the original data from this:
 
 ```{r printorig}
@@ -115,7 +122,7 @@ As of version `0.5.26` `vtreat` also supports a "scaling mode for categorical ou
 
 The idea is with this mode on we are scaling as a logistic regession would- so we are in logistic regression "link space" (where logistic regressio assume effects are additive).  The mode may be well suited for principal components analysis or principal components regerssion where the target variable is a categorical (i.e. classification tasks).
 
-To get this effect we must set the argument `catScaling=TRUE` in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameCExperiment`.  WE demonstrate this below.
+To ensure this effect we set the argument `catScaling=TRUE` in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameCExperiment`.  WE demonstrate this below.
 
 ```{r catscale}
 treatmentsC2 <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
@@ -139,8 +146,12 @@ lm(y~x_lev_NA,data=dTrainCTreatedScaled2)
 The new scaled columns, however are in good logistic link units.
 
 ```{r}
-glm(y~x_lev_NA,data=dTrainCTreatedScaled,family=binomial)
-glm(y~x_lev_NA,data=dTrainCTreatedScaled2,family=binomial)
+ vapply(slopeFrame$varName,
+                           function(c) {
+                             glm(paste('y', c, sep = '~'),family=binomial,
+                                data = dTrainCTreatedScaled2)$coefficients[[2]]
+                           },
+                           numeric(1))
 ```
 
 

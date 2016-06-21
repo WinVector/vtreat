@@ -82,7 +82,7 @@ print.vtreatment <- function(x,...) {
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
-#' @param catScaling optional, use glm() linkspace instead of lm() for scaling.
+#' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -106,7 +106,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
                               splitFunction=NULL,ncross=3,
-                              catScaling=FALSE,
+                              catScaling=TRUE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   
@@ -293,7 +293,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param dframe Data frame to be treated
 #' @param pruneSig suppress variables with significance above this level
 #' @param ... no additional arguments, declared to forced named binding of later arguments
-#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed against outcome.
+#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed  (lm for regression problems/glm for classificaiton problems) against outcome.
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @return treated data frame (all columns numeric, without NA,NaN)
@@ -401,7 +401,7 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
-#' @param catScaling optional, use glm() linkspace instead of lm() for scaling.
+#' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
@@ -434,7 +434,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
                                     splitFunction=NULL,ncross=3,
-                                    catScaling=FALSE,
+                                    catScaling=TRUE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {

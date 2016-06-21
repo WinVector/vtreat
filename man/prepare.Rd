@@ -16,7 +16,7 @@ prepare(treatmentplan, dframe, pruneSig, ..., scale = FALSE,
 
 \item{...}{no additional arguments, declared to forced named binding of later arguments}
 
-\item{scale}{optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed against outcome.}
+\item{scale}{optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed  (lm for regression problems/glm for classificaiton problems) against outcome.}
 
 \item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 

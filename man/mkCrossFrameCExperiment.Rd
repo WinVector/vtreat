@@ -7,7 +7,7 @@
 mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = 1, collarProb = 0, scale = FALSE, doCollar = TRUE,
-  splitFunction = NULL, ncross = 3, catScaling = FALSE,
+  splitFunction = NULL, ncross = 3, catScaling = TRUE,
   parallelCluster = NULL)
 }
 \arguments{
@@ -41,7 +41,7 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{ncross}{optional scalar>=2 number of cross-validation rounds to design.}
 
-\item{catScaling}{optional, use glm() linkspace instead of lm() for scaling.}
+\item{catScaling}{optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.}
 
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }
