@@ -122,7 +122,7 @@ components analysis and geometric clustering.
 
 As of version `0.5.26` `vtreat` also supports a "scaling mode for categorical outcomes."  In this mode scaling is performed using the coefficient of a logistic regression fit on a categorical instead of the coefficient of a linear fit (with the outcome encoded as a zero/one indicator).  
 
-The idea is with this mode on we are scaling as a logistic regession would- so we are in logistic regression "link space" (where logistic regressio assume effects are additive).  The mode may be well suited for principal components analysis or principal components regerssion where the target variable is a categorical (i.e. classification tasks).
+The idea is with this mode on we are scaling as a logistic regression would- so we are in logistic regression "link space" (where logistic regression assume effects are additive).  The mode may be well suited for principal components analysis or principal components regression where the target variable is a categorical (i.e. classification tasks).
 
 To ensure this effect we set the argument `catScaling=TRUE` in `vtreat::designTreatmentsC` or `vtreat::mkCrossFrameCExperiment`.  WE demonstrate this below.
 
@@ -134,10 +134,10 @@ dTrainCTreatedScaled2 <- prepare(treatmentsC2,dTrainC,pruneSig=c(),scale=TRUE)
 print(dTrainCTreatedScaled2)
 ```
 
-Notice the new scaled frame is in a different scale than the original scaled frame.  It likely is a function of the problem domain which scaling is more appropiate or useful.
+Notice the new scaled frame is in a different scale than the original scaled frame.  It likely is a function of the problem domain which scaling is more appropriate or useful.
 
 The new scaled columns are again mean-0 (so they are not exactly the logistic link values, which may not have been so shifted).
-The new scaled columns do not necissarily have linear model slope 1 as the original scaled columns did as we see below:
+The new scaled columns do not necessarily have linear model slope 1 as the original scaled columns did as we see below:
 
 ```{r checks}
 colMeans(dTrainCTreatedScaled2)
@@ -155,6 +155,52 @@ The new scaled columns, however are in good logistic link units.
                            },
                            numeric(1))
 ```
+
+### PCA/PCR
+
+The intended applications of scale mode include preparing data for metric sensitive applications
+such as KNN classification/regression and Principal Components Analysis/Regression.  Please see
+[here](https://github.com/WinVector/Examples/tree/master/PCR) for an article series describing such applications.
+
+Overall the advice is to first use the following pattern:
+
+ * Significance prune incoming variables.
+ * Use *y*-aware scaling.
+ * Significance prune resulting latent variables.
+
+However, practitioners experienced in principal components analysis may uncomfortable with the 
+range of eigenvalues or singular values returned by *y*-aware analysis.   If a more familiar scale
+is desired we suggest performing the *y*-aware scaling against an additional scaled and centered *y* to try
+to get ranges closer the traditional unit ranges.  This can be achieved as shown below.
+
+```{r}
+set.seed(235235)
+dTrainN <- data.frame(x1=rnorm(100),
+                      x2=rnorm(100),
+                      x3=rnorm(100),
+                      stringsAsFactors=FALSE)
+dTrainN$y <- 1000*(dTrainN$x1 + dTrainN$x2)
+cEraw <- vtreat::mkCrossFrameNExperiment(dTrainN,
+                                         c('x1','x2','x3'),'y',
+                                         scale=TRUE)
+dM1 <- as.matrix(cEraw$crossFrame[,c('x1_clean','x2_clean','x3_clean')])
+pCraw <- stats::prcomp(dM1,
+                       scale.=FALSE,center=TRUE)
+print(pCraw)
+dTrainN$yScaled <- scale(dTrainN$y,center=TRUE,scale=TRUE)
+cEscaled <- vtreat::mkCrossFrameNExperiment(dTrainN,
+                                            c('x1','x2','x3'),'yScaled',
+                                            scale=TRUE)
+dM2 <- as.matrix(cEscaled$crossFrame[,c('x1_clean','x2_clean','x3_clean')])
+pCscaled <- stats::prcomp(dM2,
+                          scale.=FALSE,center=TRUE)
+print(pCscaled)
+```
+
+Notice the second application of `stats::prcomp` has more standard scaling of the 
+reported standard deviations (though we still do not advise choosing latent variables
+based on mere comparisons to unit magnitude).
+
 
 
 

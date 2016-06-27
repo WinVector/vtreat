@@ -58,3 +58,26 @@ lm(y~x_lev_NA,data=dTrainCTreatedScaled2)
                            },
                            numeric(1))
 
+## ------------------------------------------------------------------------
+set.seed(235235)
+dTrainN <- data.frame(x1=rnorm(100),
+                      x2=rnorm(100),
+                      x3=rnorm(100),
+                      stringsAsFactors=FALSE)
+dTrainN$y <- 1000*(dTrainN$x1 + dTrainN$x2)
+cEraw <- vtreat::mkCrossFrameNExperiment(dTrainN,
+                                         c('x1','x2','x3'),'y',
+                                         scale=TRUE)
+dM1 <- as.matrix(cEraw$crossFrame[,c('x1_clean','x2_clean','x3_clean')])
+pCraw <- stats::prcomp(dM1,
+                       scale.=FALSE,center=TRUE)
+print(pCraw)
+dTrainN$yScaled <- scale(dTrainN$y,center=TRUE,scale=TRUE)
+cEscaled <- vtreat::mkCrossFrameNExperiment(dTrainN,
+                                            c('x1','x2','x3'),'yScaled',
+                                            scale=TRUE)
+dM2 <- as.matrix(cEscaled$crossFrame[,c('x1_clean','x2_clean','x3_clean')])
+pCscaled <- stats::prcomp(dM2,
+                          scale.=FALSE,center=TRUE)
+print(pCscaled)
+
