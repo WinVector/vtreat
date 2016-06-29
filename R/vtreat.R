@@ -130,7 +130,6 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    parallelCluster)
   treatments$outcomeTarget <- outcometarget
   treatments$outcomeType <- 'Binary'
-  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments
 }
 
@@ -208,7 +207,6 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'Numeric'
-  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments
 }
 
@@ -273,7 +271,6 @@ designTreatmentsZ <- function(dframe,varlist,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'None'
-  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments
 }
 

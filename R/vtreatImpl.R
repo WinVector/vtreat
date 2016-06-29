@@ -482,6 +482,7 @@
                                     parallelCluster)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
   yMoves <- .has.range.cn(zoY)
+  crossMethod = 'Notcross'
   if(yMoves) {
     splitVars <- unique(treatments$scoreFrame$origName[treatments$scoreFrame$needsSplit])
     if(length(splitVars)>0) {
@@ -503,6 +504,7 @@
                                 parallelCluster)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights
+      crossMethod <- crossData$method
       # score this frame
       if(is.null(zC)) {
         zoYS = crossFrame[[outcomename]]
@@ -535,6 +537,8 @@
       }
     }
   }
+  treatments$vtreatVersion <- packageVersion('vtreat')
+  treatments$splitmethod <- crossMethod
   treatments
 }
 
