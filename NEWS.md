@@ -1,10 +1,11 @@
 
-'vtreat' 0.5.26 2016/06/19
+'vtreat' 0.5.26 2016/07/10
 
 Changes:
 
 - Facilities for y-stratified and grouped splitting (useful for unbalanced classes).
 - catScaling=TRUE mode uses logistic regression for y-aware variable scaling.
+- Fix erronious bad type warning on date columns.
 
 
 'vtreat' 0.5.25 2016/05/02
