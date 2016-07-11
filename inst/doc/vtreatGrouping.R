@@ -2,6 +2,9 @@
 knitr::opts_chunk$set(fig.width = 7)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
+library(vtreat)
+set.seed(23255)
+
 have_ggplot = requireNamespace("ggplot2", quietly=TRUE)
 have_dplyr = requireNamespace("dplyr", quietly=TRUE)
 if(have_ggplot) {
@@ -11,11 +14,7 @@ if(have_dplyr) {
   library(dplyr)
 }
 
-
-library(vtreat)
-set.seed(23255)
-
-## ----functions, echo=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 #
 # takes the frame (d) and the outcome column (d$conc)
 # from the global environment
@@ -48,8 +47,6 @@ showGroupingBehavior = function(groupcol, title) {
     print(plt)
   }
 }
-
-
 
 ## ----data----------------------------------------------------------------
 # panel data for concentration in multiple subjects 

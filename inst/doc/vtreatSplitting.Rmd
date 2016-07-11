@@ -87,30 +87,7 @@ As we can see `vtreat::oneWayHoldout` builds three split sets where in each set 
 
 The function `buildEvalSets` takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using `designTreatments[N\C]` or `mkCrossFrame[N\C]Experiment`.
 
-For issues beyond stratification the user may want to supply their own splitting plan.  For example to wrap [`caret::createFolds`](http://topepo.github.io/caret/index.html) as a splitting function we would write the following function definition.
-
-```{r}
-splitFn <- function(nRows,nSplits,dframe,y) {
-  if(requireNamespace("caret",quietly=TRUE)) {
-    fullSeq <- seq_len(nRows)
-    part <- caret::createFolds(y=y,k=nSplits)
-    lapply(part,
-           function(appi) { 
-             list(train=setdiff(fullSeq,appi),app=appi)
-           })
-  } else {
-    NULL # fall back to vtreat implementation
-  }
-}
-```
-
-This function can then be passed into any `vtreat` operation that takes a `splitFunction` argument (such as `mkCrossFrameNExperiment`, `designTreatmentsN`, and many more).  For example we can pass the user defined `splitFn` into `vtreat::buildEvalSets` as follows:
-
-```{r}
-vtreat::buildEvalSets(25,y=1:25,splitFunction=splitFn)
-```
-
-As stated above, the vtreat library code will try to use the user function for splitting, but will fall back to an appropriate vtreat function in corner cases that the user function may not handle (for example, too few rows, too few groups, and so on). Thus the user code can assume it is in a reasonable situation (and even safely return NULL if it can’t deal with the situation it is given).
+For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any `vtreat` operation that takes a `splitFunction` argument (such as `mkCrossFrameNExperiment`, `designTreatmentsN`, and many more).  For example we can pass the user defined `splitFn` into `vtreat::buildEvalSets` as follows:
 
 The file [outOfSample.R](https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R) is full of worked examples.  In particular we would suggest running the code displayed when you type any of:
 
@@ -124,10 +101,12 @@ For example from `help(kWayStratifiedY)` we can see that the distribution of `y`
 
 ```{r warning=FALSE}
 library('vtreat')
-if(requireNamespace("ggplot2",quietly=TRUE)) {
+haveGGPlot2 <- requireNamespace("ggplot2",quietly=TRUE)
+if(haveGGPlot2) {
   library('ggplot2')
 }
 ```
+
 ```{r}
 set.seed(23255)
 d <- data.frame(y=sin(1:100))
@@ -158,7 +137,7 @@ d$simpleGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pSimple)
 tapply(d$y,d$simpleGroup,mean)
 # standard error of mean(y)
 sd(tapply(d$y,d$simpleGroup,mean))
-if(requireNamespace("ggplot2",quietly=TRUE)) {
+if(haveGGPlot2) {
   # plot the distribution of y in each fold
   ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
     geom_density() + ggtitle('simple (unstratified) grouping')
@@ -167,7 +146,7 @@ if(requireNamespace("ggplot2",quietly=TRUE)) {
 tapply(d$y,d$stratGroup,mean)
 # standard error of mean(y)
 sd(tapply(d$y,d$stratGroup,mean))
-if(requireNamespace("ggplot2",quietly=TRUE)) {
+if(haveGGPlot2) {
   # plot the distribution of y in each fold
   ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
     geom_density() + ggtitle('y-stratified grouping')

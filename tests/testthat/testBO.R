@@ -91,8 +91,6 @@ test_that("testBO: Works As Expected", {
       dTestNTreated <- prepare(treatmentsN,dTest,pruneSig=0.99,scale=scale)
       dTestNTreated$pred <- predict(modelN,newdata=dTestNTreated)
       if(verbose) {
-        print(ggplot(data=dTestNTreated,aes(x=pred,y=yN)) + geom_point() +
-                geom_smooth())
         print(summary(modelN))
       }
       
@@ -120,7 +118,6 @@ test_that("testBO: Works As Expected", {
       dTestCTreated <- prepare(treatmentsC,dTest,pruneSig=0.99,scale=scale)
       dTestCTreated$pred <- predict(modelC,newdata=dTestCTreated,type='response')
       if(verbose) {
-        print(ggplot(data=dTestCTreated) + geom_density(aes(x=pred,color=yC)))
         print(summary(modelC))
       }
     }

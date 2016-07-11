@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-06-27" />
+<meta name="date" content="2016-07-11" />
 
 <title>vtreat package</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat package</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-06-27</em></h4>
+<h4 class="date"><em>2016-07-11</em></h4>
 
 
 
@@ -138,13 +138,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;design var x Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;design var z Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;scoring treatments Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;have treatment plan Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;rescoring complex variables Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;done rescoring complex variables Mon Jun 27 08:57:28 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;design var x Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;design var z Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;scoring treatments Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;have treatment plan Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;rescoring complex variables Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;done rescoring complex variables Mon Jul 11 10:06:51 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -184,14 +184,17 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## $outcomename
 ## [1] &quot;y&quot;
 ## 
+## $vtreatVersion
+## [1] '0.5.26'
+## 
+## $splitmethod
+## [1] &quot;oneway&quot;
+## 
 ## $outcomeTarget
 ## [1] TRUE
 ## 
 ## $outcomeType
 ## [1] &quot;Binary&quot;
-## 
-## $vtreatVersion
-## [1] '0.5.26'
 ## 
 ## attr(,&quot;class&quot;)
 ## [1] &quot;treatmentplan&quot;</code></pre>
@@ -259,13 +262,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;design var x Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;design var z Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;scoring treatments Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;have treatment plan Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;rescoring complex variables Mon Jun 27 08:57:28 2016&quot;
-## [1] &quot;done rescoring complex variables Mon Jun 27 08:57:28 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;design var x Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;design var z Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;scoring treatments Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;have treatment plan Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;rescoring complex variables Mon Jul 11 10:06:51 2016&quot;
+## [1] &quot;done rescoring complex variables Mon Jul 11 10:06:51 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -310,11 +313,14 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## $outcomename
 ## [1] &quot;y&quot;
 ## 
-## $outcomeType
-## [1] &quot;Numeric&quot;
-## 
 ## $vtreatVersion
 ## [1] '0.5.26'
+## 
+## $splitmethod
+## [1] &quot;oneway&quot;
+## 
+## $outcomeType
+## [1] &quot;Numeric&quot;
 ## 
 ## attr(,&quot;class&quot;)
 ## [1] &quot;treatmentplan&quot;</code></pre>

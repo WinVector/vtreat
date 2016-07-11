@@ -89,37 +89,3 @@ test_that("testExpmtDesign: makekWayCrossValidationOrderedByColumn", {
   }
 })
 
-
-
-test_that("testExpmtDesign: cross frame design caret", {
-  if(requireNamespace("caret",quietly=TRUE)) {
-    set.seed(2325235)
-    splitFn <- function(nRows,nSplits,dframe,y) {
-      fullSeq <- seq_len(nRows)
-      part <- caret::createFolds(y=y,k=nSplits)
-      lapply(part,
-             function(appi) { 
-               list(train=setdiff(fullSeq,appi),app=appi)
-             })
-    }
-    nrowd = 200
-    y <- rnorm(nrowd)
-    eSets <- buildEvalSets(nrowd,y=y,
-                           splitFunction=splitFn)
-    expect_true(attr(eSets,'splitmethod')=='userfunction')
-    fullSeq <- seq_len(nrowd)
-    expect_true(length(eSets)>0)
-    for(ei in eSets) {
-      expect_true(length(ei$train)>0)
-      expect_true(length(ei$app)>0)
-      expect_true(all(ei$train %in% fullSeq))
-      expect_true(all(ei$app %in% fullSeq))
-    }
-    apps <- Reduce(c,lapply(eSets,function(ei) ei$app))
-    expect_true(length(apps)==nrowd)
-    expect_true(length(unique(apps))==nrowd)
-    problem <- problemAppPlan(nrowd,3,eSets,TRUE)
-    expect_true(is.null(problem))
-  }
-})
-

@@ -18,7 +18,8 @@ Suggests:
     knitr,
     parallel,
     rmarkdown,
-    dplyr
+    dplyr,
+    ggplot2
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

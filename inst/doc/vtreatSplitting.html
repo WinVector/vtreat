@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-06-27" />
+<meta name="date" content="2016-07-11" />
 
 <title>vtreat splitting</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat splitting</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-06-27</em></h4>
+<h4 class="date"><em>2016-07-11</em></h4>
 
 
 
@@ -157,48 +157,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><code>makekWayCrossValidationGroupedByColumn</code>: k-way y-stratified cross-validation that preserves grouping (for example, all rows corresponding to a single customer or patient, etc). This is a complex splitting plan, and only recommended when absolutely needed.</li>
 </ul>
 <p>The function <code>buildEvalSets</code> takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using <code>designTreatments[N\C]</code> or <code>mkCrossFrame[N\C]Experiment</code>.</p>
-<p>For issues beyond stratification the user may want to supply their own splitting plan. For example to wrap <a href="http://topepo.github.io/caret/index.html"><code>caret::createFolds</code></a> as a splitting function we would write the following function definition.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">splitFn &lt;-<span class="st"> </span>function(nRows,nSplits,dframe,y) {
-  if(<span class="kw">requireNamespace</span>(<span class="st">&quot;caret&quot;</span>,<span class="dt">quietly=</span><span class="ot">TRUE</span>)) {
-    fullSeq &lt;-<span class="st"> </span><span class="kw">seq_len</span>(nRows)
-    part &lt;-<span class="st"> </span>caret::<span class="kw">createFolds</span>(<span class="dt">y=</span>y,<span class="dt">k=</span>nSplits)
-    <span class="kw">lapply</span>(part,
-           function(appi) { 
-             <span class="kw">list</span>(<span class="dt">train=</span><span class="kw">setdiff</span>(fullSeq,appi),<span class="dt">app=</span>appi)
-           })
-  } else {
-    <span class="ot">NULL</span> <span class="co"># fall back to vtreat implementation</span>
-  }
-}</code></pre></div>
-<p>This function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass the user defined <code>splitFn</code> into <code>vtreat::buildEvalSets</code> as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vtreat::<span class="kw">buildEvalSets</span>(<span class="dv">25</span>,<span class="dt">y=</span><span class="dv">1</span>:<span class="dv">25</span>,<span class="dt">splitFunction=</span>splitFn)</code></pre></div>
-<pre><code>## $Fold1
-## $Fold1$train
-##  [1]  1  3  4  6  7 10 11 12 13 15 16 17 18 20 23 24 25
-## 
-## $Fold1$app
-## [1]  2  5  8  9 14 19 21 22
-## 
-## 
-## $Fold2
-## $Fold2$train
-##  [1]  2  5  6  7  8  9 10 13 14 17 18 19 20 21 22 24
-## 
-## $Fold2$app
-## [1]  1  3  4 11 12 15 16 23 25
-## 
-## 
-## $Fold3
-## $Fold3$train
-##  [1]  1  2  3  4  5  8  9 11 12 14 15 16 19 21 22 23 25
-## 
-## $Fold3$app
-## [1]  6  7 10 13 17 18 20 24
-## 
-## 
-## attr(,&quot;splitmethod&quot;)
-## [1] &quot;userfunction&quot;</code></pre>
-<p>As stated above, the vtreat library code will try to use the user function for splitting, but will fall back to an appropriate vtreat function in corner cases that the user function may not handle (for example, too few rows, too few groups, and so on). Thus the user code can assume it is in a reasonable situation (and even safely return NULL if it can’t deal with the situation it is given).</p>
+<p>For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass the user defined <code>splitFn</code> into <code>vtreat::buildEvalSets</code> as follows:</p>
 <p>The file <a href="https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R">outOfSample.R</a> is full of worked examples. In particular we would suggest running the code displayed when you type any of:</p>
 <ul>
 <li><code>help(oneWayHoldout)</code></li>
@@ -208,7 +167,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 <p>For example from <code>help(kWayStratifiedY)</code> we can see that the distribution of <code>y</code> is much more similar in each fold when we stratify than when we don’t:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">'vtreat'</span>)
-if(<span class="kw">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="dt">quietly=</span><span class="ot">TRUE</span>)) {
+haveGGPlot2 &lt;-<span class="st"> </span><span class="kw">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="dt">quietly=</span><span class="ot">TRUE</span>)
+if(haveGGPlot2) {
   <span class="kw">library</span>(<span class="st">'ggplot2'</span>)
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">23255</span>)
@@ -245,7 +205,7 @@ if(<span class="kw">is.null</span>(check)) {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># standard error of mean(y)</span>
 <span class="kw">sd</span>(<span class="kw">tapply</span>(d$y,d$simpleGroup,mean))</code></pre></div>
 <pre><code>## [1] 0.1019753</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(<span class="kw">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="dt">quietly=</span><span class="ot">TRUE</span>)) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(haveGGPlot2) {
   <span class="co"># plot the distribution of y in each fold</span>
   <span class="kw">ggplot</span>(<span class="dt">data=</span>d,<span class="kw">aes</span>(<span class="dt">x=</span>y,<span class="dt">color=</span><span class="kw">as.factor</span>(simpleGroup))) +<span class="st"> </span>
 <span class="st">    </span><span class="kw">geom_density</span>() +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">'simple (unstratified) grouping'</span>)
@@ -258,7 +218,7 @@ if(<span class="kw">is.null</span>(check)) {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># standard error of mean(y)</span>
 <span class="kw">sd</span>(<span class="kw">tapply</span>(d$y,d$stratGroup,mean))</code></pre></div>
 <pre><code>## [1] 0.01141606</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(<span class="kw">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="dt">quietly=</span><span class="ot">TRUE</span>)) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(haveGGPlot2) {
   <span class="co"># plot the distribution of y in each fold</span>
   <span class="kw">ggplot</span>(<span class="dt">data=</span>d,<span class="kw">aes</span>(<span class="dt">x=</span>y,<span class="dt">color=</span><span class="kw">as.factor</span>(stratGroup))) +<span class="st"> </span>
 <span class="st">    </span><span class="kw">geom_density</span>() +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">'y-stratified grouping'</span>)

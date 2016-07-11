@@ -5,26 +5,10 @@ knitr::opts_chunk$set(fig.width = 7)
 ## ------------------------------------------------------------------------
 vtreat::oneWayHoldout(3,NULL,NULL,NULL)
 
-## ------------------------------------------------------------------------
-splitFn <- function(nRows,nSplits,dframe,y) {
-  if(requireNamespace("caret",quietly=TRUE)) {
-    fullSeq <- seq_len(nRows)
-    part <- caret::createFolds(y=y,k=nSplits)
-    lapply(part,
-           function(appi) { 
-             list(train=setdiff(fullSeq,appi),app=appi)
-           })
-  } else {
-    NULL # fall back to vtreat implementation
-  }
-}
-
-## ------------------------------------------------------------------------
-vtreat::buildEvalSets(25,y=1:25,splitFunction=splitFn)
-
 ## ----warning=FALSE-------------------------------------------------------
 library('vtreat')
-if(requireNamespace("ggplot2",quietly=TRUE)) {
+haveGGPlot2 <- requireNamespace("ggplot2",quietly=TRUE)
+if(haveGGPlot2) {
   library('ggplot2')
 }
 
@@ -58,7 +42,7 @@ d$simpleGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pSimple)
 tapply(d$y,d$simpleGroup,mean)
 # standard error of mean(y)
 sd(tapply(d$y,d$simpleGroup,mean))
-if(requireNamespace("ggplot2",quietly=TRUE)) {
+if(haveGGPlot2) {
   # plot the distribution of y in each fold
   ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
     geom_density() + ggtitle('simple (unstratified) grouping')
@@ -67,7 +51,7 @@ if(requireNamespace("ggplot2",quietly=TRUE)) {
 tapply(d$y,d$stratGroup,mean)
 # standard error of mean(y)
 sd(tapply(d$y,d$stratGroup,mean))
-if(requireNamespace("ggplot2",quietly=TRUE)) {
+if(haveGGPlot2) {
   # plot the distribution of y in each fold
   ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
     geom_density() + ggtitle('y-stratified grouping')
