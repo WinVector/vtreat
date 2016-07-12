@@ -138,13 +138,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;design var x Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;design var z Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;scoring treatments Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;have treatment plan Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;rescoring complex variables Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Jul 12 08:54:34 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var x Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var z Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;scoring treatments Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;have treatment plan Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;rescoring complex variables Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;done rescoring complex variables Tue Jul 12 09:45:55 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -226,12 +226,10 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ##      z_clean      z_isBAD 
 ## 7.408715e-17 2.220446e-16</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># all slopes should be 1 for variables with dTrainCTreated$scoreFrame$sig&lt;1</span>
-<span class="kw">sapply</span>(varsC,function(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
+<span class="kw">sapply</span>(varsC,function(c) { <span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),<span class="dt">family=</span>binomial,
    <span class="dt">data=</span>dTrainCTreated)$coefficients[[<span class="dv">2</span>]]})</code></pre></div>
-<pre><code>##   x_lev_NA  x_lev_x.a  x_lev_x.b     x_catP     x_catB    z_clean 
-## 0.03162633 0.24044917         NA 0.21285144 0.18851680 0.17441532 
-##    z_isBAD 
-## 0.03162633</code></pre>
+<pre><code>##  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catB   z_clean   z_isBAD 
+##         1         1        NA         1         1         1         1</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestCTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
 <span class="kw">head</span>(dTestCTreated)</code></pre></div>
 <pre><code>##    x_lev_NA  x_lev_x.a x_lev_x.b     x_catP     x_catB  z_clean   z_isBAD
@@ -262,13 +260,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;design var x Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;design var z Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;scoring treatments Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;have treatment plan Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;rescoring complex variables Tue Jul 12 08:54:34 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Jul 12 08:54:34 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var x Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var z Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;scoring treatments Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;have treatment plan Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;rescoring complex variables Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;done rescoring complex variables Tue Jul 12 09:45:55 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]

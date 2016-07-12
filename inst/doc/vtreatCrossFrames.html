@@ -117,16 +117,16 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xBad1 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xBad2 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xBad3 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xGood1 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xGood2 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;scoring treatments Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;have treatment plan Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;rescoring complex variables Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Jul 12 08:54:35 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var xBad1 Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var xBad2 Tue Jul 12 09:45:55 2016&quot;
+## [1] &quot;design var xBad3 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xGood1 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xGood2 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;scoring treatments Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;have treatment plan Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;rescoring complex variables Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;done rescoring complex variables Tue Jul 12 09:45:56 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -195,16 +195,16 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xBad1 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xBad2 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xBad3 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xGood1 Tue Jul 12 08:54:35 2016&quot;
-## [1] &quot;design var xGood2 Tue Jul 12 08:54:36 2016&quot;
-## [1] &quot;scoring treatments Tue Jul 12 08:54:36 2016&quot;
-## [1] &quot;have treatment plan Tue Jul 12 08:54:36 2016&quot;
-## [1] &quot;rescoring complex variables Tue Jul 12 08:54:36 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Jul 12 08:54:36 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xBad1 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xBad2 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xBad3 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xGood1 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;design var xGood2 Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;scoring treatments Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;have treatment plan Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;rescoring complex variables Tue Jul 12 09:45:56 2016&quot;
+## [1] &quot;done rescoring complex variables Tue Jul 12 09:45:57 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)

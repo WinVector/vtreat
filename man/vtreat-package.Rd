@@ -68,7 +68,7 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0 for significant variables
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 # all non NA slopes should be 1
-sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
+sapply(varsC,function(c) { glm(paste('y',c,sep='~'),family=binomial,
    data=dTrainCTreated)$coefficients[[2]]})
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 
