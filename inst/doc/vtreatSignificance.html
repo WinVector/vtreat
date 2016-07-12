@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-07-11" />
+<meta name="date" content="2016-07-12" />
 
 <title>vtreat significance</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat significance</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-07-11</em></h4>
+<h4 class="date"><em>2016-07-12</em></h4>
 
 
 
@@ -119,13 +119,13 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d$catVarPerfect)
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Mon Jul 11 10:06:57 2016&quot;
-## [1] &quot;design var catVarNoise Mon Jul 11 10:06:57 2016&quot;
-## [1] &quot;design var catVarPerfect Mon Jul 11 10:06:57 2016&quot;
-## [1] &quot;scoring treatments Mon Jul 11 10:06:57 2016&quot;
-## [1] &quot;have treatment plan Mon Jul 11 10:06:57 2016&quot;
-## [1] &quot;rescoring complex variables Mon Jul 11 10:06:57 2016&quot;
-## [1] &quot;done rescoring complex variables Mon Jul 11 10:06:58 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Tue Jul 12 08:41:25 2016&quot;
+## [1] &quot;design var catVarNoise Tue Jul 12 08:41:25 2016&quot;
+## [1] &quot;design var catVarPerfect Tue Jul 12 08:41:25 2016&quot;
+## [1] &quot;scoring treatments Tue Jul 12 08:41:25 2016&quot;
+## [1] &quot;have treatment plan Tue Jul 12 08:41:25 2016&quot;
+## [1] &quot;rescoring complex variables Tue Jul 12 08:41:25 2016&quot;
+## [1] &quot;done rescoring complex variables Tue Jul 12 08:41:25 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coeficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span>function(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
