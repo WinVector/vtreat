@@ -9,8 +9,9 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-'vtreat' is a package that prepares arbitrary data frames into
-clean data frames that are ready for analysis.  A clean data
+'vtreat' is data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
+
+A 'vtreat' clean data
 frame:
 
 - Only has numeric columns (other than the outcome).
