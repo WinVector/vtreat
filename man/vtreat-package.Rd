@@ -6,8 +6,11 @@
 vtreat: a package for simple variable treatment
 }
 \description{
-vtreat is a package that treats variables so that models can be used
-in production. Common problems vtreat defends against: NA, too many categorical
+vtreat is a data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
+    Prepares variables so that data has fewer exceptional cases, making
+    it easier to safely use models in production.
+
+Common problems vtreat defends against: NA, too many categorical
 values, rare categorical values, new categorical values (levels seen during application,
 but not during training).   \code{\link{prepare}} should be used as you would
 use model.matrix.  \code{\link{prepare}} treated variables are all numeric and never
