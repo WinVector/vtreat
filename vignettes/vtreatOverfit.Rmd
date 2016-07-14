@@ -91,7 +91,8 @@ Another undesirable effect is over-estimating significance of derived variable f
 
 We next show how to avoid these undesirable illusory effects: better practice in partitioning and using training data.  We are doing more with our data (essentially chaining models), so we have to take a bit more care with our data.
 
-## Correct Practice: Use different data to treat and train
+## Correct Practice 1/2: Use different data to treat and train
+
 Below is part of our suggested work pattern: coding/train/test split.
 
 ```{r}
@@ -125,5 +126,25 @@ In the above example we saw training and test performance are similar -- and equ
 Remember, the goal isn't good performance on training- it is good performance on future data (simulated by test).  So doing well on training and bad on test is worse than doing bad on both test and training.
 
 There are, of course, other methods to avoid the bias introduced in using the same data to both treat/encode the variables and to train the model.
-vtreat incorporates a number of these methods, including smoothing (controlled through `smFactor`) and pruning of rare levels (controlled through `rareSig`).  A more effective technique: cross-constructed training frames can also be accessed by using `mkCrossFrameCExperiment` or `mkCrossFrameNExperiment`.
+vtreat incorporates a number of these methods, including smoothing (controlled through `smFactor`) and pruning of rare levels (controlled through `rareSig`).  
+
+## Correct Practice 2/2: Use simulated out of sample methods (cross methods)
+
+Another effective technique: cross-constructed training frames can also be accessed by using `mkCrossFrameCExperiment` or `mkCrossFrameNExperiment`, which we demonstrate here.
+
+```{r}
+dTrain <- d[d$rgroup<=80,,drop=FALSE]
+xdat <- vtreat::mkCrossFrameCExperiment(dTrain,'x','y',TRUE,
+                                  rareCount=0,  # Note set this to something larger, like 5
+                                  rareSig=c())
+treatments <- xdat$treatments
+dTrainTreated <- xdat$crossFrame
+m3 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
+print(summary(m3)) # notice high residual deviance
+dTrainTreated$predM3 <- predict(m3,newdata=dTrainTreated,type='response')
+plotRes(dTrainTreated,'predM3','y','model3 on train')
+dTestTreated <- vtreat::prepare(treatments,dTest,pruneSig=c())
+dTest$predM3 <- predict(m3,newdata=dTestTreated,type='response')
+plotRes(dTest,'predM3','y','model3 on test set')
+```
 
