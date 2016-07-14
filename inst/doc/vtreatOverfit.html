@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-07-12" />
+<meta name="date" content="2016-07-14" />
 
 <title>vtreat overfit</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat overfit</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-07-12</em></h4>
+<h4 class="date"><em>2016-07-14</em></h4>
 
 
 
@@ -96,12 +96,12 @@ dTest &lt;-<span class="st"> </span>d[d$rgroup&gt;<span class="dv">80</span>,,dr
 treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Jul 12 10:33:58 2016&quot;
-## [1] &quot;design var x Tue Jul 12 10:33:58 2016&quot;
-## [1] &quot;scoring treatments Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;have treatment plan Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;rescoring complex variables Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Jul 12 10:33:59 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;design var x Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;scoring treatments Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;have treatment plan Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;rescoring complex variables Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Jul 14 14:51:54 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -184,8 +184,8 @@ dTest$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<s
 <p>We next show how to avoid these undesirable illusory effects: better practice in partitioning and using training data. We are doing more with our data (essentially chaining models), so we have to take a bit more care with our data.</p>
 </div>
 </div>
-<div id="correct-practice-use-different-data-to-treat-and-train" class="section level2">
-<h2>Correct Practice: Use different data to treat and train</h2>
+<div id="correct-practice-12-use-different-data-to-treat-and-train" class="section level2">
+<h2>Correct Practice 1/2: Use different data to treat and train</h2>
 <p>Below is part of our suggested work pattern: coding/train/test split.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dCode &lt;-<span class="st"> </span>d[d$rgroup&lt;=<span class="dv">20</span>,,drop=<span class="ot">FALSE</span>]
 dTrain &lt;-<span class="st"> </span>d[(d$rgroup&gt;<span class="dv">20</span>) &amp;<span class="st"> </span>(d$rgroup&lt;=<span class="dv">80</span>),,drop=<span class="ot">FALSE</span>]
@@ -193,12 +193,12 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;design var x Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;scoring treatments Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;have treatment plan Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;rescoring complex variables Tue Jul 12 10:33:59 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Jul 12 10:33:59 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;design var x Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;scoring treatments Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;have treatment plan Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;rescoring complex variables Thu Jul 14 14:51:54 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Jul 14 14:51:54 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -257,7 +257,59 @@ dTest$predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<s
 ## [1] &quot;accuracy 0.483425414364641&quot;</code></pre>
 <p>In the above example we saw training and test performance are similar – and equally poor, as they should be since there is no signal. Though it didn’t happen in this case, note the coding set can (falsely) show high performance. This is the bad behavior we wanted to isolate out of the training set.</p>
 <p>Remember, the goal isn’t good performance on training- it is good performance on future data (simulated by test). So doing well on training and bad on test is worse than doing bad on both test and training.</p>
-<p>There are, of course, other methods to avoid the bias introduced in using the same data to both treat/encode the variables and to train the model. vtreat incorporates a number of these methods, including smoothing (controlled through <code>smFactor</code>) and pruning of rare levels (controlled through <code>rareSig</code>). A more effective technique: cross-constructed training frames can also be accessed by using <code>mkCrossFrameCExperiment</code> or <code>mkCrossFrameNExperiment</code>.</p>
+<p>There are, of course, other methods to avoid the bias introduced in using the same data to both treat/encode the variables and to train the model. vtreat incorporates a number of these methods, including smoothing (controlled through <code>smFactor</code>) and pruning of rare levels (controlled through <code>rareSig</code>).</p>
+</div>
+<div id="correct-practice-22-use-simulated-out-of-sample-methods-cross-methods" class="section level2">
+<h2>Correct Practice 2/2: Use simulated out of sample methods (cross methods)</h2>
+<p>Another effective technique: cross-constructed training frames can also be accessed by using <code>mkCrossFrameCExperiment</code> or <code>mkCrossFrameNExperiment</code>, which we demonstrate here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain &lt;-<span class="st"> </span>d[d$rgroup&lt;=<span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]
+xdat &lt;-<span class="st"> </span>vtreat::<span class="kw">mkCrossFrameCExperiment</span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
+                                  <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
+                                  <span class="dt">rareSig=</span><span class="kw">c</span>())
+treatments &lt;-<span class="st"> </span>xdat$treatments
+dTrainTreated &lt;-<span class="st"> </span>xdat$crossFrame
+m3 &lt;-<span class="st"> </span><span class="kw">glm</span>(y~x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))
+<span class="kw">print</span>(<span class="kw">summary</span>(m3)) <span class="co"># notice high residual deviance</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ x_catB, family = binomial(link = &quot;logit&quot;), 
+##     data = dTrainTreated)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -1.217  -1.208   1.138   1.147   1.252  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  0.07242    0.05503   1.316   0.1882  
+## x_catB       0.02980    0.01580   1.886   0.0593 .
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 2270.5  on 1637  degrees of freedom
+## Residual deviance: 2266.9  on 1636  degrees of freedom
+## AIC: 2270.9
+## 
+## Number of Fisher Scoring iterations: 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated$predM3 &lt;-<span class="st"> </span><span class="kw">predict</span>(m3,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTrainTreated,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on train'</span>)</code></pre></div>
+<pre><code>## [1] &quot;model3 on train&quot;
+##        pred
+## truth   FALSE TRUE
+##   FALSE   209  599
+##   TRUE    182  648
+## [1] &quot;accuracy 0.523199023199023&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())
+dTest$predM3 &lt;-<span class="st"> </span><span class="kw">predict</span>(m3,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTest,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on test set'</span>)</code></pre></div>
+<pre><code>## [1] &quot;model3 on test set&quot;
+##        pred
+## truth   FALSE TRUE
+##   FALSE    48  127
+##   TRUE     55  132
+## [1] &quot;accuracy 0.497237569060773&quot;</code></pre>
 </div>
 
 

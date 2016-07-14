@@ -69,3 +69,18 @@ dTestTreated <- vtreat::prepare(treatments,dTest,pruneSig=c())
 dTest$predM2 <- predict(m2,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM2','y','model2 on test set')
 
+## ------------------------------------------------------------------------
+dTrain <- d[d$rgroup<=80,,drop=FALSE]
+xdat <- vtreat::mkCrossFrameCExperiment(dTrain,'x','y',TRUE,
+                                  rareCount=0,  # Note set this to something larger, like 5
+                                  rareSig=c())
+treatments <- xdat$treatments
+dTrainTreated <- xdat$crossFrame
+m3 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
+print(summary(m3)) # notice high residual deviance
+dTrainTreated$predM3 <- predict(m3,newdata=dTrainTreated,type='response')
+plotRes(dTrainTreated,'predM3','y','model3 on train')
+dTestTreated <- vtreat::prepare(treatments,dTest,pruneSig=c())
+dTest$predM3 <- predict(m3,newdata=dTestTreated,type='response')
+plotRes(dTest,'predM3','y','model3 on test set')
+
