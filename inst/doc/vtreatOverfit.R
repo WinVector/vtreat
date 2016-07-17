@@ -75,6 +75,8 @@ xdat <- vtreat::mkCrossFrameCExperiment(dTrain,'x','y',TRUE,
                                   rareCount=0,  # Note set this to something larger, like 5
                                   rareSig=c())
 treatments <- xdat$treatments
+print(treatments$scoreFrame)
+
 dTrainTreated <- xdat$crossFrame
 m3 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m3)) # notice high residual deviance

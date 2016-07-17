@@ -138,6 +138,8 @@ xdat <- vtreat::mkCrossFrameCExperiment(dTrain,'x','y',TRUE,
                                   rareCount=0,  # Note set this to something larger, like 5
                                   rareSig=c())
 treatments <- xdat$treatments
+print(treatments$scoreFrame)
+
 dTrainTreated <- xdat$crossFrame
 m3 <- glm(y~x_catB,data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m3)) # notice high residual deviance
@@ -148,3 +150,5 @@ dTest$predM3 <- predict(m3,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM3','y','model3 on test set')
 ```
 
+Notice the glm significance is off, but the model quality is similar on train and test, 
+and the scoreFrame significance is a correct indication.

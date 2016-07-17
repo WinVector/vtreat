@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2016-07-14" />
+<meta name="date" content="2016-07-17" />
 
 <title>Variable Types</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Variable Types</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2016-07-14</em></h4>
+<h4 class="date"><em>2016-07-17</em></h4>
 
 
 
@@ -96,13 +96,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var x Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var z Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;scoring treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;have treatment plan Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;rescoring complex variables Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;done rescoring complex variables Thu Jul 14 14:51:58 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var x Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var z Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;scoring treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;have treatment plan Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;rescoring complex variables Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;done rescoring complex variables Sun Jul 17 16:07:34 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC$scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'varMoves'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code varMoves        sig
 ## 1        x  x_lev_NA   lev     TRUE 0.20766228
@@ -132,6 +132,7 @@ vmap &lt;-<span class="st"> </span><span class="kw">as.list</span>(treatmentsC$s
 <li><strong>lev</strong> : a 0/1 indicator indicating a particular value of a categorical variable was present. For example <code>x_lev_x.a</code> is 1 when the original <code>x</code> variable had a value of “a”. These indicators are essentially variables representing explicit encoding of levels as contrasts. In some cases a special level code is used to represent pooled rare values.</li>
 <li><strong>cat_B</strong> : a single variable Bayesian model of the log-ratio in outcome distribution conditioned on the observed value of the original variable. In our example: <code>x_catB = log(P[y|x]/P[y])</code>. This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.</li>
 <li><strong>cat_P</strong> : a “prevalence fact” about a categorical level. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for meta-analysis on the variable.</li>
+<li><strong>cat_D</strong>: a “deviation fact” about a categorical level. Tells us deviation of <code>y</code> conditioned by level for regression problems (this is inferable from <strong>cat_B</strong> for classification tasks).</li>
 </ul>
 </div>
 <div id="when-the-target-to-predict-is-numeric" class="section level2">
@@ -142,13 +143,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var x Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var z Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;scoring treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;have treatment plan Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;rescoring complex variables Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;done rescoring complex variables Thu Jul 14 14:51:58 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var x Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var z Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;scoring treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;have treatment plan Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;rescoring complex variables Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;done rescoring complex variables Sun Jul 17 16:07:34 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN$scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'varMoves'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code varMoves       sig
 ## 1        x  x_lev_NA   lev     TRUE 0.3739010
@@ -178,11 +179,11 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw">designTreatmentsZ</span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var x Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var z Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;scoring treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;have treatment plan Thu Jul 14 14:51:58 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var x Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var z Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;scoring treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;have treatment plan Sun Jul 17 16:07:34 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ$scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'varMoves'</span>)])</code></pre></div>
 <pre><code>##   origName varName  code varMoves
 ## 1        x  x_catP  catP     TRUE
@@ -213,13 +214,13 @@ treatmentsZ &lt;-<span class="st"> </span><span class="kw">designTreatmentsZ</sp
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var x Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;design var z Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;scoring treatments Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;have treatment plan Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;rescoring complex variables Thu Jul 14 14:51:58 2016&quot;
-## [1] &quot;done rescoring complex variables Thu Jul 14 14:51:58 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var x Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;design var z Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;scoring treatments Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;have treatment plan Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;rescoring complex variables Sun Jul 17 16:07:34 2016&quot;
+## [1] &quot;done rescoring complex variables Sun Jul 17 16:07:34 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN$scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'varMoves'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code varMoves       sig
 ## 1        x  x_lev_NA   lev     TRUE 0.3739010
@@ -239,7 +240,7 @@ varsToUse &lt;-<span class="st"> </span>vScoreFrame$varName[(vScoreFrame$sig&lt;
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame$origName[vScoreFrame$varName %in%<span class="st"> </span>varsToUse]))
 <span class="kw">print</span>(origVarNames)</code></pre></div>
 <pre><code>## [1] &quot;x&quot; &quot;z&quot;</code></pre>
-<p>We strongly suggest using the standard variables coded as ‘lev’, ‘clean’, and ‘isBad’; and the “y aware” variables coded as ‘catN’ and ‘catB’. The non y aware variables (‘catP’ and ‘catD’) can be useful (possibly as interactions or guards on the corresponding ‘catN’ and ‘catB’ variables) but also encode distributional facts about the data that may or may not be appropriate depending on your problem domain.</p>
+<p>We strongly suggest using the standard variables coded as ‘lev’, ‘clean’, and ‘isBad’; and the “y aware” variables coded as ‘catN’ and ‘catB’. The non sub-model variables (‘catP’ and ‘catD’) can be useful (possibly as interactions or guards on the corresponding ‘catN’ and ‘catB’ variables) but also encode distributional facts about the data that may or may not be appropriate depending on your problem domain.</p>
 <p>When displaying variables to end users we suggest using the original names and the min significance seen on any derived variable:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame$origName[vScoreFrame$varName %in%<span class="st"> </span>varsToUse]))
 <span class="kw">print</span>(origVarNames)</code></pre></div>
