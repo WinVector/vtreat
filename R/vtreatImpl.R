@@ -21,23 +21,32 @@
     length(intersect(colNames,tij$newvars))
   },numeric(1))
   toProcess <- treatments[resCounts>0]
-  procWorker <- function(ti) {
-    xcolOrig <- dframe[[ti$origvar]]
-    nRows <- length(xcolOrig)
-    xcolClean <- .cleanColumn(xcolOrig,nRows)
-    if(is.null(xcolClean)) {
-      return(paste('column',ti$origvar,
-                   'is not a type/class vtreat can work with (',class(xcolOrig),')'))
-    }
-    if(!is.null(ti$convertedColClass)) {
-      curColClass <- paste(class(xcolClean))
-      if(curColClass!=ti$convertedColClass) {
-        return(paste('column',ti$origvar,'expected to convert to ',
-                     ti$convertedColClass,'saw',class(xcolOrig),curColClass))
+  mkProcWorker <- function() {
+    force(treatments)
+    force(dframe)
+    force(colNames)
+    force(scale)
+    force(doCollar)
+    force(parallelCluster)
+    function(ti) {
+      xcolOrig <- dframe[[ti$origvar]]
+      nRows <- length(xcolOrig)
+      xcolClean <- .cleanColumn(xcolOrig,nRows)
+      if(is.null(xcolClean)) {
+        return(paste('column',ti$origvar,
+                     'is not a type/class vtreat can work with (',class(xcolOrig),')'))
       }
+      if(!is.null(ti$convertedColClass)) {
+        curColClass <- paste(class(xcolClean))
+        if(curColClass!=ti$convertedColClass) {
+          return(paste('column',ti$origvar,'expected to convert to ',
+                       ti$convertedColClass,'saw',class(xcolOrig),curColClass))
+        }
+      }
+      .vtreatA(ti,xcolClean,scale,doCollar)
     }
-    .vtreatA(ti,xcolClean,scale,doCollar)
   }
+  procWorker <- mkProcWorker()
   gs <- plapply(toProcess,procWorker,parallelCluster)
   # pass back first error
   for(gi in gs) {
