@@ -472,8 +472,24 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             splitFunction,ncross,
                             catScaling,
                             parallelCluster)
+  crossFrame <- crossDat$crossFrame
+  stuckVars <- newVarsS[vapply(newVarsS,
+                               function(v) {
+                                 min(crossFrame[[v]])>=max(crossFrame[[v]])
+                               },
+                               logical(1))]
+  if(length(stuckVars)>0) {
+    stuckRows <- which(treatments$scoreFrame$varName %in% stuckVars)
+    treatments$scoreFrame[stuckRows,'varMoves'] <- FALSE
+    for(cn in c('csig','lsig','sig')) {
+      if(cn %in% colnames(treatments$scoreFrame)) {
+        treatments$scoreFrame[stuckRows,cn] <- 1.0
+      }
+    }
+  }
   list(treatments=treatments,
-       crossFrame=crossDat$crossFrame,crossWeights=crossDat$crossWeights,
+       crossFrame=crossFrame,
+       crossWeights=crossDat$crossWeights,
        method= crossDat$method)
 }
 
@@ -571,8 +587,24 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             splitFunction,ncross,
                             catScaling,
                             parallelCluster)
+  crossFrame <- crossDat$crossFrame
+  stuckVars <- newVarsS[vapply(newVarsS,
+                               function(v) {
+                                 min(crossFrame[[v]])>=max(crossFrame[[v]])
+                               },
+                               logical(1))]
+  if(length(stuckVars)>0) {
+    stuckRows <- which(treatments$scoreFrame$varName %in% stuckVars)
+    treatments$scoreFrame[stuckRows,'varMoves'] <- FALSE
+    for(cn in c('csig','lsig','sig')) {
+      if(cn %in% colnames(treatments$scoreFrame)) {
+        treatments$scoreFrame[stuckRows,cn] <- 1.0
+      }
+    }
+  }
   list(treatments=treatments,
-       crossFrame=crossDat$crossFrame,crossWeights=crossDat$crossWeights,
+       crossFrame=crossFrame,
+       crossWeights=crossDat$crossWeights,
        method=crossDat$method)
 }
 
