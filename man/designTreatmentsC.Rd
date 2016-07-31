@@ -7,7 +7,7 @@
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = 1, collarProb = 0, splitFunction = NULL, ncross = 3,
-  catScaling = TRUE, verbose = TRUE, parallelCluster = NULL)
+  catScaling = FALSE, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}

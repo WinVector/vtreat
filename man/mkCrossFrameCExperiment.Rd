@@ -7,7 +7,7 @@
 mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = 1, collarProb = 0, scale = FALSE, doCollar = TRUE,
-  splitFunction = NULL, ncross = 3, catScaling = TRUE,
+  splitFunction = NULL, ncross = 3, catScaling = FALSE,
   parallelCluster = NULL)
 }
 \arguments{

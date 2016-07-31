@@ -106,7 +106,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               rareCount=0,rareSig=1,
                               collarProb=0.00,
                               splitFunction=NULL,ncross=3,
-                              catScaling=TRUE,
+                              catScaling=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   
@@ -431,7 +431,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     collarProb=0.00,
                                     scale=FALSE,doCollar=TRUE,
                                     splitFunction=NULL,ncross=3,
-                                    catScaling=TRUE,
+                                    catScaling=FALSE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
