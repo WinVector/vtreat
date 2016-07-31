@@ -479,6 +479,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                },
                                logical(1))]
   if(length(stuckVars)>0) {
+    for(sv in stuckVars) {
+      crossFrame[[sv]] <- NULL
+    }
     stuckRows <- which(treatments$scoreFrame$varName %in% stuckVars)
     treatments$scoreFrame[stuckRows,'varMoves'] <- FALSE
     for(cn in c('csig','lsig','sig')) {
@@ -594,6 +597,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                },
                                logical(1))]
   if(length(stuckVars)>0) {
+    for(sv in stuckVars) {
+      crossFrame[[sv]] <- NULL
+    }
     stuckRows <- which(treatments$scoreFrame$varName %in% stuckVars)
     treatments$scoreFrame[stuckRows,'varMoves'] <- FALSE
     for(cn in c('csig','lsig','sig')) {
