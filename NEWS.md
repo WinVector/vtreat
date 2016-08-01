@@ -1,4 +1,11 @@
 
+'vtreat' 0.5.27 2016/08/01
+
+Changes:
+
+- Fix passing of arguments to parallel prepare, and reduce size of data passed.
+- Ensure set of variables consistency in mkCross* methods.
+
 'vtreat' 0.5.26 2016/07/10
 
 Changes:
