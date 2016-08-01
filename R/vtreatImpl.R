@@ -14,6 +14,30 @@
   dout
 }
 
+
+mkVtreatListWorker <- function(scale,doCollar) {
+  force(scale)
+  force(doCollar)
+  function(tpair) {
+    ti <- tpair$ti
+    xcolOrig <- tpair$xcolOrig
+    nRows <- length(xcolOrig)
+    xcolClean <- .cleanColumn(xcolOrig,nRows)
+    if(is.null(xcolClean)) {
+      return(paste('column',ti$origvar,
+                   'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+    }
+    if(!is.null(ti$convertedColClass)) {
+      curColClass <- paste(class(xcolClean))
+      if(curColClass!=ti$convertedColClass) {
+        return(paste('column',ti$origvar,'expected to convert to ',
+                     ti$convertedColClass,'saw',class(xcolOrig),curColClass))
+      }
+    }
+    .vtreatA(ti,xcolClean,scale,doCollar)
+  }
+}
+
 # colNames a subset of treated variable names
 .vtreatList <- function(treatments,dframe,colNames,scale,doCollar,
                         parallelCluster) {
@@ -21,33 +45,12 @@
     length(intersect(colNames,tij$newvars))
   },numeric(1))
   toProcess <- treatments[resCounts>0]
-  mkProcWorker <- function() {
-    force(treatments)
-    force(dframe)
-    force(colNames)
-    force(scale)
-    force(doCollar)
-    force(parallelCluster)
-    function(ti) {
-      xcolOrig <- dframe[[ti$origvar]]
-      nRows <- length(xcolOrig)
-      xcolClean <- .cleanColumn(xcolOrig,nRows)
-      if(is.null(xcolClean)) {
-        return(paste('column',ti$origvar,
-                     'is not a type/class vtreat can work with (',class(xcolOrig),')'))
-      }
-      if(!is.null(ti$convertedColClass)) {
-        curColClass <- paste(class(xcolClean))
-        if(curColClass!=ti$convertedColClass) {
-          return(paste('column',ti$origvar,'expected to convert to ',
-                       ti$convertedColClass,'saw',class(xcolOrig),curColClass))
-        }
-      }
-      .vtreatA(ti,xcolClean,scale,doCollar)
-    }
-  }
-  procWorker <- mkProcWorker()
-  gs <- plapply(toProcess,procWorker,parallelCluster)
+  toProcessP <- lapply(toProcess,
+                      function(ti) {
+                        list(ti=ti,xcolOrig=dframe[[ti$origvar]])
+                      })
+  procWorker <- mkVtreatListWorker(scale,doCollar)
+  gs <- plapply(toProcessP,procWorker,parallelCluster)
   # pass back first error
   for(gi in gs) {
     if(is.character(gi)) {
@@ -312,16 +315,17 @@
 
 
 # used in initial scoring of variables
-.mkScoreVarWorker <- function(dframe,zoY,zC,zTarget,weights) {
-  force(dframe)
+.mkScoreVarWorker <- function(nRows,zoY,zC,zTarget,weights) {
+  force(nRows)
   force(zoY)
   force(zC)
   force(zTarget)
   force(weights)
-  nRows <- nrow(dframe)
-  function(ti) {
+  function(tpair) {
+    ti <- tpair$ti
+    dfcol <- tpair$dfcol
     origName <- vorig(ti)
-    xcolClean <- .cleanColumn(dframe[[origName]],nRows)
+    xcolClean <- .cleanColumn(dfcol,nRows)
     fi <- .vtreatA(ti,xcolClean,FALSE,FALSE)
     scoreFrame <- lapply(seq_len(length(vnames(ti))),
                          function(nvi) {
@@ -345,14 +349,15 @@
 
 # used in re-scoring needsSplit variables on simulated out of sample
 # (cross) frame
-.mkScoreColWorker <- function(dframe,zoY,zC,zTarget,weights) {
-  force(dframe)
+.mkScoreColWorker <- function(zoY,zC,zTarget,weights) {
   force(zoY)
   force(zC)
   force(zTarget)
   force(weights)
-  function(nv) {
-    scoreFrameij <- .scoreCol(nv,dframe[[nv]],zoY,zC,zTarget,weights)
+  function(nvpair) {
+    nv <- nvpair$nv
+    dfc <- nvpair$dfc
+    scoreFrameij <- .scoreCol(nv,dfc,zoY,zC,zTarget,weights)
     scoreFrameij
   }
 }
@@ -400,8 +405,13 @@
   if(verbose) {
     print(paste("scoring treatments",date()))
   }
-  scrW <- .mkScoreVarWorker(dframe,zoY,zC,zTarget,weights)
-  sFrames <- plapply(treatments,scrW,parallelCluster)
+  scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
+  tP <- lapply(treatments,
+               function(ti) {
+                 list(ti=ti,
+                      dfcol=dframe[[vorig(ti)]])
+               })
+  sFrames <- plapply(tP,scrW,parallelCluster)
   sFrames <- Filter(Negate(is.null),sFrames)
   sFrame <- .rbindListOfFrames(sFrames)
   plan <- list(treatments=treatments,
@@ -522,8 +532,12 @@
         zCS = crossFrame[[outcomename]]==zTarget
         zoYS = ifelse(zCS,1,0)
       }
-      swkr <- .mkScoreColWorker(crossFrame,zoYS,zCS,TRUE,crossWeights)
-      sframe <- plapply(newVarsS,swkr,parallelCluster) 
+      swkr <- .mkScoreColWorker(zoYS,zCS,TRUE,crossWeights)
+      newVarsSP <- lapply(newVarsS,
+                          function(nv) {
+                            list(nv=nv,dfc=crossFrame[[nv]])
+                          })
+      sframe <- plapply(newVarsSP,swkr,parallelCluster) 
       sframe <- Filter(Negate(is.null),sframe)
       sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame
