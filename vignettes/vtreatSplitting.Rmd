@@ -87,9 +87,48 @@ As we can see `vtreat::oneWayHoldout` builds three split sets where in each set 
 
 The function `buildEvalSets` takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using `designTreatments[N\C]` or `mkCrossFrame[N\C]Experiment`.
 
-For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any `vtreat` operation that takes a `splitFunction` argument (such as `mkCrossFrameNExperiment`, `designTreatmentsN`, and many more).  For example we can pass the user defined `splitFn` into `vtreat::buildEvalSets` as follows:
+For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any `vtreat` operation that takes a `splitFunction` argument (such as `mkCrossFrameNExperiment`, `designTreatmentsN`, and many more).  For example we can pass a user defined `splitFn` into `vtreat::buildEvalSets` as follows:
 
-The file [outOfSample.R](https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R) is full of worked examples.  In particular we would suggest running the code displayed when you type any of:
+For example to use a user supplied splitting function we would write the following function definition.
+
+```{r}
+# This method is not a great idea as the data could have structure that strides
+# in the same pattern as this split.
+# Such technically is possible for any split, but we typically use
+# pseudo-random structure (that is not the same across many potential
+# split calls) to try and make it unlikely such structures
+# match often.
+modularSplit <- function(nRows,nSplits,dframe,y) {
+  group <- seq_len(nRows) %% nSplits
+  lapply(unique(group),
+         function(gi) {
+           list(train=which(group!=gi),
+                app=which(group==gi))
+         })
+}
+```
+
+This function can then be passed into any `vtreat` operation that takes a `splitFunction` argument (such as `mkCrossFrameNExperiment`, `designTreatmentsN`, and many more).  For example we can pass the user defined `splitFn` into `vtreat::buildEvalSets` as follows:
+
+```{r}
+vtreat::buildEvalSets(nRows=25,nSplits=3,splitFunction=modularSplit)
+```
+
+
+As stated above, the vtreat library code will try to use the user function for splitting, but will fall back to an appropriate vtreat function in corner cases that the user function may not handle (for example, too few rows, too few groups, and so on). Thus the user code can assume it is in a reasonable situation (and even safely return NULL if it can’t deal with the situation it is given).  For example the following bad user split is detected and corrected:
+
+```{r}
+badSplit <- function(nRows,nSplits,dframe,y) {
+  list(list(train=seq_len(nRows),app=seq_len(nRows)))
+}
+vtreat::buildEvalSets(nRows=5,nSplits=3,splitFunction=badSplit)
+```
+
+Notice above the returned split does not meet all of the original desiderata, but is guaranteed to be a useful data partition.
+
+### Implementations
+
+The file [outOfSample.R](https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R) contains worked examples.  In particular we would suggest running the code displayed when you type any of:
 
 * `help(oneWayHoldout)`
 * `help(kWayCrossValidation)`

@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-07-17" />
+<meta name="date" content="2016-08-01" />
 
 <title>vtreat splitting</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat splitting</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-07-17</em></h4>
+<h4 class="date"><em>2016-08-01</em></h4>
 
 
 
@@ -157,8 +157,105 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><code>makekWayCrossValidationGroupedByColumn</code>: k-way y-stratified cross-validation that preserves grouping (for example, all rows corresponding to a single customer or patient, etc). This is a complex splitting plan, and only recommended when absolutely needed.</li>
 </ul>
 <p>The function <code>buildEvalSets</code> takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using <code>designTreatments[N\C]</code> or <code>mkCrossFrame[N\C]Experiment</code>.</p>
-<p>For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass the user defined <code>splitFn</code> into <code>vtreat::buildEvalSets</code> as follows:</p>
-<p>The file <a href="https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R">outOfSample.R</a> is full of worked examples. In particular we would suggest running the code displayed when you type any of:</p>
+<p>For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass a user defined <code>splitFn</code> into <code>vtreat::buildEvalSets</code> as follows:</p>
+<p>For example to use a user supplied splitting function we would write the following function definition.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This method is not a great idea as the data could have structure that strides</span>
+<span class="co"># in the same pattern as this split.</span>
+<span class="co"># Such technically is possible for any split, but we typically use</span>
+<span class="co"># pseudo-random structure (that is not the same across many potential</span>
+<span class="co"># split calls) to try and make it unlikely such structures</span>
+<span class="co"># match often.</span>
+modularSplit &lt;-<span class="st"> </span>function(nRows,nSplits,dframe,y) {
+  group &lt;-<span class="st"> </span><span class="kw">seq_len</span>(nRows) %%<span class="st"> </span>nSplits
+  <span class="kw">lapply</span>(<span class="kw">unique</span>(group),
+         function(gi) {
+           <span class="kw">list</span>(<span class="dt">train=</span><span class="kw">which</span>(group!=gi),
+                <span class="dt">app=</span><span class="kw">which</span>(group==gi))
+         })
+}</code></pre></div>
+<p>This function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass the user defined <code>splitFn</code> into <code>vtreat::buildEvalSets</code> as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vtreat::<span class="kw">buildEvalSets</span>(<span class="dt">nRows=</span><span class="dv">25</span>,<span class="dt">nSplits=</span><span class="dv">3</span>,<span class="dt">splitFunction=</span>modularSplit)</code></pre></div>
+<pre><code>## [[1]]
+## [[1]]$train
+##  [1]  2  3  5  6  8  9 11 12 14 15 17 18 20 21 23 24
+## 
+## [[1]]$app
+## [1]  1  4  7 10 13 16 19 22 25
+## 
+## 
+## [[2]]
+## [[2]]$train
+##  [1]  1  3  4  6  7  9 10 12 13 15 16 18 19 21 22 24 25
+## 
+## [[2]]$app
+## [1]  2  5  8 11 14 17 20 23
+## 
+## 
+## [[3]]
+## [[3]]$train
+##  [1]  1  2  4  5  7  8 10 11 13 14 16 17 19 20 22 23 25
+## 
+## [[3]]$app
+## [1]  3  6  9 12 15 18 21 24
+## 
+## 
+## attr(,&quot;splitmethod&quot;)
+## [1] &quot;userfunction&quot;</code></pre>
+<p>As stated above, the vtreat library code will try to use the user function for splitting, but will fall back to an appropriate vtreat function in corner cases that the user function may not handle (for example, too few rows, too few groups, and so on). Thus the user code can assume it is in a reasonable situation (and even safely return NULL if it can’t deal with the situation it is given). For example the following bad user split is detected and corrected:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">badSplit &lt;-<span class="st"> </span>function(nRows,nSplits,dframe,y) {
+  <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">train=</span><span class="kw">seq_len</span>(nRows),<span class="dt">app=</span><span class="kw">seq_len</span>(nRows)))
+}
+vtreat::<span class="kw">buildEvalSets</span>(<span class="dt">nRows=</span><span class="dv">5</span>,<span class="dt">nSplits=</span><span class="dv">3</span>,<span class="dt">splitFunction=</span>badSplit)</code></pre></div>
+<pre><code>## Warning in doTryCatch(return(expr), name, parentenv, handler):
+## vtreat::buildEvalSets user partition rejected: train and application slots
+## overlap</code></pre>
+<pre><code>## [[1]]
+## [[1]]$train
+## [1] 2 3 4 5
+## 
+## [[1]]$app
+## [1] 1
+## 
+## 
+## [[2]]
+## [[2]]$train
+## [1] 1 3 4 5
+## 
+## [[2]]$app
+## [1] 2
+## 
+## 
+## [[3]]
+## [[3]]$train
+## [1] 1 2 4 5
+## 
+## [[3]]$app
+## [1] 3
+## 
+## 
+## [[4]]
+## [[4]]$train
+## [1] 1 2 3 5
+## 
+## [[4]]$app
+## [1] 4
+## 
+## 
+## [[5]]
+## [[5]]$train
+## [1] 1 2 3 4
+## 
+## [[5]]$app
+## [1] 5
+## 
+## 
+## attr(,&quot;splitmethod&quot;)
+## [1] &quot;oneway&quot;</code></pre>
+<p>Notice above the returned split does not meet all of the original desiderata, but is guaranteed to be a useful data partition.</p>
+</div>
+<div id="implementations" class="section level3">
+<h3>Implementations</h3>
+<p>The file <a href="https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R">outOfSample.R</a> contains worked examples. In particular we would suggest running the code displayed when you type any of:</p>
 <ul>
 <li><code>help(oneWayHoldout)</code></li>
 <li><code>help(kWayCrossValidation)</code></li>

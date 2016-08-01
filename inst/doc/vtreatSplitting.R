@@ -5,6 +5,31 @@ knitr::opts_chunk$set(fig.width = 7)
 ## ------------------------------------------------------------------------
 vtreat::oneWayHoldout(3,NULL,NULL,NULL)
 
+## ------------------------------------------------------------------------
+# This method is not a great idea as the data could have structure that strides
+# in the same pattern as this split.
+# Such technically is possible for any split, but we typically use
+# pseudo-random structure (that is not the same across many potential
+# split calls) to try and make it unlikely such structures
+# match often.
+modularSplit <- function(nRows,nSplits,dframe,y) {
+  group <- seq_len(nRows) %% nSplits
+  lapply(unique(group),
+         function(gi) {
+           list(train=which(group!=gi),
+                app=which(group==gi))
+         })
+}
+
+## ------------------------------------------------------------------------
+vtreat::buildEvalSets(nRows=25,nSplits=3,splitFunction=modularSplit)
+
+## ------------------------------------------------------------------------
+badSplit <- function(nRows,nSplits,dframe,y) {
+  list(list(train=seq_len(nRows),app=seq_len(nRows)))
+}
+vtreat::buildEvalSets(nRows=5,nSplits=3,splitFunction=badSplit)
+
 ## ----warning=FALSE-------------------------------------------------------
 library('vtreat')
 haveGGPlot2 <- requireNamespace("ggplot2",quietly=TRUE)
