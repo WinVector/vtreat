@@ -460,7 +460,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   parallelCluster=parallelCluster)
   zC <- dframe[[outcomename]]
   zoY <- ifelse(zC==outcometarget,1,0)
-  newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$varMoves]
+  newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
+                                              (treatments$scoreFrame$sig<1)]
   crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
                             zC,outcometarget,
                             weights,
@@ -473,23 +474,15 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             catScaling,
                             parallelCluster)
   crossFrame <- crossDat$crossFrame
-  stuckVars <- newVarsS[vapply(newVarsS,
-                               function(v) {
-                                 min(crossFrame[[v]])>=max(crossFrame[[v]])
-                               },
-                               logical(1))]
-  if(length(stuckVars)>0) {
-    for(sv in stuckVars) {
-      crossFrame[[sv]] <- NULL
-    }
-    stuckRows <- which(treatments$scoreFrame$varName %in% stuckVars)
-    treatments$scoreFrame[stuckRows,'varMoves'] <- FALSE
-    for(cn in c('csig','lsig','sig')) {
-      if(cn %in% colnames(treatments$scoreFrame)) {
-        treatments$scoreFrame[stuckRows,cn] <- 1.0
-      }
-    }
-  }
+  newVarsS <- intersect(newVarsS,colnames(crossFrame))
+  goodVars <- newVarsS[vapply(newVarsS,
+                              function(v) {
+                                min(crossFrame[[v]])<max(crossFrame[[v]])
+                              },
+                              logical(1))]
+  # Make sure scoreFrame and crossFrame are consistent in variables mentioned
+  treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varName %in% goodVars,]
+  crossFrame <- crossFrame[,colnames(crossFrame) %in% c(goodVars,outcomename),drop=FALSE]
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,
@@ -578,7 +571,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   parallelCluster=parallelCluster)
   zC <- NULL
   zoY <- dframe[[outcomename]]
-  newVarsS <- treatments$scoreFrame$varName[treatments$scoreFrame$varMoves]
+  newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
+                                              (treatments$scoreFrame$sig<1)]
   crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
                             zC,NULL,
                             weights,
@@ -591,23 +585,15 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             catScaling,
                             parallelCluster)
   crossFrame <- crossDat$crossFrame
-  stuckVars <- newVarsS[vapply(newVarsS,
-                               function(v) {
-                                 min(crossFrame[[v]])>=max(crossFrame[[v]])
-                               },
-                               logical(1))]
-  if(length(stuckVars)>0) {
-    for(sv in stuckVars) {
-      crossFrame[[sv]] <- NULL
-    }
-    stuckRows <- which(treatments$scoreFrame$varName %in% stuckVars)
-    treatments$scoreFrame[stuckRows,'varMoves'] <- FALSE
-    for(cn in c('csig','lsig','sig')) {
-      if(cn %in% colnames(treatments$scoreFrame)) {
-        treatments$scoreFrame[stuckRows,cn] <- 1.0
-      }
-    }
-  }
+  newVarsS <- intersect(newVarsS,colnames(crossFrame))
+  goodVars <- newVarsS[vapply(newVarsS,
+                              function(v) {
+                                min(crossFrame[[v]])<max(crossFrame[[v]])
+                              },
+                              logical(1))]
+  # Make sure scoreFrame and crossFrame are consistent in variables mentioned
+  treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varName %in% goodVars,]
+  crossFrame <- crossFrame[,colnames(crossFrame) %in% c(goodVars,outcomename),drop=FALSE]
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,
