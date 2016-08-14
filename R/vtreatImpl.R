@@ -103,9 +103,22 @@ mkVtreatListWorker <- function(scale,doCollar) {
 }
 
 
+
+.mkAOVWorkder <- function(yNumeric,vcol,weights) {
+  force(yNumeric)
+  force(vcol)
+  force(weights)
+  function(level) {
+    # lm call here is okay, as (vcol==level) only has two possible values
+    m <- stats::lm(yNumeric~(vcol==level),weights=weights)
+    stats::anova(m)[1,'Pr(>F)']
+  }
+}
+
 # determine non-rare and significant levels for numeric/regression target
 # regression mode
-.safeLevelsR <- function(vcolin,yNumeric,weights,rareCount,rareSig) {
+.safeLevelsR <- function(vcolin,yNumeric,weights,rareCount,rareSig,
+                         parallelCluster) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
@@ -117,20 +130,38 @@ mkVtreatListWorker <- function(scale,doCollar) {
   safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
-    aovCalc <- function(level) {
-      m <- stats::lm(yNumeric~(vcol==level),weights = weights)
-      stats::anova(m)[1,'Pr(>F)']
-    }
-    sigs <- vapply(safeLevs,aovCalc,numeric(1))
+    aovCalc <-.mkAOVWorkder(yNumeric,vcol,weights)
+    sigs <- as.numeric(plapply(safeLevs,aovCalc,parallelCluster))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
   list(safeLevs=safeLevs,supressedLevs=supressedLevs)
 }
 
+
+.mkCSigWorker <- function(zC,zTarget,vcol,weights) {
+  force(zC)
+  force(zTarget)
+  force(vcol)
+  force(weights)
+  function(level) {
+    #tab <- table(vcol==level,zC==zTarget)  # not weighted
+    tab <- .wTable(vcol==level,zC==zTarget,weights)
+    if((nrow(tab)<=1)||(ncol(tab)<=1)) {
+      return(1.0)
+    }
+    # tests not quite interchangable, but roughly give us the sorting we want.
+    if(min(tab)<=10) {
+      stats::fisher.test(tab)$p.value
+    } else {
+      stats::chisq.test(tab)$p.value
+    }
+  }
+}
 
 # determine non-rare and significant levels for numeric/regression target
 # classification mode
-.safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig) {
+.safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig,
+                         parallelCluster) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
@@ -142,17 +173,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
   safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
-    sigCalc <- function(level) {
-      #tab <- table(vcol==level,zC==zTarget)  # not weighted
-      tab <- .wTable(vcol==level,zC==zTarget,weights)
-      if((nrow(tab)<=1)||(ncol(tab)<=1)) {
-        return(1.0)
-      }
-      # stats::fisher.test(tab)$p.value is possibly needlessly expensive
-      # for this application.
-      stats::chisq.test(tab,simulate.p.value=TRUE)$p.value
-    }
-    sigs <- vapply(safeLevs,sigCalc,numeric(1))
+    sigCalc <- .mkCSigWorker(zC,zTarget,vcol,weights)
+    sigs <- as.numeric(plapply(safeLevs,sigCalc,parallelCluster))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
   list(safeLevs=safeLevs,supressedLevs=supressedLevs)
@@ -160,10 +182,14 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 
 
+# For a categorcial variable, compute the level restrictions
+computeLevelRestrictions <- function() {
+  
+}
 
 # design a treatment for a single variables
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
-.varDesigner <- function(zoY,
+.mkVarDesigner <- function(zoY,
                          zC,zTarget,
                          weights,
                          minFraction,smFactor,rareCount,rareSig,
@@ -187,9 +213,10 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
-  function(argpair) {
-    v <- argpair$v
-    vcolOrig <- argpair$vcolOrig
+  function(argv) {
+    v <- argv$v
+    vcolOrig <- argv$vcolOrig
+    levRestriction <- argv$levRestriction
     if(verbose) {
       print(paste('design var',v,date()))
     }
@@ -221,11 +248,6 @@ mkVtreatListWorker <- function(scale,doCollar) {
           }
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
-          if(!is.null(zC)) {  # in categorical mode
-            levRestriction <- .safeLevelsC(vcol,zC,zTarget,weights,rareCount,rareSig)
-          } else {
-            levRestriction <- .safeLevelsR(vcol,zoY,weights,rareCount,rareSig)
-          }
           if(length(levRestriction$safeLevs)>0) {
             ti = NULL
             if(!impactOnly) {
@@ -380,17 +402,55 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 catScaling,
                                 verbose,
                                 parallelCluster) {
+  if(verbose) {
+    print(paste("designing treatments",date()))
+  }
+  origRowCount <- nrow(dframe)
+  trainRows <-  seq_len(origRowCount)
+  nRows = length(zoY)
   # In building the workList don't transform any variables (such as making
   # row selections), only select columns out of frame.  This prevents
   # data growth prior to doing the work.
-  workList <- lapply(varlist,function(v) {list(v=v,vcolOrig=dframe[[v]])})
+  workList <- lapply(varlist,
+                     function(v) {
+                       vcolOrig <- dframe[[v]]
+                       vcol <- .cleanColumn(vcolOrig,origRowCount)[trainRows]
+                       levRestriction <- c()
+                       if(length(vcol)!=nRows) {
+                         warning(paste("wrong column length"),v)
+                         vcol <- NULL
+                       }
+                       if(.has.range(vcol)) {
+                         colclass <- class(vcol)
+                         if((colclass=='character') || (colclass=='factor')) {
+                           # expect character or factor here
+                           if(!is.null(zC)) {  # in categorical mode
+                             levRestriction <- .safeLevelsC(vcol,zC,zTarget,
+                                                            weights,
+                                                            rareCount,rareSig,
+                                                            parallelCluster)
+                           } else {
+                             levRestriction <- .safeLevelsR(vcol,zoY,
+                                                            weights,
+                                                            rareCount,rareSig,
+                                                            parallelCluster)
+                           }
+                         }
+                       }
+                       list(v=v,
+                            vcolOrig=vcolOrig,
+                            levRestriction=levRestriction
+                       )})
+  if(verbose) {
+    print(paste(" have level statistics",date()))
+  }
   # build the treatments we will return to the user
-  worker <- .varDesigner(zoY,
+  worker <- .mkVarDesigner(zoY,
                          zC,zTarget,
                          weights,
                          minFraction,smFactor,rareCount,rareSig,
                          collarProb,
-                         seq_len(nrow(dframe)),nrow(dframe),
+                         trainRows,origRowCount,
                          impactOnly,
                          catScaling,
                          verbose)
@@ -405,7 +465,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   # score variables
   if(verbose) {
-    print(paste("scoring treatments",date()))
+    print(paste(" scoring treatments",date()))
   }
   scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
   tP <- lapply(treatments,

@@ -5,7 +5,7 @@ plapply <- function(workList,worker,parallelCluster) {
   if(is.null(parallelCluster) || (!requireNamespace("parallel",quietly=TRUE))) {
     res <- lapply(workList,worker)
   } else {
-    res <- parallel::parLapply(parallelCluster,workList,worker)
+    res <- parallel::parLapplyLB(parallelCluster,workList,worker)
   }
   res
 }

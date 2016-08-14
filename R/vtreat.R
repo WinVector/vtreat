@@ -1,6 +1,5 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
-# Would be nice to have: Jackknifed GLM significance
 
 #' @importFrom stats aggregate anova as.formula binomial chisq.test fisher.test glm lm lm.wfit pchisq pf quantile
 #' @importFrom utils packageVersion
