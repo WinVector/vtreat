@@ -118,7 +118,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <- function(level) {
-      m <- stats::lm(yNumeric~vcol==level,weights = weights)
+      m <- stats::lm(yNumeric~(vcol==level),weights = weights)
       stats::anova(m)[1,'Pr(>F)']
     }
     sigs <- vapply(safeLevs,aovCalc,numeric(1))
@@ -148,8 +148,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
       if((nrow(tab)<=1)||(ncol(tab)<=1)) {
         return(1.0)
       }
-      # TODO: something cheaper here
-      stats::fisher.test(tab)$p.value
+      # stats::fisher.test(tab)$p.value is possibly needlessly expensive
+      # for this application.
+      stats::chisq.test(tab,simulate.p.value=TRUE)$p.value
     }
     sigs <- vapply(safeLevs,sigCalc,numeric(1))
     supressedLevs <- safeLevs[sigs>rareSig]

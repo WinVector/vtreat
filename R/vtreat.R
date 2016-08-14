@@ -2,7 +2,7 @@
 
 # Would be nice to have: Jackknifed GLM significance
 
-#' @importFrom stats aggregate anova as.formula binomial fisher.test glm lm lm.wfit pchisq pf quantile
+#' @importFrom stats aggregate anova as.formula binomial chisq.test fisher.test glm lm lm.wfit pchisq pf quantile
 #' @importFrom utils packageVersion
 NULL
 
