@@ -148,6 +148,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
       if((nrow(tab)<=1)||(ncol(tab)<=1)) {
         return(1.0)
       }
+      # TODO: something cheaper here
       stats::fisher.test(tab)$p.value
     }
     sigs <- vapply(safeLevs,sigCalc,numeric(1))
