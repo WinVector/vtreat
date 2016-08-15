@@ -17,6 +17,7 @@
 # build a prevalence fact
 .mkCatP <- function(origVarName,vcolin,zoY,zC,zTarget,levRestriction,weights,catScaling) {
   vcol <- .preProcCat(vcolin,c())
+  extraModelDegrees <- max(0,length(unique(vcolin)))
   num <- tapply(weights,vcol,sum)
   den <- sum(weights)
   scores <- num/den
@@ -30,7 +31,7 @@
                     treatmentName='Prevalence Code',
                     treatmentCode='catP',
                     needsSplit=TRUE,
-                    extraModelDegrees=max(0,length(scores)-1))
+                    extraModelDegrees=extraModelDegrees)
   pred <- treatment$f(vcolin,treatment$args)
   if(!.has.range.cn(pred)) {
     return(NULL)

@@ -13,11 +13,7 @@ test_that("testCar: Numeric Var Scores as expected car", {
   pvars <- setdiff(colnames(uci.car.data),dYName)
   treatmentsC <- designTreatmentsC(uci.car.data,
                                    pvars,dYName,dYTarget,verbose=FALSE)
-  dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=0.99)
+  dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=0.5)
   cvars <- setdiff(colnames(dTrainCTreated),dYName)
-  expect_true(max(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName!='noise'])<0.9)
-  expect_true(min(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName=='noise'])>0.05)
-  codes <- sort(unique(treatmentsC$scoreFrame$code))
-  expect_true('catB' %in% codes)
-  expect_true('lev' %in% codes)
+  expect_true(min(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName=='noise'])>0.3)
 })

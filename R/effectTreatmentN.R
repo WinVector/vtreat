@@ -20,6 +20,7 @@
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
   vcol <- .preProcCat(vcolin,levRestriction)
+  extraModelDegrees <- max(0,length(unique(vcolin)))
   baseMean <- .wmean(rescol,weights)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
@@ -34,7 +35,7 @@
                     treatmentName='Scalable Impact Code',
                     treatmentCode='catN',
                     needsSplit=TRUE,
-                    extraModelDegrees=max(0,length(scores)-1))
+                    extraModelDegrees=extraModelDegrees)
   pred <- treatment$f(vcolin,treatment$args)
   if(!.has.range.cn(pred)) {
     return(NULL)
