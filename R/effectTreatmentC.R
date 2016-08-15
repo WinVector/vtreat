@@ -15,6 +15,10 @@
   pred
 }
 
+.logit <- function(x) {
+  log(x/(1-x))
+}
+
 # build a classification impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights,catScaling) {
@@ -32,7 +36,8 @@
   pTgivenCunnorm <- pCgivenT*probT      # Bayes law, corret missing a /pC term (which we will normalize out)
   pFgivenCunnorm <- pCgivenF*(1-probT)  # Bayes law, corret missing a /pC term (which we will normalize out)
   pTgivenC <- pTgivenCunnorm/(pTgivenCunnorm+pFgivenCunnorm)
-  logLift <- log(pTgivenC/probT)  # log probability ratio (so no effect is coded as zero)
+  # logLift <- log(pTgivenC/probT)  # log probability ratio (so no effect is coded as zero)
+  logLift <- .logit(pTgivenC) - .logit(probT)  # logit probabilty
   logLift <- as.list(logLift)
   logLift <- logLift[names(logLift)!='zap']  # don't let zap group code
   # fall back for novel levels, use zero impact
