@@ -194,7 +194,6 @@ computeLevelRestrictions <- function() {
                          weights,
                          minFraction,smFactor,rareCount,rareSig,
                          collarProb,
-                         trainRows,origRowCount,
                          impactOnly,
                          catScaling,
                          verbose) {
@@ -207,8 +206,6 @@ computeLevelRestrictions <- function() {
   force(rareCount)
   force(rareSig)
   force(collarProb)
-  force(trainRows)
-  force(origRowCount)
   force(catScaling)
   force(verbose)
   nRows = length(zoY)
@@ -216,16 +213,13 @@ computeLevelRestrictions <- function() {
   function(argv) {
     v <- argv$v
     vcolOrig <- argv$vcolOrig
+    vcol <- argv$vcol
+    hasRange <- argv$hasRange
     levRestriction <- argv$levRestriction
     if(verbose) {
       print(paste('design var',v,date()))
     }
     treatments <- list()
-    vcol <- .cleanColumn(vcolOrig,origRowCount)[trainRows]
-    if(length(vcol)!=nRows) {
-      warning("wrong column length")
-      vcol <- NULL
-    }
     acceptTreatment <- function(ti) {
       if(!is.null(ti)) {
         ti$origType <- typeof(vcolOrig)
@@ -235,7 +229,9 @@ computeLevelRestrictions <- function() {
       }
     }
     if(is.null(vcol)) {
-      warning(paste('column',v,'is not a type/class/value vtreat can work with (',class(vcolOrig),')'))
+      warning(paste('column',v,
+                    'is not a type/class/value vtreat can work with (',
+                    class(vcolOrig),')'))
     } else {
       colclass <- class(vcol)
       if(.has.range(vcol)) {
@@ -405,42 +401,46 @@ computeLevelRestrictions <- function() {
   if(verbose) {
     print(paste("designing treatments",date()))
   }
-  origRowCount <- nrow(dframe)
-  trainRows <-  seq_len(origRowCount)
   nRows = length(zoY)
   # In building the workList don't transform any variables (such as making
   # row selections), only select columns out of frame.  This prevents
   # data growth prior to doing the work.
   workList <- lapply(varlist,
                      function(v) {
-                       vcolOrig <- dframe[[v]]
-                       vcol <- .cleanColumn(vcolOrig,origRowCount)[trainRows]
                        levRestriction <- c()
-                       if(length(vcol)!=nRows) {
-                         warning(paste("wrong column length"),v)
-                         vcol <- NULL
-                       }
-                       if(.has.range(vcol)) {
-                         colclass <- class(vcol)
-                         if((colclass=='character') || (colclass=='factor')) {
-                           # expect character or factor here
-                           if(!is.null(zC)) {  # in categorical mode
-                             levRestriction <- .safeLevelsC(vcol,zC,zTarget,
-                                                            weights,
-                                                            rareCount,rareSig,
-                                                            parallelCluster)
-                           } else {
-                             levRestriction <- .safeLevelsR(vcol,zoY,
-                                                            weights,
-                                                            rareCount,rareSig,
-                                                            parallelCluster)
+                       hasRange <- FALSE
+                       vcolOrig <- dframe[[v]]
+                       vcol <- NULL
+                       if(length(vcolOrig)!=nRows) {
+                         warning(paste("wrong column length",v))
+                       } else {
+                         vcol <- .cleanColumn(vcolOrig,nRows)
+                         if(.has.range(vcol)) {
+                           hasRange <- TRUE
+                           colclass <- class(vcol)
+                           if((colclass=='character') || (colclass=='factor')) {
+                             # expect character or factor here
+                             if(!is.null(zC)) {  # in categorical mode
+                               levRestriction <- .safeLevelsC(vcol,zC,zTarget,
+                                                              weights,
+                                                              rareCount,rareSig,
+                                                              parallelCluster)
+                             } else {
+                               levRestriction <- .safeLevelsR(vcol,zoY,
+                                                              weights,
+                                                              rareCount,rareSig,
+                                                              parallelCluster)
+                             }
                            }
                          }
                        }
                        list(v=v,
                             vcolOrig=vcolOrig,
+                            vcol=vcol,
+                            hasRange=hasRange,
                             levRestriction=levRestriction
                        )})
+  workList <- Filter(function(wi) {wi$hasRange}, workList)
   if(verbose) {
     print(paste(" have level statistics",date()))
   }
@@ -450,7 +450,6 @@ computeLevelRestrictions <- function() {
                          weights,
                          minFraction,smFactor,rareCount,rareSig,
                          collarProb,
-                         trainRows,origRowCount,
                          impactOnly,
                          catScaling,
                          verbose)
