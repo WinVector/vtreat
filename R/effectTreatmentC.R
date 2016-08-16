@@ -1,7 +1,7 @@
 
 
 # apply a classification impact model
-# replace level with log(.wmean(x|category)/.wmean(x))
+# replace level with logit(P[y==target|level]) - logit(P[y==target])
 .catBayes <- function(col,args,doCollar) {
   col <- .preProcCat(col,args$levRestriction)
   novel <- !(col %in% names(args$conditionalScore))
