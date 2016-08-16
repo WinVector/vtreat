@@ -485,7 +485,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,
-       method= crossDat$method)
+       method=crossDat$method,
+       evalSets=crossDat$evalSets)
 }
 
 
@@ -596,7 +597,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,
-       method=crossDat$method)
+       method=crossDat$method,
+       evalSets=crossDat$evalSets)
 }
 
 

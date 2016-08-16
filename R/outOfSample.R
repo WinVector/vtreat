@@ -544,7 +544,8 @@ buildEvalSets <- function(nRows,...,
     scoreWeights[rowList] <- scoreWeights[rowList]
   }
   list(crossFrame=crossFrame,crossWeights=scoreWeights,
-       method=attr(evalSets,'splitmethod'))
+       method=attr(evalSets,'splitmethod'),
+       evalSets=evalSets)
 }
 
 
