@@ -3,7 +3,7 @@
 * local OS X install, R version 3.3.1 
 * win-builder (devel and release)
 
-## R CMD check --as-cran vtreat_0.5.26.tar.gz
+## R CMD check --as-cran vtreat_0.5.27.tar.gz
 * using R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
 * using platform: x86_64-apple-darwin14.5.0 (64-bit)
 
