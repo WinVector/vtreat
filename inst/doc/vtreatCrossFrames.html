@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-08-16" />
+<meta name="date" content="2016-08-17" />
 
 <title>vtreat cross frames</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat cross frames</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-08-16</em></h4>
+<h4 class="date"><em>2016-08-17</em></h4>
 
 
 
@@ -117,18 +117,18 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;designing treatments Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot; have level statistics Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;design var xBad1 Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;design var xBad2 Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;design var xBad3 Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;design var xGood1 Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;design var xGood2 Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot; scoring treatments Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;have treatment plan Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;rescoring complex variables Tue Aug 16 09:13:06 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Aug 16 09:13:07 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;designing treatments Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot; have level statistics Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;design var xBad1 Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;design var xBad2 Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;design var xBad3 Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;design var xGood1 Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;design var xGood2 Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot; scoring treatments Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;have treatment plan Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;rescoring complex variables Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;done rescoring complex variables Wed Aug 17 13:20:17 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -143,24 +143,24 @@ m1 &lt;-<span class="st"> </span><span class="kw">glm</span>(y~xBad1_catB +<span
 ## 
 ## Deviance Residuals: 
 ##      Min        1Q    Median        3Q       Max  
-## -2.32054  -0.00006   0.00000   0.00001   2.32445  
+## -2.32190  -0.00014   0.00000   0.00001   2.32399  
 ## 
 ## Coefficients:
 ##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   -0.5638     0.3341  -1.688 0.091462 .  
-## xBad1_catB     1.0894     0.3759   2.898 0.003752 ** 
-## xBad2_catB     0.9023     0.3273   2.756 0.005843 ** 
-## xBad3_catB     1.5087     0.4477   3.370 0.000752 ***
-## xGood1_clean   0.8423     0.2621   3.214 0.001309 ** 
-## xGood2_clean   0.8264     0.2855   2.895 0.003796 ** 
+## (Intercept)   -0.5794     0.3284  -1.764 0.077698 .  
+## xBad1_catB     1.0987     0.3627   3.029 0.002454 ** 
+## xBad2_catB     0.9302     0.3058   3.042 0.002349 ** 
+## xBad3_catB     1.5057     0.4468   3.370 0.000752 ***
+## xGood1_clean   0.8404     0.2619   3.209 0.001334 ** 
+## xGood2_clean   0.8254     0.2854   2.892 0.003823 ** 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 1724.55  on 1331  degrees of freedom
-## Residual deviance:  114.85  on 1326  degrees of freedom
-## AIC: 126.85
+## Residual deviance:  114.93  on 1326  degrees of freedom
+## AIC: 126.93
 ## 
 ## Number of Fisher Scoring iterations: 12</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
@@ -177,9 +177,9 @@ dTest$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<s
 <pre><code>## [1] &quot;model1 on test&quot;
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   318  156
+##   FALSE   316  158
 ##   TRUE    134   60
-## [1] &quot;accuracy 0.565868263473054&quot;</code></pre>
+## [1] &quot;accuracy 0.562874251497006&quot;</code></pre>
 <p>Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice the downstream model (the <code>glm</code>) erroneously thinks the <code>xBad?_cat</code> variables are significant (due to the large number of degrees of freedom hidden from the downstream model by the <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact/effect coding</a>).</p>
 </div>
 <div id="the-right-way-a-calibration-set" class="section level2">
@@ -197,18 +197,18 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;designing treatments Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot; have level statistics Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;design var xBad1 Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;design var xBad2 Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;design var xBad3 Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;design var xGood1 Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;design var xGood2 Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot; scoring treatments Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;have treatment plan Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;rescoring complex variables Tue Aug 16 09:13:07 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Aug 16 09:13:07 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot;designing treatments Wed Aug 17 13:20:17 2016&quot;
+## [1] &quot; have level statistics Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;design var xBad1 Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;design var xBad2 Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;design var xBad3 Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;design var xGood1 Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;design var xGood2 Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot; scoring treatments Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;have treatment plan Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;rescoring complex variables Wed Aug 17 13:20:18 2016&quot;
+## [1] &quot;done rescoring complex variables Wed Aug 17 13:20:18 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)
@@ -311,11 +311,11 @@ treatments &lt;-<span class="st"> </span>prep$treatments
 <span class="kw">print</span>(treatments$scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##        varName          sig
 ## 1   xBad1_catP 9.578124e-01
-## 2   xBad1_catB 9.053152e-02
+## 2   xBad1_catB 9.424435e-02
 ## 3   xBad2_catP 7.496971e-01
-## 4   xBad2_catB 1.149787e-01
+## 4   xBad2_catB 1.142775e-01
 ## 5   xBad3_catP 7.419157e-01
-## 6   xBad3_catB 1.075042e-01
+## 6   xBad3_catB 1.103321e-01
 ## 7 xGood1_clean 6.072599e-12
 ## 8 xGood2_clean 8.286789e-21</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can</span>
@@ -342,16 +342,16 @@ newvars &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -1.6635  -0.9166  -0.6661   1.1751   2.2992  
+## -1.6633  -0.9169  -0.6661   1.1744   2.2982  
 ## 
 ## Coefficients:
 ##               Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  -0.686954   0.066257 -10.368  &lt; 2e-16 ***
-## xBad1_catB    0.007097   0.008725   0.813    0.416    
-## xBad2_catB   -0.013458   0.008825  -1.525    0.127    
-## xBad3_catB    0.013115   0.008608   1.524    0.128    
-## xGood1_clean  0.406178   0.061932   6.558 5.44e-11 ***
-## xGood2_clean  0.571854   0.064998   8.798  &lt; 2e-16 ***
+## (Intercept)  -0.687141   0.065343 -10.516  &lt; 2e-16 ***
+## xBad1_catB    0.007978   0.009467   0.843    0.399    
+## xBad2_catB   -0.014125   0.009579  -1.475    0.140    
+## xBad3_catB    0.014372   0.009332   1.540    0.124    
+## xGood1_clean  0.406218   0.061930   6.559 5.41e-11 ***
+## xGood2_clean  0.571758   0.064997   8.797  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
@@ -377,9 +377,9 @@ dTest$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<s
 <pre><code>## [1] &quot;model1 on test&quot;
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   422   52
+##   FALSE   421   53
 ##   TRUE    145   49
-## [1] &quot;accuracy 0.705089820359281&quot;</code></pre>
+## [1] &quot;accuracy 0.703592814371258&quot;</code></pre>
 <p>We again get the better 70% test accuracy. And this is a more statistically powerful technique as we didn’t have to restrict some data to calibration.</p>
 <p>The model fit to the cross-frame behaves similarly to the model produced via the process <em>f(CalibrationData, TrainData)</em>. Notice that the <code>xBad*_catB</code> variables fail to achieve significance in the downstream <code>glm</code> model, allowing that model to give them small coefficients and even (if need be) prune them out. This is the point of using a cross frame as we see in the first example the <code>xBad*_catB</code> are hard to remove if they make it to standard (non-cross) frames as they are hiding a lot of degrees of freedom from downstream modeling procedures.</p>
 </div>

@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-08-16" />
+<meta name="date" content="2016-08-17" />
 
 <title>vtreat overfit</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat overfit</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-08-16</em></h4>
+<h4 class="date"><em>2016-08-17</em></h4>
 
 
 
@@ -96,14 +96,14 @@ dTest &lt;-<span class="st"> </span>d[d$rgroup&gt;<span class="dv">80</span>,,dr
 treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;designing treatments Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot; have level statistics Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;design var x Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot; scoring treatments Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;have treatment plan Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;rescoring complex variables Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Aug 16 09:13:10 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;designing treatments Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot; have level statistics Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;design var x Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot; scoring treatments Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;have treatment plan Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;rescoring complex variables Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;done rescoring complex variables Wed Aug 17 13:20:21 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -116,20 +116,20 @@ m1 &lt;-<span class="st"> </span><span class="kw">glm</span>(y~x_catB,<span clas
 ## 
 ## Deviance Residuals: 
 ##      Min        1Q    Median        3Q       Max  
-## -1.79622  -0.75727   0.00435   0.75731   1.79627  
+## -1.79793  -0.75624   0.00611   0.75631   1.79803  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  0.02689    0.07044   0.382    0.703    
-## x_catB       1.00346    0.11459   8.757   &lt;2e-16 ***
+## (Intercept)  0.02692    0.07046   0.382    0.702    
+## x_catB       1.00630    0.11333   8.879   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 2270.5  on 1637  degrees of freedom
-## Residual deviance: 1146.1  on 1636  degrees of freedom
-## AIC: 1150.1
+## Residual deviance: 1146.2  on 1636  degrees of freedom
+## AIC: 1150.2
 ## 
 ## Number of Fisher Scoring iterations: 8</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
@@ -174,7 +174,7 @@ dTest$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatments$scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves      lsig       sig      csig needsSplit
 ## 1  x_catP     TRUE 0.7045165 0.7042905 0.7042905       TRUE
-## 2  x_catB     TRUE 0.8295644 0.8294366 0.8294366       TRUE
+## 2  x_catB     TRUE 0.8307070 0.8305800 0.8305800       TRUE
 ##   extraModelDegrees origName code
 ## 1               820        x catP
 ## 2               820        x catB</code></pre>
@@ -195,14 +195,14 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;designing treatments Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot; have level statistics Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;design var x Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot; scoring treatments Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;have treatment plan Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;rescoring complex variables Tue Aug 16 09:13:10 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Aug 16 09:13:10 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;designing treatments Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot; have level statistics Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;design var x Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot; scoring treatments Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;have treatment plan Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;rescoring complex variables Wed Aug 17 13:20:21 2016&quot;
+## [1] &quot;done rescoring complex variables Wed Aug 17 13:20:21 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -219,8 +219,8 @@ m2 &lt;-<span class="st"> </span><span class="kw">glm</span>(y~x_catB,<span clas
 ## 
 ## Coefficients:
 ##              Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)  0.008324   0.057428   0.145    0.885
-## x_catB      -0.002045   0.010183  -0.201    0.841
+## (Intercept)  0.008294   0.057427   0.144    0.885
+## x_catB      -0.002186   0.010944  -0.200    0.842
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
@@ -274,7 +274,7 @@ treatments &lt;-<span class="st"> </span>xdat$treatments
 <span class="kw">print</span>(treatments$scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves      lsig       sig      csig needsSplit
 ## 1  x_catP     TRUE 0.6773582 0.6771125 0.6771125       TRUE
-## 2  x_catB     TRUE 0.8298355 0.8297079 0.8297079       TRUE
+## 2  x_catB     TRUE 0.8291974 0.8290694 0.8290694       TRUE
 ##   extraModelDegrees origName code
 ## 1               820        x catP
 ## 2               820        x catB</code></pre>
@@ -288,12 +288,12 @@ m3 &lt;-<span class="st"> </span><span class="kw">glm</span>(y~x_catB,<span clas
 ## 
 ## Deviance Residuals: 
 ##    Min      1Q  Median      3Q     Max  
-## -1.253  -1.188   1.103   1.166   1.233  
+## -1.254  -1.189   1.103   1.166   1.233  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept) 0.026066   0.049480   0.527   0.5983  
-## x_catB      0.013733   0.007048   1.948   0.0514 .
+## (Intercept) 0.026160   0.049480   0.529    0.597  
+## x_catB      0.014767   0.007567   1.952    0.051 .
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 

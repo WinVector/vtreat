@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-08-16" />
+<meta name="date" content="2016-08-17" />
 
 <title>vtreat significance</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat significance</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-08-16</em></h4>
+<h4 class="date"><em>2016-08-17</em></h4>
 
 
 
@@ -119,15 +119,15 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d$catVarPerfect)
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot;designing treatments Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot; have level statistics Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot;design var catVarNoise Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot;design var catVarPerfect Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot; scoring treatments Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot;have treatment plan Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot;rescoring complex variables Tue Aug 16 09:13:12 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Aug 16 09:13:12 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot;designing treatments Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot; have level statistics Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot;design var catVarNoise Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot;design var catVarPerfect Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot; scoring treatments Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot;have treatment plan Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot;rescoring complex variables Wed Aug 17 13:20:23 2016&quot;
+## [1] &quot;done rescoring complex variables Wed Aug 17 13:20:23 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coeficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span>function(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
@@ -145,7 +145,7 @@ prepD &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(trea
 <p>vtreat produces good variable significances using out of sample simulation (cross frames).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC$scoreFrame[<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'origName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##              varName      origName           sig
-## 1   catVarNoise_catB   catVarNoise  4.690156e-01
+## 1   catVarNoise_catB   catVarNoise  4.683998e-01
 ## 2 catVarPerfect_catP catVarPerfect  6.198374e-01
 ## 3 catVarPerfect_catB catVarPerfect 1.802669e-211</code></pre>
 <p>Signal carrying complex variables can score as signficant, even those composed of rare levels.</p>
@@ -202,10 +202,10 @@ prepD &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(trea
 ## 
 ## Number of Fisher Scoring iterations: 3</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">estSigGLM</span>(prepD$catVarNoise_catB,prepD$y,<span class="dv">0</span>) <span class="co"># wrong est</span></code></pre></div>
-<pre><code>## [1] 1.222069e-63</code></pre>
+<pre><code>## [1] 1.223667e-63</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">estSigGLM</span>(prepD$catVarNoise_catB,prepD$y,
           <span class="dt">numberOfHiddenDegrees=</span><span class="kw">length</span>(<span class="kw">unique</span>(d$catVarNoise))-<span class="dv">1</span>)</code></pre></div>
-<pre><code>## [1] 0.0707258</code></pre>
+<pre><code>## [1] 0.07074029</code></pre>
 
 
 
