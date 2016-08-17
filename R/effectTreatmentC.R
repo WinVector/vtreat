@@ -33,8 +33,8 @@
   nCandT <- tapply(as.numeric(rescol==resTarget)*weights,vcol,sum)  # weighted sum of true examples for a given C (vector)
   nCandF <- tapply(as.numeric(rescol!=resTarget)*weights,vcol,sum)  # weighted sum of false examples for a give C (vector)
   probT <- pmax(epsilon,pmin(1-epsilon,nT/(nT+nF)))   # unconditional probabilty target is true
-  pCgivenT <- (nCandT+probT*smFactor)/(nT+smFactor)   # probability of a given evidence C, condition on outcome=T
-  pCgivenF <- (nCandF+(1.0-probT)*smFactor)/(nF+smFactor)  # probability of a given evidence C, condition on outcome=F
+  pCgivenT <- (nCandT+smFactor)/(nT+smFactor) # probability of a given evidence C, condition on outcome=T
+  pCgivenF <- (nCandF+smFactor)/(nF+smFactor) # probability of a given evidence C, condition on outcome=F
   pTgivenCunnorm <- pCgivenT*probT      # Bayes law, corret missing a /pC term (which we will normalize out)
   pFgivenCunnorm <- pCgivenF*(1-probT)  # Bayes law, corret missing a /pC term (which we will normalize out)
   pTgivenC <- pTgivenCunnorm/(pTgivenCunnorm+pFgivenCunnorm)
