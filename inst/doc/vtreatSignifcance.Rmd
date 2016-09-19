@@ -1,0 +1,38 @@
+---
+title: "vtreat significance"
+author: "John Mount, Nina Zumel"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat significance}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+`vtreat::prepare` includes a required argument `pruneSig` that (if not NULL) is used to prune variables.  Obviously significance depends on training set size (so is not an intrinsic property of just the variables) and there are issues of bias in the estimate (which vtreat attempts to eliminate by estimating significance on cross-validated or out of sample data). As always there is a question of what to set a significance control to.
+
+Our advice is the following pragmatic:  
+
+Use variable filtering on wide datasets (datasets with many columns or variables).  Most machine learning algorithms can not defend themselves against large numbers of noise variables (including those algorithms that have cross-validation procedures built in).  Examples are given [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/).
+
+As an upper bound think of setting `pruneSig` below _1/numberOfColumns_.  Setting `pruneSig` to _1/numberOfColumns_ means that (in expectation) only a constant number of pure noise variables (variables with no actual relation to the outcome we are trying to predict) should create columns.  This means (under some assumptions, and in expectation) we expect only a bounded number of noisy columns to be exposed to downstream statistical and machine learning algorithms (which they can presumably handle).
+
+As a lower bound think of what sort of good variables get thrown out at a given setting of `pruneSig`.  For example suppose our problem is categorization in a data set with _n/2_ positive examples and _n/2_ negative examples.   Consider the observed significance of a rare indicator variable that is on _k_ times in training and is only on for positive instances.  A random variable that is on _k_ times would achieve this purity with probability $2^{-k}$, so we expect it to have a _-log(significance)_ in the ballpark of _k_.  So a `pruneSig` of $2^{-k}$ will filter all such variables out (be they good or bad).  Thus if you want levels or indicators that are on only a _z_ fraction of the time on a training set of size _n_ you want `pruneSig` >> $2^{-z*n}$.
+
+Example:
+
+```{r}
+signk <- function(n,k) {
+  d <- data.frame(y=c(rep(TRUE,n/2),rep(FALSE,n/2)),v=FALSE)
+  d[seq_len(k),'v'] <- TRUE
+  vtreat::designTreatmentsC(d,'v','y',TRUE,verbose=FALSE)$scoreFrame[1,'sig']
+}
+d <- data.frame(k=c(1,2,3,4,5,10,20,50,100))
+# If you want to see a rare but perfect indicator of positive class
+# that's only on k times out of 1000, this is the lower bound on pruneSig
+d$sigEst = vapply(d$k,function(k) signk(1000,k),numeric(1)) 
+d$minusLogSig = -log(d$sigEst) # we expect this to be approximately k
+print(d)
+```
+
+For a data set with 100 variables (and 1000 rows), you might want to set `pruneSig` <= 0.01 to limit the number of pure noise variables that enter the model. Note that this value is smaller than the lower bounds given above for $k < 5$. This means that in a data set of this width and length, you may not be able to detect rare but perfect indicators that occur fewer than 5 times.
