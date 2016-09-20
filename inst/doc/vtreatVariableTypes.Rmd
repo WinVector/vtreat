@@ -15,7 +15,7 @@ learning).  A clean data
 frame:
 
 - Only has numeric columns (other than the outcome).
-- Has no Infinite/NA/NaN in the effective variable columns.
+- Has no Infinite/NA/NaN values in the effective variable columns.
 
 To effect this encoding 'vtreat' replaces original variables or columns with new
 derived variables.  In this note we will use variables and columns as interchangeable

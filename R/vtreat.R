@@ -229,6 +229,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param varlist Names of columns to treat (effective variables).
 #' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
+#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param rareCount optional integer, suppress direct effects of level of this count or less.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
 #' @param verbose if TRUE print progress.
@@ -249,6 +250,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @export
 designTreatmentsZ <- function(dframe,varlist,
                               ...,
+                              minFraction=0.02,
                               weights=c(),
                               rareCount=0,
                               collarProb=0.00,
@@ -262,7 +264,7 @@ designTreatmentsZ <- function(dframe,varlist,
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),
                      weights,
-                     1.0,smFactor=0,
+                     minFraction,smFactor=0,
                      rareCount,rareSig=1,
                      collarProb,
                      NULL,3,

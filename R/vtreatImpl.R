@@ -182,11 +182,6 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 
 
-# For a categorcial variable, compute the level restrictions
-computeLevelRestrictions <- function() {
-  
-}
-
 # design a treatment for a single variables
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
 .mkVarDesigner <- function(zoY,
