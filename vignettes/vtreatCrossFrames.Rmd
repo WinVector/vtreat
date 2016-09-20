@@ -210,7 +210,7 @@ dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```
 
-We again get the better 70% test accuracy.  And this is a more statistically powerful technique as we didn't have to
+We again get the better 70% test accuracy.  And this is a more statistically efficient technique as we didn't have to
 restrict some data to calibration.
 
 The model fit to the cross-frame behaves similarly to the model produced via the process _f(CalibrationData, TrainData)_.
