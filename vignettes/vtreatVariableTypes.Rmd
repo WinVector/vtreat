@@ -120,7 +120,7 @@ print(treatmentsZ$scoreFrame[,c('origName','varName','code','varMoves')])
 
 Note: because there is no user supplied target the `scoreFrame` significance
 columns are not meaningful, and are populated only for regularity of 
-code interface.  Beyond that the no-target treatments are similar to the earlier treatments.
+code interface.  Also indicator variables are only formed by `designTreatmentsZ` for `vtreat` 0.5.28 or newer. Beyond that the no-target treatments are similar to the earlier treatments.
 Possible derived variable types in this case are:
 
   *  **clean** : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
