@@ -1,4 +1,12 @@
 
+'vtreat' 0.5.28 2016/09/20
+
+Changes:
+
+- Allow indicators on designTreatmentsZ
+- Minor documentation fixes.
+
+
 'vtreat' 0.5.27 2016/08/16
 
 Changes:
