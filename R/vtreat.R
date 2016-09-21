@@ -272,6 +272,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      verbose,
                      parallelCluster)
   treatments$outcomeType <- 'None'
+  treatments$meanY <- NA
   treatments
 }
 

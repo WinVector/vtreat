@@ -618,6 +618,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   treatments$vtreatVersion <- packageVersion('vtreat')
   treatments$splitmethod <- crossMethod
+  treatments$meanY <- .wmean(zoY,weights)
   treatments
 }
 
