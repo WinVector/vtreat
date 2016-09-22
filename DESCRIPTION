@@ -1,6 +1,6 @@
 Package: vtreat
 Type: Package
-Title: Simple Variable Treatment
+Title: A Statistically Sound data.frame Processor/Conditioner
 Version: 0.5.28
 Date: 2016-09-20
 Author: John Mount, Nina Zumel
