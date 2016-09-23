@@ -74,7 +74,7 @@ For categorical targets the possible variable types are as follows:
 
   *  **clean** : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
   *  **is\_Bad** : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  For many noisy datasets this column can be more informative than the clean column!
-  *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as contrasts. In some cases a special level code is used to represent pooled rare values.
+  *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as dummy variables. In some cases a special level code is used to represent pooled rare values.
   *  **cat\_B** : a single variable Bayesian model of the changine in logit-odds in outcome from mean distribution conditioned on the observed value of the original variable.  In our example: `x_catB = logit(P[y==target|x]) - logit(P[y==target])`.  This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.
   *  **cat\_P** : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for meta-analysis on the variable.
  
@@ -96,7 +96,7 @@ case the possible derived variable types are:
 
   * **clean** : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
   *  **is\_Bad** : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  For many noisy datasets this column can be more informative than the clean column!
-  *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as contrasts.  In some cases a special level code is used to represent pooled rare values.
+  *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as dummy variables.  In some cases a special level code is used to represent pooled rare values.
   *  **cat\_N** : a single variable regression model of the difference in outcome expectation conditioned on the observed value of the original variable.  In our example: `x_catN = E[y|x] - E[y]`.  This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.
   *  **cat\_P** : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.
   *  **cat\_D** : a "deviation fact" about a categorical level tells us if 'y' is concentrated or diffuse when conditioned on the observed level of the original categorical variable. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.
@@ -125,7 +125,7 @@ Possible derived variable types in this case are:
 
   *  **clean** : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.
   *  **is\_Bad** : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  For many noisy datasets this column can be more informative than the clean column!
-  *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as contrasts. In some cases a special level code is used to represent pooled rare values.
+  *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as dummy variables. In some cases a special level code is used to represent pooled rare values.
   *  **cat\_P** : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.
 
 ## Overall

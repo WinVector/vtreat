@@ -20,7 +20,7 @@
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatD <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
   vcol <- .preProcCat(vcolin,levRestriction)
-  extraModelDegrees <- max(0,length(unique(vcolin)))
+  extraModelDegrees <- max(0,length(unique(vcolin))-1)
   num <- tapply(rescol*weights,vcol,sum)
   den <- tapply(weights,vcol,sum)
   scorable <- setdiff(names(den)[den>=2],'zap')

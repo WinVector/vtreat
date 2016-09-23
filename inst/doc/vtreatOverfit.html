@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-09-20" />
+<meta name="date" content="2016-09-23" />
 
 <title>vtreat overfit</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat overfit</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-09-20</em></h4>
+<h4 class="date"><em>2016-09-23</em></h4>
 
 
 
@@ -96,14 +96,14 @@ dTest &lt;-<span class="st"> </span>d[d$rgroup&gt;<span class="dv">80</span>,,dr
 treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot;designing treatments Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot; have level statistics Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot;design var x Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot; scoring treatments Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot;have treatment plan Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot;rescoring complex variables Tue Sep 20 15:28:38 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Sep 20 15:28:39 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;designing treatments Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot; have level statistics Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;design var x Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot; scoring treatments Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;have treatment plan Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;rescoring complex variables Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;done rescoring complex variables Fri Sep 23 13:04:39 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -176,8 +176,8 @@ dTest$predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<s
 ## 1  x_catP     TRUE 0.7045165 0.7042905 0.7042905       TRUE
 ## 2  x_catB     TRUE 0.8307070 0.8305800 0.8305800       TRUE
 ##   extraModelDegrees origName code
-## 1               820        x catP
-## 2               820        x catB</code></pre>
+## 1               819        x catP
+## 2               819        x catB</code></pre>
 <p>Subsequently, the down-stream machine learning (in this case a standard logistic regression) used the variable incorrectly. The modeling algorithm gave the variable a non-negligible coefficient (around 3) that it thought was reliably bounded away from zero; it also believed that the resulting model almost halved deviance (when in fact it explained nothing). So any variables that do get through may have distributional issues (and misleadingly low apparent degrees of freedom).</p>
 <p><strong>Rare levels of a categorical variable</strong></p>
 <p>The biggest contributors to this distributional issue tend to be rare levels of categorical variables. Since the individual levels are rare we have unreliable estimates for their effects, and if there are very many of them we may see quite a large effect in aggregate. To help combat this we have a control called <code>rareLevels</code>. Any level that is observed no more than <code>rareLevels</code> times during training is re-mapped to a new special level called <em>rare</em> and not allowed to directly contribute (i.e. can not generate unique indicator columns, and doesn’t have a direct effect on <code>catB</code> or <code>catN</code> encodings). If all the rare levels have a distinct behavior after grouping, the <em>rare</em> level can capture that.</p>
@@ -195,14 +195,14 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot;designing treatments Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot; have level statistics Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot;design var x Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot; scoring treatments Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot;have treatment plan Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot;rescoring complex variables Tue Sep 20 15:28:39 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Sep 20 15:28:39 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;designing treatments Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot; have level statistics Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;design var x Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot; scoring treatments Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;have treatment plan Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;rescoring complex variables Fri Sep 23 13:04:39 2016&quot;
+## [1] &quot;done rescoring complex variables Fri Sep 23 13:04:39 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -276,8 +276,8 @@ treatments &lt;-<span class="st"> </span>xdat$treatments
 ## 1  x_catP     TRUE 0.6773582 0.6771125 0.6771125       TRUE
 ## 2  x_catB     TRUE 0.8291974 0.8290694 0.8290694       TRUE
 ##   extraModelDegrees origName code
-## 1               820        x catP
-## 2               820        x catB</code></pre>
+## 1               819        x catP
+## 2               819        x catB</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>xdat$crossFrame
 m3 &lt;-<span class="st"> </span><span class="kw">glm</span>(y~x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))
 <span class="kw">print</span>(<span class="kw">summary</span>(m3)) <span class="co"># notice high residual deviance</span></code></pre></div>

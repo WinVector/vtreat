@@ -23,7 +23,7 @@
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights,catScaling) {
   vcol <- .preProcCat(vcolin,levRestriction)
-  extraModelDegrees <- max(0,length(unique(vcolin)))
+  extraModelDegrees <- max(0,length(unique(vcolin))-1)
   epsilon <- 1.0e-6
   smFactor <- max(smFactor,1.0e-4)
   # T/F is true false of the quantity to be predicted

@@ -3,7 +3,9 @@
 
 Changes:
 
-- Allow indicators on designTreatmentsZ
+- Return indicators on designTreatmentsZ
+- Fix extraDegreesOfFreedom calculation.
+- Add meanY to treatmentplan.
 - Minor documentation fixes.
 
 
