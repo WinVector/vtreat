@@ -93,9 +93,10 @@ mkVtreatListWorker <- function(scale,doCollar) {
   col <- paste('x',as.character(col))
   col[origna] <- 'NA'
   if(!is.null(levRestriction)) {
-    # map rare levels to a new special level
+    # map rare and novel levels to a new special level "rare"
     rares <- !(col %in% levRestriction$safeLevs)
     col[rares] <- 'rare'
+    # remove any levels not eligable for the above treatment
     zaps <- col %in% levRestriction$supressedLevs
     col[zaps] <- 'zap'
   }

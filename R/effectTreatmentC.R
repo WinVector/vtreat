@@ -4,14 +4,14 @@
 # replace level with logit(P[y==target|level]) - logit(P[y==target])
 .catBayes <- function(col,args,doCollar) {
   col <- .preProcCat(col,args$levRestriction)
-  novel <- !(col %in% names(args$conditionalScore))
+  unhandledNovel <- !(col %in% names(args$conditionalScore))
   keys <- col
   pred <- numeric(length(col))
   if(length(args$conditionalScore)>0) {
-    keys[novel] <- names(args$conditionalScore)[[1]]  # just to prevent bad lookups
+    keys[unhandledNovel] <- names(args$conditionalScore)[[1]]  # just to prevent bad lookups
     pred <- as.numeric(args$conditionalScore[keys]) 
   }
-  pred[novel] <- 0.0
+  pred[unhandledNovel] <- 0.0
   pred
 }
 

@@ -3,14 +3,14 @@
 # apply a prevalence fact
 .catP <- function(col,args,doCollar) {
   col <- .preProcCat(col,NULL)
-  novel <- !(col %in% names(args$scores))
+  unhandledNovel <- !(col %in% names(args$scores))
   keys <- col
   pred <- numeric(length(col))
   if(length(args$scores)>0) {
-    keys[novel] <- names(args$scores)[[1]]   # just to prevent bad lookups
+    keys[unhandledNovel] <- names(args$scores)[[1]]   # just to prevent bad lookups
     pred <- as.numeric(args$scores[keys]) 
   }
-  pred[novel] <- 0.0 
+  pred[unhandledNovel] <- 0.0 
   pred
 }
 
