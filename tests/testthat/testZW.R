@@ -4,6 +4,7 @@ context("Weights")
 
 test_that("testZW: Test Zero Weights Don't Crash", {
   # categorical example
+  set.seed(235256)
   dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
                         z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
   dTrainC <- rbind(dTrainC,dTrainC)
@@ -23,6 +24,7 @@ test_that("testZW: Test Zero Weights Don't Crash", {
   dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
   
   # categorical example indicator mode
+  set.seed(235256)
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                    catScaling = FALSE,
                                    weights=trainCWeights,verbose=FALSE)
@@ -36,6 +38,7 @@ test_that("testZW: Test Zero Weights Don't Crash", {
   dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
   
   # numeric example
+  set.seed(235256)
   dTrainN <- data.frame(x=c('a','a','a','a','b','b',NA),
                         z=c(1,2,3,4,5,NA,7),y=c(0,0,0,1,0,1,1))
   dTrainN <- rbind(dTrainN,dTrainN)

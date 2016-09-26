@@ -481,7 +481,9 @@ buildEvalSets <- function(nRows,...,
 
 # make a "cross frame" that is a frame where each treated row was treated only 
 # by a treatment plan not involving the given row
-.mkCrossFrame <- function(dframe,varlist,newVarsS,outcomename,zoY,
+.mkCrossFrame <- function(dframe,
+                          referenceTreatments,
+                          varlist,newVarsS,outcomename,zoY,
                           zC,zTarget,
                           weights,
                           minFraction,smFactor,
@@ -500,6 +502,7 @@ buildEvalSets <- function(nRows,...,
   crossFrameList <- vector('list',length(evalSets))
   wtList <- vector('list',length(evalSets))
   rList <- vector('list',length(evalSets))
+  foundCols <- c() # can include outcome
   for(ei in seq_len(length(evalSets))) {
     evalIndices <- evalSets[[ei]]$app
     buildIndices <- evalSets[[ei]]$train
@@ -523,16 +526,47 @@ buildEvalSets <- function(nRows,...,
                               parallelCluster)
     fi <- .vtreatList(ti,dsubiEval,newVarsS,scale,doCollar,
                       parallelCluster)
-    # make sure each frame has the same column structure
-    for(v in setdiff(newVarsS,colnames(fi))) {
-      fi[[v]] <- 0.0
+    # fill in missing columns (a data leak potential, but a necessary step)
+    droppedColumns <-  setdiff(newVarsS,c(outcomename,colnames(fi)))
+    if(length(droppedColumns)>0) {
+      repFrame <- NULL
+      if(!is.null(referenceTreatments)) {
+        repFrame <- prepare(referenceTreatments,dsubiEval,
+                            pruneSig=NULL,
+                            varRestriction=droppedColumns,
+                            scale=scale,doCollar=doCollar,
+                            parallelCluster=parallelCluster)
+      }
+      for(v in droppedColumns) {
+        fi[[v]] <- 0.0
+        if((!is.null(repFrame)) && (v %in% colnames(repFrame))) {
+          fi[[v]] <- repFrame[[v]]
+        }
+      }
     }
-    fi <- fi[,newVarsS,drop=FALSE]
+    # make sure each frame has the same column structure (again a data leak)
     fi[[outcomename]] <- dsubiEval[[outcomename]]
+    if(ei<=1) {
+      foundCols <- colnames(fi)
+    } else {
+      foundCols <- intersect(foundCols,colnames(fi))
+    }
     crossFrameList[[ei]] <- fi
     wtList[[ei]] <- weights[evalIndices]
     rList[[ei]] <- evalIndices
   }
+  # make sure each frame has the same column structure
+  lostVars <- setdiff(newVarsS,foundCols)
+  if(length(lostVars)>0) {
+    warning(paste('cross frame procedures lost variables: ',
+            paste(lostVars,collapse=', '),
+            '(likely did not vary on one data partition)'))
+  }
+  crossFrameList <- lapply(crossFrameList,
+                           function(fi) {
+                             fi[,foundCols,drop=FALSE]
+                           })
+  # assemble frame
   crossFrame <- .rbindListOfFrames(crossFrameList)
   scoreWeights <- unlist(wtList)
   rowList <- unlist(rList)
@@ -545,7 +579,9 @@ buildEvalSets <- function(nRows,...,
   }
   list(crossFrame=crossFrame,crossWeights=scoreWeights,
        method=attr(evalSets,'splitmethod'),
-       evalSets=evalSets)
+       evalSets=evalSets,
+       foundCols=foundCols,
+       lostVars=lostVars)
 }
 
 

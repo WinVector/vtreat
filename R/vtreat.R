@@ -464,7 +464,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   zoY <- ifelse(zC==outcometarget,1,0)
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
                                               (treatments$scoreFrame$sig<1)]
-  crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
+  crossDat <- .mkCrossFrame(dframe,treatments,
+                            varlist,newVarsS,outcomename,zoY,
                             zC,outcometarget,
                             weights,
                             minFraction,smFactor,
@@ -576,7 +577,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   zoY <- dframe[[outcomename]]
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
                                               (treatments$scoreFrame$sig<1)]
-  crossDat <- .mkCrossFrame(dframe,varlist,newVarsS,outcomename,zoY,
+  crossDat <- .mkCrossFrame(dframe,treatments,
+                            varlist,newVarsS,outcomename,zoY,
                             zC,NULL,
                             weights,
                             minFraction,smFactor,

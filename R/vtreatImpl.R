@@ -557,6 +557,10 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                     verbose,
                                     parallelCluster)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
+  treatments$vtreatVersion <- packageVersion('vtreat')
+  treatments$outcomeType <- 'notmarked'
+  treatments$outcomeTarget <- outcomename
+  treatments$meanY <- NA
   yMoves <- .has.range.cn(zoY)
   crossMethod = 'Notcross'
   if(yMoves) {
@@ -567,7 +571,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
       if(verbose) {
         print(paste("rescoring complex variables",date()))
       }
-      crossData <- .mkCrossFrame(dframe,splitVars,newVarsS,outcomename,zoY,
+      crossData <- .mkCrossFrame(dframe,treatments,
+                                 splitVars,newVarsS,outcomename,zoY,
                                 zC,zTarget,
                                 weights,
                                 minFraction,smFactor,
@@ -617,7 +622,6 @@ mkVtreatListWorker <- function(scale,doCollar) {
       }
     }
   }
-  treatments$vtreatVersion <- packageVersion('vtreat')
   treatments$splitmethod <- crossMethod
   treatments$meanY <- .wmean(zoY,weights)
   treatments

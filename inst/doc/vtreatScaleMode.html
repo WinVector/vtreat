@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2016-09-24" />
+<meta name="date" content="2016-09-26" />
 
 <title>vtreat scale mode</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat scale mode</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2016-09-24</em></h4>
+<h4 class="date"><em>2016-09-26</em></h4>
 
 
 
@@ -218,13 +218,13 @@ pCraw &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM1,
                        <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(pCraw)</code></pre></div>
 <pre><code>## Standard deviations:
-## [1] 1151.388 1033.088  177.619
+## [1] 1157.8816 1044.9080  179.8415
 ## 
 ## Rotation:
-##                   PC1         PC2         PC3
-## x1_clean  0.989964626 -0.14130002 0.002084177
-## x2_clean  0.141054372  0.98892461 0.046171262
-## x3_clean -0.008585094 -0.04541393 0.998931364</code></pre>
+##                  PC1         PC2         PC3
+## x1_clean  0.98564543 -0.16880819 0.002623125
+## x2_clean  0.16849926  0.98457413 0.047135824
+## x3_clean -0.01053957 -0.04601721 0.998885045</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainN$yScaled &lt;-<span class="st"> </span><span class="kw">scale</span>(dTrainN$y,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
 cEscaled &lt;-<span class="st"> </span>vtreat::<span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
                                             <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
@@ -234,13 +234,13 @@ pCscaled &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM2
                           <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(pCscaled)</code></pre></div>
 <pre><code>## Standard deviations:
-## [1] 0.7801065 0.7017552 0.1159112
+## [1] 0.7843205 0.7283565 0.1177734
 ## 
 ## Rotation:
-##                  PC1          PC2        PC3
-## x1_clean  0.98658234 -0.160632143 0.02919928
-## x2_clean  0.16039683  0.986999439 0.01024514
-## x3_clean -0.03046538 -0.005424198 0.99952110</code></pre>
+##                 PC1          PC2         PC3
+## x1_clean  0.9810074 -0.191767234 0.029151677
+## x2_clean  0.1915603  0.981432326 0.009759229
+## x3_clean -0.0304819 -0.003989572 0.999527357</code></pre>
 <p>Notice the second application of <code>stats::prcomp</code> has more standard scaling of the reported standard deviations (though we still do not advise choosing latent variables based on mere comparisons to unit magnitude).</p>
 </div>
 

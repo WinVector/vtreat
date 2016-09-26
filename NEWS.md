@@ -5,6 +5,7 @@ Changes:
 
 - Return indicators on designTreatmentsZ
 - Fix extraDegreesOfFreedom calculation.
+- Fix treatment of constant columns in cross-partitions.
 - Add meanY to treatmentplan.
 - Minor documentation fixes.
 - Switch doCollar default to FALSE.
