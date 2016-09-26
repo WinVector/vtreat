@@ -5,7 +5,7 @@
 \title{Apply treatments and restrict to useful variables.}
 \usage{
 prepare(treatmentplan, dframe, pruneSig, ..., scale = FALSE,
-  doCollar = TRUE, varRestriction = c(), parallelCluster = NULL)
+  doCollar = FALSE, varRestriction = c(), parallelCluster = NULL)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}

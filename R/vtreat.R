@@ -318,7 +318,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @export
 prepare <- function(treatmentplan,dframe,pruneSig,
                     ...,
-                    scale=FALSE,doCollar=TRUE,
+                    scale=FALSE,doCollar=FALSE,
                     varRestriction=c(),
                     parallelCluster=NULL) {
   .checkArgs1(dframe=dframe,...)
@@ -431,7 +431,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     minFraction=0.02,smFactor=0.0,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
-                                    scale=FALSE,doCollar=TRUE,
+                                    scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
                                     catScaling=FALSE,
                                     parallelCluster=NULL) {
@@ -544,7 +544,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     minFraction=0.02,smFactor=0.0,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
-                                    scale=FALSE,doCollar=TRUE,
+                                    scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)

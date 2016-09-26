@@ -7,6 +7,7 @@ Changes:
 - Fix extraDegreesOfFreedom calculation.
 - Add meanY to treatmentplan.
 - Minor documentation fixes.
+- Switch doCollar default to FALSE.
 
 
 'vtreat' 0.5.27 2016/08/16
