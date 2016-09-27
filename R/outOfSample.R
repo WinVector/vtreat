@@ -44,7 +44,7 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strictCheck) {
   if(!is.list(appPlan)) {
     return("appPlan needs be a list")
   }
-  if((strictCheck)&&(nRows>1)&&(nSplits<=nRows)) {
+  if((strictCheck)&&(nRows>1)&&(!is.null(nSplits))) {
     if(length(appPlan)!=nSplits) {
       return("didn't get requested number of groups in appPlan")
     }
