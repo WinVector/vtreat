@@ -3,7 +3,7 @@
 # replace level with deviance (could add other summaries such as median)
 .catD <- function(col,args,doCollar) {
   pred <- numeric(length(col))
-  if(length(args$scorable)>1) {
+  if(length(args$scorable)>0) {
     col <- .preProcCat(col,args$levRestriction)
     unhandledNovel <- !(col %in% args$scorable)
     keys <- col
