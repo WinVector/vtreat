@@ -3,12 +3,13 @@
 
 Changes:
 
+- Fix treatment of constant columns in cross-partitions.
+- Switch doCollar default to FALSE.
 - Return indicators on designTreatmentsZ
 - Fix extraDegreesOfFreedom calculation.
-- Fix treatment of constant columns in cross-partitions.
+- Allow repeated appliction rows in cross frames.
 - Add meanY to treatmentplan.
-- Minor documentation fixes.
-- Switch doCollar default to FALSE.
+- Documentation fixes.
 
 
 'vtreat' 0.5.27 2016/08/16

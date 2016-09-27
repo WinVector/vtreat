@@ -13,11 +13,17 @@ getSplitPlanAppLabels(nRow, plan)
 }
 \value{
 vector of labels
-
-plan <- oneWayHoldout(3,NULL,NULL,NULL)
-getSplitPlanAppLabels(3,plan)
 }
 \description{
 read application labels off a split plan.
+}
+\examples{
+
+plan <- oneWayHoldout(3,NULL,NULL,NULL)
+getSplitPlanAppLabels(3,plan)
+
+}
+\seealso{
+\code{\link{kWayCrossValidation}}, \code{\link{kWayStratifiedY}}, and \code{\link{makekWayCrossValidationGroupedByColumn}}
 }
 

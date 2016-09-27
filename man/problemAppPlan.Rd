@@ -2,29 +2,32 @@
 % Please edit documentation in R/outOfSample.R
 \name{problemAppPlan}
 \alias{problemAppPlan}
-\title{check if appPlan is a good partition of 1:nRows into nSplits groups}
+\title{check if appPlan is a good carve-up of 1:nRows into nSplits groups}
 \usage{
 problemAppPlan(nRows, nSplits, appPlan, strictCheck)
 }
 \arguments{
-\item{nRows}{number of rows to partition}
+\item{nRows}{number of rows to carve-up}
 
-\item{nSplits}{number of sets to partition into}
+\item{nSplits}{number of sets to carve-up into}
 
-\item{appPlan}{partition to critique}
+\item{appPlan}{carve-up to critique}
 
-\item{strictCheck}{logical, if true expect application data to be a partition and training data to be maximal and to match nSplits.}
+\item{strictCheck}{logical, if true expect application data to be a carve-up and training data to be a maximal partition and to match nSplits.}
 }
 \value{
-problem with partition (null if good)
+problem with carve-up (null if good)
 }
 \description{
-check if appPlan is a good partition of 1:nRows into nSplits groups
+check if appPlan is a good carve-up of 1:nRows into nSplits groups
 }
 \examples{
 
 plan <- oneWayHoldout(3,NULL,NULL,NULL)
 problemAppPlan(3,3,plan,TRUE)
 
+}
+\seealso{
+\code{\link{kWayCrossValidation}}, \code{\link{kWayStratifiedY}}, and \code{\link{makekWayCrossValidationGroupedByColumn}}
 }
 

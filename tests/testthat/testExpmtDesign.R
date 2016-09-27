@@ -62,30 +62,3 @@ test_that("testExpmtDesign: makekWayCrossValidationGroupedByColumn", {
   expect_true(min(rs)==1)
 })
 
-
-test_that("testExpmtDesign: makekWayCrossValidationOrderedByColumn", {
-  set.seed(2325235)
-  nrowd = 200
-  y <- rnorm(nrowd)
-  d <- data.frame(y=y)
-  d$order= seq_len(nrow(d))
-  splitFn <- makekWayCrossValidationOrderedByColumn('order')
-  eSets <- buildEvalSets(nrowd,y=y,dframe=d,
-                         splitFunction=splitFn)
-  expect_true(attr(eSets,'splitmethod')=='kwaycrossordered')
-  fullSeq <- seq_len(nrowd)
-  expect_true(length(eSets)>0)
-  for(ei in eSets) {
-    expect_true(length(ei$train)>0)
-    expect_true(length(ei$app)>0)
-    expect_true(all(ei$train %in% fullSeq))
-    expect_true(all(ei$app %in% fullSeq))
-  }
-  problem <- problemAppPlan(nrowd,3,eSets,FALSE)
-  expect_true(is.null(problem))
-  #  check order property
-  for(si in eSets) {
-    expect_true(max(si$train)<min(si$app))
-  }
-})
-

@@ -2,7 +2,7 @@
 % Please edit documentation in R/outOfSample.R
 \name{buildEvalSets}
 \alias{buildEvalSets}
-\title{Build set partition for out-of sample evaluation.}
+\title{Build set carve-up for out-of sample evaluation.}
 \usage{
 buildEvalSets(nRows, ..., dframe = NULL, y = NULL, splitFunction = NULL,
   nSplits = 3)
@@ -21,10 +21,10 @@ buildEvalSets(nRows, ..., dframe = NULL, y = NULL, splitFunction = NULL,
 \item{nSplits}{integer, target number of splits.}
 }
 \value{
-list of lists where the app portion of the sub-lists is a disjoint partition of seq_len(nRows) and each list as a train portion disjoint from app.
+list of lists where the app portion of the sub-lists is a disjoint carve-up of seq_len(nRows) and each list as a train portion disjoint from app.
 }
 \description{
-Return a disjoint partition of seq_len(nRows).  Very useful for any sort of
+Return a carve-up of seq_len(nRows).  Very useful for any sort of
 nested model situation (such as data prep, stacking, or super-learning).
 }
 \details{
@@ -39,15 +39,16 @@ used.
 
 The intent is the user splitFunction only needs to handle "easy cases" 
 and maintain user invariants. If the user splitFunction returns NULL,
-throws, or returns an unacceptable partition then vtreat::buildEvalSets
+throws, or returns an unacceptable carve-up then vtreat::buildEvalSets
 returns its own eval set plan.  The signature of splitFunction should
 be splitFunction(nRows,nSplits,dframe,y) where nSplits is the number of 
-pieces we want in the partition, nRows is the number of rows to split,
+pieces we want in the carve-up, nRows is the number of rows to split,
 dframe is the original dataframe (useful for any group control variables),
 and y is a numeric vector representing outcome (useful for outcome stratification).
 
-Note that buildEvalSets may not always return a partition in exceptional cases (such
-as one row dataframes).
+Note that buildEvalSets may not always return a partition (such
+as one row dataframes), or if the user split function chooses to make rows eligable for
+applicaton a different number of times.
 }
 \examples{
 
@@ -89,5 +90,8 @@ d$outOfSampleEst <- simulateOutOfSampleTrainEval(d,fitModelAndApply)
 #  evidence of no relation)
 1-sum((d$y-d$outOfSampleEst)^2)/sum((d$y-mean(d$y))^2)
 
+}
+\seealso{
+\code{\link{kWayCrossValidation}}, \code{\link{kWayStratifiedY}}, and \code{\link{makekWayCrossValidationGroupedByColumn}}
 }
 
