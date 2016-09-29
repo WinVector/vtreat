@@ -5,7 +5,7 @@
 \title{build all treatments for a data frame to predict a numeric outcome}
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
-  minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
+  minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = NULL,
   collarProb = 0, splitFunction = NULL, ncross = 3, verbose = TRUE,
   parallelCluster = NULL)
 }
@@ -24,11 +24,11 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{smFactor}{optional smoothing factor for impact coding models.}
 
-\item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
+\item{rareCount}{optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.}
 
-\item{rareSig}{optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.}
+\item{rareSig}{optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.}
 
-\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
+\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
 \item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 

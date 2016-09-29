@@ -18,9 +18,9 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
 
 \item{weights}{optional training weights for each row}
 
-\item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
+\item{rareCount}{optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.}
 
-\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
+\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
 \item{verbose}{if TRUE print progress.}
 

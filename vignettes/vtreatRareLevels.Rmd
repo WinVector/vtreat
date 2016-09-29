@@ -1,0 +1,141 @@
+---
+title: "vtreat Rare Levels"
+author: "John Mount"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat Rare Levels}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+For some categorical variables rarity can reflect structural features.  For
+instance with United States Zip codes rare zip codes often represent low 
+population density regions.
+
+When this is the case it can make sense to pool the rare levels into a new
+re-coded level called ``rare.''  If this new level is statistically significant 
+it can be a usable modeling feature.  This sort of pooling is only potentially useful
+if below a given training count behave similarly.
+
+This capability was more of an experimental demonstration of possible extensions of `vtreat`
+to have more inference capabilities about rare level than a commonly useful 
+feature.  Most of this power has since been captured in the more useful `catP` feature
+(also demonstrated here).  Even more power is found in using an interaction of `catN` or `catB`
+with `catP`.
+
+An example of the rare level feature using `vtreat` is given below.
+
+First we set up some data by defining a set of population centers (`populationFrame`)
+and code to observe individuals (with replacement) uniformly from the combined population with
+a rare condition (`inClass`) that has elevated occurrence in observations coming
+from the small population centers (`rareCodes`).
+
+```{r}
+library('vtreat')
+library('ggplot2')
+
+set.seed(2325)
+populationFrame <- data.frame(
+   popsize = round(rlnorm(100,meanlog=log(4000),sdlog=1)),
+   stringsAsFactors = FALSE)
+populationFrame$code <- paste0('z',formatC(sample.int(100000,
+                                              size=nrow(populationFrame),
+                                              replace=FALSE),width=5,flag='0'))
+rareCodes <- populationFrame$code[populationFrame$popsize<1000]
+
+# Draw individuals from code-regions proportional to size of code region
+# (or uniformly over all individuals labeled by code region).
+# Also add the outcome which has elevated probability for rareCodes.
+drawIndividualsAndReturnCodes <- function(n) {
+  ords <- sort(sample.int(sum(populationFrame$popsize),size=n,replace=TRUE))
+  cs <- cumsum(populationFrame$popsize)
+  indexes <- findInterval(ords,cs,left.open=TRUE)+1
+  indexes <- indexes[sample.int(n,size=n,replace=FALSE)]
+  samp <- data.frame(code=populationFrame$code[indexes],
+                     stringsAsFactors = FALSE)
+  samp$inClass <- runif(n) < ifelse(samp$code %in% rareCodes,0.3,0.01)
+  samp
+}
+```
+
+We then draw a sample we want to make some observations on.
+
+```{r}
+testSet <- drawIndividualsAndReturnCodes(2000)
+table(generatedAsRare=testSet$code %in% rareCodes,inClass=testSet$inClass)
+```
+
+Notice that in the sample we can observed the elevated rate of `inClass==TRUE`
+conditioned on coming from a `code` that is one of the `rareCodes`.
+
+We could try to learn this relation using `vtreat`.  To do this we 
+set up another sample (`designSet`) to work on, so we are not inferring
+from `testSet` (where we will evaluate results).
+
+```{r}
+designSet <- drawIndividualsAndReturnCodes(2000)
+treatments <- vtreat::designTreatmentsC(designSet,'code','inClass',TRUE,
+                                        rareCount=5,rareSig=NULL,
+                                        verbose=FALSE)
+treatments$scoreFrame[,c('varName','sig'),drop=FALSE]
+```
+
+We see in `treatments$scoreFrame` we have a level called `code_lev_rare`,
+which is where a number of rare levels are re-coding.
+We can also confirm levels that occur `rareCount` or fewer times are eligable to 
+code to to `code_lev_rare`.
+
+```{r}
+designSetTreated <-  vtreat::prepare(treatments,designSet,pruneSig=0.5)
+designSetTreated$code <- designSet$code
+summary(as.numeric(table(designSetTreated$code[designSetTreated$code_lev_rare==1])))
+summary(as.numeric(table(designSetTreated$code[designSetTreated$code_lev_rare!=1])))
+```
+
+
+
+We can now apply this treatment to `testSet` to see how this inferred
+rare level performs.  Notice also the `code_catP` which directly encodes
+prevalence or frequency of the level during training also gives usable 
+estimate of size (likely a more useful one then the rare-level code itself).
+
+As we can see below the `code_lev_rare` correlates with the condition, and
+usefully re-codes novel levels (levels in `testSet` that were not seen in `designSet`)
+to rare.
+
+```{r, fig.width=6}
+testSetTreated <- vtreat::prepare(treatments,testSet,pruneSig=0.5)
+testSetTreated$code <- testSet$code
+testSetTreated$newCode <- !(testSetTreated$code %in% unique(designSet$code))
+testSetTreated$generatedAsRareCode <- testSetTreated$code %in% rareCodes
+
+# Show code_lev_rare==1 corresponds to a subset of rows with elevated inClass==TRUE rate.
+table(code_lev_rare=testSetTreated$code_lev_rare,
+      inClass=testSetTreated$inClass)
+
+# Show newCodes get coded with code_level_rare==1.
+
+table(newCode=testSetTreated$newCode,code_lev_rare=testSetTreated$code_lev_rare)
+
+# Show newCodes tend to come from defined rareCodes.
+table(newCode=testSetTreated$newCode,
+      generatedAsRare=testSetTreated$generatedAsRareCode)
+```
+
+```{r, fig.width=6}
+# Show code_catP's behavior on rare and novel levels.
+summary(testSetTreated$code_catP)
+ggplot(data=testSetTreated,aes(x=code_catP)) + geom_density()
+
+summary(testSetTreated$code_catP[testSetTreated$code_lev_rare==1])
+ggplot(data=testSetTreated,aes(x=code_catP,color=as.factor(testSetTreated$code_lev_rare))) + 
+  geom_density() + theme(legend.position="bottom")
+
+summary(testSetTreated$code_catP[testSetTreated$newCode])
+
+summary(testSetTreated$code_catP[testSetTreated$generatedAsRareCode])
+ggplot(data=testSetTreated,aes(x=code_catP,color=as.factor(testSetTreated$generatedAsRareCode))) + 
+  geom_density() + theme(legend.position="bottom")
+```
+

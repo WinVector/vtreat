@@ -154,7 +154,12 @@ mkVtreatListWorker <- function(scale,doCollar) {
     if(min(tab)<=10) {
       stats::fisher.test(tab)$p.value
     } else {
-      stats::chisq.test(tab)$p.value
+      tryCatch(
+        stats::chisq.test(tab)$p.value,
+        warning=function(w) {
+          stats::fisher.test(tab)$p.value
+        }
+      )
     }
   }
 }

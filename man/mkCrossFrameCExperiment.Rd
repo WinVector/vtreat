@@ -27,11 +27,11 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{smFactor}{optional smoothing factor for impact coding models.}
 
-\item{rareCount}{optional integer, suppress direct effects of level of this count or less.}
+\item{rareCount}{optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.}
 
-\item{rareSig}{optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.}
+\item{rareSig}{optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.}
 
-\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at (<0.5).}
+\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 

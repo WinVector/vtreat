@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-09-27" />
+<meta name="date" content="2016-09-29" />
 
 <title>vtreat package</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat package</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-09-27</em></h4>
+<h4 class="date"><em>2016-09-29</em></h4>
 
 
 
@@ -99,9 +99,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><code>origName</code>: name of original variable that the variable was derived from (can repeat).</li>
 <li><code>code</code>: what time of treatment was performed to create the derived variable (useful for filtering).</li>
 <li><code>varMoves</code>: logical TRUE if the variable varied during training; only variables that move will be in the treated frame.</li>
-<li><code>lsig</code>: linear significnace of regerssing derived variable against a 0/1 indicator target.</li>
-<li><code>csig</code>: for categorical outcomes: significance of observed variable catPRSquared value under an in-sample permutation test.</li>
-<li><code>sig</code>: <code>csig</code> for categorical outcomes, <code>lsig</code> otherwise.</li>
+<li><code>sig</code>: linear significnace of regerssing derived variable against a 0/1 indicator target for numeric targets, logistic regression significance otherwise.</li>
 <li><code>needsSplit</code>: is the variable a sub model and require out of sample scoring.</li>
 </ul>
 <p>In all cases we have two undesirable upward biases on the scores:</p>
@@ -139,15 +137,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;designing treatments Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot; have level statistics Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;design var x Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;design var z Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot; scoring treatments Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;have treatment plan Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;rescoring complex variables Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Sep 27 06:55:33 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;designing treatments Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot; have level statistics Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;design var x Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;design var z Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot; scoring treatments Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;have treatment plan Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;rescoring complex variables Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Sep 29 09:44:25 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -167,22 +165,22 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## 
 ## $scoreFrame
-##     varName varMoves      lsig        sig       csig needsSplit
-## 1  x_lev_NA     TRUE 0.3739010 0.20766228 0.20766228      FALSE
-## 2 x_lev_x.a     TRUE 0.5185185 0.40972582 0.40972582      FALSE
-## 3 x_lev_x.b     TRUE 1.0000000 1.00000000 1.00000000      FALSE
-## 4    x_catP     TRUE 0.3739010 0.25493078 0.25493078       TRUE
-## 5    x_catB     TRUE 0.1130848 0.04220134 0.04220134       TRUE
-## 6   z_clean     TRUE 0.2562868 0.14299775 0.14299775      FALSE
-## 7   z_isBAD     TRUE 0.3739010 0.20766228 0.20766228      FALSE
-##   extraModelDegrees origName  code
-## 1                 0        x   lev
-## 2                 0        x   lev
-## 3                 0        x   lev
-## 4                 2        x  catP
-## 5                 2        x  catB
-## 6                 0        z clean
-## 7                 0        z isBAD
+##     varName varMoves        sig needsSplit extraModelDegrees origName
+## 1  x_lev_NA     TRUE 0.20766228      FALSE                 0        x
+## 2 x_lev_x.a     TRUE 0.40972582      FALSE                 0        x
+## 3 x_lev_x.b     TRUE 1.00000000      FALSE                 0        x
+## 4    x_catP     TRUE 0.25493078       TRUE                 2        x
+## 5    x_catB     TRUE 0.04220134       TRUE                 2        x
+## 6   z_clean     TRUE 0.14299775      FALSE                 0        z
+## 7   z_isBAD     TRUE 0.20766228      FALSE                 0        z
+##    code
+## 1   lev
+## 2   lev
+## 3   lev
+## 4  catP
+## 5  catB
+## 6 clean
+## 7 isBAD
 ## 
 ## $outcomename
 ## [1] &quot;y&quot;
@@ -266,15 +264,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;designing treatments Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot; have level statistics Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;design var x Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;design var z Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot; scoring treatments Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;have treatment plan Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;rescoring complex variables Tue Sep 27 06:55:33 2016&quot;
-## [1] &quot;done rescoring complex variables Tue Sep 27 06:55:33 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;designing treatments Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot; have level statistics Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;design var x Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot;design var z Thu Sep 29 09:44:25 2016&quot;
+## [1] &quot; scoring treatments Thu Sep 29 09:44:26 2016&quot;
+## [1] &quot;have treatment plan Thu Sep 29 09:44:26 2016&quot;
+## [1] &quot;rescoring complex variables Thu Sep 29 09:44:26 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Sep 29 09:44:26 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -297,24 +295,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## 
 ## $scoreFrame
-##     varName varMoves      lsig       sig needsSplit extraModelDegrees
-## 1  x_lev_NA     TRUE 0.2855909 0.2855909      FALSE                 0
-## 2 x_lev_x.a     TRUE 0.3524132 0.3524132      FALSE                 0
-## 3 x_lev_x.b     TRUE 0.8456711 0.8456711      FALSE                 0
-## 4    x_catP     TRUE 0.2721791 0.2721791       TRUE                 2
-## 5    x_catN     TRUE 0.3548219 0.3548219       TRUE                 2
-## 6    x_catD     TRUE 0.5215921 0.5215921       TRUE                 2
-## 7   z_clean     TRUE 0.1724763 0.1724763      FALSE                 0
-## 8   z_isBAD     TRUE 0.2855909 0.2855909      FALSE                 0
-##   origName  code
-## 1        x   lev
-## 2        x   lev
-## 3        x   lev
-## 4        x  catP
-## 5        x  catN
-## 6        x  catD
-## 7        z clean
-## 8        z isBAD
+##     varName varMoves       sig needsSplit extraModelDegrees origName  code
+## 1  x_lev_NA     TRUE 0.2855909      FALSE                 0        x   lev
+## 2 x_lev_x.a     TRUE 0.3524132      FALSE                 0        x   lev
+## 3 x_lev_x.b     TRUE 0.8456711      FALSE                 0        x   lev
+## 4    x_catP     TRUE 0.2721791       TRUE                 2        x  catP
+## 5    x_catN     TRUE 0.3548219       TRUE                 2        x  catN
+## 6    x_catD     TRUE 0.5215921       TRUE                 2        x  catD
+## 7   z_clean     TRUE 0.1724763      FALSE                 0        z clean
+## 8   z_isBAD     TRUE 0.2855909      FALSE                 0        z isBAD
 ## 
 ## $outcomename
 ## [1] &quot;y&quot;

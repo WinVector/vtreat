@@ -76,9 +76,9 @@ print.vtreatment <- function(x,...) {
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
-#' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
+#' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
@@ -102,7 +102,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=0,rareSig=1,
+                              rareCount=0,rareSig=NULL,
                               collarProb=0.00,
                               splitFunction=NULL,ncross=3,
                               catScaling=FALSE,
@@ -157,9 +157,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
-#' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
+#' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param verbose if TRUE print progress.
@@ -181,7 +181,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
-                              rareCount=0,rareSig=1,
+                              rareCount=0,rareSig=NULL,
                               collarProb=0.00,
                               splitFunction=NULL,ncross=3,
                               verbose=TRUE,
@@ -230,8 +230,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
-#' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -393,9 +393,9 @@ prepare <- function(treatmentplan,dframe,pruneSig,
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
-#' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
+#' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
@@ -509,9 +509,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param smFactor optional smoothing factor for impact coding models.
-#' @param rareCount optional integer, suppress direct effects of level of this count or less.
-#' @param rareSig optional numeric, suppress direct effects of level of this significance value greater.  Set to one to turn off effect.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at (<0.5).
+#' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
+#' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
