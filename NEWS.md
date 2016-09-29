@@ -8,6 +8,7 @@ Changes:
 - Return indicators on designTreatmentsZ
 - Fix extraDegreesOfFreedom calculation.
 - Allow repeated appliction rows in cross frames.
+- Remove lsig and csig from scoreFrame.
 - Add meanY to treatmentplan.
 - Documentation fixes.
 
