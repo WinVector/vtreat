@@ -278,11 +278,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
 .neatenScoreFrame <- function(sFrame) {
   # clean up sFrame a bit
   if(nrow(sFrame)>0) {
-    for(cname in c('lsig','csig','sig')) {
-      if(cname %in% colnames(sFrame)) {
-        sFrame[[cname]][.is.bad(sFrame[[cname]])] <- 1
-      }
-    }
+     sFrame[['sig']][.is.bad(sFrame[['sig']])] <- 1
   }
   sFrame
 }
@@ -290,9 +286,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 .scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights,
                       extraModelDegrees=0) {
-  lsig=1.0
   sig=1.0
-  csig=1.0
   catTarget <- !is.null(zC)
   varMoves <- .has.range.cn(nxcol)
   if(varMoves) {
@@ -303,7 +297,6 @@ mkVtreatListWorker <- function(scale,doCollar) {
                         zoY,
                         weights,
                         extraModelDegrees)
-      lsig <- lstat$sig
       sig <- lstat$sig
       if(catTarget) {
         cstat <- catScore(varName,
@@ -311,19 +304,16 @@ mkVtreatListWorker <- function(scale,doCollar) {
                           zC,zTarget,
                           weights,
                           extraModelDegrees)
-        csig <- cstat$sig
         sig <- cstat$sig
       }
     }
   }
   scoreFrameij <- data.frame(varName=varName,
                              varMoves=varMoves,
-                             lsig=lsig,
-                             sig=lsig,
+                             sig=sig,
                              stringsAsFactors = FALSE)
   if(catTarget) {
-    scoreFrameij$csig <- csig
-    scoreFrameij$sig <- csig
+    scoreFrameij$sig <- sig
   }
   .neatenScoreFrame(scoreFrameij)
 }
@@ -604,7 +594,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
       sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame
       nukeCols <- intersect(colnames(treatments$scoreFrame),
-                            c('lsig', 'sig', 'csig'))
+                            'sig')
       for(v in newVarsS) {
         for(n in nukeCols) {
           if(v %in% sframe$varName) {

@@ -45,7 +45,7 @@ test_that("testStability: Stability of estimates", {
   for(i in seq_len(nRun)) {
     tP <- vtreat::designTreatmentsC(d,'x','y',TRUE,rareSig=1,verbose=FALSE)
     # looking at instability in csig of Weiss level
-    csig[[i]] <- tP$scoreFrame$csig[tP$scoreFrame$varName=='x_lev_x.Weiss']
+    csig[[i]] <- tP$scoreFrame$sig[tP$scoreFrame$varName=='x_lev_x.Weiss']
   }
   expect_true((max(csig)-min(csig))<1.0e-5)
  })
