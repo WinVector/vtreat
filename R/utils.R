@@ -167,7 +167,8 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
       } else {
         smodel <- summary(lmodel)
         n <- sum(weights)
-        rss1 <- sum(weights*(d$y-mean(d$y))^2)
+        meany <- .wmean(d$y,weights)
+        rss1 <- sum(weights*(d$y-meany)^2)
         rss2 <- sum(weights*smodel$residuals^2)
         p1 <- 1
         p2 <- 2 + numberOfHiddenDegrees
