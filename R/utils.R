@@ -234,7 +234,7 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
           pRsq <- 1.0 - model$deviance/model$null.deviance
           sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
           a <- model$coefficients[['x']]
-          bg <- model$coefficients[['(Intercept)']]
+          # bg <- model$coefficients[['(Intercept)']]
           # sigmoid <- function(x) { 1/(1+exp(-x)) }
           # max(abs(predict(model,type='response')-sigmoid(a*x+bg))) small
         }
