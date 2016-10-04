@@ -231,7 +231,7 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
         delta_deviance <- model$null.deviance - model$deviance
         if((model$null.deviance>0)&&(delta_deviance>0)) {
           delta_df <- model$df.null - model$df.residual + numberOfHiddenDegrees
-          pRsq <- 1.0 - model$deviance/model$null.deviance
+          # pRsq <- 1.0 - model$deviance/model$null.deviance
           sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
           a <- model$coefficients[['x']]
           # bg <- model$coefficients[['(Intercept)']]
