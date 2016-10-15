@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount" />
 
-<meta name="date" content="2016-09-29" />
+<meta name="date" content="2016-10-14" />
 
 <title>vtreat Rare Levels</title>
 
@@ -70,13 +70,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat Rare Levels</h1>
 <h4 class="author"><em>John Mount</em></h4>
-<h4 class="date"><em>2016-09-29</em></h4>
+<h4 class="date"><em>2016-10-14</em></h4>
 
 
 
 <p>For some categorical variables rarity can reflect structural features. For instance with United States Zip codes rare zip codes often represent low population density regions.</p>
 <p>When this is the case it can make sense to pool the rare levels into a new re-coded level called ``rare.’’ If this new level is statistically significant it can be a usable modeling feature. This sort of pooling is only potentially useful if below a given training count behave similarly.</p>
-<p>This capability was more of an experimental demonstration of possible extensions of <code>vtreat</code> to have more inference capabilities about rare level than a commonly useful feature. Most of their power has since been captured in the more useful <code>catP</code> feature (also demonstrated here). Even more power is found in using an interaction of <code>catN</code> or <code>catB</code> with <code>catP</code>.</p>
+<p>This capability was more of an experimental demonstration of possible extensions of <code>vtreat</code> to have more inference capabilities about rare level than a commonly useful feature. Most of this power has since been captured in the more useful <code>catP</code> feature (also demonstrated here). Even more power is found in using an interaction of <code>catN</code> or <code>catB</code> with <code>catP</code>.</p>
 <p>An example of the rare level feature using <code>vtreat</code> is given below.</p>
 <p>First we set up some data by defining a set of population centers (<code>populationFrame</code>) and code to observe individuals (with replacement) uniformly from the combined population with a rare condition (<code>inClass</code>) that has elevated occurrence in observations coming from the small population centers (<code>rareCodes</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">'vtreat'</span>)

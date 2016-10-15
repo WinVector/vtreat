@@ -20,7 +20,7 @@ if below a given training count behave similarly.
 
 This capability was more of an experimental demonstration of possible extensions of `vtreat`
 to have more inference capabilities about rare level than a commonly useful 
-feature.  Most of their power has since been captured in the more useful `catP` feature
+feature.  Most of this power has since been captured in the more useful `catP` feature
 (also demonstrated here).  Even more power is found in using an interaction of `catN` or `catB`
 with `catP`.
 
