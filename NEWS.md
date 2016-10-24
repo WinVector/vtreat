@@ -1,11 +1,11 @@
 
-'vtreat' 0.5.28 2016/10/14
+'vtreat' 0.5.28 2016/10/24
 
 Changes:
 
 - Fix treatment of constant columns in cross-partitions.
 - Switch doCollar default to FALSE.
-- Return indicators on designTreatmentsZ
+- Return indicators on designTreatmentsZ.
 - Fix extraDegreesOfFreedom calculation.
 - Allow repeated appliction rows in cross frames.
 - Remove lsig and csig from scoreFrame.
