@@ -1,6 +1,7 @@
 
 ## Test environments
-* local OS X install, R version 3.3.1 
+* local OS X install x86_64-apple-darwin13.4.0 (64-bit)
+* R version 3.3.1 
 * win-builder (devel and release)
 
 ## R CMD check --as-cran vtreat_0.5.27.tar.gz
