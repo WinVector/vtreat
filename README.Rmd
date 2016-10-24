@@ -233,23 +233,15 @@ clustering, or principal component analysis) and for geometry sensitive
 machine learning techniques (k-means, knn, linear SVM, and more). You
 may want to do more than the 'vtreat' library does (such as Bayesian
 imputation, variable clustering, and more) but you certainly do not want
-to do less. The [original
-announcement](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/)
-is getting a bit out of date, so we hope to be able to write a new
-article on 'vtreat' soon. Until then we suggest running
-'vignette('vtreat')' in R to produce a rendered version of the [package
-vignette](https://cran.r-project.org/web/packages/vtreat/vignettes/vtreat.html).
-You can also checkout the package manual, now [available
-online](https://cran.r-project.org/web/packages/vtreat/vtreat.pdf).
+to do less. 
+
 There have been a number of recent substantial improvements to the
 library, including:
 
 -   Out of sample scoring.
 -   Ability to use 'parallel'.
 -   More general calculation of effect sizes and significances.
--   Addition of collaring or
-    [Winsorising](https://en.wikipedia.org/wiki/Winsorising) to defend
-    from outliers.
+
 
 Some of our related articles (which should make clear some of our
 motivations, and design decisions):

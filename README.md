@@ -84,12 +84,13 @@ The purpose of 'vtreat' library is to reliably prepare data for supervised machi
 
     It is a dirty secret that even popular machine learning techniques need some variable pruning (when exposed to very wide data frames, see [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/) and [here](https://www.youtube.com/watch?v=X_Rn3EOEjGE)). We make the necessary effect size estimates and significances easily available and supply initial variable pruning.
 
-The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of [*Practical Data Science with R* (Zumel, Mount; Manning 2014)](http://practicaldatascience.com/) into a [very short worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we think for understanding it is *essential* to work all the steps by hand as we did in the book). The idea is: 'data.frame's prepared with the 'vtreat' library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the 'vtreat' variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and 'vtreat::prepare(scale=TRUE)' which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the 'vtreat' library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less. The [original announcement](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/) is getting a bit out of date, so we hope to be able to write a new article on 'vtreat' soon. Until then we suggest running 'vignette('vtreat')' in R to produce a rendered version of the [package vignette](https://cran.r-project.org/web/packages/vtreat/vignettes/vtreat.html). You can also checkout the package manual, now [available online](https://cran.r-project.org/web/packages/vtreat/vtreat.pdf). There have been a number of recent substantial improvements to the library, including:
+The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of [*Practical Data Science with R* (Zumel, Mount; Manning 2014)](http://practicaldatascience.com/) into a [very short worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we think for understanding it is *essential* to work all the steps by hand as we did in the book). The idea is: 'data.frame's prepared with the 'vtreat' library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the 'vtreat' variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and 'vtreat::prepare(scale=TRUE)' which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the 'vtreat' library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less.
+
+There have been a number of recent substantial improvements to the library, including:
 
 -   Out of sample scoring.
 -   Ability to use 'parallel'.
 -   More general calculation of effect sizes and significances.
--   Addition of collaring or [Winsorising](https://en.wikipedia.org/wiki/Winsorising) to defend from outliers.
 
 Some of our related articles (which should make clear some of our motivations, and design decisions):
 
@@ -118,22 +119,22 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame)
-#>     varName varMoves      lsig        sig       csig needsSplit
-#> 1  x_lev_NA     TRUE 0.2031107 0.09248399 0.09248399      FALSE
-#> 2 x_lev_x.a     TRUE 0.3524132 0.26490379 0.26490379      FALSE
-#> 3 x_lev_x.b     TRUE 0.8456711 0.80967242 0.80967242      FALSE
-#> 4    x_catP     TRUE 0.3524132 0.26490379 0.26490379       TRUE
-#> 5    x_catB     TRUE 0.2901303 0.18011273 0.18011273       TRUE
-#> 6   z_clean     TRUE 0.2356201 0.13176020 0.13176020      FALSE
-#> 7   z_isBAD     TRUE 0.2031107 0.09248399 0.09248399      FALSE
-#>   extraModelDegrees origName  code
-#> 1                 0        x   lev
-#> 2                 0        x   lev
-#> 3                 0        x   lev
-#> 4                 2        x  catP
-#> 5                 2        x  catB
-#> 6                 0        z clean
-#> 7                 0        z isBAD
+#>     varName varMoves        sig needsSplit extraModelDegrees origName
+#> 1  x_lev_NA     TRUE 0.09248399      FALSE                 0        x
+#> 2 x_lev_x.a     TRUE 0.26490379      FALSE                 0        x
+#> 3 x_lev_x.b     TRUE 0.80967242      FALSE                 0        x
+#> 4    x_catP     TRUE 0.26490379       TRUE                 2        x
+#> 5    x_catB     TRUE 0.66481792       TRUE                 2        x
+#> 6   z_clean     TRUE 0.13176020      FALSE                 0        z
+#> 7   z_isBAD     TRUE 0.09248399      FALSE                 0        z
+#>    code
+#> 1   lev
+#> 2   lev
+#> 3   lev
+#> 4  catP
+#> 5  catB
+#> 6 clean
+#> 7 isBAD
 
 # help("prepare")
 
@@ -142,7 +143,7 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
 #>      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-#>  3.965082e-18 -1.982154e-17  9.917546e-19  1.585994e-16  2.378275e-17 
+#>  3.965082e-18 -1.982154e-17  9.917546e-19  1.585994e-16  0.000000e+00 
 #>       z_clean       z_isBAD 
 #>  7.927952e-18 -7.926292e-18
 # all non NA slopes should be 1
@@ -152,11 +153,11 @@ sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
 #>         1         1         1         1         1         1         1
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 print(dTestCTreated)
-#>     x_lev_NA  x_lev_x.a   x_lev_x.b     x_catP      x_catB   z_clean
-#> 1 -0.1714286 -0.2380952  0.02857143 -0.2380952 -0.26191735 0.4918919
-#> 2 -0.1714286  0.1785714 -0.07142857  0.1785714 -0.01479283 0.4918919
-#> 3 -0.1714286  0.1785714  0.02857143  1.0119048  0.06658235 0.4918919
-#> 4  0.4285714  0.1785714  0.02857143  0.1785714  0.40766885 0.0000000
+#>     x_lev_NA  x_lev_x.a   x_lev_x.b     x_catP     x_catB  z_clean
+#> 1 -0.1714286 -0.2380952  0.02857143 -0.2380952 -0.1897682 1.194595
+#> 2 -0.1714286  0.1785714 -0.07142857  0.1785714 -0.1489924 2.951351
+#> 3 -0.1714286  0.1785714  0.02857143  1.0119048 -0.1320682 4.708108
+#> 4  0.4285714  0.1785714  0.02857143  0.1785714  0.4336447 0.000000
 #>      z_isBAD
 #> 1 -0.1714286
 #> 2 -0.1714286
@@ -173,24 +174,15 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame)
-#>     varName varMoves      lsig       sig needsSplit extraModelDegrees
-#> 1  x_lev_NA     TRUE 0.1339746 0.1339746      FALSE                 0
-#> 2 x_lev_x.a     TRUE 0.2070312 0.2070312      FALSE                 0
-#> 3 x_lev_x.b     TRUE 1.0000000 1.0000000      FALSE                 0
-#> 4    x_catP     TRUE 0.2070312 0.2070312       TRUE                 2
-#> 5    x_catN     TRUE 0.6831941 0.6831941       TRUE                 2
-#> 6    x_catD     TRUE 0.6528290 0.6528290       TRUE                 2
-#> 7   z_clean     TRUE 0.1701892 0.1701892      FALSE                 0
-#> 8   z_isBAD     TRUE 0.1339746 0.1339746      FALSE                 0
-#>   origName  code
-#> 1        x   lev
-#> 2        x   lev
-#> 3        x   lev
-#> 4        x  catP
-#> 5        x  catN
-#> 6        x  catD
-#> 7        z clean
-#> 8        z isBAD
+#>     varName varMoves       sig needsSplit extraModelDegrees origName  code
+#> 1  x_lev_NA     TRUE 0.1339746      FALSE                 0        x   lev
+#> 2 x_lev_x.a     TRUE 0.2070312      FALSE                 0        x   lev
+#> 3 x_lev_x.b     TRUE 1.0000000      FALSE                 0        x   lev
+#> 4    x_catP     TRUE 0.2070312       TRUE                 2        x  catP
+#> 5    x_catN     TRUE 0.6831941       TRUE                 2        x  catN
+#> 6    x_catD     TRUE 0.6528290       TRUE                 2        x  catD
+#> 7   z_clean     TRUE 0.1701892      FALSE                 0        z clean
+#> 8   z_isBAD     TRUE 0.1339746      FALSE                 0        z isBAD
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
@@ -209,9 +201,9 @@ sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
 #>     x_lev_NA x_lev_x.a     x_lev_x.b x_catP x_catN      x_catD   z_clean
-#> 1 -0.1666667     -0.25 -2.266233e-17  -0.25  -0.25 -0.06743804 0.5238095
-#> 2 -0.1666667      0.25  6.798700e-17   0.25   0.00 -0.25818161 0.5238095
-#> 3 -0.1666667      0.25 -2.266233e-17   0.75   0.00 -0.25818161 0.5238095
+#> 1 -0.1666667     -0.25 -2.266233e-17  -0.25  -0.25 -0.06743804 0.9952381
+#> 2 -0.1666667      0.25  6.798700e-17   0.25   0.00 -0.25818161 2.5666667
+#> 3 -0.1666667      0.25 -2.266233e-17   0.75   0.00 -0.25818161 4.1380952
 #> 4  0.5000000      0.25 -2.266233e-17   0.25   0.50  0.39305768 0.0000000
 #>      z_isBAD
 #> 1 -0.1666667
