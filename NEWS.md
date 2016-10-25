@@ -20,7 +20,7 @@ Changes:
 - Change catB variables to delta-logit score.
 - Fix passing of arguments to parallel prepare, and reduce size of data passed.
 - Ensure set of variables consistency in mkCross* methods.
-- Mope parallelization of level significance calculations, and cheaper chi-square test where appropriate.
+- More parallelization of level significance calculations, and cheaper chi-square test where appropriate.
 
 'vtreat' 0.5.26 2016/07/10
 
