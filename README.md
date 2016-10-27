@@ -108,6 +108,8 @@ Trivial example:
 
 ``` r
 library("vtreat")
+packageVersion("vtreat")
+#> [1] '0.5.29'
 
 # categorical example
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
@@ -118,23 +120,15 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
-print(treatmentsC$scoreFrame)
-#>     varName varMoves        sig needsSplit extraModelDegrees origName
-#> 1  x_lev_NA     TRUE 0.09248399      FALSE                 0        x
-#> 2 x_lev_x.a     TRUE 0.26490379      FALSE                 0        x
-#> 3 x_lev_x.b     TRUE 0.80967242      FALSE                 0        x
-#> 4    x_catP     TRUE 0.26490379       TRUE                 2        x
-#> 5    x_catB     TRUE 0.66481792       TRUE                 2        x
-#> 6   z_clean     TRUE 0.13176020      FALSE                 0        z
-#> 7   z_isBAD     TRUE 0.09248399      FALSE                 0        z
-#>    code
-#> 1   lev
-#> 2   lev
-#> 3   lev
-#> 4  catP
-#> 5  catB
-#> 6 clean
-#> 7 isBAD
+print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
+#>   origName   varName  code         rsq        sig extraModelDegrees
+#> 1        x  x_lev_NA   lev 0.296065432 0.09248399                 0
+#> 2        x x_lev_x.a   lev 0.130005705 0.26490379                 0
+#> 3        x x_lev_x.b   lev 0.006067337 0.80967242                 0
+#> 4        x    x_catP  catP 0.130005705 0.26490379                 2
+#> 5        x    x_catB  catB 0.019634909 0.66481792                 2
+#> 6        z   z_clean clean 0.237601767 0.13176020                 0
+#> 7        z   z_isBAD isBAD 0.296065432 0.09248399                 0
 
 # help("prepare")
 
@@ -173,16 +167,16 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 # help("designTreatmentsN")
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
-print(treatmentsN$scoreFrame)
-#>     varName varMoves       sig needsSplit extraModelDegrees origName  code
-#> 1  x_lev_NA     TRUE 0.1339746      FALSE                 0        x   lev
-#> 2 x_lev_x.a     TRUE 0.2070312      FALSE                 0        x   lev
-#> 3 x_lev_x.b     TRUE 1.0000000      FALSE                 0        x   lev
-#> 4    x_catP     TRUE 0.2070312       TRUE                 2        x  catP
-#> 5    x_catN     TRUE 0.6831941       TRUE                 2        x  catN
-#> 6    x_catD     TRUE 0.6528290       TRUE                 2        x  catD
-#> 7   z_clean     TRUE 0.1701892      FALSE                 0        z clean
-#> 8   z_isBAD     TRUE 0.1339746      FALSE                 0        z isBAD
+print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
+#>   origName   varName  code          rsq       sig extraModelDegrees
+#> 1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
+#> 2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
+#> 3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
+#> 4        x    x_catP  catP 2.500000e-01 0.2070312                 2
+#> 5        x    x_catN  catN 2.970297e-02 0.6831941                 2
+#> 6        x    x_catD  catD 3.596967e-02 0.6528290                 2
+#> 7        z   z_clean clean 2.880952e-01 0.1701892                 0
+#> 8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
