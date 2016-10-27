@@ -1,4 +1,10 @@
 
+'vtreat' 0.5.29 2016/10/27
+
+Changes:
+
+- Add 'rsq' column to scoreFrame (rsq- for numeric targets, pseudo-rsq for categorical targets).
+
 'vtreat' 0.5.28 2016/10/24
 
 Changes:

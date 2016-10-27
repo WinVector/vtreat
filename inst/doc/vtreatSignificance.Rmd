@@ -54,7 +54,7 @@ head(d)
 treatmentsC <- vtreat::designTreatmentsC(d,c('catVarNoise','catVarPerfect'),'y',TRUE)
 
 
-# Estimate effect significance (not coeficient significance).
+# Estimate effect significance (not coefficient significance).
 estSigGLM <- function(xVar,yVar,numberOfHiddenDegrees=0) {
   d <- data.frame(x=xVar,y=yVar,stringsAsFactors = FALSE)
   model <- stats::glm(stats::as.formula('y~x'),
@@ -77,6 +77,7 @@ vtreat produces good variable significances using out of sample simulation
 print(treatmentsC$scoreFrame[,c('varName','rsq','sig','extraModelDegrees')])
 ```
 
+For categorical targets we have in the `scoreFrame` the `sig` column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the `rsq` column is the "pseudo-rsquared" or portion of deviance explained (please see [here](http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/) for some notes).  For numeric targets the `sig` column is the significance of the single variable linear regression using the named variable (plus a constant term), and the `rsq` column is the "rsquared" or portion of variance explained (please see [here](http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/)) for some notes).
 
 Signal carrying complex variables can score as signficant, even those composed of
 rare levels.

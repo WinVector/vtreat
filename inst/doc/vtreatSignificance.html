@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-10-26" />
+<meta name="date" content="2016-10-27" />
 
 <title>vtreat significance</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat significance</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-10-26</em></h4>
+<h4 class="date"><em>2016-10-27</em></h4>
 
 
 
@@ -119,16 +119,16 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d$catVarPerfect)
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot;designing treatments Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot; have level statistics Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot;design var catVarNoise Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot;design var catVarPerfect Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot; scoring treatments Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot;have treatment plan Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot;rescoring complex variables Wed Oct 26 21:02:39 2016&quot;
-## [1] &quot;done rescoring complex variables Wed Oct 26 21:02:39 2016&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coeficient significance).</span>
+<pre><code>## [1] &quot;desigining treatments Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot;designing treatments Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot; have level statistics Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot;design var catVarNoise Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot;design var catVarPerfect Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot; scoring treatments Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot;have treatment plan Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot;rescoring complex variables Thu Oct 27 10:02:09 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Oct 27 10:02:09 2016&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span>function(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
   model &lt;-<span class="st"> </span>stats::<span class="kw">glm</span>(stats::<span class="kw">as.formula</span>(<span class="st">'y~x'</span>),
@@ -148,6 +148,7 @@ prepD &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(trea
 ## 1   catVarNoise_catB 0.0003794619  4.683998e-01               249
 ## 2 catVarPerfect_catP 0.0001776213  6.198374e-01               473
 ## 3 catVarPerfect_catB 0.6951868195 1.802669e-211               473</code></pre>
+<p>For categorical targets we have in the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-rsquared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes). For numeric targets the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “rsquared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
 <p>Signal carrying complex variables can score as signficant, even those composed of rare levels.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">glm</span>(y~d$catVarPerfect==<span class="st">'lev001T'</span>,<span class="dt">data=</span>d,<span class="dt">family=</span>binomial))</code></pre></div>
 <pre><code>## 
