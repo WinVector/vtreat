@@ -4,7 +4,8 @@ dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE),
    stringsAsFactors = FALSE)
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-print(treatmentsC$scoreFrame[,c('origName','varName','code','varMoves','sig')])
+scoreColsToPrint <- c('origName','varName','code','rsq','sig','extraModelDegrees')
+print(treatmentsC$scoreFrame[,scoreColsToPrint])
 
 ## ----map-----------------------------------------------------------------
 # Build a map from vtreat names back to reasonable display names
@@ -21,7 +22,7 @@ dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
    stringsAsFactors = FALSE)
 treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-print(treatmentsN$scoreFrame[,c('origName','varName','code','varMoves','sig')])
+print(treatmentsN$scoreFrame[,scoreColsToPrint])
 
 ## ----notargetexample, tidy=FALSE-----------------------------------------
 library(vtreat)
@@ -29,14 +30,14 @@ dTrainZ <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),
    stringsAsFactors = FALSE)
 treatmentsZ <- designTreatmentsZ(dTrainZ,colnames(dTrainZ))
-print(treatmentsZ$scoreFrame[,c('origName','varName','code','varMoves')])
+print(treatmentsZ$scoreFrame[, c('origName','varName','code','extraModelDegrees')])
 
 ## ----selectvars----------------------------------------------------------
 dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
    stringsAsFactors = FALSE)
 treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-print(treatmentsN$scoreFrame[,c('origName','varName','code','varMoves','sig')])
+print(treatmentsN$scoreFrame[,scoreColsToPrint])
 
 pruneSig <- 1.0 # don't filter on significance for this tiny example
 vScoreFrame <- treatmentsN$scoreFrame

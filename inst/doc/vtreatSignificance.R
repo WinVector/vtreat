@@ -40,7 +40,7 @@ estSigGLM <- function(xVar,yVar,numberOfHiddenDegrees=0) {
 prepD <- vtreat::prepare(treatmentsC,d,pruneSig=c())
 
 ## ----scoreframe----------------------------------------------------------
-print(treatmentsC$scoreFrame[c('varName','origName','sig')])
+print(treatmentsC$scoreFrame[,c('varName','rsq','sig','extraModelDegrees')])
 
 ## ----scoresignal---------------------------------------------------------
 summary(glm(y~d$catVarPerfect=='lev001T',data=d,family=binomial))

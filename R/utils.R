@@ -154,6 +154,7 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
     weights <- 1.0+numeric(length(xcol))
   }
   a <- 0.0
+  rsq <- 0.0
   sig <- 1.0
   if(.has.range.cn(xcol) && .has.range.cn(ycol)) {
     suppressWarnings(tryCatch({ 
@@ -170,6 +171,7 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
         meany <- .wmean(d$y,weights)
         rss1 <- sum(weights*(d$y-meany)^2)
         rss2 <- sum(weights*smodel$residuals^2)
+        rsq <- 1 - rss2/rss1
         p1 <- 1
         p2 <- 2 + numberOfHiddenDegrees
         if((n>p2)&&(rss1>rss2)&&(rss1>0)&&(p2>p1)) {
@@ -190,7 +192,7 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
   b <- -.wmean(a*xcol,weights)
   data.frame(varName=varName,
              a=a,b=b,
-             sig=sig,
+             rsq=rsq,sig=sig,
              stringsAsFactors=FALSE)
 }
 
@@ -216,6 +218,7 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
   if(is.null(weights)) {
     weights <- 1.0+numeric(length(x))
   }
+  pRsq <- 0.0
   sig <- 1.0
   a <- 0.0
   if(.has.range.cn(x) && 
@@ -231,7 +234,7 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
         delta_deviance <- model$null.deviance - model$deviance
         if((model$null.deviance>0)&&(delta_deviance>0)) {
           delta_df <- model$df.null - model$df.residual + numberOfHiddenDegrees
-          # pRsq <- 1.0 - model$deviance/model$null.deviance
+          pRsq <- 1.0 - model$deviance/model$null.deviance
           sig <- stats::pchisq(delta_deviance, delta_df, lower.tail=FALSE)
           a <- model$coefficients[['x']]
           # bg <- model$coefficients[['(Intercept)']]
@@ -244,7 +247,7 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
   }
   b <- -.wmean(a*x,weights)
   data.frame(varName=varName,
-             sig=sig,
+             rsq=pRsq,sig=sig,
              a=a,b=b,
              stringsAsFactors=FALSE)
 }

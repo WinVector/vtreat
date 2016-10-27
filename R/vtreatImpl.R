@@ -291,7 +291,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 .scoreCol <- function(varName,nxcol,zoY,zC,zTarget,weights,
                       extraModelDegrees=0) {
-  sig=1.0
+  rsq <- 0.0
+  sig <- 1.0
   catTarget <- !is.null(zC)
   varMoves <- .has.range.cn(nxcol)
   if(varMoves) {
@@ -303,6 +304,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                         weights,
                         extraModelDegrees)
       sig <- lstat$sig
+      rsq <- lstat$rsq
       if(catTarget) {
         cstat <- catScore(varName,
                           nxcol,
@@ -310,16 +312,15 @@ mkVtreatListWorker <- function(scale,doCollar) {
                           weights,
                           extraModelDegrees)
         sig <- cstat$sig
+        rsq <- cstat$rsq
       }
     }
   }
   scoreFrameij <- data.frame(varName=varName,
                              varMoves=varMoves,
+                             rsq=rsq,
                              sig=sig,
                              stringsAsFactors = FALSE)
-  if(catTarget) {
-    scoreFrameij$sig <- sig
-  }
   .neatenScoreFrame(scoreFrameij)
 }
 
@@ -599,7 +600,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
       sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame
       nukeCols <- intersect(colnames(treatments$scoreFrame),
-                            'sig')
+                            c('sig','rsq'))
       for(v in newVarsS) {
         for(n in nukeCols) {
           if(v %in% sframe$varName) {

@@ -74,7 +74,7 @@ vtreat produces good variable significances using out of sample simulation
 (cross frames).
 
 ```{r scoreframe}
-print(treatmentsC$scoreFrame[c('varName','origName','sig')])
+print(treatmentsC$scoreFrame[,c('varName','rsq','sig','extraModelDegrees')])
 ```
 
 
