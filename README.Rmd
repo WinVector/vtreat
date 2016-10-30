@@ -272,10 +272,12 @@ Trivial example:
 ```{r}
 library("vtreat")
 packageVersion("vtreat")
+citation('vtreat')
 
 # categorical example
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
-   z=c(1,2,3,4,NA,6,NA),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
+   z=c(1,2,3,4,NA,6,NA),
+   y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 
 # help("designTreatmentsC")

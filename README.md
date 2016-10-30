@@ -110,10 +110,32 @@ Trivial example:
 library("vtreat")
 packageVersion("vtreat")
 #> [1] '0.5.29'
+citation('vtreat')
+#> 
+#> To cite package 'vtreat' in publications use:
+#> 
+#>   John Mount and Nina Zumel (2016). vtreat: A Statistically Sound
+#>   data.frame Processor/Conditioner. R package version 0.5.29.
+#>   https://github.com/WinVector/vtreat
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {vtreat: A Statistically Sound data.frame Processor/Conditioner},
+#>     author = {John Mount and Nina Zumel},
+#>     year = {2016},
+#>     note = {R package version 0.5.29},
+#>     url = {https://github.com/WinVector/vtreat},
+#>   }
+#> 
+#> ATTENTION: This citation information has been auto-generated from
+#> the package DESCRIPTION file and may need manual editing, see
+#> 'help("citation")'.
 
 # categorical example
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
-   z=c(1,2,3,4,NA,6,NA),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
+   z=c(1,2,3,4,NA,6,NA),
+   y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 
 # help("designTreatmentsC")
