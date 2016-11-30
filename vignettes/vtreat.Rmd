@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-'vtreat' is a data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
+'vtreat' is a data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.  A formal article on the method can be found here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477).
 
 A 'vtreat' clean data
 frame:
