@@ -9,12 +9,14 @@ vtreat: a package for simple variable treatment
 vtreat is a data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
 
 Common problems vtreat defends against: NA, too many categorical
-values, rare categorical values, new categorical values (levels seen during application,
+values, rare categorical values, and new categorical values (levels seen during application,
 but not during training).   \code{\link{prepare}} should be used as you would
 use model.matrix.  \code{\link{prepare}} treated variables are all numeric and never
 take the value NA (so are very safe to use in modeling).
 
-To use: first build a list of variable treatments from your training data using
+More documentation can be found here: arXiv:1611.09477 [stat.AP] \url{https://arxiv.org/abs/1611.09477}.
+
+To use vtreat: first build a list of variable treatments from your training data using
 \code{\link{designTreatmentsC}} (for models predicting binary categorical outcomes)
 or \code{\link{designTreatmentsN}} (for models predicting numeric outcomes).
 If you have enough data we suggested running the design step on a subset of data disjoint from training and test (this avoids many issues including mis-counting degrees of freedom on effect or impact codes arising from categorical variables with a large number of levels).
