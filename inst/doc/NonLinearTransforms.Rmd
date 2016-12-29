@@ -1,0 +1,68 @@
+---
+title: "Nonlinear Transforms"
+author: "John Mount"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nonlinear Transforms}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 7)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(vtreat)
+set.seed(23255)
+
+have_ggplot = requireNamespace("ggplot2", quietly=TRUE)
+if(have_ggplot) {
+  library(ggplot2)
+}
+```
+
+```{r monotoneXformD}
+d <- data.frame(x=c(3,1,-12,NA,5,NaN))
+d$y <- log(d$x)
+m1 <- monotoneXformD(d$x,d$y)
+m2 <- monotoneXformD(d$x,d$y,decreasing=TRUE)
+d$pred1 <- m1(d$x)
+d$pred2 <- m2(d$x)
+print(d)
+```
+
+```{r monotone}
+d <- data.frame(x=c(15,1,-12,NA,5,NaN))
+d$y <- -log(d$x)
+m <- monotoneXform(d$x,d$y)
+d2 <- data.frame(x=-20:20)
+d2$pred <- m(d2$x)
+if(have_ggplot) {
+  ggplot() + geom_point(data=d,mapping=aes(x=x,y=y)) + 
+    geom_line(data=d2,mapping=aes(x=x,y=pred),color='blue')
+}
+print(d)
+```
+
+```{r gam}
+d <- data.frame(x=0.2*(1:30))
+d$y <- sin(d$x)
+m <- gamXform(d$x,d$y)
+d$pred <- m(d$x)
+if(have_ggplot) {
+  ggplot(data=d,mapping=aes(x=x)) + geom_point(aes(y=y)) +
+    geom_line(aes(y=pred),color='blue')
+}
+
+d$yCat <- d$y>0.0
+mC <- gamXform(d$x, d$yC, family= stats::binomial(link='logit'))
+d$predC <- mC(d$x)
+if(have_ggplot) {
+  ggplot(data=d,mapping=aes(x=predC,color=yCat)) + geom_density()
+}
+print(table(truth=d$yC,pred=d$predC>0.5))
+```
+
+

@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2016-12-08" />
+<meta name="date" content="2016-12-29" />
 
 <title>vtreat cross frames</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat cross frames</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2016-12-08</em></h4>
+<h4 class="date"><em>2016-12-29</em></h4>
 
 
 
@@ -117,18 +117,18 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;designing treatments Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot; have level statistics Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xBad1 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xBad2 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xBad3 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xGood1 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xGood2 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot; scoring treatments Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;have treatment plan Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;rescoring complex variables Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;done rescoring complex variables Thu Dec  8 11:28:43 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;designing treatments Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot; have level statistics Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;design var xBad1 Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;design var xBad2 Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;design var xBad3 Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;design var xGood1 Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;design var xGood2 Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot; scoring treatments Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;have treatment plan Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;rescoring complex variables Thu Dec 29 12:05:48 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Dec 29 12:05:49 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -197,18 +197,18 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmen
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;designing treatments Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot; have level statistics Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xBad1 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xBad2 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xBad3 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xGood1 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;design var xGood2 Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot; scoring treatments Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;have treatment plan Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;rescoring complex variables Thu Dec  8 11:28:43 2016&quot;
-## [1] &quot;done rescoring complex variables Thu Dec  8 11:28:44 2016&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;designing treatments Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot; have level statistics Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;design var xBad1 Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;design var xBad2 Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;design var xBad3 Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;design var xGood1 Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;design var xGood2 Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot; scoring treatments Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;have treatment plan Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;rescoring complex variables Thu Dec 29 12:05:49 2016&quot;
+## [1] &quot;done rescoring complex variables Thu Dec 29 12:05:49 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)

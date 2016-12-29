@@ -19,6 +19,7 @@ Suggests:
     knitr,
     parallel,
     rmarkdown,
+    mgcv,
     dplyr,
     ggplot2
 LazyData: true
