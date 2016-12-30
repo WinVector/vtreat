@@ -104,6 +104,7 @@ monotoneXform <- function(x, y) {
 #'
 #' @param x numeric vector input
 #' @param y numeric vector (same lenght as x) target output
+#' @param k spline degree (leave null for automatic fit)
 #' @param family mgcv/stats family object specifying the distribution and link to use in fitting 
 #' @return increasing function mapping x to y
 #' 
@@ -123,7 +124,9 @@ monotoneXform <- function(x, y) {
 #' 
 #' @export
 #'
-gamXform <- function(x, y, family=stats::gaussian()) {
+gamXform <- function(x, y, 
+                     k= NULL,
+                     family= stats::gaussian()) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   good <- (!is.na(x)) & (!is.na(y))
@@ -131,8 +134,13 @@ gamXform <- function(x, y, family=stats::gaussian()) {
   y <- y[good]
   m <- NULL
   if(requireNamespace('mgcv', quietly = TRUE)) {
-    tryCatch(
-      m <- mgcv::gam(y~s(x), data=data.frame(x=x,y=y), family=family),
+    tryCatch({
+      form <- 'y~s(x)'
+      if(!is.null(k)) {
+        form <- paste0('y~s(x,k=',k,')')
+      }
+      m <- mgcv::gam(as.formula(form), data=data.frame(x=x,y=y), family=family)
+      },
       error = function(e) { NULL })
   }
   if(is.null(m)) {

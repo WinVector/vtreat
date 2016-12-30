@@ -4,12 +4,14 @@
 \alias{gamXform}
 \title{Build a one variable GAM transform}
 \usage{
-gamXform(x, y, family = stats::gaussian())
+gamXform(x, y, k = NULL, family = stats::gaussian())
 }
 \arguments{
 \item{x}{numeric vector input}
 
 \item{y}{numeric vector (same lenght as x) target output}
+
+\item{k}{spline degree (leave null for automatic fit)}
 
 \item{family}{mgcv/stats family object specifying the distribution and link to use in fitting}
 }
