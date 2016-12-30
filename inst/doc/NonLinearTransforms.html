@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount" />
 
-<meta name="date" content="2016-12-29" />
+<meta name="date" content="2016-12-30" />
 
 <title>Nonlinear Transforms</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Nonlinear Transforms</h1>
 <h4 class="author"><em>John Mount</em></h4>
-<h4 class="date"><em>2016-12-29</em></h4>
+<h4 class="date"><em>2016-12-30</em></h4>
 
 
 
@@ -148,7 +148,7 @@ if(have_ggplot) {
 ## truth   FALSE TRUE
 ##   FALSE     9    5
 ##   TRUE      2   14</code></pre>
-<p>Be aware that splining variables separately, as we show above, is nowhere near as powerful as building a joint generalized additive model. Also the process is not necessarily inevitable as the spline transform may not be monotone. However, it can make sense to pre-prepare variables as above and use this to guide variable selection, using original variables for <code>vtreat</code> and then building a final generalized additive model.</p>
+<p>Be aware that splining variables separately, as we show above, is nowhere near as powerful as building a joint generalized additive model. Also the process is not necessarily invertible as the spline transform may not be monotone (and hences not one-to-one). However, it can make sense to pre-prepare variables as above and use this to guide variable selection, using original variables for <code>vtreat</code> and then building a final generalized additive model. We will work on the invertibility issue with our next two transforms.</p>
 </div>
 <div id="monotonexformd" class="section level2">
 <h2><code>monotoneXformD</code></h2>

@@ -107,7 +107,7 @@ if(have_ggplot) {
 print(table(truth=d$yC,pred=d$predC>0.5))
 ```
 
-Be aware that splining variables separately, as we show above, is nowhere near as powerful as building a joint generalized additive model.  Also the process is not necessarily inevitable as the spline transform may not be monotone.  However, it can make sense to pre-prepare variables as above and use this to guide variable selection, using original variables for `vtreat` and then building a final generalized additive model.
+Be aware that splining variables separately, as we show above, is nowhere near as powerful as building a joint generalized additive model.  Also the process is not necessarily invertible as the spline transform may not be monotone (and hences not one-to-one).  However, it can make sense to pre-prepare variables as above and use this to guide variable selection, using original variables for `vtreat` and then building a final generalized additive model.  We will work on the invertibility issue with our next two transforms.
 
 ## `monotoneXformD` 
 
