@@ -46,7 +46,7 @@ monotoneXformD <- function(x, y,
       probesX <- seq(xvals[[1]],xvals[[length(xvals)]],length.out=k)
       lookupsX <- pmin(length(xvals),pmax(1,findInterval(probesX,xvals)))
     }
-    lookupsX <- c()
+    lookupsY <- c()
     if(yvals[[length(yvals)]]>yvals[[1]]) {
       probesY <- seq(yvals[[1]],yvals[[length(yvals)]],length.out=k)
       lookupsY <- pmin(length(yvals),pmax(1,findInterval(probesY,yvals)))
