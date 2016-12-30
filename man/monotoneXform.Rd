@@ -4,12 +4,14 @@
 \alias{monotoneXform}
 \title{Build a monotone transform}
 \usage{
-monotoneXform(x, y)
+monotoneXform(x, y, k = NULL)
 }
 \arguments{
 \item{x}{numeric vector input}
 
 \item{y}{numeric vector (same lenght as x) target output}
+
+\item{k}{integer if not null approximate number of knots to prune to}
 }
 \value{
 monotone function mapping x to y

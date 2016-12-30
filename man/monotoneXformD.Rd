@@ -4,7 +4,7 @@
 \alias{monotoneXformD}
 \title{Build a monotone transform transform in a chosen direction}
 \usage{
-monotoneXformD(x, y, decreasing = FALSE)
+monotoneXformD(x, y, decreasing = FALSE, k = NULL)
 }
 \arguments{
 \item{x}{numeric vector input}
@@ -12,6 +12,8 @@ monotoneXformD(x, y, decreasing = FALSE)
 \item{y}{numeric vector (same lenght as x) target output}
 
 \item{decreasing}{logical if TRUE build decreasing instead}
+
+\item{k}{integer if not null approximate number of knots to prune to}
 }
 \value{
 monotone function mapping x to y

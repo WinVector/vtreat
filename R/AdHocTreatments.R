@@ -9,6 +9,7 @@ NULL
 #' @param x numeric vector input
 #' @param y numeric vector (same lenght as x) target output
 #' @param decreasing logical if TRUE build decreasing instead
+#' @param k integer if not null approximate number of knots to prune to
 #' @return monotone function mapping x to y
 #' 
 #' @examples
@@ -22,7 +23,8 @@ NULL
 #' 
 #' @export
 #'
-monotoneXformD <- function(x, y, decreasing=FALSE) {
+monotoneXformD <- function(x, y, 
+                           decreasing= FALSE, k= NULL) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   if(decreasing) {
@@ -37,6 +39,22 @@ monotoneXformD <- function(x, y, decreasing=FALSE) {
   m <- stats::isoreg(x,y)
   xvals <- m$x[m$iKnots]
   yvals <- m$yf[m$iKnots]
+  if((!is.null(k)) && (k<length(xvals))) {
+    # cut down to no more than 2 k + 2 points
+    lookupsX <- c()
+    if(xvals[[length(xvals)]]>xvals[[1]]) {
+      probesX <- seq(xvals[[1]],xvals[[length(xvals)]],length.out=k)
+      lookupsX <- pmin(length(xvals),pmax(1,findInterval(probesX,xvals)))
+    }
+    lookupsX <- c()
+    if(yvals[[length(yvals)]]>yvals[[1]]) {
+      probesY <- seq(yvals[[1]],yvals[[length(yvals)]],length.out=k)
+      lookupsY <- pmin(length(yvals),pmax(1,findInterval(probesY,yvals)))
+    }
+    idxs <- sort(unique(c(1,length(xvals),lookupsX,lookupsY)))
+    xvals <- xvals[idxs]
+    yvals <- yvals[idxs]
+  }
   rm(list=setdiff(ls(),c('xvals','yvals','decreasing')))
   function(x) {
     x <- as.numeric(x)
@@ -50,7 +68,7 @@ monotoneXformD <- function(x, y, decreasing=FALSE) {
       yhat[nonNA] = yvals[[1]]
     } else {
       ## step version
-      #lookups <- pmin(length(x),pmax(1,findInterval(x,xvals)))
+      #lookups <- pmin(length(xvals),pmax(1,findInterval(x,xvals)))
       #yhat[nonNA] <- yvals[lookups[nonNA]]
       ## linearly interpolated version
       yhat[nonNA] <- stats::approx(x=xvals,y=yvals,
@@ -69,6 +87,7 @@ monotoneXformD <- function(x, y, decreasing=FALSE) {
 #'
 #' @param x numeric vector input
 #' @param y numeric vector (same lenght as x) target output
+#' @param k integer if not null approximate number of knots to prune to
 #' @return monotone function mapping x to y
 #' 
 #' @examples
@@ -83,13 +102,13 @@ monotoneXformD <- function(x, y, decreasing=FALSE) {
 #' 
 #' @export
 #'
-monotoneXform <- function(x, y) {
-  xi <- monotoneXformD(x,y,decreasing=FALSE)
+monotoneXform <- function(x, y, k= NULL) {
+  xi <- monotoneXformD(x,y,decreasing=FALSE,k=k)
   ei <- mean((y-xi(x))^2, na.rm= TRUE)
   if(ei<=0) {
     return(xi)
   }
-  xd <- monotoneXformD(x,y,decreasing=TRUE)
+  xd <- monotoneXformD(x,y,decreasing=TRUE,k=k)
   ed <- mean((y-xd(x))^2, na.rm= TRUE)
   if(ei<=ed) {
     return(xi)
