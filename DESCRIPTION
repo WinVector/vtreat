@@ -1,8 +1,8 @@
 Package: vtreat
 Type: Package
 Title: A Statistically Sound data.frame Processor/Conditioner
-Version: 0.5.29
-Date: 2016-10-27
+Version: 0.5.30
+Date: 2016-12-29
 Author: John Mount, Nina Zumel
 URL: https://github.com/WinVector/vtreat
 BugReports: https://github.com/WinVector/vtreat/issues
