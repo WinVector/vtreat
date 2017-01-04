@@ -28,8 +28,8 @@ where the outcome or y-value is not NA, finite and not nan.
 \tabular{ll}{
 Package: \tab vtreat\cr
 Type: \tab Package\cr
-Version: \tab 0.5.29\cr
-Date: \tab 2016-10-27\cr
+Version: \tab 0.5.30\cr
+Date: \tab  2016-12-29\cr
 License: \tab GNU General Public License version 3\cr
 }
 }
