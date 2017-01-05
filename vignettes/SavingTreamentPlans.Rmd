@@ -1,6 +1,6 @@
 ---
 title: "Saving Treatment Plans"
-author: "John Mount, Nina Zumel"
+author: "John Mount"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
