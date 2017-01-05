@@ -25,6 +25,7 @@ treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),
 
 fileName = paste0(tempfile(c('vtreatPlan')), '.RDS')
 saveRDS(treatmentsC,fileName)
+rm(list=c('treatmentsC'))
 ```
 
 And then to restore and use.
@@ -61,6 +62,7 @@ if (requireNamespace('RSQLite', quietly = TRUE)) {
                      'insert into treatments (key, treatment) values (:key, :treatment)',
                      bind.data=df)
 }
+rm(list=c('treatmentsC','dTestCTreated'))
 ```
 
 And we can read the treatment back in as follows.
