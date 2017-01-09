@@ -192,6 +192,9 @@ if(haveGGPlot2) {
 }
 ```
 
+Notice the increased similarity if distributions.
+
+
 ## Conclusion
 
 Controlling the way data is split in cross-validation -- preserving y-distribution, groups, and even ordering -- can
