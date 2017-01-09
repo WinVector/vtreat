@@ -57,10 +57,17 @@ if (requireNamespace('RSQLite', quietly = TRUE)) {
   df <- data.frame(
     key='treatmentsC', 
     treatment = I(list(serialize(treatmentsC, NULL))))
-  # And insert it
-  dbGetPreparedQuery(con, 
-                     'insert into treatments (key, treatment) values (:key, :treatment)',
-                     bind.data=df)
+  # Clear any previous version
+  dbGetQuery(con, 
+               "delete from treatments where key='treatmentsC'")
+  # insert treatmentplan
+  # depreciated
+  # dbGetPreparedQuery(con,
+  #                    'insert into treatments (key, treatment) values (:key, :treatment)',
+  #                    bind.data=df)
+  dbGetQuery(con, 
+             'insert into treatments (key, treatment) values (:key, :treatment)',
+             params=df)
 }
 rm(list=c('treatmentsC','dTestCTreated'))
 ```
