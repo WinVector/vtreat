@@ -1,3 +1,10 @@
+'vtreat' 0.5.30 2017/01/21
+
+Changes:
+
+- General improvements in documentation and vignettes.
+- Document saving/loading treatment plans.
+
 
 'vtreat' 0.5.29 2016/10/27
 
@@ -13,7 +20,7 @@ Changes:
 - Switch doCollar default to FALSE.
 - Return indicators on designTreatmentsZ.
 - Fix extraDegreesOfFreedom calculation.
-- Allow repeated appliction rows in cross frames.
+- Allow repeated application rows in cross frames.
 - Remove lsig and csig from scoreFrame.
 - Add meanY to treatmentplan.
 - Documentation fixes.
@@ -34,7 +41,7 @@ Changes:
 
 - Facilities for y-stratified and grouped splitting (useful for unbalanced classes).
 - catScaling=TRUE mode uses logistic regression for y-aware variable scaling.
-- Fix erronious bad type warning on date columns.
+- Fix erroneous bad type warning on date columns.
 
 
 'vtreat' 0.5.25 2016/05/02

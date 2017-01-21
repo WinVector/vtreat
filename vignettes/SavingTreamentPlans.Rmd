@@ -68,8 +68,10 @@ if (requireNamespace('RSQLite', quietly = TRUE)) {
   dbGetQuery(con, 
              'insert into treatments (key, treatment) values (:key, :treatment)',
              params=df)
+  constr <- paste(capture.output(print(con)),collapse='\n')
+  paste('saved to db: ', constr)
 }
-rm(list=c('treatmentsC','dTestCTreated'))
+rm(list= c('treatmentsC', 'dTestCTreated'))
 ```
 
 And we can read the treatment back in as follows.
@@ -83,5 +85,6 @@ if(!is.null(con)) {
   treatmentsC <- treatmentsList[[1]]
   dbDisconnect(con)
   dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig= c())
+  print(dTestCTreated)
 }
 ```
