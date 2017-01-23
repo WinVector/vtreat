@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount" />
 
-<meta name="date" content="2017-01-21" />
+<meta name="date" content="2017-01-23" />
 
 <title>vtreat Rare Levels</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat Rare Levels</h1>
 <h4 class="author"><em>John Mount</em></h4>
-<h4 class="date"><em>2017-01-21</em></h4>
+<h4 class="date"><em>2017-01-23</em></h4>
 
 
 
@@ -93,11 +93,11 @@ rareCodes &lt;-<span class="st"> </span>populationFrame$code[populationFrame$pop
 
 <span class="co"># Draw individuals from code-regions proportional to size of code region</span>
 <span class="co"># (or uniformly over all individuals labeled by code region).</span>
-<span class="co"># Also add the outcome which has elevated probability for rareCodes.</span>
+<span class="co"># Also add the outcome which has altered conditional probability for rareCodes.</span>
 drawIndividualsAndReturnCodes &lt;-<span class="st"> </span>function(n) {
   ords &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">sample.int</span>(<span class="kw">sum</span>(populationFrame$popsize),<span class="dt">size=</span>n,<span class="dt">replace=</span><span class="ot">TRUE</span>))
   cs &lt;-<span class="st"> </span><span class="kw">cumsum</span>(populationFrame$popsize)
-  indexes &lt;-<span class="st"> </span><span class="kw">findInterval</span>(ords,cs,<span class="dt">left.open=</span><span class="ot">TRUE</span>)+<span class="dv">1</span>
+  indexes &lt;-<span class="st"> </span><span class="kw">findInterval</span>(ords,cs)+<span class="dv">1</span>
   indexes &lt;-<span class="st"> </span>indexes[<span class="kw">sample.int</span>(n,<span class="dt">size=</span>n,<span class="dt">replace=</span><span class="ot">FALSE</span>)]
   samp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">code=</span>populationFrame$code[indexes],
                      <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
@@ -111,7 +111,7 @@ drawIndividualsAndReturnCodes &lt;-<span class="st"> </span>function(n) {
 ## generatedAsRare FALSE TRUE
 ##           FALSE  1962   15
 ##           TRUE     16    7</code></pre>
-<p>Notice that in the sample we can observed the elevated rate of <code>inClass==TRUE</code> conditioned on coming from a <code>code</code> that is one of the <code>rareCodes</code>.</p>
+<p>Notice that in the sample we can observe the elevated rate of <code>inClass==TRUE</code> conditioned on coming from a <code>code</code> that is one of the <code>rareCodes</code>.</p>
 <p>We could try to learn this relation using <code>vtreat</code>. To do this we set up another sample (<code>designSet</code>) to work on, so we are not inferring from <code>testSet</code> (where we will evaluate results).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">designSet &lt;-<span class="st"> </span><span class="kw">drawIndividualsAndReturnCodes</span>(<span class="dv">2000</span>)
 treatments &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(designSet,<span class="st">'code'</span>,<span class="st">'inClass'</span>,<span class="ot">TRUE</span>,

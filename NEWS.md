@@ -1,3 +1,11 @@
+
+'vtreat' 0.5.31 2017/01/23
+
+Changes:
+
+- Remove left.op=TRUE from findInterval in "vtreat Rare Levels" vignette (seems to be a new addition to findInterval, so fails CRAN check r-oldrel-windows-ix86+x86_64).
+
+
 'vtreat' 0.5.30 2017/01/21
 
 Changes:

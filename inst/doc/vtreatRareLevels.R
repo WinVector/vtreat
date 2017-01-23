@@ -13,11 +13,11 @@ rareCodes <- populationFrame$code[populationFrame$popsize<1000]
 
 # Draw individuals from code-regions proportional to size of code region
 # (or uniformly over all individuals labeled by code region).
-# Also add the outcome which has elevated probability for rareCodes.
+# Also add the outcome which has altered conditional probability for rareCodes.
 drawIndividualsAndReturnCodes <- function(n) {
   ords <- sort(sample.int(sum(populationFrame$popsize),size=n,replace=TRUE))
   cs <- cumsum(populationFrame$popsize)
-  indexes <- findInterval(ords,cs,left.open=TRUE)+1
+  indexes <- findInterval(ords,cs)+1
   indexes <- indexes[sample.int(n,size=n,replace=FALSE)]
   samp <- data.frame(code=populationFrame$code[indexes],
                      stringsAsFactors = FALSE)
