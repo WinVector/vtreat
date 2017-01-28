@@ -1,6 +1,31 @@
 # variable treatments type def: list { origvar, newvars, f(col,args), args, treatmentName, scales } can share orig var
 
 
+
+#' vtreat: A Statistically Sound 'data.frame' Processor/Conditioner
+#'
+#' A 'data.frame' processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
+#' 'vtreat' prepares variables so that data has fewer exceptional cases, making
+#' it easier to safely use models in production. Common problems 'vtreat' defends
+#' against: 'Inf', 'NA', too many categorical levels, rare categorical levels, and new
+#' categorical levels (levels seen during application, but not during training).
+#' 'vtreat::prepare' should be used as you would use 'model.matrix'.
+#'
+#' To learn more about replyr, please start with the vignette:
+#' \code{vignette('replyr','replyr')}
+#'
+#'
+#'For more information:
+#' \itemize{
+#'   \item \code{vignette('vtreat', package='vtreat')}
+#'   \item \code{vignette(package='vtreat')}
+#'   \item Website: \url{https://github.com/WinVector/vtreat} }
+#'
+#' @docType package
+#' @name vtreat
+NULL
+
+
 #' @importFrom stats aggregate anova as.formula binomial chisq.test fisher.test glm lm lm.wfit pchisq pf quantile
 #' @importFrom utils packageVersion
 NULL
