@@ -11,9 +11,6 @@
 #' categorical levels (levels seen during application, but not during training).
 #' 'vtreat::prepare' should be used as you would use 'model.matrix'.
 #'
-#' To learn more about replyr, please start with the vignette:
-#' \code{vignette('replyr','replyr')}
-#'
 #'
 #'For more information:
 #' \itemize{
