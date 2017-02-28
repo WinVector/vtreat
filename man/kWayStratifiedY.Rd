@@ -55,4 +55,3 @@ summary(tapply(d$y,d$stratGroup,mean))
 #    geom_density() + ggtitle('caret::createFolds grouping')
 
 }
-

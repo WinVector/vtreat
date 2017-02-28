@@ -14,13 +14,9 @@ categorical levels (levels seen during application, but not during training).
 'vtreat::prepare' should be used as you would use 'model.matrix'.
 }
 \details{
-To learn more about replyr, please start with the vignette:
-\code{vignette('replyr','replyr')}
-
 For more information:
 \itemize{
   \item \code{vignette('vtreat', package='vtreat')}
   \item \code{vignette(package='vtreat')}
   \item Website: \url{https://github.com/WinVector/vtreat} }
 }
-

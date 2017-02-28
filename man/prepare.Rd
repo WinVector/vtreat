@@ -56,4 +56,3 @@ dTestCTreated <- prepare(treatmentsC,dTestC,1.0)
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 }
-

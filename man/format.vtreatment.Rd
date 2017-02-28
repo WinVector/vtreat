@@ -14,4 +14,3 @@
 \description{
 Display treatment plan.
 }
-

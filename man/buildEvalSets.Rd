@@ -94,4 +94,3 @@ d$outOfSampleEst <- simulateOutOfSampleTrainEval(d,fitModelAndApply)
 \seealso{
 \code{\link{kWayCrossValidation}}, \code{\link{kWayStratifiedY}}, and \code{\link{makekWayCrossValidationGroupedByColumn}}
 }
-

@@ -24,4 +24,4 @@ Suggests:
     RSQLite
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

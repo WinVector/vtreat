@@ -26,4 +26,3 @@ getSplitPlanAppLabels(3,plan)
 \seealso{
 \code{\link{kWayCrossValidation}}, \code{\link{kWayStratifiedY}}, and \code{\link{makekWayCrossValidationGroupedByColumn}}
 }
-

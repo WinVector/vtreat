@@ -23,4 +23,3 @@ significance estiamte and scaling.
 \description{
 Return in-sample linear stats and scaling.
 }
-

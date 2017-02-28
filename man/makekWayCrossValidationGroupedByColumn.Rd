@@ -25,4 +25,3 @@ d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),split)
 rowSums(table(d$group,d$splitLabel)>0)
 
 }
-

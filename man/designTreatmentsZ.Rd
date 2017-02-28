@@ -57,4 +57,3 @@ dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=1)
 \seealso{
 \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 }
-

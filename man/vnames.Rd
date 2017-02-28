@@ -15,4 +15,3 @@ New treated variable names from a treatmentplan$treatment item.
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
 }
-

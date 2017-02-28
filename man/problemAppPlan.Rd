@@ -30,4 +30,3 @@ problemAppPlan(3,3,plan,TRUE)
 \seealso{
 \code{\link{kWayCrossValidation}}, \code{\link{kWayStratifiedY}}, and \code{\link{makekWayCrossValidationGroupedByColumn}}
 }
-

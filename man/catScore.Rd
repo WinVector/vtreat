@@ -32,4 +32,3 @@ d$x <- seq_len((nrow(d)))
 vtreat:::catScore('x',d$x,d$y,1,NULL)
 
 }
-

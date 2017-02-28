@@ -78,4 +78,3 @@ dTrainV <- cC$crossFrame
 \seealso{
 \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 }
-
