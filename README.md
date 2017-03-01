@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[vtreat](https://github.com/WinVector/vtreat) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477). There is also a series of articles recordng the evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
+[vtreat](https://github.com/WinVector/vtreat) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477). There is also a series of articles recording the evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
 
 ![](vtreat.png) (logo: Julie Mount, source: "The Harvest" by Boris Kustodiev 1914)
 
@@ -23,7 +23,7 @@ The idea is: even with a sophisticated machine learning algorithm there are *man
 To help explain the methods we have prepared some documentation:
 
 -   The [vtreat package overall](http://winvector.github.io/vtreathtml/vtreat.html).
--   [Preparing data for analysis using R whitepaper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
+-   [Preparing data for analysis using R white-paper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
 -   The [types of new variables](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) introduced by vtreat processing (including how to limit down to domain appropriate variable types).
 -   Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): [nested over-fit issues](http://winvector.github.io/vtreathtml/vtreatOverfit.html) and a general [cross-frame solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
 -   [Principled ways to pick significance based pruning levels](http://winvector.github.io/vtreathtml/vtreatSignificance.html).
