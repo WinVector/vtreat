@@ -3,6 +3,7 @@
 
 Changes:
 
+- make prueSig an optional argument in prepare, and force by-name access.
 - Remove left.op=TRUE from findInterval in "vtreat Rare Levels" vignette (seems to be a new addition to findInterval, so fails CRAN check r-oldrel-windows-ix86+x86_64).
 
 

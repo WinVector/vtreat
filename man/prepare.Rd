@@ -4,7 +4,7 @@
 \alias{prepare}
 \title{Apply treatments and restrict to useful variables.}
 \usage{
-prepare(treatmentplan, dframe, pruneSig, ..., scale = FALSE,
+prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
   doCollar = FALSE, varRestriction = c(), parallelCluster = NULL)
 }
 \arguments{
@@ -12,9 +12,9 @@ prepare(treatmentplan, dframe, pruneSig, ..., scale = FALSE,
 
 \item{dframe}{Data frame to be treated}
 
-\item{pruneSig}{suppress variables with significance above this level}
-
 \item{...}{no additional arguments, declared to forced named binding of later arguments}
+
+\item{pruneSig}{suppress variables with significance above this level}
 
 \item{scale}{optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed  (lm for regression problems/glm for classificaiton problems) against outcome.}
 
@@ -41,15 +41,15 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
     z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
 dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-dTrainNTreated <- prepare(treatmentsN,dTrainN,1.0)
-dTestNTreated <- prepare(treatmentsN,dTestN,1.0)
+dTrainNTreated <- prepare(treatmentsN,dTrainN, pruneSig=1.0)
+dTestNTreated <- prepare(treatmentsN,dTestN, pruneSig=1.0)
 
 dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
     z=c(1,2,3,4,5,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC,dTrainC,1.0)
-dTestCTreated <- prepare(treatmentsC,dTestC,1.0)
+dTrainCTreated <- prepare(treatmentsC,dTrainC, pruneSig=1.0)
+dTestCTreated <- prepare(treatmentsC,dTestC, pruneSig=1.0)
 
 
 }
