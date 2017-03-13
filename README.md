@@ -1,7 +1,9 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [vtreat](https://github.com/WinVector/vtreat) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477). There is also a series of articles recording the evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
 
-![](tools/vtreat.png) (logo: Julie Mount, source: "The Harvest" by Boris Kustodiev 1914)
+![](tools/vtreat.png)
+
+(logo: Julie Mount, source: "The Harvest" by Boris Kustodiev 1914)
 
 Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are *common* data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.
 
