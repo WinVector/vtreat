@@ -5,7 +5,8 @@
 \title{Apply treatments and restrict to useful variables.}
 \usage{
 prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
-  doCollar = FALSE, varRestriction = c(), parallelCluster = NULL)
+  doCollar = FALSE, varRestriction = NULL, codeRestriction = NULL,
+  parallelCluster = NULL)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -22,10 +23,12 @@ prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
 
 \item{varRestriction}{optional list of treated variable names to restrict to}
 
+\item{codeRestriction}{optional list of treated variable codess to restrict to}
+
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }
 \value{
-treated data frame (all columns numeric, without NA,NaN)
+treated data frame (all columns numeric- without NA, NaN)
 }
 \description{
 Use a treatment plan to prepare a data frame for analysis.  The
@@ -37,22 +40,34 @@ Note: each column is processed independently of all others.  Also copies over ou
 }
 \examples{
 
-dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
-    z=c(1,2,3,4,5,6,7),y=c(0,0,0,1,0,1,1))
-dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
-treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-dTrainNTreated <- prepare(treatmentsN,dTrainN, pruneSig=1.0)
-dTestNTreated <- prepare(treatmentsN,dTestN, pruneSig=1.0)
+dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),
+                      z= c(1,2,3,4,5,6,7),
+                      y= c(0,0,0,1,0,1,1))
+dTestN <- data.frame(x= c('a','b','c',NA),
+                     z= c(10,20,30,NA))
+treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN), 'y')
+dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig= 0.2)
+dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig= 0.2)
 
-dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
-    z=c(1,2,3,4,5,6),y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
-treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC,dTrainC, pruneSig=1.0)
-dTestCTreated <- prepare(treatmentsC,dTestC, pruneSig=1.0)
+dTrainC <- data.frame(x= c('a','a','a','b','b','b'),
+                      z= c(1,2,3,4,5,6),
+                      y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+dTestC <- data.frame(x= c('a','b','c',NA),
+                     z= c(10,20,30,NA))
+treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
+dTrainCTreated <- prepare(treatmentsC, dTrainC, varRestriction= c('z_clean'))
+dTestCTreated <- prepare(treatmentsC, dTestC, varRestriction= c('z_clean'))
+
+dTrainZ <- data.frame(x= c('a','a','a','b','b','b'),
+                      z= c(1,2,3,4,5,6))
+dTestZ <- data.frame(x= c('a','b','c',NA),
+                     z= c(10,20,30,NA))
+treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
+dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
+dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
 
 
 }
 \seealso{
-\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
 }

@@ -13,5 +13,5 @@ vnames(x)
 New treated variable names from a treatmentplan$treatment item.
 }
 \seealso{
-\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}}
+\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
 }

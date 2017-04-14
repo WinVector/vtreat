@@ -1,4 +1,10 @@
 
+'vtreat' 0.5.32 2017/04/14
+
+Changes:
+
+- Add codeRestriction option to prepare().
+
 'vtreat' 0.5.31 2017/04/13
 
 Changes:

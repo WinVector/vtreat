@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2017-04-13" />
+<meta name="date" content="2017-04-14" />
 
 <title>vtreat package</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat package</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2017-04-13</em></h4>
+<h4 class="date"><em>2017-04-14</em></h4>
 
 
 
@@ -137,15 +137,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot;designing treatments Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot; have level statistics Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot;design var x Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot;design var z Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot; scoring treatments Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot;have treatment plan Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot;rescoring complex variables Thu Apr 13 17:40:59 2017&quot;
-## [1] &quot;done rescoring complex variables Thu Apr 13 17:41:00 2017&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;designing treatments Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot; have level statistics Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;design var x Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;design var z Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot; scoring treatments Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;have treatment plan Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;rescoring complex variables Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;done rescoring complex variables Fri Apr 14 09:32:24 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -186,7 +186,7 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## [1] &quot;y&quot;
 ## 
 ## $vtreatVersion
-## [1] '0.5.31'
+## [1] '0.5.32'
 ## 
 ## $outcomeType
 ## [1] &quot;Binary&quot;
@@ -264,15 +264,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot;designing treatments Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot; have level statistics Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot;design var x Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot;design var z Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot; scoring treatments Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot;have treatment plan Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot;rescoring complex variables Thu Apr 13 17:41:00 2017&quot;
-## [1] &quot;done rescoring complex variables Thu Apr 13 17:41:00 2017&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;designing treatments Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot; have level statistics Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;design var x Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;design var z Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot; scoring treatments Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;have treatment plan Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;rescoring complex variables Fri Apr 14 09:32:24 2017&quot;
+## [1] &quot;done rescoring complex variables Fri Apr 14 09:32:24 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -318,7 +318,7 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## [1] &quot;y&quot;
 ## 
 ## $vtreatVersion
-## [1] '0.5.31'
+## [1] '0.5.32'
 ## 
 ## $outcomeType
 ## [1] &quot;Numeric&quot;
