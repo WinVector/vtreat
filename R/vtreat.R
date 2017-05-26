@@ -80,7 +80,9 @@ print.vtreatment <- function(x,...) {
 #' 
 #' Function to design variable treatments for binary prediction of a
 #' categorical outcome.  Data frame is assumed to have only atomic columns
-#' except for dates (which are converted to numeric).
+#' except for dates (which are converted to numeric). Note: re-encoding high cardenality
+#' categorical varaibles can introduce undesirable nested model bias, for such data consider
+#' using \code{\link{mkCrossFrameCExperiment}}.
 #' 
 #' The main fields are mostly vectors with names (all with the same names in the same order):
 #' 
@@ -107,7 +109,7 @@ print.vtreatment <- function(x,...) {
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameCExperiment}}
 #' @examples
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
@@ -162,7 +164,10 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' Function to design variable treatments for binary prediction of a
 #' numeric outcome.  Data frame is assumed to have only atomic columns
 #' except for dates (which are converted to numeric).
-#' Note: each column is processed independently of all others.
+#' Note: each column is processed independently of all others. 
+#' Note: re-encoding high cardenality
+#' categorical varaibles can introduce undesirable nested model bias, for such data consider
+#' using \code{\link{mkCrossFrameNExperiment}}.
 #' 
 #' The main fields are mostly vectors with names (all with the same names in the same order):
 #' 
@@ -187,7 +192,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}}
+#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameNExperiment}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
@@ -321,7 +326,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
+#' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),

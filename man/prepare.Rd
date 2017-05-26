@@ -69,5 +69,5 @@ dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
 
 }
 \seealso{
-\code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
+\code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
 }

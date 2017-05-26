@@ -45,7 +45,10 @@ treatment plan (for use with prepare)
 Function to design variable treatments for binary prediction of a
 numeric outcome.  Data frame is assumed to have only atomic columns
 except for dates (which are converted to numeric).
-Note: each column is processed independently of all others.
+Note: each column is processed independently of all others. 
+Note: re-encoding high cardenality
+categorical varaibles can introduce undesirable nested model bias, for such data consider
+using \code{\link{mkCrossFrameNExperiment}}.
 }
 \details{
 The main fields are mostly vectors with names (all with the same names in the same order):
@@ -68,5 +71,5 @@ dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=0.99)
 
 }
 \seealso{
-\code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}}
+\code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameNExperiment}}
 }
