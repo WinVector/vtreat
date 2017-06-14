@@ -120,7 +120,7 @@ citation('vtreat')
  #  
  #    John Mount and Nina Zumel (2017). vtreat: A Statistically Sound
  #    'data.frame' Processor/Conditioner. R package version 0.5.31.
- #    https://github.com/WinVector/vtreat
+ #    https://CRAN.R-project.org/package=vtreat
  #  
  #  A BibTeX entry for LaTeX users is
  #  
@@ -129,7 +129,7 @@ citation('vtreat')
  #      author = {John Mount and Nina Zumel},
  #      year = {2017},
  #      note = {R package version 0.5.31},
- #      url = {https://github.com/WinVector/vtreat},
+ #      url = {https://CRAN.R-project.org/package=vtreat},
  #    }
  #  
  #  ATTENTION: This citation information has been auto-generated from

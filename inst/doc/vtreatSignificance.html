@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2017-04-14" />
+<meta name="date" content="2017-06-13" />
 
 <title>vtreat significance</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat significance</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2017-04-14</em></h4>
+<h4 class="date"><em>2017-06-13</em></h4>
 
 
 
@@ -119,15 +119,15 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d$catVarPerfect)
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat::<span class="kw">designTreatmentsC</span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;desigining treatments Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot;designing treatments Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot; have level statistics Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot;design var catVarNoise Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot;design var catVarPerfect Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot; scoring treatments Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot;have treatment plan Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot;rescoring complex variables Fri Apr 14 09:32:33 2017&quot;
-## [1] &quot;done rescoring complex variables Fri Apr 14 09:32:33 2017&quot;</code></pre>
+<pre><code>## [1] &quot;desigining treatments Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot;designing treatments Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot; have level statistics Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot;design var catVarNoise Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot;design var catVarPerfect Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot; scoring treatments Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot;have treatment plan Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot;rescoring complex variables Tue Jun 13 17:48:12 2017&quot;
+## [1] &quot;done rescoring complex variables Tue Jun 13 17:48:12 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span>function(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
@@ -215,7 +215,7 @@ prepD &lt;-<span class="st"> </span>vtreat::<span class="kw">prepare</span>(trea
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2017-04-14" />
+<meta name="date" content="2017-06-13" />
 
 <title>vtreat scale mode</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat scale mode</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2017-04-14</em></h4>
+<h4 class="date"><em>2017-06-13</em></h4>
 
 
 
@@ -217,10 +217,10 @@ dM1 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEraw$crossF
 pCraw &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM1,
                        <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(pCraw)</code></pre></div>
-<pre><code>## Standard deviations:
+<pre><code>## Standard deviations (1, .., p=3):
 ## [1] 1157.8816 1044.9080  179.8415
 ## 
-## Rotation:
+## Rotation (n x k) = (3 x 3):
 ##                  PC1         PC2         PC3
 ## x1_clean  0.98564543 -0.16880819 0.002623125
 ## x2_clean  0.16849926  0.98457413 0.047135824
@@ -233,10 +233,10 @@ dM2 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEscaled$cro
 pCscaled &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM2,
                           <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(pCscaled)</code></pre></div>
-<pre><code>## Standard deviations:
+<pre><code>## Standard deviations (1, .., p=3):
 ## [1] 0.7843205 0.7283565 0.1177734
 ## 
-## Rotation:
+## Rotation (n x k) = (3 x 3):
 ##                 PC1          PC2         PC3
 ## x1_clean  0.9810074 -0.191767234 0.029151677
 ## x2_clean  0.1915603  0.981432326 0.009759229
@@ -251,7 +251,7 @@ pCscaled &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM2
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
