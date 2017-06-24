@@ -635,32 +635,38 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
 }
 
-.checkArgs <- function(dframe,varlist,outcomename,...) {
+.checkArgs <- function(dframe, varlist, outcomename, ...) {
   args <- list(...)
   if(length(args)!=0) {
     nm <- setdiff(paste(names(args),collapse=", "),'')
     nv <- length(args)-length(nm)
     stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
   }
-  if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
+  if(missing(dframe)||(!is.data.frame(dframe))||
+     (nrow(dframe)<0)||(ncol(dframe)<=0)) {
     stop("dframe must be a non-empty data frame")
   }
   if(missing(varlist)) {
     stop("required argument varlist missing")
   }
-  if(length(varlist)!=length(unique(varlist))) {
-    stop("duplicate variable name in varlist")
-  }
-  varlist <- setdiff(varlist,outcomename)
-  varlist <- intersect(varlist,colnames(dframe))
   if((!is.character(varlist))||(length(varlist)<1)) {
     stop("varlist must be a non-empty character vector")
   }
+  if(length(varlist)!=length(unique(varlist))) {
+    stop("duplicate variable name in varlist")
+  }
+  # designTreatmentsZ calls this, so outcomename may not be in dframe
+  if(missing(outcomename)||
+     (!is.character(outcomename))||(length(outcomename)!=1)) {
+    stop("outcomename must be a length 1 character vector")
+  }
+  varlist <- setdiff(varlist, outcomename)
+  varlist <- intersect(varlist, colnames(dframe))
+  if(length(varlist)<1) {
+    stop("varlist must include non-outcome column names")
+  }
   if(sum(colnames(dframe) %in% varlist)!=length(varlist)) {
     stop("ambigous (duplicate) column name in data frame")
-  }
-  if(missing(outcomename)||(!is.character(outcomename))||(length(outcomename)!=1)) {
-    stop("outcomename must be a length 1 character vector")
   }
 }
 

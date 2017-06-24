@@ -137,6 +137,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
+  if(any(is.na(dframe[[outcomename]]))) {
+    stop("There are missing values in the outcome column, can not apply designTreatmentsC.")
+  }
   zoY <- ifelse(dframe[[outcomename]]==outcometarget,1.0,0.0)
   if(min(zoY)>=max(zoY)) {
     stop("dframe[[outcomename]]==outcometarget must vary")
@@ -217,6 +220,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
+  if(any(is.na(dframe[[outcomename]]))) {
+    stop("There are missing values in the outcome column, can not apply designTreatmentsN.")
+  }
   ycol <- dframe[[outcomename]]
   if(min(ycol)>=max(ycol)) {
     stop("dframe[[outcomename]] must vary")
@@ -283,7 +289,11 @@ designTreatmentsZ <- function(dframe,varlist,
                               collarProb=0.00,
                               verbose=TRUE,
                               parallelCluster=NULL) {
-  outcomename='ZZZZNonCol'
+  # build a name disjoint from column names
+  outcomename <- setdiff(paste('VTREATTEMPCOL',
+                               seq_len(ncol(dframe) + length(varlist) + 1), 
+                               sep='_'),
+                         c(colnames(dframe),varlist))[[1]]
   catScaling <- FALSE
   dframe[[outcomename]] <- 0
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
@@ -497,6 +507,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
+  if(any(is.na(dframe[[outcomename]]))) {
+    stop("There are missing values in the outcome column, can not run mkCrossFrameCExperiment.")
+  }
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   }
@@ -609,6 +622,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   }
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
+  }
+  if(any(is.na(dframe[[outcomename]]))) {
+    stop("There are missing values in the outcome column, can not run mkCrossFrameNExperiment.")
   }
   catScaling=FALSE
   if(is.null(weights)) {
