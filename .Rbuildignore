@@ -4,7 +4,6 @@
 ^revdep$
 ^README\.Rmd$
 ^README-.*\.png$
-^NEWS\.md$
 ^LICENSE$
 ^.*\.DS_Store$
 ^.*\.Rhistory$
