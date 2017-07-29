@@ -1,7 +1,8 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [vtreat](https://github.com/WinVector/vtreat) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477). There is also a series of articles recording the evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
 
-![](tools/vtreat.png)
+![](https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png)
 
 (logo: Julie Mount, source: "The Harvest" by Boris Kustodiev 1914)
 
@@ -113,14 +114,14 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '0.5.31'
+ #  [1] '0.5.32'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
  #  
  #    John Mount and Nina Zumel (2017). vtreat: A Statistically Sound
- #    'data.frame' Processor/Conditioner. R package version 0.5.31.
- #    https://CRAN.R-project.org/package=vtreat
+ #    'data.frame' Processor/Conditioner. R package version 0.5.32.
+ #    https://github.com/WinVector/vtreat
  #  
  #  A BibTeX entry for LaTeX users is
  #  
@@ -128,13 +129,9 @@ citation('vtreat')
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
  #      year = {2017},
- #      note = {R package version 0.5.31},
- #      url = {https://CRAN.R-project.org/package=vtreat},
+ #      note = {R package version 0.5.32},
+ #      url = {https://github.com/WinVector/vtreat},
  #    }
- #  
- #  ATTENTION: This citation information has been auto-generated from
- #  the package DESCRIPTION file and may need manual editing, see
- #  'help("citation")'.
 
 # categorical example
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),

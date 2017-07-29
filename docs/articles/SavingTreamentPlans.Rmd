@@ -1,0 +1,90 @@
+---
+title: "Saving Treatment Plans"
+author: "John Mount"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Saving Treatment Plans}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+The easiest way to save `vtreat` treatment plans is to use `R`'s built in
+`saveRDS` function.
+
+To save in a file:
+
+```{r savefile}
+library("vtreat")
+dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
+                      z=c(1,2,3,4,NA,6,NA),
+                      y=c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE))
+treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),
+                                 'y', TRUE,
+                                 verbose= FALSE)
+
+fileName = paste0(tempfile(c('vtreatPlan')), '.RDS')
+saveRDS(treatmentsC,fileName)
+rm(list=c('treatmentsC'))
+```
+
+And then to restore and use.
+
+```{r loadfile}
+library("vtreat")
+treatmentsC <- readRDS(fileName)
+
+dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
+dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig= c())
+
+# clean up
+unlink(fileName)
+```
+
+Treatment plans can also be stored as binary blobs in databases.
+Using ideas from [here](http://jfaganuk.github.io/2015/01/12/storing-r-objects-in-sqlite-tables/) gives us the following through the `DBI` interface.
+
+```{r dbsave}
+con <- NULL
+if (requireNamespace('RSQLite', quietly = TRUE)) {
+  library("RSQLite")
+  con <- dbConnect(drv=SQLite(), dbname=":memory:")
+  # create table
+  dbGetQuery(con, 'create table if not exists treatments 
+                 (key varchar(200) primary key, 
+                  treatment blob)')
+  # wrap data
+  df <- data.frame(
+    key='treatmentsC', 
+    treatment = I(list(serialize(treatmentsC, NULL))))
+  # Clear any previous version
+  dbGetQuery(con, 
+               "delete from treatments where key='treatmentsC'")
+  # insert treatmentplan
+  # depreciated
+  # dbGetPreparedQuery(con,
+  #                    'insert into treatments (key, treatment) values (:key, :treatment)',
+  #                    bind.data=df)
+  dbGetQuery(con, 
+             'insert into treatments (key, treatment) values (:key, :treatment)',
+             params=df)
+  constr <- paste(capture.output(print(con)),collapse='\n')
+  paste('saved to db: ', constr)
+}
+rm(list= c('treatmentsC', 'dTestCTreated'))
+```
+
+And we can read the treatment back in as follows.
+
+```{r dbload}
+if(!is.null(con)) {
+  treatmentsList <- lapply(
+    dbGetQuery(con, 
+               "select * from treatments where key='treatmentsC'")$treatment,
+    unserialize)
+  treatmentsC <- treatmentsList[[1]]
+  dbDisconnect(con)
+  dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig= c())
+  print(dTestCTreated)
+}
+```

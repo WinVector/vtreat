@@ -3,7 +3,11 @@ Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
 Version: 0.5.32
 Date: 2017-06-13
-Author: John Mount, Nina Zumel
+Authors@R: c(
+    person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
+    person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
+    person(family = "Win-Vector LLC", role = c("cph"))
+    )
 URL: https://github.com/WinVector/vtreat
 BugReports: https://github.com/WinVector/vtreat/issues
 Maintainer: John Mount <jmount@win-vector.com>
