@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[vtreat](https://github.com/WinVector/vtreat) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477). There is also a series of articles recording the evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
+[vtreat](http://winvector.github.io/vtreat/) is an [R](https://cran.r-project.org) data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477). There is also a series of articles recording the evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
 
 ![](https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png)
 
