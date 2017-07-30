@@ -105,7 +105,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/WinVector/vtreat/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -226,13 +231,13 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
    <span class='kw'>y</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
 <span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "desigining treatments Sat Jul 29 10:11:24 2017"
-#&gt; [1] "designing treatments Sat Jul 29 10:11:24 2017"
-#&gt; [1] " have level statistics Sat Jul 29 10:11:24 2017"
-#&gt; [1] "design var x Sat Jul 29 10:11:24 2017"
-#&gt; [1] "design var z Sat Jul 29 10:11:24 2017"
-#&gt; [1] " scoring treatments Sat Jul 29 10:11:24 2017"
-#&gt; [1] "have treatment plan Sat Jul 29 10:11:24 2017"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
+<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "desigining treatments Sun Jul 30 14:42:15 2017"
+#&gt; [1] "designing treatments Sun Jul 30 14:42:15 2017"
+#&gt; [1] " have level statistics Sun Jul 30 14:42:15 2017"
+#&gt; [1] "design var x Sun Jul 30 14:42:15 2017"
+#&gt; [1] "design var z Sun Jul 30 14:42:15 2017"
+#&gt; [1] " scoring treatments Sun Jul 30 14:42:15 2017"
+#&gt; [1] "have treatment plan Sun Jul 30 14:42:16 2017"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
 <span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

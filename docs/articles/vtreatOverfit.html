@@ -80,7 +80,14 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/WinVector/vtreat/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -95,7 +102,7 @@
       <h1>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2017-07-29</h4>
+            <h4 class="date">2017-07-30</h4>
           </div>
 
     
@@ -124,14 +131,14 @@ dTest &lt;-<span class="st"> </span>d[d$rgroup&gt;<span class="dv">80</span>,,dr
 treatments &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "desigining treatments Sat Jul 29 10:11:42 2017"
-## [1] "designing treatments Sat Jul 29 10:11:42 2017"
-## [1] " have level statistics Sat Jul 29 10:11:42 2017"
-## [1] "design var x Sat Jul 29 10:11:42 2017"
-## [1] " scoring treatments Sat Jul 29 10:11:42 2017"
-## [1] "have treatment plan Sat Jul 29 10:11:42 2017"
-## [1] "rescoring complex variables Sat Jul 29 10:11:42 2017"
-## [1] "done rescoring complex variables Sat Jul 29 10:11:42 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Sun Jul 30 14:42:39 2017"
+## [1] "designing treatments Sun Jul 30 14:42:39 2017"
+## [1] " have level statistics Sun Jul 30 14:42:39 2017"
+## [1] "design var x Sun Jul 30 14:42:39 2017"
+## [1] " scoring treatments Sun Jul 30 14:42:39 2017"
+## [1] "have treatment plan Sun Jul 30 14:42:40 2017"
+## [1] "rescoring complex variables Sun Jul 30 14:42:40 2017"
+## [1] "done rescoring complex variables Sun Jul 30 14:42:40 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -225,14 +232,14 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../re
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] "desigining treatments Sat Jul 29 10:11:42 2017"
-## [1] "designing treatments Sat Jul 29 10:11:42 2017"
-## [1] " have level statistics Sat Jul 29 10:11:42 2017"
-## [1] "design var x Sat Jul 29 10:11:42 2017"
-## [1] " scoring treatments Sat Jul 29 10:11:42 2017"
-## [1] "have treatment plan Sat Jul 29 10:11:42 2017"
-## [1] "rescoring complex variables Sat Jul 29 10:11:42 2017"
-## [1] "done rescoring complex variables Sat Jul 29 10:11:43 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Sun Jul 30 14:42:40 2017"
+## [1] "designing treatments Sun Jul 30 14:42:40 2017"
+## [1] " have level statistics Sun Jul 30 14:42:40 2017"
+## [1] "design var x Sun Jul 30 14:42:40 2017"
+## [1] " scoring treatments Sun Jul 30 14:42:40 2017"
+## [1] "have treatment plan Sun Jul 30 14:42:40 2017"
+## [1] "rescoring complex variables Sun Jul 30 14:42:40 2017"
+## [1] "done rescoring complex variables Sun Jul 30 14:42:40 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )

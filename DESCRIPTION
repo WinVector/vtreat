@@ -8,7 +8,7 @@ Authors@R: c(
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
     person(family = "Win-Vector LLC", role = c("cph"))
     )
-URL: http://winvector.github.io/vtreat/
+URL: https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/
 BugReports: https://github.com/WinVector/vtreat/issues
 Maintainer: John Mount <jmount@win-vector.com>
 Description: A 'data.frame' processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.
