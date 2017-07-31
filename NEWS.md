@@ -1,16 +1,10 @@
 
 # vtreat 0.6.0 2017/07/31
 
-- Start adding codeRestriction option to design steps.
-- Consider partial pooling models.
+- Add codeRestriction option to design steps.
+- Prepare for partial pooling models.
 
 # vtreat 0.5.32 2017/06/13
-
-- Add codeRestriction option to prepare().
-
-
-# vtreat 0.5.32 2017/06/13
-
 
 - Add codeRestriction option to prepare().
 
