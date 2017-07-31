@@ -191,13 +191,13 @@ mkVtreatListWorker <- function(scale,doCollar) {
 # design a treatment for a single variable
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
 .mkVarDesigner <- function(zoY,
-                         zC,zTarget,
-                         weights,
-                         minFraction,smFactor,rareCount,rareSig,
-                         collarProb,
-                         impactOnly,
-                         catScaling,
-                         verbose) {
+                           zC,zTarget,
+                           weights,
+                           minFraction,smFactor,rareCount,rareSig,
+                           collarProb,
+                           impactOnly,
+                           catScaling,
+                           verbose) {
   force(zoY)
   force(zC)
   force(zTarget)
@@ -211,6 +211,13 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
+  # TODO: take codeRestriction as an argument
+  codeRestriction <- c('clean', 
+                       'isBAD',
+                       'lev',
+                       'catP', 
+                       'catB',
+                       'catN', 'catD')
   function(argv) {
     v <- argv$v
     vcolOrig <- argv$vcolOrig
@@ -236,34 +243,49 @@ mkVtreatListWorker <- function(scale,doCollar) {
     } else {
       colclass <- class(vcol)
       if(.has.range(vcol)) {
+        ti <- NULL
         if((colclass=='numeric') || (colclass=='integer')) {
           if(!impactOnly) {
-            ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
-            acceptTreatment(ti)
-            ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
-            acceptTreatment(ti)
+            if('clean' %in% codeRestriction) {
+              ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
+              acceptTreatment(ti)
+            }
+            if('isBAD' %in% codeRestriction) {
+              ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
+              acceptTreatment(ti)
+            }
           }
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
+          ti = NULL
           if(length(levRestriction$safeLevs)>0) {
-            ti = NULL
             if(!impactOnly) {
-              ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
-              acceptTreatment(ti)
+              if('lev' %in% codeRestriction) {
+                ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+                acceptTreatment(ti)
+              }
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-              ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights,catScaling)
-              acceptTreatment(ti)
+              if('catP' %in% codeRestriction) {
+                ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights,catScaling)
+                acceptTreatment(ti)
+              }
               if(yMoves) {
                 if(!is.null(zC)) {  # in categorical mode
-                  ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights,catScaling)
-                  acceptTreatment(ti)      
+                  if('catB' %in% codeRestriction) {
+                    ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights,catScaling)
+                    acceptTreatment(ti)
+                  }
                 }
                 if(is.null(zC)) { # is numeric mode
-                  ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
-                  acceptTreatment(ti)
-                  ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
-                  acceptTreatment(ti)
+                  if('catN' %in% codeRestriction) {
+                    ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
+                    acceptTreatment(ti)
+                  }
+                  if('catD' %in% codeRestriction) {
+                    ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
+                    acceptTreatment(ti)
+                  }
                 }
               }
             }
