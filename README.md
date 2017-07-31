@@ -114,14 +114,15 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '0.5.32'
+ #  [1] '0.6.0'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
  #  
  #    John Mount and Nina Zumel (2017). vtreat: A Statistically Sound
- #    'data.frame' Processor/Conditioner. R package version 0.5.32.
- #    https://github.com/WinVector/vtreat
+ #    'data.frame' Processor/Conditioner.
+ #    https://github.com/WinVector/vtreat/,
+ #    https://winvector.github.io/vtreat/.
  #  
  #  A BibTeX entry for LaTeX users is
  #  
@@ -129,8 +130,7 @@ citation('vtreat')
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
  #      year = {2017},
- #      note = {R package version 0.5.32},
- #      url = {https://github.com/WinVector/vtreat},
+ #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
  #    }
 
 # categorical example

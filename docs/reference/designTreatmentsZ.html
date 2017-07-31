@@ -132,7 +132,8 @@ Note: each column is processed independently of all others.</p>
     
 
     <pre class="usage"><span class='fu'>designTreatmentsZ</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>...</span>, <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
-  <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +165,10 @@ Note: each column is processed independently of all others.</p>
     <tr>
       <th>collarProb</th>
       <td><p>what fraction of the data (pseudo-probability) to collar data at if doCollar is set during <code><a href='prepare.html'>prepare</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>codeRestriction</th>
+      <td><p>what types of variables to produce (character array of level codes, NULL means no restiction).</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -198,13 +203,13 @@ Note: each column is processed independently of all others.</p>
 <span class='no'>dTestZ</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
 <span class='no'>treatmentsZ</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsZ</span>(<span class='no'>dTrainZ</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainZ</span>),
-  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "desigining treatments Sun Jul 30 14:42:16 2017"
-#&gt; [1] "designing treatments Sun Jul 30 14:42:16 2017"
-#&gt; [1] " have level statistics Sun Jul 30 14:42:16 2017"
-#&gt; [1] "design var x Sun Jul 30 14:42:16 2017"
-#&gt; [1] "design var z Sun Jul 30 14:42:16 2017"
-#&gt; [1] " scoring treatments Sun Jul 30 14:42:16 2017"
-#&gt; [1] "have treatment plan Sun Jul 30 14:42:16 2017"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
+  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "desigining treatments Mon Jul 31 07:59:18 2017"
+#&gt; [1] "designing treatments Mon Jul 31 07:59:18 2017"
+#&gt; [1] " have level statistics Mon Jul 31 07:59:18 2017"
+#&gt; [1] "design var x Mon Jul 31 07:59:18 2017"
+#&gt; [1] "design var z Mon Jul 31 07:59:18 2017"
+#&gt; [1] " scoring treatments Mon Jul 31 07:59:18 2017"
+#&gt; [1] "have treatment plan Mon Jul 31 07:59:18 2017"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
 <span class='no'>dTestZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTestZ</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

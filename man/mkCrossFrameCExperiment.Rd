@@ -6,9 +6,9 @@
 \usage{
 mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
-  rareSig = 1, collarProb = 0, scale = FALSE, doCollar = FALSE,
-  splitFunction = NULL, ncross = 3, catScaling = FALSE,
-  parallelCluster = NULL)
+  rareSig = 1, collarProb = 0, codeRestriction = NULL, scale = FALSE,
+  doCollar = FALSE, splitFunction = NULL, ncross = 3,
+  catScaling = FALSE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -32,6 +32,8 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
 \item{rareSig}{optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.}
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
+
+\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 

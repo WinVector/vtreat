@@ -6,8 +6,8 @@
 \usage{
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = NULL,
-  collarProb = 0, splitFunction = NULL, ncross = 3, verbose = TRUE,
-  parallelCluster = NULL)
+  collarProb = 0, codeRestriction = NULL, splitFunction = NULL,
+  ncross = 3, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -29,6 +29,8 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 \item{rareSig}{optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.}
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
+
+\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
 
 \item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 

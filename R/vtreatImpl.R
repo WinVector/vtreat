@@ -195,7 +195,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            weights,
                            minFraction,smFactor,rareCount,rareSig,
                            collarProb,
-                           impactOnly,
+                           codeRestriction,
                            catScaling,
                            verbose) {
   force(zoY)
@@ -211,13 +211,15 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
-  # TODO: take codeRestriction as an argument
-  codeRestriction <- c('clean', 
-                       'isBAD',
-                       'lev',
-                       'catP', 
-                       'catB',
-                       'catN', 'catD')
+  if(length(codeRestriction)<=0) {
+    # NULL is an alias for "don't restrict"
+    codeRestriction <- c('clean', 
+                         'isBAD',
+                         'lev',
+                         'catP', 
+                         'catB',
+                         'catN', 'catD')
+  }
   function(argv) {
     v <- argv$v
     vcolOrig <- argv$vcolOrig
@@ -245,25 +247,21 @@ mkVtreatListWorker <- function(scale,doCollar) {
       if(.has.range(vcol)) {
         ti <- NULL
         if((colclass=='numeric') || (colclass=='integer')) {
-          if(!impactOnly) {
-            if('clean' %in% codeRestriction) {
-              ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
-              acceptTreatment(ti)
-            }
-            if('isBAD' %in% codeRestriction) {
-              ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
-              acceptTreatment(ti)
-            }
+          if('clean' %in% codeRestriction) {
+            ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
+            acceptTreatment(ti)
+          }
+          if('isBAD' %in% codeRestriction) {
+            ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
+            acceptTreatment(ti)
           }
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
           ti = NULL
           if(length(levRestriction$safeLevs)>0) {
-            if(!impactOnly) {
-              if('lev' %in% codeRestriction) {
-                ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
-                acceptTreatment(ti)
-              }
+            if('lev' %in% codeRestriction) {
+              ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+              acceptTreatment(ti)
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
               if('catP' %in% codeRestriction) {
@@ -408,7 +406,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 minFraction,smFactor,
                                 rareCount,rareSig,
                                 collarProb,
-                                impactOnly,justWantTreatments,
+                                codeRestriction, justWantTreatments,
                                 catScaling,
                                 verbose,
                                 parallelCluster) {
@@ -464,7 +462,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          weights,
                          minFraction,smFactor,rareCount,rareSig,
                          collarProb,
-                         impactOnly,
+                         codeRestriction,
                          catScaling,
                          verbose)
   treatments <- plapply(workList,worker,parallelCluster)
@@ -511,6 +509,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                minFraction,smFactor,
                                rareCount,rareSig,
                                collarProb,
+                               codeRestriction,
                                splitFunction,ncross,
                                catScaling,
                                verbose,
@@ -570,7 +569,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                     minFraction,smFactor,
                                     rareCount,rareSig,
                                     collarProb,
-                                    FALSE,FALSE,
+                                    codeRestriction, FALSE,
                                     catScaling,
                                     verbose,
                                     parallelCluster)
@@ -596,7 +595,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 minFraction,smFactor,
                                 rareCount,rareSig,
                                 collarProb,
-                                TRUE,
+                                codeRestriction,
                                 FALSE,FALSE,
                                 splitFunction,ncross,
                                 catScaling,

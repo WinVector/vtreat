@@ -5,7 +5,8 @@
 \title{Design variable treatments with no outcome variable.}
 \usage{
 designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
-  rareCount = 0, collarProb = 0, verbose = TRUE, parallelCluster = NULL)
+  rareCount = 0, collarProb = 0, codeRestriction = NULL, verbose = TRUE,
+  parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -21,6 +22,8 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
 \item{rareCount}{optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.}
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
+
+\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
 
 \item{verbose}{if TRUE print progress.}
 

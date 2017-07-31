@@ -103,6 +103,7 @@ print.vtreatment <- function(x,...) {
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
@@ -128,6 +129,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               minFraction=0.02,smFactor=0.0,
                               rareCount=0,rareSig=NULL,
                               collarProb=0.00,
+                              codeRestriction=NULL,
                               splitFunction=NULL,ncross=3,
                               catScaling=FALSE,
                               verbose=TRUE,
@@ -150,6 +152,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    minFraction,smFactor,
                                    rareCount,rareSig,
                                    collarProb,
+                                   codeRestriction,
                                    splitFunction,ncross,
                                    catScaling,
                                    verbose,
@@ -190,6 +193,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param verbose if TRUE print progress.
@@ -213,6 +217,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               minFraction=0.02,smFactor=0.0,
                               rareCount=0,rareSig=NULL,
                               collarProb=0.00,
+                              codeRestriction=NULL,
                               splitFunction=NULL,ncross=3,
                               verbose=TRUE,
                               parallelCluster=NULL) {
@@ -234,6 +239,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      minFraction,smFactor,
                      rareCount,rareSig,
                      collarProb,
+                     codeRestriction,
                      splitFunction,ncross,
                      catScaling,
                      verbose,
@@ -265,6 +271,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -287,6 +294,7 @@ designTreatmentsZ <- function(dframe,varlist,
                               weights=c(),
                               rareCount=0,
                               collarProb=0.00,
+                              codeRestriction=NULL,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   # build a name disjoint from column names
@@ -304,6 +312,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      minFraction,smFactor=0,
                      rareCount,rareSig=1,
                      collarProb,
+                     codeRestriction,
                      NULL,3,
                      catScaling,
                      verbose,
@@ -455,6 +464,7 @@ prepare <- function(treatmentplan, dframe,
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
@@ -490,6 +500,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     minFraction=0.02,smFactor=0.0,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
+                                    codeRestriction=NULL,
                                     scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
                                     catScaling=FALSE,
@@ -518,6 +529,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   minFraction=minFraction,smFactor=smFactor,
                                   rareCount=rareCount,rareSig=rareSig,
                                   collarProb=collarProb,
+                                  codeRestriction=codeRestriction,
                                   splitFunction=splitFunction,ncross=ncross,
                                   catScaling=catScaling,
                                   verbose=FALSE,
@@ -533,7 +545,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             minFraction,smFactor,
                             rareCount,rareSig,
                             collarProb,
-                            FALSE,
+                            codeRestriction,
                             scale,doCollar,
                             splitFunction,ncross,
                             catScaling,
@@ -574,6 +586,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
@@ -607,6 +620,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     minFraction=0.02,smFactor=0.0,
                                     rareCount=0,rareSig=1,
                                     collarProb=0.00,
+                                    codeRestriction=NULL,
                                     scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
                                     parallelCluster=NULL) {
@@ -635,6 +649,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   minFraction=minFraction,smFactor=smFactor,
                                   rareCount=rareCount,rareSig=rareSig,
                                   collarProb=collarProb,
+                                  codeRestriction = codeRestriction,
                                   splitFunction=splitFunction,ncross=ncross,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster)
@@ -649,7 +664,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             minFraction,smFactor,
                             rareCount,rareSig,
                             collarProb,
-                            FALSE,
+                            codeRestriction,
                             scale,doCollar,
                             splitFunction,ncross,
                             catScaling,

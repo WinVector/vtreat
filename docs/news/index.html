@@ -127,10 +127,24 @@
     </div>
 
     <div class="contents">
+    <div id="vtreat-0-6-0-20170731" class="section level1">
+<h1 class="hasAnchor">
+<a href="#vtreat-0-6-0-20170731" class="anchor"></a>vtreat 0.6.0 2017/07/31</h1>
+<ul>
+<li>Start adding codeRestriction option to design steps.</li>
+<li>Consider partial pooling models.</li>
+</ul>
+</div>
     <div id="vtreat-0-5-32-20170613" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-32-20170613" class="anchor"></a>vtreat 0.5.32 2017/06/13</h1>
-<p>Changes:</p>
+<ul>
+<li>Add codeRestriction option to prepare().</li>
+</ul>
+</div>
+    <div id="vtreat-0-5-32-20170613-1" class="section level1">
+<h1 class="hasAnchor">
+<a href="#vtreat-0-5-32-20170613-1" class="anchor"></a>vtreat 0.5.32 2017/06/13</h1>
 <ul>
 <li>Add codeRestriction option to prepare().</li>
 </ul>
@@ -138,7 +152,6 @@
     <div id="vtreat-0-5-31-20170413" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-31-20170413" class="anchor"></a>vtreat 0.5.31 2017/04/13</h1>
-<p>Changes:</p>
 <ul>
 <li>make prueSig an optional argument in prepare, and force by-name access.</li>
 <li>Remove left.op=TRUE from findInterval in “vtreat Rare Levels” vignette (seems to be a new addition to findInterval, so fails CRAN check r-oldrel-windows-ix86+x86_64).</li>
@@ -147,7 +160,6 @@
     <div id="vtreat-0-5-30-20170121" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-30-20170121" class="anchor"></a>vtreat 0.5.30 2017/01/21</h1>
-<p>Changes:</p>
 <ul>
 <li>General improvements in documentation and vignettes.</li>
 <li>Document saving/loading treatment plans.</li>
@@ -156,7 +168,6 @@
     <div id="vtreat-0-5-29-20161027" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-29-20161027" class="anchor"></a>vtreat 0.5.29 2016/10/27</h1>
-<p>Changes:</p>
 <ul>
 <li>Add ‘rsq’ column to scoreFrame (rsq- for numeric targets, pseudo-rsq for categorical targets).</li>
 </ul>
@@ -164,7 +175,6 @@
     <div id="vtreat-0-5-28-20161024" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-28-20161024" class="anchor"></a>vtreat 0.5.28 2016/10/24</h1>
-<p>Changes:</p>
 <ul>
 <li>Fix treatment of constant columns in cross-partitions.</li>
 <li>Switch doCollar default to FALSE.</li>
@@ -190,7 +200,6 @@
     <div id="vtreat-0-5-26-20160710" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-26-20160710" class="anchor"></a>vtreat 0.5.26 2016/07/10</h1>
-<p>Changes:</p>
 <ul>
 <li>Facilities for y-stratified and grouped splitting (useful for unbalanced classes).</li>
 <li>catScaling=TRUE mode uses logistic regression for y-aware variable scaling.</li>
@@ -200,7 +209,6 @@
     <div id="vtreat-0-5-25-20160502" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-25-20160502" class="anchor"></a>vtreat 0.5.25 2016/05/02</h1>
-<p>Changes:</p>
 <ul>
 <li>Fix bug that caused catB variables to be scored as “insignificant”.</li>
 <li>Add test to check for above bug.</li>
@@ -211,7 +219,6 @@
     <div id="vtreat-0-5-23-20160428" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-23-20160428" class="anchor"></a>vtreat 0.5.23 2016/04/28</h1>
-<p>Changes:</p>
 <ul>
 <li>Fix issue of non-significant variables not being scaled.</li>
 <li>Documentation fixes, document variable types, improve vignettes.</li>
@@ -222,7 +229,6 @@
     <div id="vtreat-0-5-22-20160107" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-22-20160107" class="anchor"></a>vtreat 0.5.22 2016/01/07</h1>
-<p>Changes:</p>
 <ul>
 <li>Calculations of non catX significances are now deterministic</li>
 <li>Catch mis-naming or non-varying y earlier</li>
@@ -233,7 +239,6 @@
     <div id="vtreat-0-5-21-20151123" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-21-20151123" class="anchor"></a>vtreat 0.5.21 2015/11/23</h1>
-<p>Changes:</p>
 <ul>
 <li>Isolated “cross” or “out of sample” frame generation into mkCrossFrameCExperiment() and mkCrossFrameNExperiment()</li>
 <li>Many small bug fixes and corner cases patched</li>
@@ -242,7 +247,6 @@
     <div id="vtreat-0-5-20-20151105" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-20-20151105" class="anchor"></a>vtreat 0.5.20 2015/11/05</h1>
-<p>Changes:</p>
 <ul>
 <li>Simplified out of sample frame generation</li>
 <li>Added “no-Y” treatment option</li>
@@ -252,7 +256,6 @@
     <div id="vtreat-0-5-18-20151007" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-18-20151007" class="anchor"></a>vtreat 0.5.18 2015/10/07</h1>
-<p>Changes:</p>
 <ul>
 <li>Fixed bugs in cross-validated mode</li>
 <li>Force out of sample calculations in more situations</li>
@@ -264,7 +267,6 @@
     <div id="vtreat-0-5-16-20150912" class="section level1">
 <h1 class="hasAnchor">
 <a href="#vtreat-0-5-16-20150912" class="anchor"></a>vtreat 0.5.16 2015/09/12</h1>
-<p>Changes:</p>
 <ul>
 <li>Unified rare level treatment</li>
 <li>Separate treatment of insignificant levels</li>
@@ -288,7 +290,9 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#vtreat-0-6-0-20170731">0.6.0</a></li>
         <li><a href="#vtreat-0-5-32-20170613">0.5.32</a></li>
+        <li><a href="#vtreat-0-5-32-20170613-1">0.5.32</a></li>
         <li><a href="#vtreat-0-5-31-20170413">0.5.31</a></li>
         <li><a href="#vtreat-0-5-30-20170121">0.5.30</a></li>
         <li><a href="#vtreat-0-5-29-20161027">0.5.29</a></li>
