@@ -188,7 +188,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 
 
-# design a treatment for a single variables
+# design a treatment for a single variable
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
 .mkVarDesigner <- function(zoY,
                          zC,zTarget,
@@ -380,7 +380,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 
 # build all treatments for a data frame to predict a given outcome
-.designTreatmentsXS <- function(dframe,varlist,outcomename,zoY,
+.designTreatmentsXS <- function(dframe, varlist, outcomename, zoY,
                                 zC,zTarget,
                                 weights,
                                 minFraction,smFactor,
