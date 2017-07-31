@@ -1,11 +1,11 @@
 
-'vtreat' 0.5.32 2017/06/13
+# vtreat 0.5.32 2017/06/13
 
 Changes:
 
 - Add codeRestriction option to prepare().
 
-'vtreat' 0.5.31 2017/04/13
+# vtreat 0.5.31 2017/04/13
 
 Changes:
 
@@ -13,7 +13,7 @@ Changes:
 - Remove left.op=TRUE from findInterval in "vtreat Rare Levels" vignette (seems to be a new addition to findInterval, so fails CRAN check r-oldrel-windows-ix86+x86_64).
 
 
-'vtreat' 0.5.30 2017/01/21
+# vtreat 0.5.30 2017/01/21
 
 Changes:
 
@@ -21,13 +21,13 @@ Changes:
 - Document saving/loading treatment plans.
 
 
-'vtreat' 0.5.29 2016/10/27
+# vtreat 0.5.29 2016/10/27
 
 Changes:
 
 - Add 'rsq' column to scoreFrame (rsq- for numeric targets, pseudo-rsq for categorical targets).
 
-'vtreat' 0.5.28 2016/10/24
+# vtreat 0.5.28 2016/10/24
 
 Changes:
 
@@ -41,7 +41,7 @@ Changes:
 - Documentation fixes.
 
 
-'vtreat' 0.5.27 2016/08/16
+# vtreat 0.5.27 2016/08/16
 
 Changes:
 
@@ -50,7 +50,7 @@ Changes:
 - Ensure set of variables consistency in mkCross* methods.
 - More parallelization of level significance calculations, and cheaper chi-square test where appropriate.
 
-'vtreat' 0.5.26 2016/07/10
+# vtreat 0.5.26 2016/07/10
 
 Changes:
 
@@ -59,7 +59,7 @@ Changes:
 - Fix erroneous bad type warning on date columns.
 
 
-'vtreat' 0.5.25 2016/05/02
+# vtreat 0.5.25 2016/05/02
 
 Changes:
 
@@ -69,7 +69,7 @@ Changes:
 - More guards on significance calculations.
 
 
-'vtreat' 0.5.23 2016/04/28
+# vtreat 0.5.23 2016/04/28
 
 Changes:
 
@@ -79,7 +79,7 @@ Changes:
 - Add optional use of dplyr for row binding (of score report frames).
 
 
-'vtreat' 0.5.22 2016/01/07
+# vtreat 0.5.22 2016/01/07
 
 Changes:
 
@@ -89,7 +89,7 @@ Changes:
 - More tests
 
 
-'vtreat' 0.5.21 2015/11/23
+# vtreat 0.5.21 2015/11/23
 
 Changes:
 
@@ -97,7 +97,7 @@ Changes:
 - Many small bug fixes and corner cases patched
 
 
-'vtreat' 0.5.20 2015/11/05
+# vtreat 0.5.20 2015/11/05
 
 Changes:
 
@@ -106,7 +106,7 @@ Changes:
 - Minor documentation fixes
 
 
-'vtreat' 0.5.18 2015/10/07
+# vtreat 0.5.18 2015/10/07
 
 Changes:
 
@@ -117,7 +117,7 @@ Changes:
 - Do not allow small or insufficiently varying data frames (exact conditions in documentation)
 
 
-'vtreat' 0.5.16 2015/09/12
+# vtreat 0.5.16 2015/09/12
 
 Changes:
 
@@ -130,6 +130,6 @@ Changes:
 
 
 
-'vtreat' 0.5.14 2015/09/06
+# vtreat 0.5.14 2015/09/06
 
 - First CRAN release
