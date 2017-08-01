@@ -82,10 +82,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/WinVector/vtreat/">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
+  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -102,7 +99,7 @@
       <h1>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2017-07-31</h4>
+            <h4 class="date">2017-08-01</h4>
           </div>
 
     
@@ -153,15 +150,15 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d$catVarPerfect)
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "desigining treatments Mon Jul 31 07:59:49 2017"
-## [1] "designing treatments Mon Jul 31 07:59:49 2017"
-## [1] " have level statistics Mon Jul 31 07:59:49 2017"
-## [1] "design var catVarNoise Mon Jul 31 07:59:49 2017"
-## [1] "design var catVarPerfect Mon Jul 31 07:59:49 2017"
-## [1] " scoring treatments Mon Jul 31 07:59:49 2017"
-## [1] "have treatment plan Mon Jul 31 07:59:49 2017"
-## [1] "rescoring complex variables Mon Jul 31 07:59:49 2017"
-## [1] "done rescoring complex variables Mon Jul 31 07:59:49 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Tue Aug  1 15:08:21 2017"
+## [1] "designing treatments Tue Aug  1 15:08:21 2017"
+## [1] " have level statistics Tue Aug  1 15:08:21 2017"
+## [1] "design var catVarNoise Tue Aug  1 15:08:21 2017"
+## [1] "design var catVarPerfect Tue Aug  1 15:08:21 2017"
+## [1] " scoring treatments Tue Aug  1 15:08:21 2017"
+## [1] "have treatment plan Tue Aug  1 15:08:21 2017"
+## [1] "rescoring complex variables Tue Aug  1 15:08:21 2017"
+## [1] "done rescoring complex variables Tue Aug  1 15:08:21 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span>function(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
