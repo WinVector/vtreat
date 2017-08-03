@@ -220,6 +220,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          'catB',
                          'catN', 'catD')
   }
+  customCoders <- list() # TODO: makes this as an argument
   function(argv) {
     v <- argv$v
     vcolOrig <- argv$vcolOrig
@@ -257,6 +258,11 @@ mkVtreatListWorker <- function(scale,doCollar) {
           }
         } else if((colclass=='character') || (colclass=='factor')) {
           # expect character or factor here
+          for(customCode in names(customCoders)) {
+            coder <- customCoders[[customCode]]
+            ti <- makeCustomCoder(customCode,coder, v,vcol,zoY,zC,zTarget,weights)
+            acceptTreatment(ti)
+          }
           ti = NULL
           if(length(levRestriction$safeLevs)>0) {
             if('lev' %in% codeRestriction) {
