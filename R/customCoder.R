@@ -11,21 +11,21 @@ exampleCoder <- function(v,vcol,zoY,zC,zTarget,weights) {
                     y = zoY,
                     stringsAsFactors = FALSE)
     m <- lm(y~x, data=d, weights=weights)
-    p <- predict(m, newdata=d)
+    p <- stats::predict(m, newdata=d)
     return(p)
   } else {
     d <- data.frame(x = vcol,
                     y = zC==zTarget,
                     stringsAsFactors = FALSE)
     m <- glm(y~x, data=d, weights = weights, family=binomial)
-    p <- predict(m, newdata=d, type='link')
+    p <- stats::predict(m, newdata=d, type='link')
     return(p)
   }
 }
 
 # apply a classification impact model
 # replace level with stored code
-.customCode <- function(col,args,doCollar) {
+.customCode <- function(col,args) {
   col <- .preProcCat(col,args$levRestriction)
   unhandledNovel <- !(col %in% names(args$conditionalScore))
   keys <- col
@@ -47,14 +47,18 @@ exampleCoder <- function(v,vcol,zoY,zC,zTarget,weights) {
 # @param zTarge if classification target class
 # @param weights per-row weights
 makeCustomCoder <- function(customCode,coder, 
-                            v,vcolin,zoY,zC,zTarget,weights)  {
+                            v,vcolin,zoY,zC,zTarget,weights,catScaling)  {
   levRestriction <- NULL
   vcol <- .preProcCat(vcolin,levRestriction)
   if(is.null(weights)) {
     weights <- rep(1.0, length(vcol))
   }
   extraModelDegrees <- max(0,length(unique(vcolin))-1)
-  scores <- coder(v,vcol,zoY,zC,zTarget,weights)
+  scores <- NULL
+  tryCatch(
+    scores <- coder(v,vcol,zoY,zC,zTarget,weights),
+    error = function(e) { warning(e) }
+  )
   if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(vcol))) {
     scores <- rep(0.0, length(vcol))
   } else {
@@ -67,7 +71,6 @@ makeCustomCoder <- function(customCode,coder,
   conditionalScore <- as.list(as.numeric(agg$pred))
   names(conditionalScore) <- as.character(agg$x)
   conditionalScore <- conditionalScore[names(conditionalScore)!='zap']  # don't let zap group code
-  
   newVarName <- make.names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,
@@ -84,9 +87,9 @@ makeCustomCoder <- function(customCode,coder,
   }
   class(treatment) <- 'vtreatment'
   if(!catScaling) {
-    treatment$scales <- linScore(newVarName,pred,as.numeric(rescol==resTarget),weights)
+    treatment$scales <- linScore(newVarName,pred,as.numeric(zC==zTarget),weights)
   } else {
-    treatment$scales <- catScore(newVarName,pred,rescol,resTarget,weights)
+    treatment$scales <- catScore(newVarName,pred,zC,zTarget,weights)
   }
   treatment
 }

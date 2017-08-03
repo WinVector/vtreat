@@ -195,7 +195,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            weights,
                            minFraction,smFactor,rareCount,rareSig,
                            collarProb,
-                           codeRestriction,
+                           codeRestriction, customCoders,
                            catScaling,
                            verbose) {
   force(zoY)
@@ -220,7 +220,6 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          'catB',
                          'catN', 'catD')
   }
-  customCoders <- list() # TODO: makes this as an argument
   function(argv) {
     v <- argv$v
     vcolOrig <- argv$vcolOrig
@@ -260,7 +259,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
           # expect character or factor here
           for(customCode in names(customCoders)) {
             coder <- customCoders[[customCode]]
-            ti <- makeCustomCoder(customCode,coder, v,vcol,zoY,zC,zTarget,weights)
+            ti <- makeCustomCoder(customCode,coder, v,vcol,zoY,zC,zTarget,weights,catScaling)
             acceptTreatment(ti)
           }
           ti = NULL
@@ -412,7 +411,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 minFraction,smFactor,
                                 rareCount,rareSig,
                                 collarProb,
-                                codeRestriction, justWantTreatments,
+                                codeRestriction, customCoders,
+                                justWantTreatments,
                                 catScaling,
                                 verbose,
                                 parallelCluster) {
@@ -468,7 +468,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          weights,
                          minFraction,smFactor,rareCount,rareSig,
                          collarProb,
-                         codeRestriction,
+                         codeRestriction, customCoders,
                          catScaling,
                          verbose)
   treatments <- plapply(workList,worker,parallelCluster)
@@ -515,7 +515,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                minFraction,smFactor,
                                rareCount,rareSig,
                                collarProb,
-                               codeRestriction,
+                               codeRestriction, customCoders,
                                splitFunction,ncross,
                                catScaling,
                                verbose,
@@ -575,7 +575,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                     minFraction,smFactor,
                                     rareCount,rareSig,
                                     collarProb,
-                                    codeRestriction, FALSE,
+                                    codeRestriction, customCoders,
+                                    FALSE,
                                     catScaling,
                                     verbose,
                                     parallelCluster)
@@ -602,7 +603,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 rareCount,rareSig,
                                 collarProb,
                                 codeRestriction,
-                                FALSE,FALSE,
+                                customCoders,
+                                FALSE, FALSE,
                                 splitFunction,ncross,
                                 catScaling,
                                 parallelCluster)

@@ -6,8 +6,8 @@
 \usage{
 mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
-  collarProb = 0, codeRestriction = NULL, scale = FALSE,
-  doCollar = FALSE, splitFunction = NULL, ncross = 3,
+  collarProb = 0, codeRestriction = NULL, customCoders = NULL,
+  scale = FALSE, doCollar = FALSE, splitFunction = NULL, ncross = 3,
   parallelCluster = NULL)
 }
 \arguments{
@@ -32,6 +32,8 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
+
+\item{customCoders}{map from code names to custom categorical variable encoding functions.}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 

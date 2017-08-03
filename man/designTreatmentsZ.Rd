@@ -5,8 +5,8 @@
 \title{Design variable treatments with no outcome variable.}
 \usage{
 designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
-  rareCount = 0, collarProb = 0, codeRestriction = NULL, verbose = TRUE,
-  parallelCluster = NULL)
+  rareCount = 0, collarProb = 0, codeRestriction = NULL,
+  customCoders = NULL, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -24,6 +24,8 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
+
+\item{customCoders}{map from code names to custom categorical variable encoding functions.}
 
 \item{verbose}{if TRUE print progress.}
 

@@ -1,8 +1,8 @@
 
-# vtreat 0.6.0 2017/07/31
+# vtreat 0.6.0 2017/08/03
 
 - Add codeRestriction option to design steps.
-- Prepare for partial pooling models.
+- Prepare for custom models.
 
 # vtreat 0.5.32 2017/06/13
 

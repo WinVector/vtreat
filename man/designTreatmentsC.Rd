@@ -7,8 +7,8 @@
 designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = NULL, collarProb = 0, codeRestriction = NULL,
-  splitFunction = NULL, ncross = 3, catScaling = FALSE, verbose = TRUE,
-  parallelCluster = NULL)
+  customCoders = NULL, splitFunction = NULL, ncross = 3,
+  catScaling = FALSE, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -34,6 +34,8 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
+
+\item{customCoders}{map from code names to custom categorical variable encoding functions.}
 
 \item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 
