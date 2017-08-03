@@ -42,6 +42,7 @@ exampleCoder <- function(v, vcol,
 }
 
 # example data
+# "case" is the outcome, despite the naming https://en.wikipedia.org/wiki/Case-control_study
 infert <- datasets::infert
 for(ci in c("education", "parity","induced", "case", 
             "spontaneous", "stratum", "pooled.stratum")) {
