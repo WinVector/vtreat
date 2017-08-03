@@ -1,31 +1,9 @@
 
-# @param v character variable name
-# @param vcol character variable levels
-# @param zoY numeric outcome as numeric
-# @param zC NULL if regression, target outcomes if classification
-# @param zTarget postitive character target if classification
-# @param weights row/example weights
-exampleCoder <- function(v,vcol,zoY,zC,zTarget,weights) {
-  if(is.null(zC)) {
-    d <- data.frame(x = vcol,
-                    y = zoY,
-                    stringsAsFactors = FALSE)
-    m <- lm(y~x, data=d, weights=weights)
-    p <- stats::predict(m, newdata=d)
-    return(p)
-  } else {
-    d <- data.frame(x = vcol,
-                    y = zC==zTarget,
-                    stringsAsFactors = FALSE)
-    m <- glm(y~x, data=d, weights = weights, family=binomial)
-    p <- stats::predict(m, newdata=d, type='link')
-    return(p)
-  }
-}
+
 
 # apply a classification impact model
 # replace level with stored code
-.customCode <- function(col,args) {
+.customCode <- function(col,args, doCollar) {
   col <- .preProcCat(col,args$levRestriction)
   unhandledNovel <- !(col %in% names(args$conditionalScore))
   keys <- col
@@ -81,7 +59,7 @@ makeCustomCoder <- function(customCode,coder,
                     treatmentCode=customCode,
                     needsSplit=TRUE,
                     extraModelDegrees=extraModelDegrees)
-  pred <- treatment$f(vcolin,treatment$args)
+  pred <- treatment$f(vcolin, treatment$args, FALSE)
   if(!.has.range.cn(pred)) {
     return(NULL)
   }
