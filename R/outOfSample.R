@@ -9,7 +9,7 @@
 #' 
 #' @examples
 #' 
-#' plan <- oneWayHoldout(3,NULL,NULL,NULL)
+#' plan <- kWayStratifiedY(3,2,NULL,NULL)
 #' getSplitPlanAppLabels(3,plan)
 #' 
 #' @export
@@ -33,7 +33,7 @@ getSplitPlanAppLabels <- function(nRow,plan) {
 #' 
 #' @examples
 #' 
-#' plan <- oneWayHoldout(3,NULL,NULL,NULL)
+#' plan <- kWayStratifiedY(3,2,NULL,NULL)
 #' problemAppPlan(3,3,plan,TRUE)
 #' 
 #' @export
@@ -96,8 +96,11 @@ problemAppPlan <- function(nRows,nSplits,appPlan,strictCheck) {
 
 
 
-#' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
-#' Doesn't respect nSplits.
+#' One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.
+#' 
+#' Note one way holdout can leak target expected values, so it should not
+#' be preferred in nested modeling situations.
+#' Also, doesn't respect nSplits.
 #' 
 #' @param nRows number of rows to split (integer >1).
 #' @param nSplits number of groups to split into (ignored).
@@ -418,17 +421,16 @@ buildEvalSets <- function(nRows,...,
   # deal with it ourselves if we have to
   fullSeq <- seq_len(nRows)
   # okay, we will carve-up on our own
-  if((nRows<=20)||(2*nSplits>nRows)) {
+  if(2*nSplits>nRows) {
     # one corner case
     if(nRows<=1) {
       # no split plan possible
       evalSets <- list(list(train=fullSeq,app=fullSeq))
       attr(evalSets,'splitmethod') <- 'notsplit'
     } else {
-      # small case, 1-holdout Jackknife style
       # not necissarilly number of splits the user requested
-      evalSets <- oneWayHoldout(nRows=nRows,nSplits=nSplits,dframe=NULL,y=NULL)
-      problem <- problemAppPlan(nRows,nRows,evalSets,TRUE)
+      evalSets <- kWayCrossValidation(nRows=nRows,nSplits= min(nSplits, nRows),dframe=NULL,y=NULL)
+      problem <- problemAppPlan(nRows,min(nSplits, nRows),evalSets,TRUE)
       if(!is.null(problem)) {
         stop(paste("problem with vtreat::buildEvalSets",problem))
       }
@@ -479,8 +481,8 @@ buildEvalSets <- function(nRows,...,
   for(ei in seq_len(length(evalSets))) {
     evalIndices <- evalSets[[ei]]$app
     buildIndices <- evalSets[[ei]]$train
-    dsubiEval <- dsub[evalIndices,]
-    dsubiBuild <- dsub[buildIndices,]
+    dsubiEval <- dsub[evalIndices, , drop=FALSE]
+    dsubiBuild <- dsub[buildIndices, , drop=FALSE]
     zoYBuild <- zoY[buildIndices]
     zCBuild <- c()
     if(!is.null(zC)) {

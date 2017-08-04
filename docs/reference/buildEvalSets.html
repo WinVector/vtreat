@@ -71,6 +71,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/CustomLevelCoders.html">Custom Level Coder</a>
+    </li>
+    <li>
       <a href="../articles/SavingTreamentPlans.html">Saving Treatment Plans</a>
     </li>
     <li>
@@ -281,7 +284,7 @@ applicaton a different number of times.</p>
 <span class='no'>d</span>$<span class='no'>outOfSampleEst</span> <span class='kw'>&lt;-</span> <span class='fu'>simulateOutOfSampleTrainEval</span>(<span class='no'>d</span>,<span class='no'>fitModelAndApply</span>)
 <span class='co'># compute out-sample R^2 (not positive, </span>
 <span class='co'>#  evidence of no relation)</span>
-<span class='fl'>1</span>-<span class='fu'>sum</span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='no'>d</span>$<span class='no'>outOfSampleEst</span>)^<span class='fl'>2</span>)/<span class='fu'>sum</span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='fu'>mean</span>(<span class='no'>d</span>$<span class='no'>y</span>))^<span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] -0.568004</div><div class='input'>
+<span class='fl'>1</span>-<span class='fu'>sum</span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='no'>d</span>$<span class='no'>outOfSampleEst</span>)^<span class='fl'>2</span>)/<span class='fu'>sum</span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='fu'>mean</span>(<span class='no'>d</span>$<span class='no'>y</span>))^<span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] -0.7843929</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

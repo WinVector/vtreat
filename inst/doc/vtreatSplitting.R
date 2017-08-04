@@ -3,7 +3,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.width = 7)
 
 ## ------------------------------------------------------------------------
-vtreat::oneWayHoldout(3,NULL,NULL,NULL)
+vtreat::kWayStratifiedY(3,2,NULL,NULL)
 
 ## ------------------------------------------------------------------------
 # This method is not a great idea as the data could have structure that strides

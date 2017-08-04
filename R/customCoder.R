@@ -34,7 +34,11 @@ makeCustomCoder <- function(customCode,coder,
   extraModelDegrees <- max(0,length(unique(vcolin))-1)
   scores <- NULL
   tryCatch(
-    scores <- coder(v,vcol,zoY,zC,zTarget,weights),
+    if(is.null(zC)) {
+      scores <- coder(v,vcol,zoY,weights)
+    } else {
+      scores <- coder(v,vcol,zC==zTarget,weights)
+    },
     error = function(e) { warning(e) }
   )
   if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(vcol))) {

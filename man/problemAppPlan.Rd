@@ -23,7 +23,7 @@ check if appPlan is a good carve-up of 1:nRows into nSplits groups
 }
 \examples{
 
-plan <- oneWayHoldout(3,NULL,NULL,NULL)
+plan <- kWayStratifiedY(3,2,NULL,NULL)
 problemAppPlan(3,3,plan,TRUE)
 
 }

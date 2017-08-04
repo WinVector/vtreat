@@ -121,40 +121,32 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 <p>The function should return a list of lists. The <em>i</em>th element should have slots <code>train</code> and <code>app</code>, where <code>[[i]]$train</code> designates the training data used to fit the model that evaluates the data designated by <code>[[i]]$app</code>.</p>
 <p>This is easiest to show through an example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vtreat::<span class="kw">oneWayHoldout</span>(<span class="dv">3</span>,<span class="ot">NULL</span>,<span class="ot">NULL</span>,<span class="ot">NULL</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vtreat::<span class="kw">kWayStratifiedY</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="ot">NULL</span>,<span class="ot">NULL</span>)</code></pre></div>
 <pre><code>## [[1]]
 ## [[1]]$train
-## [1] 2 3
+## [1] 1 2
 ## 
 ## [[1]]$app
-## [1] 1
+## [1] 3
 ## 
 ## 
 ## [[2]]
 ## [[2]]$train
-## [1] 1 3
+## [1] 3
 ## 
 ## [[2]]$app
-## [1] 2
-## 
-## 
-## [[3]]
-## [[3]]$train
-## [1] 1 2
-## 
-## [[3]]$app
-## [1] 3
+## [1] 2 1
 ## 
 ## 
 ## attr(,&quot;splitmethod&quot;)
-## [1] &quot;oneway&quot;</code></pre>
+## [1] &quot;kwaycross&quot;</code></pre>
 <p>As we can see <code>vtreat::oneWayHoldout</code> builds three split sets where in each set the “application data rows” is a single row index and the corresponding training rows are the complementary row indexes. This is a leave-one-out <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">cross validation plan</a>.</p>
 <p><code>vtreat</code> supplies a number of cross validation split/plan implementations:</p>
 <ul>
-<li><code>oneWayHoldout</code>: jackknife, or leave-one-out cross-validation</li>
-<li><code>kWayCrossValidation</code>: k-way unstratified cross-validation</li>
 <li><code>kWayStratifiedY</code>: k-way y-stratified cross-validation. This is the <code>vtreat</code> default splitting plan.</li>
 <li><code>makekWayCrossValidationGroupedByColumn</code>: k-way y-stratified cross-validation that preserves grouping (for example, all rows corresponding to a single customer or patient, etc). This is a complex splitting plan, and only recommended when absolutely needed.</li>
+<li><code>kWayCrossValidation</code>: k-way unstratified cross-validation</li>
+<li><code>oneWayHoldout</code>: jackknife, or leave-one-out cross-validation. Note one way hold out can leak target expectations, so is not preferred for nested model situations.</li>
 </ul>
 <p>The function <code>buildEvalSets</code> takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using <code>designTreatments[N\C]</code> or <code>mkCrossFrame[N\C]Experiment</code>.</p>
 <p>For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass a user defined <code>splitFn</code> into <code>vtreat::buildEvalSets</code> as follows:</p>
@@ -211,56 +203,40 @@ vtreat::<span class="kw">buildEvalSets</span>(<span class="dt">nRows=</span><spa
 ## overlap</code></pre>
 <pre><code>## [[1]]
 ## [[1]]$train
-## [1] 2 3 4 5
+## [1] 1 2 3 4
 ## 
 ## [[1]]$app
-## [1] 1
+## [1] 5
 ## 
 ## 
 ## [[2]]
 ## [[2]]$train
-## [1] 1 3 4 5
+## [1] 3 4 5
 ## 
 ## [[2]]$app
-## [1] 2
+## [1] 2 1
 ## 
 ## 
 ## [[3]]
 ## [[3]]$train
-## [1] 1 2 4 5
+## [1] 1 2 5
 ## 
 ## [[3]]$app
-## [1] 3
-## 
-## 
-## [[4]]
-## [[4]]$train
-## [1] 1 2 3 5
-## 
-## [[4]]$app
-## [1] 4
-## 
-## 
-## [[5]]
-## [[5]]$train
-## [1] 1 2 3 4
-## 
-## [[5]]$app
-## [1] 5
+## [1] 4 3
 ## 
 ## 
 ## attr(,&quot;splitmethod&quot;)
-## [1] &quot;oneway&quot;</code></pre>
+## [1] &quot;kwaycross&quot;</code></pre>
 <p>Notice above the returned split does not meet all of the original desiderata, but is guaranteed to be a useful data partition.</p>
 </div>
 <div id="implementations" class="section level3">
 <h3>Implementations</h3>
 <p>The file <a href="https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R">outOfSample.R</a> contains worked examples. In particular we would suggest running the code displayed when you type any of:</p>
 <ul>
-<li><code>help(oneWayHoldout)</code></li>
 <li><code>help(kWayCrossValidation)</code></li>
 <li><code>help(kWayStratifiedY)</code></li>
 <li><code>help(makekWayCrossValidationGroupedByColumn)</code></li>
+<li><code>help(oneWayHoldout)</code></li>
 </ul>
 <p>For example from <code>help(kWayStratifiedY)</code> we can see that the distribution of <code>y</code> is much more similar in each fold when we stratify than when we don’t:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">'vtreat'</span>)

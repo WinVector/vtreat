@@ -9,57 +9,62 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r fn}
+```{r dat}
 library("vtreat")
-
-# @param v character variable name
-# @param vcol character variable levels
-# @param zoY numeric outcome as numeric
-# @param zC NULL if regression, target outcomes if classification
-# @param zTarget postitive character target if classification
-# @param weights row/example weights
-# @return scored training data column
-exampleCoder <- function(v, vcol, 
-                         zoY, zC, zTarget, 
-                         weights) {
-  if(is.null(zC)) {
-    # regression case zoY ~ vcol
-    d <- data.frame(x = vcol,
-                    y = zoY,
-                    stringsAsFactors = FALSE)
-    m <- lm(y~x, data=d, weights=weights)
-    p <- predict(m, newdata=d)
-    return(p)
-  } else {
-    # classificaton case (zC == zTarget) ~ vcol
-    d <- data.frame(x = vcol,
-                    y = zC==zTarget,
-                    stringsAsFactors = FALSE)
-    m <- glm(y~x, data=d, weights = weights, family=binomial)
-    p <- predict(m, newdata=d, type='link')
-    return(p)
-  }
-}
 
 # example data
 # "case" is the outcome, despite the naming https://en.wikipedia.org/wiki/Case-control_study
 infert <- datasets::infert
-for(ci in c("education", "parity","induced", "case", 
+for(ci in c("education", "parity", "induced", "case", 
             "spontaneous", "stratum", "pooled.stratum")) {
   infert[[ci]] <- as.character(infert[[ci]])
 }
+
+# @param v character variable name
+# @param vcol character variable levels
+# @param y logical outcome
+# @param weights row/example weights
+# @return scored training data column
+exampleCoderC <- function(v, vcol, 
+                          y, 
+                          weights) {
+  # classificaton case y ~ vcol
+  d <- data.frame(x = vcol,
+                  y = y,
+                  stringsAsFactors = FALSE)
+  m <- glm(y~x, data=d, weights = weights, family=binomial)
+  predict(m, newdata=d, type='link')
+}
+
+
+# @param v character variable name
+# @param vcol character variable levels
+# @param y numeric outcome
+# @param weights row/example weights
+# @return scored training data column
+exampleCoderN <- function(v, vcol, 
+                         y, 
+                         weights) {
+  # regression case y ~ vcol
+  d <- data.frame(x = vcol,
+                  y = y,
+                  stringsAsFactors = FALSE)
+  m <- lm(y~x, data=d, weights=weights)
+  predict(m, newdata=d)
+}
+
+customCoders = list('c.regc' = exampleCoderC,
+                    'n.regn' = exampleCoderN)
 ```
 
 ```{r cex}
-# switching ot oneWayHoldout lost vars (TODO: check on this!)
 cfe <- mkCrossFrameCExperiment(dframe = infert, 
-                               varlist= c('age', 'pooled.stratum'),
+                               varlist= c('age', 'education'),
                                outcomename = 'case',
                                outcometarget = '1',
                                codeRestriction = c('clean', 'isBAD', 'catB'),
-                               ncross = 10,
-                               # splitFunction = oneWayHoldout,
-                               customCoders = list('regm' = exampleCoder))
+                               customCoders = customCoders)
+print(cfe$method)
 treatments <- cfe$treatments
 scoreFrame <- treatments$scoreFrame
 trainFrame <- cfe$crossFrame
@@ -67,22 +72,24 @@ trainFrame <- cfe$crossFrame
 print(scoreFrame)
 head(trainFrame)
 summary(trainFrame)
-
+summary(glm(case=='1' ~ education_catB, data = trainFrame, family=binomial))
 
 applicationFrame <- prepare(treatments, infert)
 head(applicationFrame)
 summary(applicationFrame)
+
+summary(glm(case=='1' ~ education_catB, data = applicationFrame, family=binomial))
 ```
 
 ```{r nex}
+
 infert$case <- as.numeric(infert$case)
 cfe <- mkCrossFrameNExperiment(dframe = infert, 
-                               varlist= c('age', 'pooled.stratum'),
+                               varlist= c('age', 'education'),
                                outcomename = 'case',
                                codeRestriction = c('clean', 'isBAD', 'catN'),
-                               ncross = 10,
-                               # splitFunction = oneWayHoldout,
-                               customCoders = list('regm' = exampleCoder))
+                               customCoders = customCoders)
+print(cfe$method)
 treatments <- cfe$treatments
 scoreFrame <- treatments$scoreFrame
 trainFrame <- cfe$crossFrame
@@ -92,8 +99,12 @@ head(trainFrame)
 summary(trainFrame)
 
 
+
+
 applicationFrame <- prepare(treatments, infert)
 head(applicationFrame)
 summary(applicationFrame)
+
+
 ```
 

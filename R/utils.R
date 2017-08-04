@@ -216,20 +216,35 @@ linScore <- function(varName,xcol,ycol,weights,numberOfHiddenDegrees=0) {
 #' 
 catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
   if(is.null(weights)) {
-    weights <- 1.0+numeric(length(x))
+    weights <- rep(1.0, length(x))
   }
   pRsq <- 0.0
   sig <- 1.0
-  a <- 0.0
+  a <- 1.0
   if(.has.range.cn(x) && 
      .has.range.cn(as.numeric(yC==yTarget))) {
-    tf <- data.frame(x=x,y=(yC==yTarget),
+    tfp <- data.frame(x = x,
+                     y = (yC==yTarget),
+                     w = weights,
                      stringsAsFactors=FALSE)
+
     suppressWarnings(tryCatch({      
       model <- stats::glm(stats::as.formula('y~x'),
-                          data=tf,
+                          data=tfp,
                           family=stats::binomial(link='logit'),
-                          weights=weights)
+                          weights=tfp$w)
+      if(!model$converged) { 
+        # put in small oposite to prevent unbounded models
+        # try to fix non-converge
+        tfo <- tfp
+        tfo$w <- tfo$w*1.0e-5
+        tfo$y <- !tfo$y
+        tf <- rbind(tfp, tfo)
+        model <- stats::glm(stats::as.formula('y~x'),
+                            data=tf,
+                            family=stats::binomial(link='logit'),
+                            weights=tf$w)
+      }
       if(model$converged) {
         delta_deviance <- model$null.deviance - model$deviance
         if((model$null.deviance>0)&&(delta_deviance>0)) {

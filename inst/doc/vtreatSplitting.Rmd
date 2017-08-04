@@ -73,17 +73,17 @@ The function should return a list of lists.  The *i*th element should have slots
 This is easiest to show through an example:
 
 ```{r}
-vtreat::oneWayHoldout(3,NULL,NULL,NULL)
+vtreat::kWayStratifiedY(3,2,NULL,NULL)
 ```
 
 As we can see `vtreat::oneWayHoldout` builds three split sets where in each set the "application data rows" is a single row index and the corresponding training rows are the complementary row indexes.  This is a leave-one-out [cross validation plan](https://en.wikipedia.org/wiki/Cross-validation_(statistics)).
 
 `vtreat` supplies a number of cross validation split/plan implementations:
 
-* `oneWayHoldout`: jackknife, or leave-one-out cross-validation
-* `kWayCrossValidation`: k-way unstratified cross-validation
 * `kWayStratifiedY`: k-way y-stratified cross-validation. This is the `vtreat` default splitting plan.
 * `makekWayCrossValidationGroupedByColumn`: k-way y-stratified cross-validation that preserves grouping (for example, all rows corresponding to a single customer or patient, etc). This is a complex splitting plan, and only recommended when absolutely needed.
+* `kWayCrossValidation`: k-way unstratified cross-validation
+* `oneWayHoldout`: jackknife, or leave-one-out cross-validation.  Note one way hold out can leak target expectations, so is not preferred for nested model situations.
 
 The function `buildEvalSets` takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using `designTreatments[N\C]` or `mkCrossFrame[N\C]Experiment`.
 
@@ -130,10 +130,10 @@ Notice above the returned split does not meet all of the original desiderata, bu
 
 The file [outOfSample.R](https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R) contains worked examples.  In particular we would suggest running the code displayed when you type any of:
 
-* `help(oneWayHoldout)`
 * `help(kWayCrossValidation)`
 * `help(kWayStratifiedY)`
 * `help(makekWayCrossValidationGroupedByColumn)`
+* `help(oneWayHoldout)`
 
 For example from `help(kWayStratifiedY)` we can see that the distribution of `y` is much more similar in each fold when we stratify than when we don't:
 

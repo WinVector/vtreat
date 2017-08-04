@@ -71,6 +71,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/CustomLevelCoders.html">Custom Level Coder</a>
+    </li>
+    <li>
       <a href="../articles/SavingTreamentPlans.html">Saving Treatment Plans</a>
     </li>
     <li>
@@ -134,8 +137,9 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
 
     <pre class="usage"><span class='fu'>designTreatmentsN</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>outcomename</span>, <span class='no'>...</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
   <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -185,6 +189,10 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
       <td><p>what types of variables to produce (character array of level codes, NULL means no restiction).</p></td>
     </tr>
     <tr>
+      <th>customCoders</th>
+      <td><p>map from code names to custom categorical variable encoding functions.</p></td>
+    </tr>
+    <tr>
       <th>splitFunction</th>
       <td><p>(optional) see vtreat::buildEvalSets .</p></td>
     </tr>
@@ -225,13 +233,13 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>),<span class='kw'>y</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
 <span class='no'>dTestN</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "desigining treatments Tue Aug  1 15:07:26 2017"
-#&gt; [1] "designing treatments Tue Aug  1 15:07:26 2017"
-#&gt; [1] " have level statistics Tue Aug  1 15:07:26 2017"
-#&gt; [1] "design var x Tue Aug  1 15:07:26 2017"
-#&gt; [1] "design var z Tue Aug  1 15:07:26 2017"
-#&gt; [1] " scoring treatments Tue Aug  1 15:07:26 2017"
-#&gt; [1] "have treatment plan Tue Aug  1 15:07:26 2017"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTrainN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
+<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "desigining treatments Thu Aug  3 19:02:35 2017"
+#&gt; [1] "designing treatments Thu Aug  3 19:02:35 2017"
+#&gt; [1] " have level statistics Thu Aug  3 19:02:35 2017"
+#&gt; [1] "design var x Thu Aug  3 19:02:35 2017"
+#&gt; [1] "design var z Thu Aug  3 19:02:35 2017"
+#&gt; [1] " scoring treatments Thu Aug  3 19:02:35 2017"
+#&gt; [1] "have treatment plan Thu Aug  3 19:02:35 2017"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTrainN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
 <span class='no'>dTestNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTestN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

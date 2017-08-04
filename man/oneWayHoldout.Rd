@@ -2,8 +2,7 @@
 % Please edit documentation in R/outOfSample.R
 \name{oneWayHoldout}
 \alias{oneWayHoldout}
-\title{One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
-Doesn't respect nSplits.}
+\title{One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.}
 \usage{
 oneWayHoldout(nRows, nSplits, dframe, y)
 }
@@ -20,8 +19,9 @@ oneWayHoldout(nRows, nSplits, dframe, y)
 split plan
 }
 \description{
-One way holdout, a splitFunction in the sense of vtreat::buildEvalSets.  
-Doesn't respect nSplits.
+Note one way holdout can leak target expected values, so it should not
+be preferred in nested modeling situations.
+Also, doesn't respect nSplits.
 }
 \examples{
 

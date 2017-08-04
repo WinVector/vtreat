@@ -259,8 +259,14 @@ mkVtreatListWorker <- function(scale,doCollar) {
           # expect character or factor here
           for(customCode in names(customCoders)) {
             coder <- customCoders[[customCode]]
-            ti <- makeCustomCoder(customCode,coder, v,vcol,zoY,zC,zTarget,weights,catScaling)
-            acceptTreatment(ti)
+            customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
+            codeType <- customeCodeV[[1]]
+            codeName <- customeCodeV[[2]]
+            if((codeType=='n')==is.null(zC)) {
+              ti <- makeCustomCoder(codeName,coder, 
+                                     v,vcol,zoY,zC,zTarget,weights,catScaling)
+              acceptTreatment(ti)
+            }
           }
           ti = NULL
           if(length(levRestriction$safeLevs)>0) {

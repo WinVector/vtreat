@@ -19,7 +19,7 @@ read application labels off a split plan.
 }
 \examples{
 
-plan <- oneWayHoldout(3,NULL,NULL,NULL)
+plan <- kWayStratifiedY(3,2,NULL,NULL)
 getSplitPlanAppLabels(3,plan)
 
 }
