@@ -63,5 +63,8 @@
   } else {
     treatment$scales <- catScore(newVarName,pred,rescol,resTarget,weights)
   }
+  if(treatment$scales$a <= 0) {
+    return(NULL) # fitting a noise effect
+  }
   treatment
 }

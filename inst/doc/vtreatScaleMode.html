@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2017-08-03" />
+<meta name="date" content="2017-08-06" />
 
 <title>vtreat scale mode</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat scale mode</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2017-08-03</em></h4>
+<h4 class="date"><em>2017-08-06</em></h4>
 
 
 
@@ -154,18 +154,18 @@ slopeFrame$badSlope &lt;-
                                   <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 dTrainCTreatedScaled2 &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsC2,dTrainC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(dTrainCTreatedScaled2)</code></pre></div>
-<pre><code>##    x_lev_NA  x_lev_x.a  x_lev_x.b     x_catP    x_catB     y
-## 1 -3.161922 -0.6931472 -0.3333333 -0.9396225 -1.894112 FALSE
-## 2 -3.161922 -0.6931472 -0.3333333 -0.9396225 -1.894112 FALSE
-## 3 -3.161922 -0.6931472 -0.3333333 -0.9396225 -1.894112  TRUE
-## 4 -3.161922  0.6931472  0.6666667  0.4698112 -1.196414 FALSE
-## 5 -3.161922  0.6931472  0.6666667  0.4698112 -1.196414  TRUE
-## 6 15.809611  0.6931472 -0.3333333  1.8792449  8.075166  TRUE</code></pre>
+<pre><code>##    x_lev_NA  x_lev_x.a x_lev_x.b     x_catP    x_catB     y
+## 1 -3.161922 -0.6931472         0 -0.9396225 -1.894112 FALSE
+## 2 -3.161922 -0.6931472         0 -0.9396225 -1.894112 FALSE
+## 3 -3.161922 -0.6931472         0 -0.9396225 -1.894112  TRUE
+## 4 -3.161922  0.6931472         0  0.4698112 -1.196414 FALSE
+## 5 -3.161922  0.6931472         0  0.4698112 -1.196414  TRUE
+## 6 15.809611  0.6931472         0  1.8792449  8.075166  TRUE</code></pre>
 <p>Notice the new scaled frame is in a different scale than the original scaled frame. It likely is a function of the problem domain which scaling is more appropriate or useful.</p>
 <p>The new scaled columns are again mean-0 (so they are not exactly the logistic link values, which may not have been so shifted). The new scaled columns do not necessarily have linear model slope 1 as the original scaled columns did as we see below:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colMeans</span>(dTrainCTreatedScaled2)</code></pre></div>
 <pre><code>##     x_lev_NA    x_lev_x.a    x_lev_x.b       x_catP       x_catB 
-## 0.000000e+00 0.000000e+00 3.700743e-17 3.700743e-16 7.401487e-17 
+## 0.000000e+00 0.000000e+00 0.000000e+00 3.700743e-16 7.401487e-17 
 ##            y 
 ## 5.000000e-01</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(y~x_lev_NA,<span class="dt">data=</span>dTrainCTreatedScaled)</code></pre></div>
@@ -191,8 +191,8 @@ dTrainCTreatedScaled2 &lt;-<span class="st"> </span><span class="kw">prepare</sp
                                 <span class="dt">data =</span> dTrainCTreatedScaled2)$coefficients[[<span class="dv">2</span>]]
                            },
                            <span class="kw">numeric</span>(<span class="dv">1</span>))</code></pre></div>
-<pre><code>##      x_lev_NA     x_lev_x.a     x_lev_x.b        x_catP        x_catB 
-##  1.000000e+00  1.000000e+00 -1.922963e-16  1.000000e+00  1.000000e+00</code></pre>
+<pre><code>##  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catB 
+##         1         1        NA         1         1</code></pre>
 </div>
 <div id="pcapcr" class="section level3">
 <h3>PCA/PCR</h3>

@@ -42,5 +42,8 @@
   }
   class(treatment) <- 'vtreatment'
   treatment$scales <- linScore(newVarName,pred,rescol,weights)
+  if(treatment$scales$a <= 0) {
+    return(NULL) # fitting a noise effect
+  }
   treatment
 }

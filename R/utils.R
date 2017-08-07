@@ -220,7 +220,7 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
   }
   pRsq <- 0.0
   sig <- 1.0
-  a <- 1.0
+  a <- 0.0
   if(.has.range.cn(x) && 
      .has.range.cn(as.numeric(yC==yTarget))) {
     tfp <- data.frame(x = x,
