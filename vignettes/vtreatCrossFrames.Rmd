@@ -150,7 +150,7 @@ See:
 - "On Cross-Validation and Stacking: Building seemingly predictive models on random data" Claudia Perlich and Grzegorz Swirszcz
 - "Super Learner" Mark J. van der Laan, Eric C. Polley, and Alan E. Hubbard
 
-In fact (though it was developed independently) you can think of vtreat as a superlearner.
+In fact you can think of vtreat as a superlearner.
 
 In super learning cross validation techniques are used to simulate having built 
 sub-model predictions on novel data.  The simulated out of sample-applications of these 
