@@ -102,7 +102,7 @@
       <h1>Custom Level Coder</h1>
                         <h4 class="author">Nina Zumel, John Mount</h4>
             
-            <h4 class="date">2017-08-06</h4>
+            <h4 class="date">2017-08-08</h4>
           </div>
 
     
@@ -166,30 +166,30 @@ scoreFrame &lt;-<span class="st"> </span>treatments$scoreFrame
 trainFrame &lt;-<span class="st"> </span>cfe$crossFrame
 
 <span class="kw">print</span>(scoreFrame)</code></pre></div>
-<pre><code>##          varName varMoves          rsq        sig needsSplit
-## 1      age_clean     TRUE 9.774893e-06 0.95566635      FALSE
-## 2 education_regc     TRUE 1.649165e-02 0.02240336       TRUE
-## 3 education_catB     TRUE 1.653278e-02 0.02223646       TRUE
+<pre><code>##          varName varMoves          rsq       sig needsSplit
+## 1      age_clean     TRUE 9.774893e-06 0.9556663      FALSE
+## 2 education_regc     TRUE 4.895660e-03 0.2134507       TRUE
+## 3 education_catB     TRUE 4.910502e-03 0.2127581       TRUE
 ##   extraModelDegrees  origName  code
 ## 1                 0       age clean
 ## 2                 2 education  regc
 ## 3                 2 education  catB</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(trainFrame)</code></pre></div>
 <pre><code>##   age_clean education_regc education_catB case
-## 1        26    -0.40108640    -0.40543268    1
-## 2        42     0.27000770     0.26967936    1
-## 3        39     0.27000770     0.26967936    1
-## 4        34    -0.40108640    -0.40543268    1
-## 5        35     0.12531811     0.12260309    1
-## 6        36    -0.01767438    -0.01801746    1</code></pre>
+## 1        26  -0.2220662332  -2.231145e-01    1
+## 2        42  -0.2220662332  -2.231145e-01    1
+## 3        39   0.1676847700   1.643155e-01    1
+## 4        34   0.0005241834   1.575716e-05    1
+## 5        35   0.0599476039   5.942432e-02    1
+## 6        36   0.0599476039   5.942432e-02    1</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(trainFrame)</code></pre></div>
-<pre><code>##    age_clean     education_regc       education_catB      
-##  Min.   :21.00   Min.   :-0.4010864   Min.   :-0.4054327  
-##  1st Qu.:28.00   1st Qu.:-0.0974040   1st Qu.:-0.1017816  
-##  Median :31.00   Median : 0.0003441   Median : 0.0000009  
-##  Mean   :31.50   Mean   : 0.0289491   Mean   : 0.0264629  
-##  3rd Qu.:35.25   3rd Qu.: 0.1253181   3rd Qu.: 0.1226031  
-##  Max.   :44.00   Max.   : 0.2700077   Max.   : 0.2696794  
+<pre><code>##    age_clean     education_regc     education_catB      
+##  Min.   :21.00   Min.   :-0.22207   Min.   :-0.2231145  
+##  1st Qu.:28.00   1st Qu.:-0.05955   1st Qu.:-0.0606233  
+##  Median :31.00   Median : 0.05995   Median : 0.0594243  
+##  Mean   :31.50   Mean   : 0.00243   Mean   : 0.0007773  
+##  3rd Qu.:35.25   3rd Qu.: 0.07254   3rd Qu.: 0.0714596  
+##  Max.   :44.00   Max.   : 0.16768   Max.   : 0.1643155  
 ##      case          
 ##  Length:248        
 ##  Class :character  
@@ -205,20 +205,20 @@ trainFrame &lt;-<span class="st"> </span>cfe$crossFrame
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -1.2043  -0.9289  -0.8353   1.3824   1.6758  
+## -1.0698  -0.9419  -0.8505   1.4289   1.6257  
 ## 
 ## Coefficients:
 ##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)     -0.6488     0.1366  -4.750 2.03e-06 ***
-## education_catB  -1.7559     1.0475  -1.676   0.0937 .  
+## (Intercept)     -0.6919     0.1354  -5.111  3.2e-07 ***
+## education_catB  -1.9432     1.3294  -1.462    0.144    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 316.17  on 247  degrees of freedom
-## Residual deviance: 313.33  on 246  degrees of freedom
-## AIC: 317.33
+## Residual deviance: 314.02  on 246  degrees of freedom
+## AIC: 318.02
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">applicationFrame &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments, infert)
@@ -284,28 +284,28 @@ trainFrame &lt;-<span class="st"> </span>cfe$crossFrame
 <span class="kw">print</span>(scoreFrame)</code></pre></div>
 <pre><code>##          varName varMoves          rsq       sig needsSplit
 ## 1      age_clean     TRUE 1.246409e-05 0.9558860      FALSE
-## 2 education_regn     TRUE 4.214295e-04 0.7476893       TRUE
-## 3 education_catN     TRUE 3.792044e-04 0.7602569       TRUE
+## 2 education_regn     TRUE 4.837800e-03 0.2752155       TRUE
+## 3 education_catN     TRUE 4.837800e-03 0.2752155       TRUE
 ##   extraModelDegrees  origName  code
 ## 1                 0       age clean
 ## 2                 2 education  regn
 ## 3                 2 education  catN</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(trainFrame)</code></pre></div>
 <pre><code>##   age_clean education_regn education_catN case
-## 1        26   -0.083333333   -0.083333333    1
-## 2        42   -0.004016064   -0.004016064    1
-## 3        39   -0.083333333   -0.083333333    1
-## 4        34    0.095238095    0.095238095    1
-## 5        35   -0.051635112   -0.051635112    1
-## 6        36   -0.051635112   -0.051635112    1</code></pre>
+## 1        26  -1.904762e-01    -0.19047619    1
+## 2        42  -1.904762e-01    -0.19047619    1
+## 3        39  -1.904762e-01    -0.19047619    1
+## 4        34  -9.436896e-16     0.00000000    1
+## 5        35  -4.566210e-03    -0.00456621    1
+## 6        36  -2.339591e-02    -0.02339591    1</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(trainFrame)</code></pre></div>
 <pre><code>##    age_clean     education_regn      education_catN           case       
-##  Min.   :21.00   Min.   :-0.083333   Min.   :-0.083333   Min.   :0.0000  
-##  1st Qu.:28.00   1st Qu.:-0.029536   1st Qu.:-0.029536   1st Qu.:0.0000  
-##  Median :31.00   Median : 0.012821   Median : 0.012821   Median :0.0000  
-##  Mean   :31.50   Mean   : 0.004674   Mean   : 0.004674   Mean   :0.3347  
-##  3rd Qu.:35.25   3rd Qu.: 0.038462   3rd Qu.: 0.038462   3rd Qu.:1.0000  
-##  Max.   :44.00   Max.   : 0.095238   Max.   : 0.095238   Max.   :1.0000</code></pre>
+##  Min.   :21.00   Min.   :-0.190476   Min.   :-0.190476   Min.   :0.0000  
+##  1st Qu.:28.00   1st Qu.:-0.023396   1st Qu.:-0.023396   1st Qu.:0.0000  
+##  Median :31.00   Median :-0.004566   Median :-0.004566   Median :0.0000  
+##  Mean   :31.50   Mean   :-0.001613   Mean   :-0.001613   Mean   :0.3347  
+##  3rd Qu.:35.25   3rd Qu.: 0.019608   3rd Qu.: 0.019608   3rd Qu.:1.0000  
+##  Max.   :44.00   Max.   : 0.162651   Max.   : 0.162651   Max.   :1.0000</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">applicationFrame &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments, infert)
 <span class="kw">head</span>(applicationFrame)</code></pre></div>
 <pre><code>##   age_clean education_regn education_catN case
