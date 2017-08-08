@@ -11,28 +11,62 @@ vignette: >
 
 ```{r dat}
 library("vtreat")
+library("lme4")
+library("dplyr")
+library("tidyr")
+library("ggplot2")
 
 # example data
-# "case" is the outcome, despite the naming https://en.wikipedia.org/wiki/Case-control_study
-infert <- datasets::infert
-for(ci in c("education", "parity", "induced", "case", 
-            "spontaneous", "stratum", "pooled.stratum")) {
-  infert[[ci]] <- as.character(infert[[ci]])
-}
 
+srrs = read.table("vignettes/srrs2.dat", header=TRUE, sep=",", stringsAsFactor=FALSE)
+
+# target: log of radon activity (activity)
+# grouping variable: county
+radonMN = filter(srrs, state=="MN") %>%
+  select("county", "activity") %>%
+  filter(activity > 0) %>% 
+  mutate(activity = log(activity),
+         county = base::trimws(county)) %>%
+  mutate(critical = activity>1)
+
+# show the distribution of log radon readings
+ggplot(radonMN, aes(x=activity)) + geom_density(adjust=0.5) + ggtitle("Distribution of log radon activity")
+
+# show the distribution of readings by county
+radonMN %>% mutate(unit=1,
+                   county = reorder(county, unit, FUN=sum)) %>%
+  ggplot(aes(x=county, y=unit)) + 
+  stat_summary(fun.y="sum", fun.ymax="sum", fun.ymin=function(x){0}) +
+  coord_flip() + ggtitle("Number of readings by county")
+
+# show the distribution of critical by county
+palette="Set3"
+radonMN %>% mutate(county=reorder(county, as.numeric(critical), FUN=mean)) %>%
+ggplot(aes(x=county, fill=critical, color=critical)) + 
+  geom_bar(position="fill") + ggtitle("Proportion of critical readings by county") + 
+  scale_color_brewer(palette=palette) + scale_fill_brewer(palette=palette) + 
+  coord_flip()
+
+measframe = group_by(radonMN, county) %>% summarize(nmeas=n())
+
+```
+
+Regression example: score county variable using partial pooling on activity.
+Classification example: score county variable using partial pooling on activity > 1
+```{r coders}
 # @param v character variable name
 # @param vcol character variable levels
 # @param y logical outcome
 # @param weights row/example weights
 # @return scored training data column
-exampleCoderC <- function(v, vcol, 
+ppCoderC <- function(v, vcol, 
                           y, 
                           weights) {
   # classificaton case y ~ vcol
   d <- data.frame(x = vcol,
                   y = y,
                   stringsAsFactors = FALSE)
-  m <- glm(y~x, data=d, weights = weights, family=binomial)
+  m = glmer(y ~ (1 | x), data=d, weights=weights, family=binomial)
   predict(m, newdata=d, type='link')
 }
 
@@ -42,53 +76,31 @@ exampleCoderC <- function(v, vcol,
 # @param y numeric outcome
 # @param weights row/example weights
 # @return scored training data column
-exampleCoderN <- function(v, vcol, 
+ppCoderN <- function(v, vcol, 
                          y, 
                          weights) {
   # regression case y ~ vcol
   d <- data.frame(x = vcol,
                   y = y,
                   stringsAsFactors = FALSE)
-  m <- lm(y~x, data=d, weights=weights)
+  m <- lmer(y~ (1 | x), data=d, weights=weights)
   predict(m, newdata=d)
 }
 
-customCoders = list('c.regc' = exampleCoderC,
-                    'n.regn' = exampleCoderN)
+
+customCoders = list('c.partialpool_c' = ppCoderC,
+                    'n.partialpool_n' = ppCoderN)
 ```
 
-```{r cex}
-cfe <- mkCrossFrameCExperiment(dframe = infert, 
-                               varlist= c('age', 'education'),
-                               outcomename = 'case',
-                               outcometarget = '1',
-                               codeRestriction = c('clean', 'isBAD', 'catB'),
-                               customCoders = customCoders)
-print(cfe$method)
-treatments <- cfe$treatments
-scoreFrame <- treatments$scoreFrame
-trainFrame <- cfe$crossFrame
 
-print(scoreFrame)
-head(trainFrame)
-summary(trainFrame)
-summary(glm(case=='1' ~ education_catB, data = trainFrame, family=binomial))
-
-applicationFrame <- prepare(treatments, infert)
-head(applicationFrame)
-summary(applicationFrame)
-
-summary(glm(case=='1' ~ education_catB, data = applicationFrame, family=binomial))
-```
-
+Numeric example
 ```{r nex}
 
-infert$case <- as.numeric(infert$case)
-cfe <- mkCrossFrameNExperiment(dframe = infert, 
-                               varlist= c('age', 'education'),
-                               outcomename = 'case',
+cfe <- mkCrossFrameNExperiment(dframe = radonMN, 
+                               varlist= c('county'),
+                               outcomename = 'activity',
                                codeRestriction = c('clean', 'isBAD', 'catN'),
-                               customCoders = customCoders)
+                                customCoders = customCoders)
 print(cfe$method)
 treatments <- cfe$treatments
 scoreFrame <- treatments$scoreFrame
@@ -98,13 +110,88 @@ print(scoreFrame)
 head(trainFrame)
 summary(trainFrame)
 
+#
+# reminder to self: the catN is the difference by county from grandmean
+# treatmentPlan is from all data, so the catNs from a prepare reflect this exactly.
+# the trainFrame probably doesn't
+#
 
+# compare the impact codings on the training frame
+ggplot(trainFrame, aes(x=county_catN, y=county_partialpool_n)) +
+  geom_abline(color="darkgray") + 
+  geom_point() +
+  coord_fixed(ylim = range(trainFrame$county_catN)) + 
+  ggtitle("Compare impact codings, training cross frame")
 
+# compare the impact codings in the treatment plan
+# the distributions from the uframe are different from the train frame
+uframe = prepare(treatments, data.frame(county = unique(radonMN$county), stringsAsFactors=FALSE))
+summary(uframe)
+uframe$nmeas = measframe$nmeas
 
-applicationFrame <- prepare(treatments, infert)
-head(applicationFrame)
-summary(applicationFrame)
+# note the scores from the partial pooling are tucked in
+ggplot(uframe, aes(x=county_catN, y=county_partialpool_n)) + 
+   geom_abline(color="darkgray")  +
+  geom_point(aes(color=log2(nmeas))) +
+  coord_fixed(ylim = range(uframe$county_catN)) + 
+  ggtitle("Compare impact codings, prepared frame") + 
+   #scale_color_distiller(palette="YlGnBu")
+  scale_color_viridis(direction=-1)
+
 
 
 ```
+
+Categorical example
+```{r cex}
+# Make crossframe
+cfe <- mkCrossFrameCExperiment(dframe = radonMN, 
+                               varlist= c('county'),
+                               outcomename = 'critical',
+                               outcometarget = 'TRUE',
+                               codeRestriction = c('clean', 'isBAD', 'catB'),
+                                customCoders = customCoders)
+print(cfe$method)
+treatments <- cfe$treatments
+scoreFrame <- treatments$scoreFrame
+trainFrame <- cfe$crossFrame
+
+print(scoreFrame)
+head(trainFrame)
+summary(trainFrame)
+
+# compare training frame impact codes
+ggplot(trainFrame, aes(x=county_catB, y=county_partialpool_c)) + 
+  geom_point() + geom_abline(color="blue") + 
+  coord_fixed(ylim=range(trainFrame$county_catB)) +
+  ggtitle("Compare impact codings, training cross frame") 
+ 
+    
+
+# compare the impact codings from treatment plan
+uframe = prepare(treatments, measframe)
+summary(uframe)
+uframe$nmeas = measframe$nmeas
+
+# a little hard to read the colors
+ggplot(uframe, aes(x=county_catB, y=county_partialpool_c)) + 
+  geom_abline(color="darkgray") + 
+  geom_point(aes(color=log2(nmeas))) + 
+  coord_fixed(ylim=range(uframe$county_catB)) + 
+  ggtitle("Compare impact codings, prepared frame") + 
+   scale_color_distiller(palette="YlGnBu")
+
+# may not use these graphs
+gather(uframe, key=scoreType, value=linkscore, county_partialpool_c, county_catB) %>%
+  mutate(probability_score = 1/(1 + exp(-linkscore))) %>%
+  ggplot(aes(x=linkscore)) + geom_density(adjust=0.5) + geom_rug(sides="b") + 
+  facet_wrap(~scoreType, ncol=1, scale="free_y") + ggtitle("Distribution of link scores")
+
+
+gather(uframe, key=scoreType, value=linkscore, county_partialpool_c, county_catB) %>%
+  mutate(probability_score = 1/(1 + exp(-linkscore))) %>%
+  ggplot(aes(x=probability_score)) + geom_density(adjust=0.5) + geom_rug(sides="b") + 
+  facet_wrap(~scoreType, ncol=1, scale="free_y") + ggtitle("Distribution of probability scores")
+```
+
 
