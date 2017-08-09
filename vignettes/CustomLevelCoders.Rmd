@@ -209,7 +209,7 @@ gather(outframe, key=scoreType, value=linkscore,
   ggtitle("Distribution of link scores")
 ```
 
-Notice that the `poolC` link scores are even more tucked compared to the `catB` link scores, and that the `catB` scores are multimodal. The smaller link scores means that the pooled model avoids estimates of conditional expectation close to either zero or one, because, again, these estimates come from counties with few readings.
+Notice that the `poolC` link scores are even more tucked in compared to the `catB` link scores, and that the `catB` scores are multimodal. The smaller link scores means that the pooled model avoids estimates of conditional expectation close to either zero or one, because, again, these estimates come from counties with few readings.
 
 ## Other Considerations
 
