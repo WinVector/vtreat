@@ -88,13 +88,13 @@ For our example, the function builds a `lmer` model to predict `y` as a function
 
 ```{r codern}
 # @param v character variable name
-# @param vcol character variable levels
-# @param y numeric outcome
+# @param vcol character, indpendent or input variable
+# @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
 ppCoderN <- function(v, vcol, 
-                         y, 
-                         weights) {
+                     y, 
+                     weights) {
   # regression case y ~ vcol
   d <- data.frame(x = vcol,
                   y = y,
@@ -110,13 +110,13 @@ For categorization problems, the function should assume that `y` is a logical co
 
 ```{r coderc}
 # @param v character variable name
-# @param vcol character variable levels
-# @param y logical outcome
+# @param vcol character, independent or input variable
+# @param y logical, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
 ppCoderC <- function(v, vcol, 
-                          y, 
-                          weights) {
+                     y, 
+                     weights) {
   # classification case y ~ vcol
   d <- data.frame(x = vcol,
                   y = y,
@@ -195,9 +195,9 @@ treatplanC = designTreatmentsC(radonMN,
                                varlist = c('county'),
                                outcomename = 'critical',
                                outcometarget= TRUE,
-                              codeRestriction = vartypes_I_want,
-                              customCoders = customCoders, 
-                              verbose=FALSE)
+                               codeRestriction = vartypes_I_want,
+                               customCoders = customCoders, 
+                               verbose=FALSE)
 
 outframe = prepare(treatplanC, measframe)
 
