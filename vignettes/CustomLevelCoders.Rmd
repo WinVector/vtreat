@@ -1,5 +1,5 @@
 ---
-title: "Custom Level Coder"
+title: "Custom Level Coding in vtreat"
 author: "Nina Zumel, John Mount"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -8,6 +8,19 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+One of the services that `vtreat` provides is *level coding* (what we sometimes call *impact coding*):
+converting the levels of a categorical variable to a meaningful and concise single numeric variable, rather than coding them as indicator variables (AKA "one-hot encoding"). Level coding can be computationally preferable to one-hot encoding for variables that have an extremely large number of possible levels. 
+
+By default, `vtreat` level codes to the difference between the conditional means and the grand mean (`catN` variables) when the outcome is numeric, and to the difference to the conditional expectations and the global expectation of the target class (`catB` variables) when the outcome is categorical. These aren't the only possible level codings. For example, the `ranger` package can encode categorical variables as ordinals, sorted by the conditional expectations/means. While this is not a valid encoding for all possible models (it is not valid for linear or logistic regression, for example), it is valid for tree-based methods, and has the advantage of keeping the original levels distinct, which impact coding may not. That is, two levels with the same conditional expectation would be conflated by `vtreat`'s coding. This may not be a problem -- but sometimes, it may.
+
+So the data scientist may want to use a level coding different from what `vtreat` defaults to. In this article, we will demonstrate how to implement custom level encoders in `vtreat`. We assume you are familiar with the basics of `vtreat`: the types of derived variables, how to create and apply a treatment plan, etc.
+
+For our example, we will implement level coders based on partial pooling, or hierarchical/multilevel models (Gelman and Hill, 2007). We'll leave the details of how partial pooling works to a subsequent article; for now, just think of it as a score that shrinks the estimate of the conditional mean to be closer to the unconditioned mean when there are too few measurements to make an accurate estimate. 
+
+We'll implement our partial pooling encoders using the `lmer()` (multilevel linear regression) and `glmer()` (multilevel generalized linear regression) functions from the `lme4` package. For our example data, we'll use radon levels by county for the state of Minnesota (Gelman and Hill, 2007. You can find the original data [here](http://www.stat.columbia.edu/~gelman/arm/software/)).
+
+## The Data: Radon levels in Minnesota
 
 ```{r dat}
 library("vtreat")
@@ -18,7 +31,7 @@ library("ggplot2")
 
 # example data
 
-srrs = read.table("vignettes/srrs2.dat", header=TRUE, sep=",", stringsAsFactor=FALSE)
+srrs = read.table("srrs2.dat", header=TRUE, sep=",", stringsAsFactor=FALSE)
 
 # target: log of radon activity (activity)
 # grouping variable: county
@@ -27,50 +40,53 @@ radonMN = filter(srrs, state=="MN") %>%
   filter(activity > 0) %>% 
   mutate(activity = log(activity),
          county = base::trimws(county)) %>%
-  mutate(critical = activity>1)
+  mutate(critical = activity>1.5)
 
-# show the distribution of log radon readings
-ggplot(radonMN, aes(x=activity)) + geom_density(adjust=0.5) + ggtitle("Distribution of log radon activity")
+str(radonMN)
+```
 
-# show the distribution of readings by county
-radonMN %>% mutate(unit=1,
-                   county = reorder(county, unit, FUN=sum)) %>%
-  ggplot(aes(x=county, y=unit)) + 
-  stat_summary(fun.y="sum", fun.ymax="sum", fun.ymin=function(x){0}) +
-  coord_flip() + ggtitle("Number of readings by county")
+For this example we have three columns of interest:
 
-# show the distribution of critical by county
-palette="Set3"
-radonMN %>% mutate(county=reorder(county, as.numeric(critical), FUN=mean)) %>%
-ggplot(aes(x=county, fill=critical, color=critical)) + 
-  geom_bar(position="fill") + ggtitle("Proportion of critical readings by county") + 
-  scale_color_brewer(palette=palette) + scale_fill_brewer(palette=palette) + 
-  coord_flip()
+* `county`: 85 possible values
+* `activity`: the log of the radon reading (numerical outcome)
+* `critical`: `TRUE` when activity > 1.5 (categorical outcome)
 
-measframe = group_by(radonMN, county) %>% summarize(nmeas=n())
+The goal is to level code `county` for either the regression problem (predict the log radon reading) or the categorization problem (predict whether the radon level is "critical").
+
+```{r}
+radonMN %>% group_by(county) %>%
+  summarize(county_activity = mean(activity),
+            county_critical = mean(critical),
+            county_readings = n()) %>%
+  gather(key = measure, value=value, 
+         county_activity, county_critical, county_readings) %>%
+  ggplot(aes(x=value)) + 
+  geom_density(adjust=0.5) + geom_rug(sides="b") + 
+  facet_wrap(~measure, ncol=1, scale="free") + 
+  ggtitle("Distribution of county stats")
 
 ```
 
-Regression example: score county variable using partial pooling on activity.
-Classification example: score county variable using partial pooling on activity > 1
-```{r coders}
-# @param v character variable name
-# @param vcol character variable levels
-# @param y logical outcome
-# @param weights row/example weights
-# @return scored training data column
-ppCoderC <- function(v, vcol, 
-                          y, 
-                          weights) {
-  # classificaton case y ~ vcol
-  d <- data.frame(x = vcol,
-                  y = y,
-                  stringsAsFactors = FALSE)
-  m = glmer(y ~ (1 | x), data=d, weights=weights, family=binomial)
-  predict(m, newdata=d, type='link')
-}
+As the graph shows, the conditional mean of log radon activity by county ranges from nearly zero to about 3, and the conditional expectation of a critical reading ranges from zero to one. On the other hand, the number of readings per county is quite low for many counties -- only one or two -- though some counties have a large number of readings. That means some of the conditional expectations are quite uncertain.
 
+## Implementing Level Coders for Partial Pooling
 
+Let's implement level coders that use partial pooling to compute the level score. 
+
+**Regression**
+
+For regression problems, the custom coder should be a function that takes as input:
+
+* `v`: a string with the name of the categorical variable
+* `vcol`: the actual categorical column (assumed character)
+* `y`: the numerical outcome column
+* `weights`: a column of row weights
+
+The function should return a column of scores (the level codings). In keeping with how the `catN` and `catB` variables are calculated, `vtreat` encodes the custom scores as deviations from the grand mean of the returned column.
+
+For our example, the function builds a `lmer` model to predict `y` as a function of `vcol`, then returns the predictions on the training data.
+
+```{r codern}
 # @param v character variable name
 # @param vcol character variable levels
 # @param y numeric outcome
@@ -83,115 +99,124 @@ ppCoderN <- function(v, vcol,
   d <- data.frame(x = vcol,
                   y = y,
                   stringsAsFactors = FALSE)
-  m <- lmer(y~ (1 | x), data=d, weights=weights)
+  m <- lmer(y ~ (1 | x), data=d, weights=weights)
   predict(m, newdata=d)
 }
-
-
-customCoders = list('c.partialpool_c' = ppCoderC,
-                    'n.partialpool_n' = ppCoderN)
 ```
 
+**Categorization**
 
-Numeric example
-```{r nex}
+For categorization problems, the function should assume that `y` is a logical column, where `TRUE` is assumed to be the target outcome. This is because `vtreat` converts the outcome column to a logical while creating the treatment plan.
 
-cfe <- mkCrossFrameNExperiment(dframe = radonMN, 
-                               varlist= c('county'),
+```{r coderc}
+# @param v character variable name
+# @param vcol character variable levels
+# @param y logical outcome
+# @param weights row/example weights
+# @return scored training data column
+ppCoderC <- function(v, vcol, 
+                          y, 
+                          weights) {
+  # classification case y ~ vcol
+  d <- data.frame(x = vcol,
+                  y = y,
+                  stringsAsFactors = FALSE)
+  m = glmer(y ~ (1 | x), data=d, weights=weights, family=binomial)
+  predict(m, newdata=d, type='link')
+}
+```
+
+You can then pass the functions in as a named list into either `designTreatmentsX` or `mkCrossFrameXExperiment` to build the treatment plan. Preface the name of the numeric encoder with 'n.' and the categorical encoder with 'c.'
+
+```{r coders}
+
+customCoders = list('n.poolN' = ppCoderN, 
+                    'c.poolC' = ppCoderC)
+```
+
+## Using the Custom Coders
+
+Let's build a treatment plan for the regression problem.
+
+```{r designTreatmentN}
+# I only want to create the cleaned numeric variables, the isBAD variables,
+# and the level codings (not the indicator variables or catP, etc.)
+vartypes_I_want = c('clean', 'isBAD', 'catN')
+
+treatplanN = designTreatmentsN(radonMN, 
+                               varlist = c('county'),
                                outcomename = 'activity',
-                               codeRestriction = c('clean', 'isBAD', 'catN'),
-                                customCoders = customCoders)
-print(cfe$method)
-treatments <- cfe$treatments
-scoreFrame <- treatments$scoreFrame
-trainFrame <- cfe$crossFrame
+                              codeRestriction = vartypes_I_want,
+                              customCoders = customCoders, 
+                              verbose=FALSE)
 
-print(scoreFrame)
-head(trainFrame)
-summary(trainFrame)
-
-#
-# reminder to self: the catN is the difference by county from grandmean
-# treatmentPlan is from all data, so the catNs from a prepare reflect this exactly.
-# the trainFrame probably doesn't
-#
-
-# compare the impact codings on the training frame
-ggplot(trainFrame, aes(x=county_catN, y=county_partialpool_n)) +
-  geom_abline(color="darkgray") + 
-  geom_point() +
-  coord_fixed(ylim = range(trainFrame$county_catN)) + 
-  ggtitle("Compare impact codings, training cross frame")
-
-# compare the impact codings in the treatment plan
-# the distributions from the uframe are different from the train frame
-uframe = prepare(treatments, data.frame(county = unique(radonMN$county), stringsAsFactors=FALSE))
-summary(uframe)
-uframe$nmeas = measframe$nmeas
-
-# note the scores from the partial pooling are tucked in
-ggplot(uframe, aes(x=county_catN, y=county_partialpool_n)) + 
-   geom_abline(color="darkgray")  +
-  geom_point(aes(color=log2(nmeas))) +
-  coord_fixed(ylim = range(uframe$county_catN)) + 
-  ggtitle("Compare impact codings, prepared frame") + 
-   #scale_color_distiller(palette="YlGnBu")
-  scale_color_viridis(direction=-1)
-
-
+scoreFrame = treatplanN$scoreFrame
+scoreFrame %>% select(varName, sig, origName, code)
 
 ```
 
-Categorical example
-```{r cex}
-# Make crossframe
-cfe <- mkCrossFrameCExperiment(dframe = radonMN, 
-                               varlist= c('county'),
+Note that the treatment plan returns both the `catN` variable (default level encoding) and the pooled level encoding (`poolN`). You can restrict to just using one coding or the other using the `codeRestriction` argument in `prepare()`.
+
+Let's compare the two level encodings.
+
+```{r nex}
+# create a frame with one row for every county,
+measframe = data.frame(county = unique(radonMN$county),
+                       stringsAsFactors=FALSE)
+
+outframe = prepare(treatplanN, measframe)
+
+# If we wanted only the new pooled level coding,
+# (plus any numeric/isBAD variables), we would
+# use a codeRestriction:
+#
+# outframe = prepare(treatplanN, 
+#                    measframe,
+#                    codeRestriction = c('clean', 'isBAD', 'poolN'))
+
+
+gather(outframe, key=scoreType, value=score, 
+       county_poolN, county_catN) %>%
+  ggplot(aes(x=score)) + 
+  geom_density(adjust=0.5) + geom_rug(sides="b") + 
+  facet_wrap(~scoreType, ncol=1, scale="free_y") + 
+  ggtitle("Distribution of scores")
+```
+
+Notice that the `poolN` scores are "tucked in" compared to the `catN` encoding. In a later article, we'll show that the counties with the most tucking in (or *shrinkage*) tend to be those with fewer measurements.
+
+We can also code for the categorical problem.
+
+```{r}
+# For categorical problems, coding is catB
+vartypes_I_want = c('clean', 'isBAD', 'catB')
+
+treatplanC = designTreatmentsC(radonMN, 
+                               varlist = c('county'),
                                outcomename = 'critical',
-                               outcometarget = 'TRUE',
-                               codeRestriction = c('clean', 'isBAD', 'catB'),
-                                customCoders = customCoders)
-print(cfe$method)
-treatments <- cfe$treatments
-scoreFrame <- treatments$scoreFrame
-trainFrame <- cfe$crossFrame
+                               outcometarget= TRUE,
+                              codeRestriction = vartypes_I_want,
+                              customCoders = customCoders, 
+                              verbose=FALSE)
 
-print(scoreFrame)
-head(trainFrame)
-summary(trainFrame)
+outframe = prepare(treatplanC, measframe)
 
-# compare training frame impact codes
-ggplot(trainFrame, aes(x=county_catB, y=county_partialpool_c)) + 
-  geom_point() + geom_abline(color="blue") + 
-  coord_fixed(ylim=range(trainFrame$county_catB)) +
-  ggtitle("Compare impact codings, training cross frame") 
- 
-    
-
-# compare the impact codings from treatment plan
-uframe = prepare(treatments, measframe)
-summary(uframe)
-uframe$nmeas = measframe$nmeas
-
-# a little hard to read the colors
-ggplot(uframe, aes(x=county_catB, y=county_partialpool_c)) + 
-  geom_abline(color="darkgray") + 
-  geom_point(aes(color=log2(nmeas))) + 
-  coord_fixed(ylim=range(uframe$county_catB)) + 
-  ggtitle("Compare impact codings, prepared frame") + 
-   scale_color_distiller(palette="YlGnBu")
-
-# may not use these graphs
-gather(uframe, key=scoreType, value=linkscore, county_partialpool_c, county_catB) %>%
-  mutate(probability_score = 1/(1 + exp(-linkscore))) %>%
-  ggplot(aes(x=linkscore)) + geom_density(adjust=0.5) + geom_rug(sides="b") + 
-  facet_wrap(~scoreType, ncol=1, scale="free_y") + ggtitle("Distribution of link scores")
-
-
-gather(uframe, key=scoreType, value=linkscore, county_partialpool_c, county_catB) %>%
-  mutate(probability_score = 1/(1 + exp(-linkscore))) %>%
-  ggplot(aes(x=probability_score)) + geom_density(adjust=0.5) + geom_rug(sides="b") + 
-  facet_wrap(~scoreType, ncol=1, scale="free_y") + ggtitle("Distribution of probability scores")
+gather(outframe, key=scoreType, value=linkscore, 
+       county_poolC, county_catB) %>%
+  ggplot(aes(x=linkscore)) + 
+  geom_density(adjust=0.5) + geom_rug(sides="b") + 
+  facet_wrap(~scoreType, ncol=1, scale="free_y") + 
+  ggtitle("Distribution of link scores")
 ```
 
+Notice that the `poolC` link scores are even more tucked compared to the `catB` link scores, and that the `catB` scores are multimodal. The smaller link scores means that the pooled model avoids estimates of conditional expectation close to either zero or one, because, again, these estimates come from counties with few readings.
 
+## Other Considerations
+
+For this example, we used the `lmer4` package to create custom level codings. Once calculated, `vtreat` stores the coding as a lookup table in the treatment plan. *This means `lmer4` is not needed to prepare new data.* In general, using a treatment plan is not dependent on any special packages that might have been used to create it, so it can be shared with other users with no extra dependencies.
+
+When using `mkCrossFrameXExperiment`, note that resulting cross frame will have a slightly different distribution of scores than what the treatment plan produces. This is true even for `catB` and `catN` variables. This is because the treatment plan is built using all the data, while the cross frame is built using n-fold cross validation on the data. See [the cross frame vignette](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html) for more details.
+
+## References
+
+Gelman, Andrew and Jennifer Hill. *Data Analysis Using Regression and Multilevel/Hierarchical Models*. Cambridge University Press, 2007.
