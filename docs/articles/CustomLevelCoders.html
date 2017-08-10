@@ -102,7 +102,7 @@
       <h1>Custom Level Coding in vtreat</h1>
                         <h4 class="author">Nina Zumel, John Mount</h4>
             
-            <h4 class="date">2017-08-09</h4>
+            <h4 class="date">2017-08-10</h4>
           </div>
 
     
@@ -227,7 +227,9 @@ ppCoderC &lt;-<span class="st"> </span>function(v, vcol,
   m =<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/lme4/topics/glmer">glmer</a></span>(y ~<span class="st"> </span>(<span class="dv">1</span> |<span class="st"> </span>x), <span class="dt">data=</span>d, <span class="dt">weights=</span>weights, <span class="dt">family=</span>binomial)
   <span class="kw">predict</span>(m, <span class="dt">newdata=</span>d, <span class="dt">type=</span><span class="st">'link'</span>)
 }</code></pre></div>
-<p>You can then pass the functions in as a named list into either <code>designTreatmentsX</code> or <code>mkCrossFrameXExperiment</code> to build the treatment plan. The format of the key is “[n|c].levelName[.option]*" (right now the only supported option is “center”). The prefacing picks the model type: numeric or regression starts with ‘n.’ and the categorical encoder starts with ‘c.’. Our example coders can be passed in we show below.</p>
+<p>You can then pass the functions in as a named list into either <code>designTreatmentsX</code> or <code>mkCrossFrameXExperiment</code> to build the treatment plan. The format of the key is “[n|c].levelName[.option]*"</p>
+<p>The prefacing picks the model type: numeric or regression starts with ‘n.’ and the categorical encoder starts with ‘c.’. Currently, the only supported option is ‘center,’ which centers the codes with respect to the estimated grand mean. The<code>catN</code> and <code>catB</code> are centered in this way.</p>
+<p>Our example coders can be passed in as shown below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">customCoders =<span class="st"> </span><span class="kw">list</span>(<span class="st">'n.poolN.center'</span> =<span class="st"> </span>ppCoderN, 
                     <span class="st">'c.poolC.center'</span> =<span class="st"> </span>ppCoderC)</code></pre></div>
 </div>
@@ -249,8 +251,8 @@ treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/desi
 scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
 scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
 <pre><code>##        varName          sig origName  code
-## 1 county_poolN 1.436234e-21   county poolN
-## 2  county_catN 1.419232e-17   county  catN</code></pre>
+## 1 county_poolN 1.495317e-21   county poolN
+## 2  county_catN 4.185219e-19   county  catN</code></pre>
 <p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Let’s compare the two level encodings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>
