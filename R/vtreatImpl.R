@@ -207,6 +207,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(rareCount)
   force(rareSig)
   force(collarProb)
+  force(codeRestriction)
+  force(customCoders)
   force(catScaling)
   force(verbose)
   nRows = length(zoY)
