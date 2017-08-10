@@ -237,7 +237,7 @@ ppCoderC &lt;-<span class="st"> </span>function(v, vcol,
 <p>Let’s build a treatment plan for the regression problem.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># I only want to create the cleaned numeric variables, the isBAD variables,</span>
 <span class="co"># and the level codings (not the indicator variables or catP, etc.)</span>
-vartypes_I_want =<span class="st"> </span><span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catN'</span>)
+vartypes_I_want =<span class="st"> </span><span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catN'</span>, <span class="st">'poolN'</span>)
 
 treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(radonMN, 
                                <span class="dt">varlist =</span> <span class="kw">c</span>(<span class="st">'county'</span>),
@@ -249,8 +249,8 @@ treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/desi
 scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
 scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
 <pre><code>##        varName          sig origName  code
-## 1 county_poolN 3.182511e-23   county poolN
-## 2  county_catN 3.244945e-19   county  catN</code></pre>
+## 1 county_poolN 1.436234e-21   county poolN
+## 2  county_catN 1.419232e-17   county  catN</code></pre>
 <p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Let’s compare the two level encodings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>
@@ -278,7 +278,7 @@ outframe =<span class="st"> </span><span class="kw"><a href="../reference/prepar
 <p>Notice that the <code>poolN</code> scores are “tucked in” compared to the <code>catN</code> encoding. In a later article, we’ll show that the counties with the most tucking in (or <em>shrinkage</em>) tend to be those with fewer measurements.</p>
 <p>We can also code for the categorical problem.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># For categorical problems, coding is catB</span>
-vartypes_I_want =<span class="st"> </span><span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catB'</span>)
+vartypes_I_want =<span class="st"> </span><span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catB'</span>, <span class="st">'poolC'</span>)
 
 treatplanC =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(radonMN, 
                                <span class="dt">varlist =</span> <span class="kw">c</span>(<span class="st">'county'</span>),

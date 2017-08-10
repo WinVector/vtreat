@@ -211,7 +211,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
-  if(length(codeRestriction)<=0) {
+  codeRestictionWasNULL <- length(codeRestriction)<=0
+  if(codeRestictionWasNULL) {
     # NULL is an alias for "don't restrict"
     codeRestriction <- c('clean', 
                          'isBAD',
@@ -262,14 +263,16 @@ mkVtreatListWorker <- function(scale,doCollar) {
             customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
             codeType <- customeCodeV[[1]]
             codeName <- customeCodeV[[2]]
-            codeSeq <- NULL
-            if(length(customeCodeV)>2) {
-              codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
-            }
-            if((codeType=='n')==is.null(zC)) {
-              ti <- makeCustomCoder(codeName, coder, codeSeq, 
-                                    v,vcol,zoY,zC,zTarget,weights,catScaling)
-              acceptTreatment(ti)
+            if(codeRestictionWasNULL || (codeName %in% codeRestriction)) {
+              codeSeq <- NULL
+              if(length(customeCodeV)>2) {
+                codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
+              }
+              if((codeType=='n')==is.null(zC)) {
+                ti <- makeCustomCoder(codeName, coder, codeSeq, 
+                                      v,vcol,zoY,zC,zTarget,weights,catScaling)
+                acceptTreatment(ti)
+              }
             }
           }
           ti = NULL

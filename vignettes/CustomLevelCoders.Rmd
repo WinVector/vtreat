@@ -141,7 +141,7 @@ Let's build a treatment plan for the regression problem.
 ```{r designTreatmentN}
 # I only want to create the cleaned numeric variables, the isBAD variables,
 # and the level codings (not the indicator variables or catP, etc.)
-vartypes_I_want = c('clean', 'isBAD', 'catN')
+vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolN')
 
 treatplanN = designTreatmentsN(radonMN, 
                                varlist = c('county'),
@@ -189,7 +189,7 @@ We can also code for the categorical problem.
 
 ```{r}
 # For categorical problems, coding is catB
-vartypes_I_want = c('clean', 'isBAD', 'catB')
+vartypes_I_want = c('clean', 'isBAD', 'catB', 'poolC')
 
 treatplanC = designTreatmentsC(radonMN, 
                                varlist = c('county'),
