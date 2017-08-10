@@ -126,8 +126,11 @@ ppCoderC <- function(v, vcol,
 }
 ```
 
-You can then pass the functions in as a named list into either `designTreatmentsX` or `mkCrossFrameXExperiment` to build the treatment plan. The format of the key is "[n|c].levelName[.option]*" (right now the only supported option is "center").
-The prefacing picks the model type: numeric or regression starts with 'n.' and the categorical encoder starts with 'c.'.  Our example coders can be passed in we show below.
+You can then pass the functions in as a named list into either `designTreatmentsX` or `mkCrossFrameXExperiment` to build the treatment plan. The format of the key is "[n|c].levelName[.option]*" 
+
+The prefacing picks the model type: numeric or regression starts with 'n.' and the categorical encoder starts with 'c.'. Currently, the only supported option is 'center,' which centers the codes with respect to the estimated grand mean. The`catN` and `catB` are centered in this way.
+
+Our example coders can be passed in as shown below.
 
 ```{r coders}
 customCoders = list('n.poolN.center' = ppCoderN, 
