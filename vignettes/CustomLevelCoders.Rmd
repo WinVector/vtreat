@@ -213,7 +213,7 @@ Notice that the `poolC` link scores are even more tucked in compared to the `cat
 
 ## Other Considerations
 
-For this example, we used the `lmer4` package to create custom level codings. Once calculated, `vtreat` stores the coding as a lookup table in the treatment plan. *This means `lmer4` is not needed to prepare new data.* In general, using a treatment plan is not dependent on any special packages that might have been used to create it, so it can be shared with other users with no extra dependencies.
+For this example, we used the `lme4` package to create custom level codings. Once calculated, `vtreat` stores the coding as a lookup table in the treatment plan. *This means `lme4` is not needed to prepare new data.* In general, using a treatment plan is not dependent on any special packages that might have been used to create it, so it can be shared with other users with no extra dependencies.
 
 When using `mkCrossFrameXExperiment`, note that resulting cross frame will have a slightly different distribution of scores than what the treatment plan produces. This is true even for `catB` and `catN` variables. This is because the treatment plan is built using all the data, while the cross frame is built using n-fold cross validation on the data. See [the cross frame vignette](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html) for more details.
 

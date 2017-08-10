@@ -249,8 +249,8 @@ treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/desi
 scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
 scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
 <pre><code>##        varName          sig origName  code
-## 1 county_poolN 2.318258e-20   county poolN
-## 2  county_catN 4.730291e-17   county  catN</code></pre>
+## 1 county_poolN 3.182511e-23   county poolN
+## 2  county_catN 3.244945e-19   county  catN</code></pre>
 <p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Let’s compare the two level encodings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>
@@ -302,7 +302,7 @@ outframe =<span class="st"> </span><span class="kw"><a href="../reference/prepar
 <div id="other-considerations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#other-considerations" class="anchor"></a>Other Considerations</h2>
-<p>For this example, we used the <code>lmer4</code> package to create custom level codings. Once calculated, <code>vtreat</code> stores the coding as a lookup table in the treatment plan. <em>This means <code>lmer4</code> is not needed to prepare new data.</em> In general, using a treatment plan is not dependent on any special packages that might have been used to create it, so it can be shared with other users with no extra dependencies.</p>
+<p>For this example, we used the <code>lme4</code> package to create custom level codings. Once calculated, <code>vtreat</code> stores the coding as a lookup table in the treatment plan. <em>This means <code>lme4</code> is not needed to prepare new data.</em> In general, using a treatment plan is not dependent on any special packages that might have been used to create it, so it can be shared with other users with no extra dependencies.</p>
 <p>When using <code>mkCrossFrameXExperiment</code>, note that resulting cross frame will have a slightly different distribution of scores than what the treatment plan produces. This is true even for <code>catB</code> and <code>catN</code> variables. This is because the treatment plan is built using all the data, while the cross frame is built using n-fold cross validation on the data. See <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">the cross frame vignette</a> for more details.</p>
 </div>
 <div id="references" class="section level2">
