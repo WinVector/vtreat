@@ -18,13 +18,14 @@
 
 # @para customCode code name
 # @param coder user supplied variable re-coder
+# @param codeSeq argments to custom coder
 # @param v variable name
 # @param vcolin data column, character
 # @param zoY outcome column as numeric
 # @param zC if classification outcome column as character
 # @param zTarge if classification target class
 # @param weights per-row weights
-makeCustomCoder <- function(customCode,coder, 
+makeCustomCoder <- function(customCode, coder, codeSeq,
                             v,vcolin,zoY,zC,zTarget,weights,catScaling)  {
   levRestriction <- NULL
   vcol <- .preProcCat(vcolin,levRestriction)
@@ -44,8 +45,10 @@ makeCustomCoder <- function(customCode,coder,
   if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(vcol))) {
     scores <- rep(0.0, length(vcol))
   } else {
-    # shift scores to be mean zero with respect to weights
-    scores <- scores -  sum(scores*weights)/sum(weights)
+    if('center' %in% codeSeq) {
+      # shift scores to be mean zero with respect to weights
+      scores <- scores -  sum(scores*weights)/sum(weights)
+    }
   }
   d <- data.frame(x = vcol,
                   pred = scores)

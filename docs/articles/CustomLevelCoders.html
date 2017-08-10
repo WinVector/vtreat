@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custom Level Coder • vtreat</title>
+<title>Custom Level Coding in vtreat • vtreat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -48,7 +48,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/CustomLevelCoders.html">Custom Level Coder</a>
+      <a href="../articles/CustomLevelCoders.html">Custom Level Coding in vtreat</a>
     </li>
     <li>
       <a href="../articles/SavingTreamentPlans.html">Saving Treatment Plans</a>
@@ -99,234 +99,232 @@
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
-      <h1>Custom Level Coder</h1>
+      <h1>Custom Level Coding in vtreat</h1>
                         <h4 class="author">Nina Zumel, John Mount</h4>
             
-            <h4 class="date">2017-08-08</h4>
+            <h4 class="date">2017-08-09</h4>
           </div>
 
     
     
 <div class="contents">
+<p>One of the services that <code>vtreat</code> provides is <em>level coding</em> (what we sometimes call <em>impact coding</em>): converting the levels of a categorical variable to a meaningful and concise single numeric variable, rather than coding them as indicator variables (AKA “one-hot encoding”). Level coding can be computationally preferable to one-hot encoding for variables that have an extremely large number of possible levels.</p>
+<p>By default, <code>vtreat</code> level codes to the difference between the conditional means and the grand mean (<code>catN</code> variables) when the outcome is numeric, and to the difference to the conditional expectations and the global expectation of the target class (<code>catB</code> variables) when the outcome is categorical. These aren’t the only possible level codings. For example, the <code>ranger</code> package can encode categorical variables as ordinals, sorted by the conditional expectations/means. While this is not a valid encoding for all possible models (it is not valid for linear or logistic regression, for example), it is valid for tree-based methods, and has the advantage of keeping the original levels distinct, which impact coding may not. That is, two levels with the same conditional expectation would be conflated by <code>vtreat</code>’s coding. This may not be a problem – but sometimes, it may.</p>
+<p>So the data scientist may want to use a level coding different from what <code>vtreat</code> defaults to. In this article, we will demonstrate how to implement custom level encoders in <code>vtreat</code>. We assume you are familiar with the basics of <code>vtreat</code>: the types of derived variables, how to create and apply a treatment plan, etc.</p>
+<p>For our example, we will implement level coders based on partial pooling, or hierarchical/multilevel models (Gelman and Hill, 2007). We’ll leave the details of how partial pooling works to a subsequent article; for now, just think of it as a score that shrinks the estimate of the conditional mean to be closer to the unconditioned mean when there are too few measurements to make an accurate estimate.</p>
+<p>We’ll implement our partial pooling encoders using the <code><a href="http://www.rdocumentation.org/packages/lme4/topics/lmer">lmer()</a></code> (multilevel linear regression) and <code><a href="http://www.rdocumentation.org/packages/lme4/topics/glmer">glmer()</a></code> (multilevel generalized linear regression) functions from the <code>lme4</code> package. For our example data, we’ll use radon levels by county for the state of Minnesota (Gelman and Hill, 2007. You can find the original data <a href="http://www.stat.columbia.edu/~gelman/arm/software/">here</a>).</p>
+<div id="the-data-radon-levels-in-minnesota" class="section level2">
+<h2 class="hasAnchor">
+<a href="#the-data-radon-levels-in-minnesota" class="anchor"></a>The Data: Radon levels in Minnesota</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)
+<span class="kw">library</span>(<span class="st">"lme4"</span>)</code></pre></div>
+<pre><code>## Loading required package: Matrix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"dplyr"</span>)</code></pre></div>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"tidyr"</span>)</code></pre></div>
+<pre><code>## 
+## Attaching package: 'tidyr'</code></pre>
+<pre><code>## The following object is masked from 'package:Matrix':
+## 
+##     expand</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"ggplot2"</span>)
 
 <span class="co"># example data</span>
-<span class="co"># "case" is the outcome, despite the naming https://en.wikipedia.org/wiki/Case-control_study</span>
-infert &lt;-<span class="st"> </span>datasets::infert
-for(ci in <span class="kw">c</span>(<span class="st">"education"</span>, <span class="st">"parity"</span>, <span class="st">"induced"</span>, <span class="st">"case"</span>, 
-            <span class="st">"spontaneous"</span>, <span class="st">"stratum"</span>, <span class="st">"pooled.stratum"</span>)) {
-  infert[[ci]] &lt;-<span class="st"> </span><span class="kw">as.character</span>(infert[[ci]])
-}
 
-<span class="co"># @param v character variable name</span>
-<span class="co"># @param vcol character variable levels</span>
-<span class="co"># @param y logical outcome</span>
+srrs =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">"srrs2.dat"</span>, <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">","</span>, <span class="dt">stringsAsFactor=</span><span class="ot">FALSE</span>)
+
+<span class="co"># target: log of radon activity (activity)</span>
+<span class="co"># grouping variable: county</span>
+radonMN =<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(srrs, state==<span class="st">"MN"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="st">"county"</span>, <span class="st">"activity"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(activity &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">activity =</span> <span class="kw">log</span>(activity),
+         <span class="dt">county =</span> base::<span class="kw">trimws</span>(county)) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">critical =</span> activity&gt;<span class="fl">1.5</span>)
+
+<span class="kw">str</span>(radonMN)</code></pre></div>
+<pre><code>## 'data.frame':    916 obs. of  3 variables:
+##  $ county  : chr  "AITKIN" "AITKIN" "AITKIN" "AITKIN" ...
+##  $ activity: num  0.788 0.788 1.065 0 1.131 ...
+##  $ critical: logi  FALSE FALSE FALSE FALSE FALSE FALSE ...</code></pre>
+<p>For this example we have three columns of interest:</p>
+<ul>
+<li>
+<code>county</code>: 85 possible values</li>
+<li>
+<code>activity</code>: the log of the radon reading (numerical outcome)</li>
+<li>
+<code>critical</code>: <code>TRUE</code> when activity &gt; 1.5 (categorical outcome)</li>
+</ul>
+<p>The goal is to level code <code>county</code> for either the regression problem (predict the log radon reading) or the categorization problem (predict whether the radon level is “critical”).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">radonMN %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(county) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="dt">county_activity =</span> <span class="kw">mean</span>(activity),
+            <span class="dt">county_critical =</span> <span class="kw">mean</span>(critical),
+            <span class="dt">county_readings =</span> <span class="kw"><a href="http://dplyr.tidyverse.org/reference/n.html">n</a></span>()) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/tidyr/topics/gather">gather</a></span>(<span class="dt">key =</span> measure, <span class="dt">value=</span>value, 
+         county_activity, county_critical, county_readings) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>value)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>(<span class="dt">adjust=</span><span class="fl">0.5</span>) +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_rug">geom_rug</a></span>(<span class="dt">sides=</span><span class="st">"b"</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(~measure, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">scale=</span><span class="st">"free"</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"Distribution of county stats"</span>)</code></pre></div>
+<p><img src="CustomLevelCoders_files/figure-html/unnamed-chunk-1-1.png" width="672"></p>
+<p>As the graph shows, the conditional mean of log radon activity by county ranges from nearly zero to about 3, and the conditional expectation of a critical reading ranges from zero to one. On the other hand, the number of readings per county is quite low for many counties – only one or two – though some counties have a large number of readings. That means some of the conditional expectations are quite uncertain.</p>
+</div>
+<div id="implementing-level-coders-for-partial-pooling" class="section level2">
+<h2 class="hasAnchor">
+<a href="#implementing-level-coders-for-partial-pooling" class="anchor"></a>Implementing Level Coders for Partial Pooling</h2>
+<p>Let’s implement level coders that use partial pooling to compute the level score.</p>
+<p><strong>Regression</strong></p>
+<p>For regression problems, the custom coder should be a function that takes as input:</p>
+<ul>
+<li>
+<code>v</code>: a string with the name of the categorical variable</li>
+<li>
+<code>vcol</code>: the actual categorical column (assumed character)</li>
+<li>
+<code>y</code>: the numerical outcome column</li>
+<li>
+<code>weights</code>: a column of row weights</li>
+</ul>
+<p>The function should return a column of scores (the level codings). In keeping with how the <code>catN</code> and <code>catB</code> variables are calculated, <code>vtreat</code> encodes the custom scores as deviations from the grand mean of the returned column.</p>
+<p>For our example, the function builds a <code>lmer</code> model to predict <code>y</code> as a function of <code>vcol</code>, then returns the predictions on the training data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># @param v character variable name</span>
+<span class="co"># @param vcol character, indpendent or input variable</span>
+<span class="co"># @param y numeric, dependent or outcome variable to predict</span>
 <span class="co"># @param weights row/example weights</span>
 <span class="co"># @return scored training data column</span>
-exampleCoderC &lt;-<span class="st"> </span>function(v, vcol, 
-                          y, 
-                          weights) {
-  <span class="co"># classificaton case y ~ vcol</span>
-  d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> vcol,
-                  <span class="dt">y =</span> y,
-                  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-  m &lt;-<span class="st"> </span><span class="kw">glm</span>(y~x, <span class="dt">data=</span>d, <span class="dt">weights =</span> weights, <span class="dt">family=</span>binomial)
-  <span class="kw">predict</span>(m, <span class="dt">newdata=</span>d, <span class="dt">type=</span><span class="st">'link'</span>)
-}
-
-
-<span class="co"># @param v character variable name</span>
-<span class="co"># @param vcol character variable levels</span>
-<span class="co"># @param y numeric outcome</span>
-<span class="co"># @param weights row/example weights</span>
-<span class="co"># @return scored training data column</span>
-exampleCoderN &lt;-<span class="st"> </span>function(v, vcol, 
-                         y, 
-                         weights) {
+ppCoderN &lt;-<span class="st"> </span>function(v, vcol, 
+                     y, 
+                     weights) {
   <span class="co"># regression case y ~ vcol</span>
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> vcol,
                   <span class="dt">y =</span> y,
                   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-  m &lt;-<span class="st"> </span><span class="kw">lm</span>(y~x, <span class="dt">data=</span>d, <span class="dt">weights=</span>weights)
+  m &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/lme4/topics/lmer">lmer</a></span>(y ~<span class="st"> </span>(<span class="dv">1</span> |<span class="st"> </span>x), <span class="dt">data=</span>d, <span class="dt">weights=</span>weights)
   <span class="kw">predict</span>(m, <span class="dt">newdata=</span>d)
-}
+}</code></pre></div>
+<p><strong>Categorization</strong></p>
+<p>For categorization problems, the function should assume that <code>y</code> is a logical column, where <code>TRUE</code> is assumed to be the target outcome. This is because <code>vtreat</code> converts the outcome column to a logical while creating the treatment plan.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># @param v character variable name</span>
+<span class="co"># @param vcol character, independent or input variable</span>
+<span class="co"># @param y logical, dependent or outcome variable to predict</span>
+<span class="co"># @param weights row/example weights</span>
+<span class="co"># @return scored training data column</span>
+ppCoderC &lt;-<span class="st"> </span>function(v, vcol, 
+                     y, 
+                     weights) {
+  <span class="co"># classification case y ~ vcol</span>
+  d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> vcol,
+                  <span class="dt">y =</span> y,
+                  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+  m =<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/lme4/topics/glmer">glmer</a></span>(y ~<span class="st"> </span>(<span class="dv">1</span> |<span class="st"> </span>x), <span class="dt">data=</span>d, <span class="dt">weights=</span>weights, <span class="dt">family=</span>binomial)
+  <span class="kw">predict</span>(m, <span class="dt">newdata=</span>d, <span class="dt">type=</span><span class="st">'link'</span>)
+}</code></pre></div>
+<p>You can then pass the functions in as a named list into either <code>designTreatmentsX</code> or <code>mkCrossFrameXExperiment</code> to build the treatment plan. The format of the key is “[n|c].levelName[.option]*" (right now the only supported option is “center”). The prefacing picks the model type: numeric or regression starts with ‘n.’ and the categorical encoder starts with ‘c.’. Our example coders can be passed in we show below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">customCoders =<span class="st"> </span><span class="kw">list</span>(<span class="st">'n.poolN.center'</span> =<span class="st"> </span>ppCoderN, 
+                    <span class="st">'c.poolC.center'</span> =<span class="st"> </span>ppCoderC)</code></pre></div>
+</div>
+<div id="using-the-custom-coders" class="section level2">
+<h2 class="hasAnchor">
+<a href="#using-the-custom-coders" class="anchor"></a>Using the Custom Coders</h2>
+<p>Let’s build a treatment plan for the regression problem.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># I only want to create the cleaned numeric variables, the isBAD variables,</span>
+<span class="co"># and the level codings (not the indicator variables or catP, etc.)</span>
+vartypes_I_want =<span class="st"> </span><span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catN'</span>)
 
-customCoders =<span class="st"> </span><span class="kw">list</span>(<span class="st">'c.regc'</span> =<span class="st"> </span>exampleCoderC,
-                    <span class="st">'n.regn'</span> =<span class="st"> </span>exampleCoderN)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cfe &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span>(<span class="dt">dframe =</span> infert, 
-                               <span class="dt">varlist=</span> <span class="kw">c</span>(<span class="st">'age'</span>, <span class="st">'education'</span>),
-                               <span class="dt">outcomename =</span> <span class="st">'case'</span>,
-                               <span class="dt">outcometarget =</span> <span class="st">'1'</span>,
-                               <span class="dt">codeRestriction =</span> <span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catB'</span>),
-                               <span class="dt">customCoders =</span> customCoders)
-<span class="kw">print</span>(cfe$method)</code></pre></div>
-<pre><code>## [1] "kwaycrossystratified"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>cfe$treatments
-scoreFrame &lt;-<span class="st"> </span>treatments$scoreFrame
-trainFrame &lt;-<span class="st"> </span>cfe$crossFrame
+treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(radonMN, 
+                               <span class="dt">varlist =</span> <span class="kw">c</span>(<span class="st">'county'</span>),
+                               <span class="dt">outcomename =</span> <span class="st">'activity'</span>,
+                              <span class="dt">codeRestriction =</span> vartypes_I_want,
+                              <span class="dt">customCoders =</span> customCoders, 
+                              <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 
-<span class="kw">print</span>(scoreFrame)</code></pre></div>
-<pre><code>##          varName varMoves          rsq       sig needsSplit
-## 1      age_clean     TRUE 9.774893e-06 0.9556663      FALSE
-## 2 education_regc     TRUE 4.895660e-03 0.2134507       TRUE
-## 3 education_catB     TRUE 4.910502e-03 0.2127581       TRUE
-##   extraModelDegrees  origName  code
-## 1                 0       age clean
-## 2                 2 education  regc
-## 3                 2 education  catB</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(trainFrame)</code></pre></div>
-<pre><code>##   age_clean education_regc education_catB case
-## 1        26  -0.2220662332  -2.231145e-01    1
-## 2        42  -0.2220662332  -2.231145e-01    1
-## 3        39   0.1676847700   1.643155e-01    1
-## 4        34   0.0005241834   1.575716e-05    1
-## 5        35   0.0599476039   5.942432e-02    1
-## 6        36   0.0599476039   5.942432e-02    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(trainFrame)</code></pre></div>
-<pre><code>##    age_clean     education_regc     education_catB      
-##  Min.   :21.00   Min.   :-0.22207   Min.   :-0.2231145  
-##  1st Qu.:28.00   1st Qu.:-0.05955   1st Qu.:-0.0606233  
-##  Median :31.00   Median : 0.05995   Median : 0.0594243  
-##  Mean   :31.50   Mean   : 0.00243   Mean   : 0.0007773  
-##  3rd Qu.:35.25   3rd Qu.: 0.07254   3rd Qu.: 0.0714596  
-##  Max.   :44.00   Max.   : 0.16768   Max.   : 0.1643155  
-##      case          
-##  Length:248        
-##  Class :character  
-##  Mode  :character  
-##                    
-##                    
-## </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">glm</span>(case==<span class="st">'1'</span> ~<span class="st"> </span>education_catB, <span class="dt">data =</span> trainFrame, <span class="dt">family=</span>binomial))</code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = case == "1" ~ education_catB, family = binomial, 
-##     data = trainFrame)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.0698  -0.9419  -0.8505   1.4289   1.6257  
-## 
-## Coefficients:
-##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)     -0.6919     0.1354  -5.111  3.2e-07 ***
-## education_catB  -1.9432     1.3294  -1.462    0.144    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 316.17  on 247  degrees of freedom
-## Residual deviance: 314.02  on 246  degrees of freedom
-## AIC: 318.02
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">applicationFrame &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments, infert)
-<span class="kw">head</span>(applicationFrame)</code></pre></div>
-<pre><code>##   age_clean education_regc education_catB case
-## 1        26   -0.006035464   -0.006030413    1
-## 2        42   -0.006035464   -0.006030413    1
-## 3        39   -0.006035464   -0.006030413    1
-## 4        34   -0.006035464   -0.006030413    1
-## 5        35   -0.006035464   -0.006041663    1
-## 6        36   -0.006035464   -0.006041663    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(applicationFrame)</code></pre></div>
-<pre><code>##    age_clean     education_regc      education_catB      
-##  Min.   :21.00   Min.   :-0.006035   Min.   :-6.042e-03  
-##  1st Qu.:28.00   1st Qu.:-0.006035   1st Qu.:-6.042e-03  
-##  Median :31.00   Median :-0.006035   Median :-6.030e-03  
-##  Mean   :31.50   Mean   : 0.000000   Mean   :-5.648e-06  
-##  3rd Qu.:35.25   3rd Qu.: 0.006868   3rd Qu.: 6.862e-03  
-##  Max.   :44.00   Max.   : 0.006868   Max.   : 6.862e-03  
-##      case          
-##  Length:248        
-##  Class :character  
-##  Mode  :character  
-##                    
-##                    
-## </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">glm</span>(case==<span class="st">'1'</span> ~<span class="st"> </span>education_catB, <span class="dt">data =</span> applicationFrame, <span class="dt">family=</span>binomial))</code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = case == "1" ~ education_catB, family = binomial, 
-##     data = applicationFrame)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -0.9053  -0.9053  -0.9005   1.4765   1.4823  
-## 
-## Coefficients:
-##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)     -0.6871     0.1346  -5.106 3.29e-07 ***
-## education_catB   1.0001    20.9003   0.048    0.962    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 316.17  on 247  degrees of freedom
-## Residual deviance: 316.17  on 246  degrees of freedom
-## AIC: 320.17
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">infert$case &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(infert$case)
-cfe &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(<span class="dt">dframe =</span> infert, 
-                               <span class="dt">varlist=</span> <span class="kw">c</span>(<span class="st">'age'</span>, <span class="st">'education'</span>),
-                               <span class="dt">outcomename =</span> <span class="st">'case'</span>,
-                               <span class="dt">codeRestriction =</span> <span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catN'</span>),
-                               <span class="dt">customCoders =</span> customCoders)
-<span class="kw">print</span>(cfe$method)</code></pre></div>
-<pre><code>## [1] "kwaycrossystratified"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>cfe$treatments
-scoreFrame &lt;-<span class="st"> </span>treatments$scoreFrame
-trainFrame &lt;-<span class="st"> </span>cfe$crossFrame
+scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
+scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
+<pre><code>##        varName          sig origName  code
+## 1 county_poolN 2.318258e-20   county poolN
+## 2  county_catN 4.730291e-17   county  catN</code></pre>
+<p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
+<p>Let’s compare the two level encodings.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>
+measframe =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">county =</span> <span class="kw">unique</span>(radonMN$county),
+                       <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
 
-<span class="kw">print</span>(scoreFrame)</code></pre></div>
-<pre><code>##          varName varMoves          rsq       sig needsSplit
-## 1      age_clean     TRUE 1.246409e-05 0.9558860      FALSE
-## 2 education_regn     TRUE 4.837800e-03 0.2752155       TRUE
-## 3 education_catN     TRUE 4.837800e-03 0.2752155       TRUE
-##   extraModelDegrees  origName  code
-## 1                 0       age clean
-## 2                 2 education  regn
-## 3                 2 education  catN</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(trainFrame)</code></pre></div>
-<pre><code>##   age_clean education_regn education_catN case
-## 1        26  -1.904762e-01    -0.19047619    1
-## 2        42  -1.904762e-01    -0.19047619    1
-## 3        39  -1.904762e-01    -0.19047619    1
-## 4        34  -9.436896e-16     0.00000000    1
-## 5        35  -4.566210e-03    -0.00456621    1
-## 6        36  -2.339591e-02    -0.02339591    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(trainFrame)</code></pre></div>
-<pre><code>##    age_clean     education_regn      education_catN           case       
-##  Min.   :21.00   Min.   :-0.190476   Min.   :-0.190476   Min.   :0.0000  
-##  1st Qu.:28.00   1st Qu.:-0.023396   1st Qu.:-0.023396   1st Qu.:0.0000  
-##  Median :31.00   Median :-0.004566   Median :-0.004566   Median :0.0000  
-##  Mean   :31.50   Mean   :-0.001613   Mean   :-0.001613   Mean   :0.3347  
-##  3rd Qu.:35.25   3rd Qu.: 0.019608   3rd Qu.: 0.019608   3rd Qu.:1.0000  
-##  Max.   :44.00   Max.   : 0.162651   Max.   : 0.162651   Max.   :1.0000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">applicationFrame &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments, infert)
-<span class="kw">head</span>(applicationFrame)</code></pre></div>
-<pre><code>##   age_clean education_regn education_catN case
-## 1        26   -0.001344086   -0.001344086    1
-## 2        42   -0.001344086   -0.001344086    1
-## 3        39   -0.001344086   -0.001344086    1
-## 4        34   -0.001344086   -0.001344086    1
-## 5        35   -0.001344086   -0.001344086    1
-## 6        36   -0.001344086   -0.001344086    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(applicationFrame)</code></pre></div>
-<pre><code>##    age_clean     education_regn      education_catN           case       
-##  Min.   :21.00   Min.   :-0.001344   Min.   :-0.001344   Min.   :0.0000  
-##  1st Qu.:28.00   1st Qu.:-0.001344   1st Qu.:-0.001344   1st Qu.:0.0000  
-##  Median :31.00   Median :-0.001344   Median :-0.001344   Median :0.0000  
-##  Mean   :31.50   Mean   : 0.000000   Mean   : 0.000000   Mean   :0.3347  
-##  3rd Qu.:35.25   3rd Qu.: 0.001529   3rd Qu.: 0.001529   3rd Qu.:1.0000  
-##  Max.   :44.00   Max.   : 0.001529   Max.   : 0.001529   Max.   :1.0000</code></pre>
+outframe =<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatplanN, measframe)
+
+<span class="co"># If we wanted only the new pooled level coding,</span>
+<span class="co"># (plus any numeric/isBAD variables), we would</span>
+<span class="co"># use a codeRestriction:</span>
+<span class="co">#</span>
+<span class="co"># outframe = prepare(treatplanN, </span>
+<span class="co">#                    measframe,</span>
+<span class="co">#                    codeRestriction = c('clean', 'isBAD', 'poolN'))</span>
+
+
+<span class="kw"><a href="http://www.rdocumentation.org/packages/tidyr/topics/gather">gather</a></span>(outframe, <span class="dt">key=</span>scoreType, <span class="dt">value=</span>score, 
+       county_poolN, county_catN) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>score)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>(<span class="dt">adjust=</span><span class="fl">0.5</span>) +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_rug">geom_rug</a></span>(<span class="dt">sides=</span><span class="st">"b"</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(~scoreType, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">scale=</span><span class="st">"free_y"</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"Distribution of scores"</span>)</code></pre></div>
+<p><img src="CustomLevelCoders_files/figure-html/nex-1.png" width="672"></p>
+<p>Notice that the <code>poolN</code> scores are “tucked in” compared to the <code>catN</code> encoding. In a later article, we’ll show that the counties with the most tucking in (or <em>shrinkage</em>) tend to be those with fewer measurements.</p>
+<p>We can also code for the categorical problem.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># For categorical problems, coding is catB</span>
+vartypes_I_want =<span class="st"> </span><span class="kw">c</span>(<span class="st">'clean'</span>, <span class="st">'isBAD'</span>, <span class="st">'catB'</span>)
+
+treatplanC =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(radonMN, 
+                               <span class="dt">varlist =</span> <span class="kw">c</span>(<span class="st">'county'</span>),
+                               <span class="dt">outcomename =</span> <span class="st">'critical'</span>,
+                               <span class="dt">outcometarget=</span> <span class="ot">TRUE</span>,
+                               <span class="dt">codeRestriction =</span> vartypes_I_want,
+                               <span class="dt">customCoders =</span> customCoders, 
+                               <span class="dt">verbose=</span><span class="ot">FALSE</span>)
+
+outframe =<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatplanC, measframe)
+
+<span class="kw"><a href="http://www.rdocumentation.org/packages/tidyr/topics/gather">gather</a></span>(outframe, <span class="dt">key=</span>scoreType, <span class="dt">value=</span>linkscore, 
+       county_poolC, county_catB) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>linkscore)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>(<span class="dt">adjust=</span><span class="fl">0.5</span>) +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_rug">geom_rug</a></span>(<span class="dt">sides=</span><span class="st">"b"</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(~scoreType, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">scale=</span><span class="st">"free_y"</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"Distribution of link scores"</span>)</code></pre></div>
+<p><img src="CustomLevelCoders_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+<p>Notice that the <code>poolC</code> link scores are even more tucked in compared to the <code>catB</code> link scores, and that the <code>catB</code> scores are multimodal. The smaller link scores means that the pooled model avoids estimates of conditional expectation close to either zero or one, because, again, these estimates come from counties with few readings.</p>
+</div>
+<div id="other-considerations" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-considerations" class="anchor"></a>Other Considerations</h2>
+<p>For this example, we used the <code>lmer4</code> package to create custom level codings. Once calculated, <code>vtreat</code> stores the coding as a lookup table in the treatment plan. <em>This means <code>lmer4</code> is not needed to prepare new data.</em> In general, using a treatment plan is not dependent on any special packages that might have been used to create it, so it can be shared with other users with no extra dependencies.</p>
+<p>When using <code>mkCrossFrameXExperiment</code>, note that resulting cross frame will have a slightly different distribution of scores than what the treatment plan produces. This is true even for <code>catB</code> and <code>catN</code> variables. This is because the treatment plan is built using all the data, while the cross frame is built using n-fold cross validation on the data. See <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">the cross frame vignette</a> for more details.</p>
+</div>
+<div id="references" class="section level2">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<p>Gelman, Andrew and Jennifer Hill. <em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press, 2007.</p>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#the-data-radon-levels-in-minnesota">The Data: Radon levels in Minnesota</a></li>
+      <li><a href="#implementing-level-coders-for-partial-pooling">Implementing Level Coders for Partial Pooling</a></li>
+      <li><a href="#using-the-custom-coders">Using the Custom Coders</a></li>
+      <li><a href="#other-considerations">Other Considerations</a></li>
+      <li><a href="#references">References</a></li>
+      </ul>
+</div>
       </div>
 
 </div>

@@ -131,6 +131,39 @@ Possible derived variable types in this case are:
   *  **is\_Bad** : a companion to the 'clean' treatment.  'is\_Bad' is an indicator that indicates a value replacement has occurred.  For many noisy datasets this column can be more informative than the clean column!
   *  **lev** : a 0/1 indicator indicating a particular value of a categorical variable was present.  For example `x_lev_x.a` is 1 when the original `x` variable had a value of "a".  These indicators are essentially variables representing explicit encoding of levels as dummy variables. In some cases a special level code is used to represent pooled rare values.
   *  **cat\_P** : a "prevalence fact" about a categorical level.  Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.
+  
+## Restricting to Specific Variable Types
+
+Both `designTreatmentsX` and `prepare` functions take an argument called `codeRestriction` that restricts the type of variable that is created. For example, you may not want to create `catP` and `catD` variables for a regression problem.
+
+```{r restrict1}
+dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
+   z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
+   stringsAsFactors = FALSE)
+
+treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y',
+                                 codeRestriction = c('lev', 
+                                                      'catN',
+                                                      'clean',
+                                                      'isBAD'),
+                                 verbose=FALSE)
+
+# no catP or catD variables
+print(treatmentsN$scoreFrame[,scoreColsToPrint])
+
+```
+
+Conversely, even if you have created a treatment plan for a particular type of variable, you may subsequently decide not to use it. For example, perhaps you only want to use indicator variables and  not the `catN` variable for modeling. You can use `codeRestriction` in `prepare()`.
+
+```{r restrict2}
+dTreated = prepare(treatmentsN, dTrainN, 
+                   codeRestriction = c('lev','clean', 'isBAD'))
+
+# no catN variables
+head(dTreated)
+```
+
+`varRestriction` works similarly, only you must list the explicit variables to use. See the example below.
 
 ## Overall
 
@@ -161,16 +194,27 @@ significance.  Doing this looks like the following:
 dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
    stringsAsFactors = FALSE)
-treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y')
+treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y',
+                                  codeRestriction = c('lev', 
+                                                      'catN',
+                                                      'clean',
+                                                      'isBAD'),
+                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,scoreColsToPrint])
 
 pruneSig <- 1.0 # don't filter on significance for this tiny example
 vScoreFrame <- treatmentsN$scoreFrame
-varsToUse <- vScoreFrame$varName[(vScoreFrame$sig<=pruneSig) &
-                                   vScoreFrame$code %in% c('lev','catN','clean','isBad')]
+varsToUse <- vScoreFrame$varName[(vScoreFrame$sig<=pruneSig)]
 print(varsToUse)
 origVarNames <- sort(unique(vScoreFrame$origName[vScoreFrame$varName %in% varsToUse]))
 print(origVarNames)
+
+# prepare a treated data frame using only the "significant" variables
+dTreated = prepare(treatmentsN, dTrainN, 
+                   varRestriction = varsToUse)
+
+head(dTreated)
+
 ```
 
 We strongly suggest using the standard variables coded as 'lev', 'clean', and 'isBad'; and the "y aware" variables coded as 'catN' and 'catB'.  The non sub-model variables ('catP' and 'catD') can be useful (possibly as interactions or guards on the corresponding 'catN' and 'catB' variables) but also encode distributional facts about the data that may
@@ -187,7 +231,7 @@ origVarSigs <- vScoreFrame[vScoreFrame$varName %in% varsToUse,]
 aggregate(sig~origName,data=origVarSigs,FUN=min)
 ```
 
-# Links
+## Links
 
   *  ['vtreat' on Github'](https://github.com/WinVector/vtreat)
   *  ['vtreat' on CRAN](https://cran.r-project.org/package=vtreat)

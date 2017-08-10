@@ -262,9 +262,13 @@ mkVtreatListWorker <- function(scale,doCollar) {
             customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
             codeType <- customeCodeV[[1]]
             codeName <- customeCodeV[[2]]
+            codeSeq <- NULL
+            if(length(customeCodeV)>2) {
+              codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
+            }
             if((codeType=='n')==is.null(zC)) {
-              ti <- makeCustomCoder(codeName,coder, 
-                                     v,vcol,zoY,zC,zTarget,weights,catScaling)
+              ti <- makeCustomCoder(codeName, coder, codeSeq, 
+                                    v,vcol,zoY,zC,zTarget,weights,catScaling)
               acceptTreatment(ti)
             }
           }

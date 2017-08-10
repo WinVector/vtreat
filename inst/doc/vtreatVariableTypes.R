@@ -32,20 +32,54 @@ dTrainZ <- data.frame(x=c('a','a','a','b','b',NA),
 treatmentsZ <- designTreatmentsZ(dTrainZ,colnames(dTrainZ))
 print(treatmentsZ$scoreFrame[, c('origName','varName','code','extraModelDegrees')])
 
+## ----restrict1-----------------------------------------------------------
+dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
+   z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
+   stringsAsFactors = FALSE)
+
+treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y',
+                                 codeRestriction = c('lev', 
+                                                      'catN',
+                                                      'clean',
+                                                      'isBAD'),
+                                 verbose=FALSE)
+
+# no catP or catD variables
+print(treatmentsN$scoreFrame[,scoreColsToPrint])
+
+
+## ----restrict2-----------------------------------------------------------
+dTreated = prepare(treatmentsN, dTrainN, 
+                   codeRestriction = c('lev','clean', 'isBAD'))
+
+# no catN variables
+head(dTreated)
+
 ## ----selectvars----------------------------------------------------------
 dTrainN <- data.frame(x=c('a','a','a','b','b',NA),
    z=c(1,2,3,4,NA,6),y=as.numeric(c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE)),
    stringsAsFactors = FALSE)
-treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y')
+treatmentsN <- designTreatmentsN(dTrainN,colnames(dTrainN),'y',
+                                  codeRestriction = c('lev', 
+                                                      'catN',
+                                                      'clean',
+                                                      'isBAD'),
+                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,scoreColsToPrint])
 
 pruneSig <- 1.0 # don't filter on significance for this tiny example
 vScoreFrame <- treatmentsN$scoreFrame
-varsToUse <- vScoreFrame$varName[(vScoreFrame$sig<=pruneSig) &
-                                   vScoreFrame$code %in% c('lev','catN','clean','isBad')]
+varsToUse <- vScoreFrame$varName[(vScoreFrame$sig<=pruneSig)]
 print(varsToUse)
 origVarNames <- sort(unique(vScoreFrame$origName[vScoreFrame$varName %in% varsToUse]))
 print(origVarNames)
+
+# prepare a treated data frame using only the "significant" variables
+dTreated = prepare(treatmentsN, dTrainN, 
+                   varRestriction = varsToUse)
+
+head(dTreated)
+
 
 ## ----displayvars---------------------------------------------------------
 origVarNames <- sort(unique(vScoreFrame$origName[vScoreFrame$varName %in% varsToUse]))
