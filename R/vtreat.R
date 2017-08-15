@@ -412,24 +412,24 @@ prepare <- function(treatmentplan, dframe,
   if(treatmentplan$outcomeType=='None') {
     pruneSig <- NULL
   }
-  usable <- treatmentplan$scoreFrame$varMoves
+  useable <- treatmentplan$scoreFrame$varMoves
   if(!is.null(pruneSig)) {
-    usable <- usable & (treatmentplan$scoreFrame$sig<=pruneSig)
+    useable <- useable & (treatmentplan$scoreFrame$sig<=pruneSig)
   }
-  usableVars <- treatmentplan$scoreFrame$varName[usable]
+  useableVars <- treatmentplan$scoreFrame$varName[useable]
   if(!is.null(varRestriction)) {
-    usableVars <- intersect(usableVars,varRestriction)
+    useableVars <- intersect(useableVars,varRestriction)
   }
   if(!is.null(codeRestriction)) {
     hasSelectedCode <- treatmentplan$scoreFrame$code %in% codeRestriction
-    usableVars <- intersect(usableVars, 
+    useableVars <- intersect(useableVars, 
                             treatmentplan$scoreFrame$varName[hasSelectedCode])
   }
-  if(length(usableVars)<=0) {
-    stop('no usable vars')
+  if(length(useableVars)<=0) {
+    stop('no useable vars')
   }
   for(ti in treatmentplan$treatments) {
-    if(length(intersect(ti$newvars,usableVars))>0) {
+    if(length(intersect(ti$newvars,useableVars))>0) {
       newType <- typeof(dframe[[ti$origvar]])
       newClass <- paste(class(dframe[[ti$origvar]]))
       if((ti$origType!=newType) || (ti$origClass!=newClass)) {
@@ -440,7 +440,7 @@ prepare <- function(treatmentplan, dframe,
       }
     }
   }
-  treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar,
+  treated <- .vtreatList(treatmentplan$treatments,dframe,useableVars,scale,doCollar,
                          parallelCluster)
   # copy outcome over if it is present
   if(treatmentplan$outcomename %in% colnames(dframe)) {
