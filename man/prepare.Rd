@@ -23,7 +23,7 @@ prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
 
 \item{varRestriction}{optional list of treated variable names to restrict to}
 
-\item{codeRestriction}{optional list of treated variable codess to restrict to}
+\item{codeRestriction}{optional list of treated variable codes to restrict to}
 
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }

@@ -102,7 +102,7 @@
       <h1>Custom Level Coding in vtreat</h1>
                         <h4 class="author">Nina Zumel, John Mount</h4>
             
-            <h4 class="date">2017-08-10</h4>
+            <h4 class="date">2017-08-15</h4>
           </div>
 
     
@@ -251,8 +251,8 @@ treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/desi
 scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
 scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
 <pre><code>##        varName          sig origName  code
-## 1 county_poolN 1.495317e-21   county poolN
-## 2  county_catN 4.185219e-19   county  catN</code></pre>
+## 1 county_poolN 2.015900e-20   county poolN
+## 2  county_catN 3.797799e-17   county  catN</code></pre>
 <p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Let’s compare the two level encodings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>
