@@ -348,7 +348,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed  (lm for regression problems/glm for classificaiton problems) against outcome.
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
-#' @param codeRestriction optional list of treated variable codess to restrict to
+#' @param codeRestriction optional list of treated variable codes to restrict to
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
@@ -412,24 +412,24 @@ prepare <- function(treatmentplan, dframe,
   if(treatmentplan$outcomeType=='None') {
     pruneSig <- NULL
   }
-  usable <- treatmentplan$scoreFrame$varMoves
+  useable <- treatmentplan$scoreFrame$varMoves
   if(!is.null(pruneSig)) {
-    usable <- usable & (treatmentplan$scoreFrame$sig<=pruneSig)
+    useable <- useable & (treatmentplan$scoreFrame$sig<=pruneSig)
   }
-  usableVars <- treatmentplan$scoreFrame$varName[usable]
+  useableVars <- treatmentplan$scoreFrame$varName[useable]
   if(!is.null(varRestriction)) {
-    usableVars <- intersect(usableVars,varRestriction)
+    useableVars <- intersect(useableVars,varRestriction)
   }
   if(!is.null(codeRestriction)) {
     hasSelectedCode <- treatmentplan$scoreFrame$code %in% codeRestriction
-    usableVars <- intersect(usableVars, 
+    useableVars <- intersect(useableVars, 
                             treatmentplan$scoreFrame$varName[hasSelectedCode])
   }
-  if(length(usableVars)<=0) {
-    stop('no usable vars')
+  if(length(useableVars)<=0) {
+    stop('no useable vars')
   }
   for(ti in treatmentplan$treatments) {
-    if(length(intersect(ti$newvars,usableVars))>0) {
+    if(length(intersect(ti$newvars,useableVars))>0) {
       newType <- typeof(dframe[[ti$origvar]])
       newClass <- paste(class(dframe[[ti$origvar]]))
       if((ti$origType!=newType) || (ti$origClass!=newClass)) {
@@ -440,7 +440,7 @@ prepare <- function(treatmentplan, dframe,
       }
     }
   }
-  treated <- .vtreatList(treatmentplan$treatments,dframe,usableVars,scale,doCollar,
+  treated <- .vtreatList(treatmentplan$treatments,dframe,useableVars,scale,doCollar,
                          parallelCluster)
   # copy outcome over if it is present
   if(treatmentplan$outcomename %in% colnames(dframe)) {
