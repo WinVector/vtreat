@@ -21,6 +21,10 @@ plapply <- function(workList,worker,parallelCluster) {
     return(rowlist[[1]])
   }
   # see if a library can supply a fast method
+  if(requireNamespace("data.table", quietly = TRUE)) {
+    return(as.data.frame(data.table::rbindlist(rowlist),
+                         stringsAsFactor=FALSE))
+  }
   if(requireNamespace("dplyr", quietly = TRUE)) {
     return(as.data.frame(dplyr::bind_rows(rowlist),
                          stringsAsFactor=FALSE))

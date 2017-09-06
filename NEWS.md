@@ -1,8 +1,9 @@
 
-# vtreat 0.6.0 2017/08/03
+# vtreat 0.6.0 2017/09/06
 
 - Add codeRestriction option to design steps.
 - Prepare for custom models.
+- Prefer data.table::rbindlist() for assembling frames.
 
 # vtreat 0.5.32 2017/06/13
 

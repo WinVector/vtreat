@@ -144,14 +144,14 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x  x_lev_NA   lev 0.296065432 0.09248399                 0
- #  2        x x_lev_x.a   lev 0.130005705 0.26490379                 0
- #  3        x x_lev_x.b   lev 0.006067337 0.80967242                 0
- #  4        x    x_catP  catP 0.285095342 0.09874390                 2
- #  5        x    x_catB  catB 0.117443640 0.28930668                 2
- #  6        z   z_clean clean 0.237601767 0.13176020                 0
- #  7        z   z_isBAD isBAD 0.296065432 0.09248399                 0
+ #    origName   varName  code          rsq        sig extraModelDegrees
+ #  1        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
+ #  2        x x_lev_x.a   lev 1.300057e-01 0.26490379                 0
+ #  3        x x_lev_x.b   lev 6.067337e-03 0.80967242                 0
+ #  4        x    x_catP  catP 1.559780e-01 0.22202097                 2
+ #  5        x    x_catB  catB 1.142159e-05 0.99166241                 2
+ #  6        z   z_clean clean 2.376018e-01 0.13176020                 0
+ #  7        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
 
 # help("prepare")
 
@@ -195,8 +195,8 @@ print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'ex
  #  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
  #  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
  #  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
- #  4        x    x_catP  catP 3.700306e-01 0.1095637                 2
- #  5        x    x_catN  catN 2.606061e-01 0.1961166                 2
+ #  4        x    x_catP  catP 2.105263e-01 0.2528101                 2
+ #  5        x    x_catN  catN 3.205128e-03 0.8940756                 2
  #  6        x    x_catD  catD 6.666667e-02 0.5369633                 2
  #  7        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
