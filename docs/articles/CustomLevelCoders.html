@@ -102,7 +102,7 @@
       <h1>Custom Level Coding in vtreat</h1>
                         <h4 class="author">Nina Zumel, John Mount</h4>
             
-            <h4 class="date">2017-09-06</h4>
+            <h4 class="date">2017-09-07</h4>
           </div>
 
     
@@ -142,12 +142,12 @@ srrs =<span class="st"> </span><span class="kw">read.table</span>(<span class="s
 
 <span class="co"># target: log of radon activity (activity)</span>
 <span class="co"># grouping variable: county</span>
-radonMN =<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/filter">filter</a></span>(srrs, state==<span class="st">"MN"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/select">select</a></span>(<span class="st">"county"</span>, <span class="st">"activity"</span>) %&gt;%
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/filter">filter</a></span>(activity &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/mutate">mutate</a></span>(<span class="dt">activity =</span> <span class="kw">log</span>(activity),
+radonMN =<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(srrs, state==<span class="st">"MN"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="st">"county"</span>, <span class="st">"activity"</span>) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(activity &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">activity =</span> <span class="kw">log</span>(activity),
          <span class="dt">county =</span> base::<span class="kw">trimws</span>(county)) %&gt;%
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/mutate">mutate</a></span>(<span class="dt">critical =</span> activity&gt;<span class="fl">1.5</span>)
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">critical =</span> activity&gt;<span class="fl">1.5</span>)
 
 <span class="kw">str</span>(radonMN)</code></pre></div>
 <pre><code>## 'data.frame':    916 obs. of  3 variables:
@@ -164,10 +164,10 @@ radonMN =<span class="st"> </span><span class="kw"><a href="http://www.rdocument
 <code>critical</code>: <code>TRUE</code> when activity &gt; 1.5 (categorical outcome)</li>
 </ul>
 <p>The goal is to level code <code>county</code> for either the regression problem (predict the log radon reading) or the categorization problem (predict whether the radon level is “critical”).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">radonMN %&gt;%<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/group_by">group_by</a></span>(county) %&gt;%
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/summarise">summarize</a></span>(<span class="dt">county_activity =</span> <span class="kw">mean</span>(activity),
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">radonMN %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(county) %&gt;%
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="dt">county_activity =</span> <span class="kw">mean</span>(activity),
             <span class="dt">county_critical =</span> <span class="kw">mean</span>(critical),
-            <span class="dt">county_readings =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/n">n</a></span>()) %&gt;%
+            <span class="dt">county_readings =</span> <span class="kw"><a href="http://dplyr.tidyverse.org/reference/n.html">n</a></span>()) %&gt;%
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/tidyr/topics/gather">gather</a></span>(<span class="dt">key =</span> measure, <span class="dt">value=</span>value, 
          county_activity, county_critical, county_readings) %&gt;%
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>value)) +<span class="st"> </span>
@@ -249,10 +249,10 @@ treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/desi
                               <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 
 scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
-scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/dplyr/topics/select">select</a></span>(varName, sig, origName, code)</code></pre></div>
+scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
 <pre><code>##        varName          sig origName  code
-## 1 county_poolN 4.891077e-21   county poolN
-## 2  county_catN 1.572818e-17   county  catN</code></pre>
+## 1 county_poolN 2.337743e-16   county poolN
+## 2  county_catN 5.627363e-13   county  catN</code></pre>
 <p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Let’s compare the two level encodings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>

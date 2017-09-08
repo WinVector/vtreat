@@ -531,7 +531,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                rareCount,rareSig,
                                collarProb,
                                codeRestriction, customCoders,
-                               splitFunction,ncross,
+                               splitFunction, ncross, forceSplit,
                                catScaling,
                                verbose,
                                parallelCluster) {
@@ -596,6 +596,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                     verbose,
                                     parallelCluster)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
+  if(forceSplit) {
+    treatments$scoreFrame$needsSplit <- TRUE
+  }
   treatments$vtreatVersion <- packageVersion('vtreat')
   treatments$outcomeType <- 'notmarked'
   treatments$outcomeTarget <- outcomename

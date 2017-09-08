@@ -102,7 +102,7 @@
       <h1>vtreat scale mode</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2017-09-06</h4>
+            <h4 class="date">2017-09-07</h4>
           </div>
 
     
@@ -169,12 +169,12 @@ slopeFrame$sig &lt;-<span class="st"> </span><span class="kw">vapply</span>(slop
 slopeFrame$badSlope &lt;-
 <span class="st">  </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(slopeFrame$slope), <span class="ot">TRUE</span>, <span class="kw">abs</span>(slopeFrame$slope -<span class="st"> </span><span class="dv">1</span>) &gt;<span class="st"> </span><span class="fl">1.e-8</span>)
 <span class="kw">print</span>(slopeFrame)</code></pre></div>
-<pre><code>##     varName          mean slope       sig badSlope
-## 1  x_lev_NA -6.938894e-18     1 0.2076623    FALSE
-## 2 x_lev_x.a  0.000000e+00     1 0.4097258    FALSE
-## 3 x_lev_x.b  0.000000e+00    NA 1.0000000     TRUE
-## 4    x_catP  1.850372e-17     1 0.1547700    FALSE
-## 5    x_catB  1.387779e-17     1 0.5160763    FALSE</code></pre>
+<pre><code>##     varName          mean slope        sig badSlope
+## 1  x_lev_NA -6.938894e-18     1 0.20766228    FALSE
+## 2 x_lev_x.a  0.000000e+00     1 0.40972582    FALSE
+## 3 x_lev_x.b  0.000000e+00    NA 1.00000000     TRUE
+## 4    x_catP  1.850372e-17     1 0.03392101    FALSE
+## 5    x_catB  1.387779e-17     1 1.00000000    FALSE</code></pre>
 <p>The above claims are true with the exception of the derived variable <code>x_lev_x.b</code>. This is because the outcome variable <code>y</code> has identical distribution when the original variable <code>x==‘b’</code> and when <code>x!=‘b’</code> (on half the time in both cases). This means <code>y</code> is perfectly independent of <code>x==‘b’</code> and the regression slope must be zero (thus, cannot be 1). vtreat now treats this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance facts in <code>treatmentsC$scoreFrame</code> are about the unscaled frame (where <code>x_lev_x.b</code> does in fact move).</p>
 <p>For a good discussion of the application of <em>y</em>-aware scaling to Principal Components Analysis please see <a href="http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/">here</a>.</p>
 <p>Previous versions of vtreat (0.5.22 and earlier) would copy variables that could not be sensibly scaled into the treated frame unaltered. This was considered the “most faithful” thing to do. However we now feel that this practice was not safe for many downstream procedures, such as principal components analysis and geometric clustering.</p>

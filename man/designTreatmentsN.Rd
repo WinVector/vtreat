@@ -7,7 +7,7 @@
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = NULL,
   collarProb = 0, codeRestriction = NULL, customCoders = NULL,
-  splitFunction = NULL, ncross = 3, verbose = TRUE,
+  splitFunction = NULL, ncross = 3, forceSplit = FALSE, verbose = TRUE,
   parallelCluster = NULL)
 }
 \arguments{
@@ -38,6 +38,8 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 \item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 
 \item{ncross}{optional scalar >=2 number of cross validation splits use in rescoring complex variables.}
+
+\item{forceSplit}{logical, if TRUE force cross-validated significance calculatons on all variables.}
 
 \item{verbose}{if TRUE print progress.}
 

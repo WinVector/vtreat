@@ -137,7 +137,7 @@ into calibration, training, test sets.</p>
   <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -205,6 +205,10 @@ into calibration, training, test sets.</p>
     <tr>
       <th>ncross</th>
       <td><p>optional scalar&gt;=2 number of cross-validation rounds to design.</p></td>
+    </tr>
+    <tr>
+      <th>forceSplit</th>
+      <td><p>logical, if TRUE force cross-validated significance calculatons on all variables.</p></td>
     </tr>
     <tr>
       <th>parallelCluster</th>

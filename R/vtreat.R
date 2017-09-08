@@ -107,6 +107,7 @@ print.vtreatment <- function(x,...) {
 #' @param customCoders map from code names to custom categorical variable encoding functions.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
@@ -133,6 +134,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               codeRestriction=NULL,
                               customCoders=NULL, 
                               splitFunction=NULL,ncross=3,
+                              forceSplit=FALSE,
                               catScaling=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
@@ -156,7 +158,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    collarProb,
                                    codeRestriction,
                                    customCoders,
-                                   splitFunction,ncross,
+                                   splitFunction,ncross,forceSplit,
                                    catScaling,
                                    verbose,
                                    parallelCluster)
@@ -200,6 +202,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param customCoders map from code names to custom categorical variable encoding functions.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
@@ -224,6 +227,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               codeRestriction=NULL,
                               customCoders=NULL,
                               splitFunction=NULL,ncross=3,
+                              forceSplit=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
@@ -245,7 +249,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      rareCount,rareSig,
                      collarProb,
                      codeRestriction, customCoders,
-                     splitFunction,ncross,
+                     splitFunction,ncross,forceSplit,
                      catScaling,
                      verbose,
                      parallelCluster)
@@ -319,7 +323,7 @@ designTreatmentsZ <- function(dframe,varlist,
                      minFraction,smFactor=0,
                      rareCount,rareSig=1,
                      collarProb,
-                     codeRestriction, customCoders,
+                     codeRestriction, customCoders, FALSE,
                      NULL,3,
                      catScaling,
                      verbose,
@@ -477,6 +481,7 @@ prepare <- function(treatmentplan, dframe,
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
@@ -512,6 +517,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     customCoders=NULL,
                                     scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
+                                    forceSplit = FALSE,
                                     catScaling=FALSE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
@@ -541,6 +547,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   codeRestriction=codeRestriction,
                                   customCoders=customCoders,
                                   splitFunction=splitFunction,ncross=ncross,
+                                  forceSplit = forceSplit,
                                   catScaling=catScaling,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster)
@@ -603,6 +610,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
@@ -636,6 +644,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     customCoders=NULL,
                                     scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
+                                    forceSplit=FALSE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -665,6 +674,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   codeRestriction = codeRestriction,
                                   customCoders = customCoders,
                                   splitFunction=splitFunction,ncross=ncross,
+                                  forceSplit = forceSplit,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster)
   zC <- NULL
