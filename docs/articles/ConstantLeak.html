@@ -317,8 +317,7 @@ cfeFX &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 ## F-statistic: 0.7116 on 1 and 98 DF,  p-value: 0.401</code></pre>
 <p>What happened is:</p>
 <ul>
-<li>The deterministic structure of leave-one-out cross validation introduces an information leak that copies a transform of the value of <code>y</code> into the bad coder.<br>
-</li>
+<li>The deterministic structure of leave-one-out cross validation introduces an information leak that copies a transform of the value of <code>y</code> into the bad coder. Essentially the leave-one-out cross validation is consuming a number of degrees of freedom equal to the number of different data sets its presents (one per data row).</li>
 <li>The bad coder being a near constant means this leak is nearly the entirety of the bad coder signal.</li>
 <li>On any data set other than the one-way-holdout cross-validation frame the bad coder is in fact a noisy constant (and not useful). The the bad coder is pure over-fit and any model that uses it is at risk of over-fit.</li>
 </ul>

@@ -131,7 +131,7 @@ summary(lm(y ~ x_badCoderN, data= cfeFX$crossFrame))
 
 What happened is:
  
- * The deterministic structure of leave-one-out cross validation introduces an information leak that copies a transform of the value of `y` into the bad coder.  
+ * The deterministic structure of leave-one-out cross validation introduces an information leak that copies a transform of the value of `y` into the bad coder.  Essentially the leave-one-out cross validation is consuming a number of degrees of freedom equal to the number of different data sets its presents (one per data row).
  * The bad coder being a near constant means this leak is nearly the entirety of the bad coder signal.
  * On any data set other than the one-way-holdout cross-validation frame the bad coder is in fact a noisy constant (and not useful). The the bad coder is pure over-fit and any model that uses it is at risk of over-fit.
 
