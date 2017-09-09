@@ -88,7 +88,7 @@ For our example, the function builds a `lmer` model to predict `y` as a function
 
 ```{r codern}
 # @param v character variable name
-# @param vcol numeric, indpendent or input variable values
+# @param vcol numeric, ind pendent or input variable values
 # @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
@@ -110,7 +110,7 @@ For categorization problems, the function should assume that `y` is a logical co
 
 ```{r coderc}
 # @param v character variable name
-# @param vcol numeric, indpendent or input variable values
+# @param vcol numeric, ind pendent or input variable values
 # @param y logical, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column

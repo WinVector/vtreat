@@ -48,6 +48,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/ConstantLeak.html">Constant Coding Leak</a>
+    </li>
+    <li>
       <a href="../articles/CustomLevelCoders.html">Custom Level Coding in vtreat</a>
     </li>
     <li>
@@ -102,7 +105,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2017-09-07</h4>
+            <h4 class="date">2017-09-09</h4>
           </div>
 
     
@@ -181,15 +184,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "desigining treatments Thu Sep  7 23:10:34 2017"
-## [1] "designing treatments Thu Sep  7 23:10:34 2017"
-## [1] " have level statistics Thu Sep  7 23:10:34 2017"
-## [1] "design var x Thu Sep  7 23:10:34 2017"
-## [1] "design var z Thu Sep  7 23:10:35 2017"
-## [1] " scoring treatments Thu Sep  7 23:10:35 2017"
-## [1] "have treatment plan Thu Sep  7 23:10:35 2017"
-## [1] "rescoring complex variables Thu Sep  7 23:10:35 2017"
-## [1] "done rescoring complex variables Thu Sep  7 23:10:35 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Sat Sep  9 09:46:46 2017"
+## [1] "designing treatments Sat Sep  9 09:46:46 2017"
+## [1] " have level statistics Sat Sep  9 09:46:46 2017"
+## [1] "design var x Sat Sep  9 09:46:46 2017"
+## [1] "design var z Sat Sep  9 09:46:46 2017"
+## [1] " scoring treatments Sat Sep  9 09:46:46 2017"
+## [1] "have treatment plan Sat Sep  9 09:46:46 2017"
+## [1] "rescoring complex variables Sat Sep  9 09:46:46 2017"
+## [1] "done rescoring complex variables Sat Sep  9 09:46:46 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -309,15 +312,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "desigining treatments Thu Sep  7 23:10:35 2017"
-## [1] "designing treatments Thu Sep  7 23:10:35 2017"
-## [1] " have level statistics Thu Sep  7 23:10:35 2017"
-## [1] "design var x Thu Sep  7 23:10:35 2017"
-## [1] "design var z Thu Sep  7 23:10:35 2017"
-## [1] " scoring treatments Thu Sep  7 23:10:35 2017"
-## [1] "have treatment plan Thu Sep  7 23:10:35 2017"
-## [1] "rescoring complex variables Thu Sep  7 23:10:35 2017"
-## [1] "done rescoring complex variables Thu Sep  7 23:10:35 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Sat Sep  9 09:46:47 2017"
+## [1] "designing treatments Sat Sep  9 09:46:47 2017"
+## [1] " have level statistics Sat Sep  9 09:46:47 2017"
+## [1] "design var x Sat Sep  9 09:46:47 2017"
+## [1] "design var z Sat Sep  9 09:46:47 2017"
+## [1] " scoring treatments Sat Sep  9 09:46:47 2017"
+## [1] "have treatment plan Sat Sep  9 09:46:47 2017"
+## [1] "rescoring complex variables Sat Sep  9 09:46:47 2017"
+## [1] "done rescoring complex variables Sat Sep  9 09:46:47 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
