@@ -25,7 +25,7 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
 
-\item{customCoders}{map from code names to custom categorical variable encoding functions.}
+\item{customCoders}{map from code names to custom categorical variable encoding functions (please see vignette('CustomLevelCoders', package='vtreat')).}
 
 \item{verbose}{if TRUE print progress.}
 

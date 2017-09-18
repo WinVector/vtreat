@@ -33,7 +33,7 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
 
-\item{customCoders}{map from code names to custom categorical variable encoding functions.}
+\item{customCoders}{map from code names to custom categorical variable encoding functions (please see vignette('CustomLevelCoders', package='vtreat')).}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 

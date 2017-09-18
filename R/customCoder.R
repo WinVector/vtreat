@@ -17,7 +17,7 @@
 }
 
 # @para customCode code name
-# @param coder user supplied variable re-coder
+# @param coder user supplied variable re-coder (see vignette for type signature)
 # @param codeSeq argments to custom coder
 # @param v variable name
 # @param vcolin data column, character

@@ -37,8 +37,8 @@ This coder is bad in several ways:
   * It's predictions are not consistent, it makes different predictions for the same value of the independent variable it claims to encode. 
 
 ```{r badcustomcoder}
-# @param v character variable name
-# @param vcol numeric, independent or input variable values
+# @param v character scalar: variable name
+# @param vcol character vector, independent or input variable values
 # @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column

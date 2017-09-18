@@ -87,8 +87,8 @@ The function should return a column of scores (the level codings). In keeping wi
 For our example, the function builds a `lmer` model to predict `y` as a function of `vcol`, then returns the predictions on the training data.
 
 ```{r codern}
-# @param v character variable name
-# @param vcol numeric, ind pendent or input variable values
+# @param v character scalar: variable name
+# @param vcol character vector, independent or input variable values
 # @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
@@ -109,8 +109,8 @@ ppCoderN <- function(v, vcol,
 For categorization problems, the function should assume that `y` is a logical column, where `TRUE` is assumed to be the target outcome. This is because `vtreat` converts the outcome column to a logical while creating the treatment plan.
 
 ```{r coderc}
-# @param v character variable name
-# @param vcol numeric, ind pendent or input variable values
+# @param v character scalar: variable name
+# @param vcol chracter, independent or input variable values
 # @param y logical, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column

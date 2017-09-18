@@ -105,7 +105,7 @@
       <h1>Custom Level Coding in vtreat</h1>
                         <h4 class="author">Nina Zumel, John Mount</h4>
             
-            <h4 class="date">2017-09-09</h4>
+            <h4 class="date">2017-09-18</h4>
           </div>
 
     
@@ -198,8 +198,8 @@ radonMN =<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyver
 </ul>
 <p>The function should return a column of scores (the level codings). In keeping with how the <code>catN</code> and <code>catB</code> variables are calculated, <code>vtreat</code> encodes the custom scores as deviations from the grand mean of the returned column.</p>
 <p>For our example, the function builds a <code>lmer</code> model to predict <code>y</code> as a function of <code>vcol</code>, then returns the predictions on the training data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># @param v character variable name</span>
-<span class="co"># @param vcol numeric, ind pendent or input variable values</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># @param v character scalar: variable name</span>
+<span class="co"># @param vcol character vector, independent or input variable values</span>
 <span class="co"># @param y numeric, dependent or outcome variable to predict</span>
 <span class="co"># @param weights row/example weights</span>
 <span class="co"># @return scored training data column</span>
@@ -215,8 +215,8 @@ ppCoderN &lt;-<span class="st"> </span>function(v, vcol,
 }</code></pre></div>
 <p><strong>Categorization</strong></p>
 <p>For categorization problems, the function should assume that <code>y</code> is a logical column, where <code>TRUE</code> is assumed to be the target outcome. This is because <code>vtreat</code> converts the outcome column to a logical while creating the treatment plan.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># @param v character variable name</span>
-<span class="co"># @param vcol numeric, ind pendent or input variable values</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># @param v character scalar: variable name</span>
+<span class="co"># @param vcol chracter, independent or input variable values</span>
 <span class="co"># @param y logical, dependent or outcome variable to predict</span>
 <span class="co"># @param weights row/example weights</span>
 <span class="co"># @return scored training data column</span>
@@ -254,8 +254,8 @@ treatplanN =<span class="st"> </span><span class="kw"><a href="../reference/desi
 scoreFrame =<span class="st"> </span>treatplanN$scoreFrame
 scoreFrame %&gt;%<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(varName, sig, origName, code)</code></pre></div>
 <pre><code>##        varName          sig origName  code
-## 1 county_poolN 1.360960e-18   county poolN
-## 2  county_catN 1.377131e-13   county  catN</code></pre>
+## 1 county_poolN 4.745952e-20   county poolN
+## 2  county_catN 2.352095e-13   county  catN</code></pre>
 <p>Note that the treatment plan returns both the <code>catN</code> variable (default level encoding) and the pooled level encoding (<code>poolN</code>). You can restrict to just using one coding or the other using the <code>codeRestriction</code> argument in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Let’s compare the two level encodings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a frame with one row for every county,</span>
