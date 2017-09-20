@@ -36,7 +36,7 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
 
-\item{customCoders}{map from code names to custom categorical variable encoding functions (please see vignette('CustomLevelCoders', package='vtreat')).}
+\item{customCoders}{map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).}
 
 \item{scale}{optional if TRUE replace numeric variables with regression ("move to outcome-scale").}
 

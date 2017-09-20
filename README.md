@@ -114,7 +114,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '0.6.0'
+ #  [1] '0.6.1'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -144,14 +144,14 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x  x_lev_NA   lev 0.296065432 0.09248399                 0
- #  2        x x_lev_x.a   lev 0.130005705 0.26490379                 0
- #  3        x x_lev_x.b   lev 0.006067337 0.80967242                 0
- #  4        x    x_catP  catP 0.060049677 0.44862725                 2
- #  5        x    x_catB  catB 0.127625394 0.26932340                 2
- #  6        z   z_clean clean 0.237601767 0.13176020                 0
- #  7        z   z_isBAD isBAD 0.296065432 0.09248399                 0
+ #    origName   varName  code          rsq        sig extraModelDegrees
+ #  1        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
+ #  2        x x_lev_x.a   lev 1.300057e-01 0.26490379                 0
+ #  3        x x_lev_x.b   lev 6.067337e-03 0.80967242                 0
+ #  4        x    x_catP  catP 1.559780e-01 0.22202097                 2
+ #  5        x    x_catB  catB 1.142159e-05 0.99166241                 2
+ #  6        z   z_clean clean 2.376018e-01 0.13176020                 0
+ #  7        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
 
 # help("prepare")
 
@@ -191,15 +191,15 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x  x_lev_NA   lev 3.333333e-01 0.13397460                 0
- #  2        x x_lev_x.a   lev 2.500000e-01 0.20703125                 0
- #  3        x x_lev_x.b   lev 1.110223e-16 0.99999998                 0
- #  4        x    x_catP  catP 4.047085e-01 0.08994062                 2
- #  5        x    x_catN  catN 2.822908e-01 0.17539581                 2
- #  6        x    x_catD  catD 2.096931e-02 0.73225708                 2
- #  7        z   z_clean clean 2.880952e-01 0.17018920                 0
- #  8        z   z_isBAD isBAD 3.333333e-01 0.13397460                 0
+ #    origName   varName  code          rsq       sig extraModelDegrees
+ #  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
+ #  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
+ #  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
+ #  4        x    x_catP  catP 3.137255e-01 0.1487686                 2
+ #  5        x    x_catN  catN 2.093023e-01 0.2543735                 2
+ #  6        x    x_catD  catD 1.370969e-02 0.7824576                 2
+ #  7        z   z_clean clean 2.880952e-01 0.1701892                 0
+ #  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0

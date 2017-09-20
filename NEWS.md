@@ -1,4 +1,9 @@
 
+
+# vtreat 0.6.1 2017/09/20
+
+- Minor documentation fixes.
+
 # vtreat 0.6.0 2017/09/20
 
 - Add codeRestriction option to design steps.
