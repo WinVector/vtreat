@@ -52,15 +52,15 @@ In particular vtreat emphasizes a concept called
     effects/impact sub-models.
 -   Correct treatment of nested models or sub-models through data split
     (see
-    [here](http://winvector.github.io/vtreathtml/vtreatOverfit.html)) or
+    [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)) or
     through the generation of "cross validated" data frames (see
-    [here](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html);
+    [here](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html));
     these are issues similar to what is required to build statistically
     efficient stacked models or super-learners).
 -   Safe processing of "wide data" (data with very many variables, often
     driving common machine learning algorithms to over-fit) through [out
     of sample per-variable significance estimates and user controllable
-    pruning](http://winvector.github.io/vtreathtml/vtreatSignificance.html)
+    pruning](https://winvector.github.io/vtreat/articles/vtreatSignificance.html)
     (something we have lectured on previously
     [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS)
     and
@@ -88,20 +88,20 @@ To help explain the methods we have
 prepared some documentation:
 
 -   The [vtreat package
-    overall](http://winvector.github.io/vtreathtml/vtreat.html).
+    overall](https://winvector.github.io/vtreat/index.html).
 -   [Preparing data for analysis using R white-paper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
 -   The [types of new
-    variables](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html)
+    variables](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html)
     introduced by vtreat processing (including how to limit down to
     domain appropriate variable types).
 -   Statistically sound treatment of the nested modeling issue
     introduced by any sort of pre-processing (such as vtreat itself):
     [nested over-fit
-    issues](http://winvector.github.io/vtreathtml/vtreatOverfit.html)
+    issues](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)
     and a general [cross-frame
-    solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
+    solution](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html).
 -   [Principled ways to pick significance based pruning
-    levels](http://winvector.github.io/vtreathtml/vtreatSignificance.html).
+    levels](https://winvector.github.io/vtreat/articles/vtreatSignificance.html).
 
 
 Install either from CRAN:
@@ -267,7 +267,7 @@ motivations, and design decisions):
 
 Examples of current best practice using 'vtreat' (variable
 coding, train, test split) can be found
-[here](http://winvector.github.io/vtreat/vtreatOverfit.html) and
+[here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html) and
 [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 

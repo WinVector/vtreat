@@ -15,8 +15,8 @@ In particular vtreat emphasizes a concept called "y-aware pre-processing" and im
 -   Explicit coding of categorical variable levels as new indicator variables (with optional suppression of non-significant indicators).
 -   Treatment of categorical variables with very large numbers of levels through sub-models (again [impact/effects coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
 -   (optional) User specified significance pruning on levels coded into effects/impact sub-models.
--   Correct treatment of nested models or sub-models through data split (see [here](http://winvector.github.io/vtreathtml/vtreatOverfit.html)) or through the generation of "cross validated" data frames (see [here](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html); these are issues similar to what is required to build statistically efficient stacked models or super-learners).
--   Safe processing of "wide data" (data with very many variables, often driving common machine learning algorithms to over-fit) through [out of sample per-variable significance estimates and user controllable pruning](http://winvector.github.io/vtreathtml/vtreatSignificance.html) (something we have lectured on previously [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS) and [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
+-   Correct treatment of nested models or sub-models through data split (see [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)) or through the generation of "cross validated" data frames (see [here](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html)); these are issues similar to what is required to build statistically efficient stacked models or super-learners).
+-   Safe processing of "wide data" (data with very many variables, often driving common machine learning algorithms to over-fit) through [out of sample per-variable significance estimates and user controllable pruning](https://winvector.github.io/vtreat/articles/vtreatSignificance.html) (something we have lectured on previously [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS) and [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
 -   Collaring/Winsorizing of unexpected out of range numeric inputs.
 -   (optional) Conversion of all variables into effects (or "y-scale") units (through the optional `scale` argument to `vtreat::prepare()`, using some of the ideas discussed [here](http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)). This allows correct/sensible application of principal component analysis pre-processing in a machine learning context.
 -   Joining in additional training distribution data (which can be useful in analysis, called "catP" and "catD").
@@ -25,11 +25,11 @@ The idea is: even with a sophisticated machine learning algorithm there are *man
 
 To help explain the methods we have prepared some documentation:
 
--   The [vtreat package overall](http://winvector.github.io/vtreathtml/vtreat.html).
+-   The [vtreat package overall](https://winvector.github.io/vtreat/index.html).
 -   [Preparing data for analysis using R white-paper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
--   The [types of new variables](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) introduced by vtreat processing (including how to limit down to domain appropriate variable types).
--   Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): [nested over-fit issues](http://winvector.github.io/vtreathtml/vtreatOverfit.html) and a general [cross-frame solution](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html).
--   [Principled ways to pick significance based pruning levels](http://winvector.github.io/vtreathtml/vtreatSignificance.html).
+-   The [types of new variables](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html) introduced by vtreat processing (including how to limit down to domain appropriate variable types).
+-   Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): [nested over-fit issues](https://winvector.github.io/vtreat/articles/vtreatOverfit.html) and a general [cross-frame solution](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html).
+-   [Principled ways to pick significance based pruning levels](https://winvector.github.io/vtreat/articles/vtreatSignificance.html).
 
 Install either from CRAN:
 
@@ -107,7 +107,7 @@ Some of our related articles (which should make clear some of our motivations, a
 -   [What is new in the vtreat library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
 -   [How do you know if your data has signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
 
-Examples of current best practice using 'vtreat' (variable coding, train, test split) can be found [here](http://winvector.github.io/vtreat/vtreatOverfit.html) and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
+Examples of current best practice using 'vtreat' (variable coding, train, test split) can be found [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html) and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
 Trivial example:
 
@@ -144,14 +144,14 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x  x_lev_NA   lev 0.296065432 0.09248399                 0
- #  2        x x_lev_x.a   lev 0.130005705 0.26490379                 0
- #  3        x x_lev_x.b   lev 0.006067337 0.80967242                 0
- #  4        x    x_catP  catP 0.060049677 0.44862725                 2
- #  5        x    x_catB  catB 0.127625394 0.26932340                 2
- #  6        z   z_clean clean 0.237601767 0.13176020                 0
- #  7        z   z_isBAD isBAD 0.296065432 0.09248399                 0
+ #    origName   varName  code          rsq        sig extraModelDegrees
+ #  1        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
+ #  2        x x_lev_x.a   lev 1.300057e-01 0.26490379                 0
+ #  3        x x_lev_x.b   lev 6.067337e-03 0.80967242                 0
+ #  4        x    x_catP  catP 1.030137e-01 0.32099590                 2
+ #  5        x    x_catB  catB 1.125399e-05 0.99172381                 2
+ #  6        z   z_clean clean 2.376018e-01 0.13176020                 0
+ #  7        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
 
 # help("prepare")
 
@@ -195,9 +195,9 @@ print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'ex
  #  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
  #  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
  #  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
- #  4        x    x_catP  catP 2.941176e-01 0.1649303                 2
- #  5        x    x_catN  catN 6.583561e-02 0.5396025                 2
- #  6        x    x_catD  catD 9.777348e-03 0.8158041                 2
+ #  4        x    x_catP  catP 3.558824e-01 0.1184999                 2
+ #  5        x    x_catN  catN 3.132648e-02 0.6750039                 2
+ #  6        x    x_catD  catD 4.512437e-02 0.6135229                 2
  #  7        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)

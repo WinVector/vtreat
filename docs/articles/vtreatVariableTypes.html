@@ -128,15 +128,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "desigining treatments Wed Sep 20 14:30:48 2017"
-## [1] "designing treatments Wed Sep 20 14:30:48 2017"
-## [1] " have level statistics Wed Sep 20 14:30:48 2017"
-## [1] "design var x Wed Sep 20 14:30:48 2017"
-## [1] "design var z Wed Sep 20 14:30:48 2017"
-## [1] " scoring treatments Wed Sep 20 14:30:48 2017"
-## [1] "have treatment plan Wed Sep 20 14:30:48 2017"
-## [1] "rescoring complex variables Wed Sep 20 14:30:48 2017"
-## [1] "done rescoring complex variables Wed Sep 20 14:30:48 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Wed Sep 20 15:17:30 2017"
+## [1] "designing treatments Wed Sep 20 15:17:30 2017"
+## [1] " have level statistics Wed Sep 20 15:17:30 2017"
+## [1] "design var x Wed Sep 20 15:17:30 2017"
+## [1] "design var z Wed Sep 20 15:17:30 2017"
+## [1] " scoring treatments Wed Sep 20 15:17:30 2017"
+## [1] "have treatment plan Wed Sep 20 15:17:30 2017"
+## [1] "rescoring complex variables Wed Sep 20 15:17:30 2017"
+## [1] "done rescoring complex variables Wed Sep 20 15:17:30 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw">print</span>(treatmentsC$scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
@@ -184,15 +184,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "desigining treatments Wed Sep 20 14:30:50 2017"
-## [1] "designing treatments Wed Sep 20 14:30:50 2017"
-## [1] " have level statistics Wed Sep 20 14:30:50 2017"
-## [1] "design var x Wed Sep 20 14:30:50 2017"
-## [1] "design var z Wed Sep 20 14:30:50 2017"
-## [1] " scoring treatments Wed Sep 20 14:30:50 2017"
-## [1] "have treatment plan Wed Sep 20 14:30:50 2017"
-## [1] "rescoring complex variables Wed Sep 20 14:30:50 2017"
-## [1] "done rescoring complex variables Wed Sep 20 14:30:50 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Wed Sep 20 15:17:31 2017"
+## [1] "designing treatments Wed Sep 20 15:17:31 2017"
+## [1] " have level statistics Wed Sep 20 15:17:31 2017"
+## [1] "design var x Wed Sep 20 15:17:31 2017"
+## [1] "design var z Wed Sep 20 15:17:31 2017"
+## [1] " scoring treatments Wed Sep 20 15:17:31 2017"
+## [1] "have treatment plan Wed Sep 20 15:17:31 2017"
+## [1] "rescoring complex variables Wed Sep 20 15:17:31 2017"
+## [1] "done rescoring complex variables Wed Sep 20 15:17:31 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN$scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x  x_lev_NA   lev 0.2000000 0.3739010                 0
@@ -230,13 +230,13 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] "desigining treatments Wed Sep 20 14:30:50 2017"
-## [1] "designing treatments Wed Sep 20 14:30:50 2017"
-## [1] " have level statistics Wed Sep 20 14:30:50 2017"
-## [1] "design var x Wed Sep 20 14:30:50 2017"
-## [1] "design var z Wed Sep 20 14:30:50 2017"
-## [1] " scoring treatments Wed Sep 20 14:30:50 2017"
-## [1] "have treatment plan Wed Sep 20 14:30:50 2017"</code></pre>
+<pre><code>## [1] "desigining treatments Wed Sep 20 15:17:31 2017"
+## [1] "designing treatments Wed Sep 20 15:17:31 2017"
+## [1] " have level statistics Wed Sep 20 15:17:31 2017"
+## [1] "design var x Wed Sep 20 15:17:31 2017"
+## [1] "design var z Wed Sep 20 15:17:31 2017"
+## [1] " scoring treatments Wed Sep 20 15:17:31 2017"
+## [1] "have treatment plan Wed Sep 20 15:17:31 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ$scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x  x_lev_NA   lev                 0
@@ -278,7 +278,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 ## 1        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 2        x x_lev_x.a   lev 0.1111111 0.5185185                 0
 ## 3        x x_lev_x.b   lev 0.0000000 1.0000000                 0
-## 4        x    x_catN  catN 0.1052632 0.5304117                 2
+## 4        x    x_catN  catN 0.1131222 0.5145190                 2
 ## 5        z   z_clean clean 0.3045045 0.2562868                 0
 ## 6        z   z_isBAD isBAD 0.2000000 0.3739010                 0</code></pre>
 <p>Conversely, even if you have created a treatment plan for a particular type of variable, you may subsequently decide not to use it. For example, perhaps you only want to use indicator variables and not the <code>catN</code> variable for modeling. You can use <code>codeRestriction</code> in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
@@ -320,13 +320,13 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
                                                       <span class="st">'isBAD'</span>),
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN$scoreFrame[,scoreColsToPrint])</code></pre></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 2        x x_lev_x.a   lev 1.111111e-01 0.5185185                 0
-## 3        x x_lev_x.b   lev 0.000000e+00 1.0000000                 0
-## 4        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 5        z   z_clean clean 3.045045e-01 0.2562868                 0
-## 6        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 2        x x_lev_x.a   lev 0.1111111 0.5185185                 0
+## 3        x x_lev_x.b   lev 0.0000000 1.0000000                 0
+## 4        x    x_catN  catN 0.1052632 0.5304117                 2
+## 5        z   z_clean clean 0.3045045 0.2562868                 0
+## 6        z   z_isBAD isBAD 0.2000000 0.3739010                 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pruneSig &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
 vScoreFrame &lt;-<span class="st"> </span>treatmentsN$scoreFrame
 varsToUse &lt;-<span class="st"> </span>vScoreFrame$varName[(vScoreFrame$sig&lt;=pruneSig)]
