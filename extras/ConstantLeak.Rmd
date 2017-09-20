@@ -2,11 +2,7 @@
 title: "Constant Coding Leak"
 author: "John Mount, Win-Vector LLC"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Constant Coding Leak}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: github_document
 ---
 
 We will show how in some situations using "more data in cross-validation" can be
