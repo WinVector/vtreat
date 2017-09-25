@@ -12,7 +12,7 @@
     keys[unhandledNovel] <- names(args$conditionalScore)[[1]]  # just to prevent bad lookups
     pred <- as.numeric(args$conditionalScore[keys]) 
   }
-  pred[unhandledNovel] <- 0.0 # TODO: this should be the mean output, not mean input.
+  pred[unhandledNovel] <- args$missingValueCode
   pred
 }
 
@@ -50,6 +50,7 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
       scores <- scores -  sum(scores*weights)/sum(weights)
     }
   }
+  missingValueCode <- sum(scores * weights)/sum(weights)
   d <- data.frame(x = vcol,
                   pred = scores)
   agg <- aggregate(pred~x, data=d, mean)
@@ -61,7 +62,8 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
                     newvars=newVarName,
                     f=.customCode,
                     args=list(conditionalScore=conditionalScore,
-                              levRestriction=levRestriction),
+                              levRestriction=levRestriction,
+                              missingValueCode=missingValueCode),
                     treatmentName=paste('Custom Code:', customCode),
                     treatmentCode=customCode,
                     needsSplit=TRUE,
