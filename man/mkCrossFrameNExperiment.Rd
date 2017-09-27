@@ -2,7 +2,7 @@
 % Please edit documentation in R/vtreat.R
 \name{mkCrossFrameNExperiment}
 \alias{mkCrossFrameNExperiment}
-\title{Run numeric cross frame experiment.}
+\title{Run a numeric cross frame experiment.}
 \usage{
 mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
@@ -51,7 +51,7 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 treatment plan (for use with prepare)
 }
 \description{
-Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
+Builds a \code{\link{designTreatmentsN}} treatment plan and a data frame prepared 
 from \code{dframe} that is "cross" in the sense each row is treated using a treatment
 plan built from a subset of dframe disjoint from the given row.
 The goal is to try to and supply a method of breaking nested model bias other than splitting
