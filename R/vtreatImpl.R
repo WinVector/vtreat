@@ -213,16 +213,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(verbose)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
+  # NULL is an alias for "don't restrict"
   codeRestictionWasNULL <- length(codeRestriction)<=0
-  if(codeRestictionWasNULL) {
-    # NULL is an alias for "don't restrict"
-    codeRestriction <- c('clean', 
-                         'isBAD',
-                         'lev',
-                         'catP', 
-                         'catB',
-                         'catN', 'catD')
-  }
+  
   function(argv) {
     v <- argv$v
     vcolOrig <- argv$vcolOrig
@@ -250,11 +243,31 @@ mkVtreatListWorker <- function(scale,doCollar) {
       if(.has.range(vcol)) {
         ti <- NULL
         if((colclass=='numeric') || (colclass=='integer')) {
-          if('clean' %in% codeRestriction) {
+          for(customCode in names(customCoders)) {
+            coder <- customCoders[[customCode]]
+            customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
+            codeType <- customeCodeV[[1]]
+            codeName <- customeCodeV[[2]]
+            if(codeRestictionWasNULL || (codeName %in% codeRestriction)) {
+              codeSeq <- NULL
+              if(length(customeCodeV)>2) {
+                codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
+              }
+              if('num' %in% codeSeq) {
+                if((codeType=='n')==is.null(zC)) {
+                  ti <- makeCustomCoderNum(codeName, coder, codeSeq, 
+                                           v,vcol,zoY,zC,zTarget,weights,catScaling)
+                  acceptTreatment(ti)
+                }
+              }
+            }
+          }
+          ti = NULL
+          if(codeRestictionWasNULL || ('clean' %in% codeRestriction)) {
             ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
             acceptTreatment(ti)
           }
-          if('isBAD' %in% codeRestriction) {
+          if(codeRestictionWasNULL || ('isBAD' %in% codeRestriction)) {
             ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
             acceptTreatment(ti)
           }
@@ -270,37 +283,39 @@ mkVtreatListWorker <- function(scale,doCollar) {
               if(length(customeCodeV)>2) {
                 codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
               }
-              if((codeType=='n')==is.null(zC)) {
-                ti <- makeCustomCoder(codeName, coder, codeSeq, 
-                                      v,vcol,zoY,zC,zTarget,weights,catScaling)
-                acceptTreatment(ti)
+              if(!('num' %in% codeSeq)) {
+                if((codeType=='n')==is.null(zC)) {
+                  ti <- makeCustomCoder(codeName, coder, codeSeq, 
+                                        v,vcol,zoY,zC,zTarget,weights,catScaling)
+                  acceptTreatment(ti)
+                }
               }
             }
           }
           ti = NULL
           if(length(levRestriction$safeLevs)>0) {
-            if('lev' %in% codeRestriction) {
+            if(codeRestictionWasNULL || ('lev' %in% codeRestriction)) {
               ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
               acceptTreatment(ti)
             }
             if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-              if('catP' %in% codeRestriction) {
+              if(codeRestictionWasNULL || ('catP' %in% codeRestriction)) {
                 ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights,catScaling)
                 acceptTreatment(ti)
               }
               if(yMoves) {
                 if(!is.null(zC)) {  # in categorical mode
-                  if('catB' %in% codeRestriction) {
+                  if(codeRestictionWasNULL || ('catB' %in% codeRestriction)) {
                     ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights,catScaling)
                     acceptTreatment(ti)
                   }
                 }
                 if(is.null(zC)) { # is numeric mode
-                  if('catN' %in% codeRestriction) {
+                  if(codeRestictionWasNULL || ('catN' %in% codeRestriction)) {
                     ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
                     acceptTreatment(ti)
                   }
-                  if('catD' %in% codeRestriction) {
+                  if(codeRestictionWasNULL || ('catD' %in% codeRestriction)) {
                     ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
                     acceptTreatment(ti)
                   }
