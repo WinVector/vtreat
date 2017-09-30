@@ -55,6 +55,7 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
   missingValueCode <- sum(scores * weights)/sum(weights)
   d <- data.frame(x = vcol,
                   pred = scores)
+  # TODO: weighted version
   agg <- aggregate(pred~x, data=d, mean)
   conditionalScore <- as.list(as.numeric(agg$pred))
   names(conditionalScore) <- as.character(agg$x)
@@ -84,32 +85,79 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
 }
 
 
+
+
+
+# apply linear interpolation on known numeric levels
+.customCodeNum <- function(col, args, doCollar) {
+  treated <- as.numeric(col)
+  naposns <- .is.bad(treated)
+  treated[naposns] <- args$missingValueCode
+  if(sum(!naposns)>0) {
+    xg <- pmax(min(args$predXs), pmin(max(args$predXs), col[!naposns]))
+    if(doCollar) {
+      xg <- pmax(min(args$cuts), pmin(max(args$cuts), xg))
+    }
+    treated[!naposns]  <- stats::approx(x=args$predXs, y=args$predYs, 
+                                        xout= xg)
+  }
+  fails <- .is.bad(treated)
+  if(any(fails)) {
+    treated[fails] <- args$missingValueCode
+  }
+  treated
+}
+
 # Make a numeric input custom coder.
 #
 # @para customCode code name
 # @param coder user supplied variable re-coder (see vignette for type signature)
 # @param codeSeq argments to custom coder
 # @param v variable name
-# @param vcolin data column, character
+# @param vcolin data column, numeric
 # @param zoY outcome column as numeric
 # @param zC if classification outcome column as character
 # @param zTarge if classification target class
 # @param weights per-row weights
 makeCustomCoderNum <- function(customCode, coder, codeSeq,
                             v,vcolin,zoY,zC,zTarget,weights,catScaling)  {
-  stop("vtreat: makeCustomCoderNum not implemented yet")
-  levRestriction <- NULL
-  vcol <- .preProcCat(vcolin,levRestriction)
-  if(is.null(weights)) {
-    weights <- rep(1.0, length(vcol))
+  stop("makeCustomCoderNum not tested yet")
+  xcol <- as.numeric(vcolin)
+  napositions <- .is.bad(xcol)
+  nna <- sum(napositions)
+  if(nna>=length(xcol)) {
+    return(c())
   }
-  extraModelDegrees <- max(0,length(unique(vcolin))-1)
+  if(is.null(weights)) {
+    weights <- rep(1.0, length(vcolin))
+  }
+  xNotNA <- xcol[!napositions]
+  yNotNa <- ycol[!napositions]
+  wNotNa <- weights[!napositions]
+  if(xNotNA(xcol)<=xNotNA(xcol)) {
+    return(c())
+  }
+  if(collarProb>0.0) {
+    # TODO: weighted version
+    cuts <- as.numeric(stats::quantile(xNotNA,
+                                       probs=c(collarProb,1-collarProb)))
+  } else {
+    cuts <- c(min(xNotNA), max(xNotNA))
+  }
+  if(sum(napositions)>0) {
+    missingValueCode <- .wmean(ycol[napositions], weigh[napositions])
+  } else {
+    missingValueCode <- .wmean(yNotNa, wNotNa)
+  }
+  extraModelDegrees <- max(0,length(unique(xNotNA)))
+  
   scores <- NULL
   tryCatch(
     if(is.null(zC)) {
-      scores <- coder(v,vcol,zoY,weights)
+      scores <- coder(v, xNotNA,zoYl[!napositions], wNotNa)
     } else {
-      scores <- coder(v,vcol,zC==zTarget,weights)
+      scores <- coder(v, xNotNA,
+                      (zC[!napositions])==(zTarget[!napositions]), wNotNa)
     },
     error = function(e) { warning(e) }
   )
@@ -118,22 +166,28 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   } else {
     if('center' %in% codeSeq) {
       # shift scores to be mean zero with respect to weights
-      scores <- scores -  sum(scores*weights)/sum(weights)
+      scores <- scores -  sum(scores*wNotNa)/sum(wNotNa)
     }
   }
-  missingValueCode <- sum(scores * weights)/sum(weights)
   d <- data.frame(x = vcol,
                   pred = scores)
+  # TODO: weighted version
   agg <- aggregate(pred~x, data=d, mean)
-  conditionalScore <- as.list(as.numeric(agg$pred))
-  names(conditionalScore) <- as.character(agg$x)
-  conditionalScore <- conditionalScore[names(conditionalScore)!='zap']  # don't let zap group code
+  predXs <- agg$x
+  if(length(predXs)<=1) {
+    return(NULL)
+  }
+  predYs <- as.numeric(agg$pred)
+  ord <- order(agg$x)
+  predXs <- predXs[ord]
+  predYs <- predYs[ord]
   newVarName <- make.names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,
                     f=.customCode,
-                    args=list(conditionalScore=conditionalScore,
-                              levRestriction=levRestriction,
+                    args=list(predXs=predXs,
+                              predYs=predYs,
+                              cuts=cuts,
                               missingValueCode=missingValueCode),
                     treatmentName=paste('Custom Code:', customCode),
                     treatmentCode=customCode,
@@ -151,3 +205,4 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   }
   treatment
 }
+
