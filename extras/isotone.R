@@ -1,8 +1,9 @@
 
+
 # x numeric input 
 # y numeric same length as x, output to match
 # w numeric positive, same length as x (weights)
-# return isotonicly adjusted y
+# return isotonicly adjusted y (non-decreasing)
 # this is a vector of length y that is a function of x
 # with at least as many order constraints as x and as close
 # to y (by square-distance) as possible.
@@ -53,8 +54,8 @@ solveIsotonicProblemW <- function(x, y, w) {
   # first all order constraints
   Atot <- cbind(1:(n-1),2:n)
   # then any additional equality constraints to force result to be a
-  # function of y
-  noIncrease <- which(d$y[1:(n-1)]>=d$y[2:n]-1.0e-6)
+  # function of x
+  noIncrease <- which(d$x[1:(n-1)]>=d$x[2:n]-1.0e-6)
   if(length(noIncrease)>0) {
     Atot <- rbind(Atot,cbind(noIncrease+1,noIncrease))
   }

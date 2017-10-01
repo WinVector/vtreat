@@ -99,7 +99,7 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
       xg <- pmax(min(args$cuts), pmin(max(args$cuts), xg))
     }
     treated[!naposns]  <- stats::approx(x=args$predXs, y=args$predYs, 
-                                        xout= xg)
+                                        xout= xg)$y
   }
   fails <- .is.bad(treated)
   if(any(fails)) {
@@ -121,7 +121,6 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
 # @param weights per-row weights
 makeCustomCoderNum <- function(customCode, coder, codeSeq,
                             v,vcolin,zoY,zC,zTarget,weights,catScaling)  {
-  stop("makeCustomCoderNum not tested yet")
   xcol <- as.numeric(vcolin)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)

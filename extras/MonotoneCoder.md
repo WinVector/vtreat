@@ -39,6 +39,22 @@ sum((dTrain$yIdeal - dTrain$yObserved)^2)
     ## [1] 9736.865
 
 ``` r
+dTest <- d[!d$isTrain, , drop=FALSE]
+xg <- pmax(min(dTrain$x), pmin(max(dTrain$x),dTest$x))
+dTest$soln <- approx(x = dTrain$x, y = dTrain$soln, 
+                     xout = xg)$y
+sum((dTest$yIdeal - dTest$soln)^2)
+```
+
+    ## [1] 2749.191
+
+``` r
+sum((dTest$yIdeal - dTest$yObserved)^2)
+```
+
+    ## [1] 12024.43
+
+``` r
 ggplot(data=d, aes(x=x)) + 
   geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
   geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
