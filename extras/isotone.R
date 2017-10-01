@@ -1,11 +1,11 @@
 
-# x numeric 
-# y numeric same length as x
+# x numeric input 
+# y numeric same length as x, output to match
 # w numeric positive, same length as x (weights)
 # return isotonicly adjusted y
-# this is a vector of length y that is a function of y
+# this is a vector of length y that is a function of x
 # with at least as many order constraints as x and as close
-# to x (by square-distance) as possible.
+# to y (by square-distance) as possible.
 solveIsotonicProblemW <- function(x, y, w) {
   if(!is.numeric(x)) {
     stop("expect x numeric")
@@ -42,6 +42,9 @@ solveIsotonicProblemW <- function(x, y, w) {
     return(c(v,v))
   }
   dord <- order(d$x)
+  # see:
+  # http://www.win-vector.com/blog/2017/09/permutation-theory-in-action/
+  # http://www.win-vector.com/blog/2017/05/on-indexing-operators-and-composition/
   invPerm <- 1:n
   invPerm[dord] <- 1:n
   d <- d[dord, , drop=FALSE]

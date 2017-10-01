@@ -1,11 +1,9 @@
----
-title: "Custom Level Coding in vtreat"
-author: "John Mount, Win-Vector LLC"
-date: "`r Sys.Date()`"
-output: github_document
----
+Custom Level Coding in vtreat
+================
+John Mount, Win-Vector LLC
+2017-09-30
 
-```{r}
+``` r
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
 
@@ -21,13 +19,26 @@ ggplot(data=d, aes(x=x)) +
   geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x")
+```
 
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-1.png)
+
+``` r
 dTrain <- d[d$isTrain, , drop=FALSE]
 dTrain$soln <- solveIsotonicProblemW(dTrain$x, dTrain$yObserved, NULL)
 
 sum((dTrain$yIdeal - dTrain$soln)^2)
-sum((dTrain$yIdeal - dTrain$yObserved)^2)
+```
 
+    ## [1] 1695.844
+
+``` r
+sum((dTrain$yIdeal - dTrain$yObserved)^2)
+```
+
+    ## [1] 9736.865
+
+``` r
 ggplot(data=d, aes(x=x)) + 
   geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
   geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
@@ -35,6 +46,6 @@ ggplot(data=d, aes(x=x)) +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x",
           subtitle = "dashed line monotone fit")
-
 ```
 
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-2.png)
