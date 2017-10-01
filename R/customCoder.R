@@ -150,7 +150,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
       scores <- coder(v, xNotNA, zoY[!napositions], wNotNa)
     } else {
       scores <- coder(v, xNotNA,
-                      (zC[!napositions])==(zTarget[!napositions]), wNotNa)
+                      (zC[!napositions])==zTarget, wNotNa)
     },
     error = function(e) { warning(e) }
   )

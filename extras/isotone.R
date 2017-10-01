@@ -8,43 +8,41 @@
 #' y (by square-distance) as possible.
 #'
 #' @param varName character, name of variable
-#' @param x numeric input (not empty, no NAs). 
-#' @param y numeric (same length as x no NAs), output to match
+#' @param x numeric, factor, or character input (not empty, no NAs). 
+#' @param y numeric or castable to such (same length as x no NAs), output to match
 #' @param w numeric positive, same length as x (weights, can be NULL)
 #' @return isotonicly adjusted y (non-decreasing)
 #'
 #'
 #' @examples
 #' 
-#' 
-#' solveIsotonicProblemW('v', 1:3, c(1,2,1))
+#' solveNonDecreasing('v', 1:3, c(1,2,1))
 #' # [1] 1.0 1.5 1.5
 #' 
 solveNonDecreasing <- function(varName, x, y, w=NULL) {
-  if(!is.numeric(x)) {
-    stop(paste("solveIsotonicProblemW", varName, "expect x numeric"))
+  if(is.character(x)) {
+    x <- as.factor(x)
   }
+  x <- as.numeric(x)
   n <- length(x)
   if(n<=0) {
     return(NULL)
   }
-  if(!is.numeric(y)) {
-    stop(paste("solveIsotonicProblemW", varName, "expect y numeric"))
-  }
+  y <- as.numeric(y)
   if(length(y)!=n) {
-    stop(paste("solveIsotonicProblemW", varName, "expect length(y)==length(x)"))
+    stop(paste("solveNonDecreasing", varName, "expect length(y)==length(x)"))
   }
   if(is.null(w)) {
     w <- rep(1.0, n)
   }
   if(!is.numeric(w)) {
-    stop(paste("solveIsotonicProblemW", varName, "expect w numeric"))
+    stop(paste("solveNonDecreasing", varName, "expect w numeric"))
   }
   if(length(w)!=n) {
-    stop(paste("solveIsotonicProblemW", varName, "expect length(w)==length(x)"))
+    stop(paste("solveNonDecreasing", varName, "expect length(w)==length(x)"))
   }
   if(min(w)<=0) {
-    stop(paste("solveIsotonicProblemW", varName, "expect positive weights"))
+    stop(paste("solveNonDecreasing", varName, "expect positive weights"))
   }
   d <- data.frame(x=x, y=y, w=w)
   # get some corner cases
@@ -82,3 +80,60 @@ solveNonDecreasing <- function(varName, x, y, w=NULL) {
   adjPred <- adjPred[invPerm]
   adjPred
 }
+
+#' Solve for best non-increasing fit.
+#'
+#' Return a vector of length y that is a function of x
+#' (differs at must where x differs) obeying the opposite order
+#' constraints as x.  This vector is picked as close to
+#' y (by square-distance) as possible.
+#'
+#' @param varName character, name of variable
+#' @param x numeric, factor, or character input (not empty, no NAs). 
+#' @param y numeric (same length as x no NAs), output to match
+#' @param w numeric positive, same length as x (weights, can be NULL)
+#' @return isotonicly adjusted y (non-decreasing)
+#'
+#'
+#' @examples
+#' 
+#' solveNonIncreasing('v', 1:3, c(1,2,1))
+#' # [1] 1.0 1.5 1.5
+#' 
+solveNonIncreasing <- function(varName, x, y, w=NULL) {
+  -solveNonDecreasing(varName, x, -y, w)
+}
+
+
+#' Solve for best single-direction (non-decreasing or non-increasing) fit.
+#'
+#' Return a vector of length y that is a function of x
+#' (differs at must where x differs) obeying the either the same 
+#' order contraints or the opposite order
+#' constraints as x.  This vector is picked as close to
+#' y (by square-distance) as possible.
+#'
+#' @param varName character, name of variable
+#' @param x numeric, factor, or character input (not empty, no NAs). 
+#' @param y numeric (same length as x no NAs), output to match
+#' @param w numeric positive, same length as x (weights, can be NULL)
+#' @return isotonicly adjusted y (non-decreasing)
+#'
+#'
+#' @examples
+#' 
+#' solveIsotone('v', 1:3, c(1,2,1))
+#' # [1] 1.0 1.5 1.5
+#' 
+solveIsotone <- function(varName, x, y, w=NULL) {
+  soln1 <- solveNonDecreasing(varName, x, y, w)
+  d1 <- sum((y-soln1)^2)
+  soln2 <- solveNonIncreasing(varName, x, y, w)
+  d2 <- sum((y-soln2)^2)
+  if(d1<=d2) {
+    return(soln1)
+  }
+  return(soln2)
+}
+
+

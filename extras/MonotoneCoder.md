@@ -3,6 +3,8 @@ Isotone Coding in vtreat
 John Mount, Win-Vector LLC
 2017-09-30
 
+Isotone regression.
+
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
@@ -10,8 +12,8 @@ source("isotone.R")
 # set up example data
 set.seed(23525)
 d <- data.frame(x = 10*runif(200))
-d$yIdeal <- d$x^2
-d$yObserved <- d$yIdeal + 10*rnorm(nrow(d))
+d$yIdeal <- -d$x^2
+d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
 d$isTrain <- runif(nrow(d))<=0.5
 
 ggplot(data=d, aes(x=x)) + 
@@ -22,24 +24,25 @@ ggplot(data=d, aes(x=x)) +
           subtitle = "dashed curve: ideal (pre-noise) values")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-1.png)
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/regression-1.png)
 
 ``` r
-customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing )
-treatments <- vtreat::designTreatmentsN( d[d$isTrain, , drop=FALSE], 
-                                         'x', 'yObserved', 
+customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing,
+                    'n.NonIncreasingV.num' = solveNonIncreasing)
+treatments <- vtreat::designTreatmentsN(d[d$isTrain, , drop=FALSE], 
+                                        'x', 'yObserved', 
                                         customCoders = customCoders,
                                         verbose = FALSE)
 print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
 ```
 
     ##            varName       rsq          sig needsSplit
-    ## 1 x_NonDecreasingV 0.8889790 2.458159e-42       TRUE
-    ## 2          x_clean 0.8704983 1.725973e-39      FALSE
+    ## 1 x_NonIncreasingV 0.4805710 9.993014e-14       TRUE
+    ## 2          x_clean 0.5116085 7.071026e-15      FALSE
 
 ``` r
 dTreated <- vtreat::prepare(treatments, d)
-d$soln <- dTreated$x_NonDecreasingV
+d$soln <- dTreated$x_NonIncreasingV
 
 dTrain <- d[d$isTrain, , drop=FALSE]
 
@@ -47,13 +50,13 @@ dTrain <- d[d$isTrain, , drop=FALSE]
 sum((dTrain$yIdeal - dTrain$soln)^2)
 ```
 
-    ## [1] 1695.844
+    ## [1] 6648.642
 
 ``` r
 sum((dTrain$yIdeal - dTrain$yObserved)^2)
 ```
 
-    ## [1] 9736.865
+    ## [1] 60855.41
 
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
@@ -62,13 +65,13 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 sum((dTest$yIdeal - dTest$soln)^2)
 ```
 
-    ## [1] 2749.191
+    ## [1] 9841.673
 
 ``` r
 sum((dTest$yIdeal - dTest$yObserved)^2)
 ```
 
-    ## [1] 12024.43
+    ## [1] 75152.66
 
 ``` r
 ggplot(data=d, aes(x=x)) + 
@@ -77,9 +80,92 @@ ggplot(data=d, aes(x=x)) +
   geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x",
-          subtitle = "solid path: monotone fit")
+          subtitle = "solid path: isotone fit")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-2.png)
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/regression-2.png)
 
 Can also easily adapt to classification and to categorical inputs.
+
+``` r
+suppressPackageStartupMessages(library("ggplot2"))
+source("isotone.R")
+
+# set up example data
+set.seed(23525)
+d <- data.frame(x = 10*runif(200))
+d$yIdeal <- -d$x^2
+d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
+d$isTrain <- runif(nrow(d))<=0.5
+threshold <- -50
+d$yIdeal <- ifelse(d$yIdeal >= threshold, 1.0, 0.0)
+d$yObserved <- ifelse(d$yObserved >= threshold, 1.0, 0.0)
+
+ggplot(data=d, aes(x=x)) + 
+  geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
+  geom_point(aes(y=yObserved, color=isTrain, shape=isTrain), alpha=0.5) + 
+  ylab('y') +
+  ggtitle("ideal and observed responses as functions of x",
+          subtitle = "dashed curve: ideal (pre-noise) values")
+```
+
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/classification-1.png)
+
+``` r
+customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing,
+                    'c.NonIncreasingV.num' = solveNonIncreasing)
+treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
+                                        'x', 'yObserved', 1,
+                                        customCoders = customCoders,
+                                        verbose = FALSE)
+print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
+```
+
+    ##            varName       rsq          sig needsSplit
+    ## 1 x_NonIncreasingV 0.3370146 2.856172e-10       TRUE
+    ## 2          x_clean 0.3522417 1.138713e-10      FALSE
+
+``` r
+dTreated <- vtreat::prepare(treatments, d)
+d$soln <- dTreated$x_NonIncreasingV
+
+dTrain <- d[d$isTrain, , drop=FALSE]
+
+# good inference on train
+sum((dTrain$yIdeal - dTrain$soln)^2)
+```
+
+    ## [1] 4.390476
+
+``` r
+sum((dTrain$yIdeal - dTrain$yObserved)^2)
+```
+
+    ## [1] 16
+
+``` r
+dTest <- d[!d$isTrain, , drop=FALSE]
+
+# good performance on test
+sum((dTest$yIdeal - dTest$soln)^2)
+```
+
+    ## [1] 4.860317
+
+``` r
+sum((dTest$yIdeal - dTest$yObserved)^2)
+```
+
+    ## [1] 26
+
+``` r
+ggplot(data=d, aes(x=x)) + 
+  geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
+  geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
+  geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
+  ylab('y') +
+  ggtitle("ideal and observed responses as functions of x",
+          subtitle = "solid path: isotone fit")
+```
+
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/classification-2.png)

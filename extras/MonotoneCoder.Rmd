@@ -5,15 +5,17 @@ date: "`r Sys.Date()`"
 output: github_document
 ---
 
-```{r}
+Isotone regression.
+
+```{r regression}
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
 
 # set up example data
 set.seed(23525)
 d <- data.frame(x = 10*runif(200))
-d$yIdeal <- d$x^2
-d$yObserved <- d$yIdeal + 10*rnorm(nrow(d))
+d$yIdeal <- -d$x^2
+d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
 d$isTrain <- runif(nrow(d))<=0.5
 
 ggplot(data=d, aes(x=x)) + 
@@ -23,14 +25,15 @@ ggplot(data=d, aes(x=x)) +
   ggtitle("ideal and observed responses as functions of x",
           subtitle = "dashed curve: ideal (pre-noise) values")
 
-customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing )
-treatments <- vtreat::designTreatmentsN( d[d$isTrain, , drop=FALSE], 
-                                         'x', 'yObserved', 
+customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing,
+                    'n.NonIncreasingV.num' = solveNonIncreasing)
+treatments <- vtreat::designTreatmentsN(d[d$isTrain, , drop=FALSE], 
+                                        'x', 'yObserved', 
                                         customCoders = customCoders,
                                         verbose = FALSE)
 print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
 dTreated <- vtreat::prepare(treatments, d)
-d$soln <- dTreated$x_NonDecreasingV
+d$soln <- dTreated$x_NonIncreasingV
 
 dTrain <- d[d$isTrain, , drop=FALSE]
 
@@ -50,8 +53,61 @@ ggplot(data=d, aes(x=x)) +
   geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x",
-          subtitle = "solid path: monotone fit")
+          subtitle = "solid path: isotone fit")
 
 ```
 
 Can also easily adapt to classification and to categorical inputs.
+
+```{r classification}
+suppressPackageStartupMessages(library("ggplot2"))
+source("isotone.R")
+
+# set up example data
+set.seed(23525)
+d <- data.frame(x = 10*runif(200))
+d$yIdeal <- -d$x^2
+d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
+d$isTrain <- runif(nrow(d))<=0.5
+threshold <- -50
+d$yIdeal <- ifelse(d$yIdeal >= threshold, 1.0, 0.0)
+d$yObserved <- ifelse(d$yObserved >= threshold, 1.0, 0.0)
+
+ggplot(data=d, aes(x=x)) + 
+  geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
+  geom_point(aes(y=yObserved, color=isTrain, shape=isTrain), alpha=0.5) + 
+  ylab('y') +
+  ggtitle("ideal and observed responses as functions of x",
+          subtitle = "dashed curve: ideal (pre-noise) values")
+
+customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing,
+                    'c.NonIncreasingV.num' = solveNonIncreasing)
+treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
+                                        'x', 'yObserved', 1,
+                                        customCoders = customCoders,
+                                        verbose = FALSE)
+print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
+dTreated <- vtreat::prepare(treatments, d)
+d$soln <- dTreated$x_NonIncreasingV
+
+dTrain <- d[d$isTrain, , drop=FALSE]
+
+# good inference on train
+sum((dTrain$yIdeal - dTrain$soln)^2)
+sum((dTrain$yIdeal - dTrain$yObserved)^2)
+
+dTest <- d[!d$isTrain, , drop=FALSE]
+
+# good performance on test
+sum((dTest$yIdeal - dTest$soln)^2)
+sum((dTest$yIdeal - dTest$yObserved)^2)
+
+ggplot(data=d, aes(x=x)) + 
+  geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
+  geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
+  geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
+  ylab('y') +
+  ggtitle("ideal and observed responses as functions of x",
+          subtitle = "solid path: isotone fit")
+
+```
