@@ -50,7 +50,7 @@ sum((dTest$yIdeal - dTest$yObserved)^2)
 ggplot(data=d, aes(x=x)) + 
   geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
   geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
-  geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
+  geom_line(aes(x=x, y=soln), color='darkgreen') +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x",
           subtitle = "solid path: isotone fit")
@@ -108,7 +108,7 @@ sum((dTest$yIdeal - dTest$yObserved)^2)
 ggplot(data=d, aes(x=x)) + 
   geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
   geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
-  geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
+  geom_line(aes(x=x, y=soln), color='darkgreen') +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x",
           subtitle = "solid path: isotone fit")
