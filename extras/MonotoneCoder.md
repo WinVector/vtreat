@@ -24,8 +24,23 @@ ggplot(data=d, aes(x=x)) +
 ![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-1.png)
 
 ``` r
+customCoders = list('n.increasingV.num' = solveIsotonicProblemW )
+treatments <- vtreat::designTreatmentsN( d[d$isTrain, , drop=FALSE], 
+                                         'x', 'yObserved', 
+                                        customCoders = customCoders,
+                                        verbose = FALSE)
+print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
+```
+
+    ##         varName       rsq          sig needsSplit
+    ## 1 x_increasingV 0.8889790 2.458159e-42       TRUE
+    ## 2       x_clean 0.8704983 1.725973e-39      FALSE
+
+``` r
+dTreated <- vtreat::prepare(treatments, d)
+d$soln <- dTreated$x_increasingV
+
 dTrain <- d[d$isTrain, , drop=FALSE]
-dTrain$soln <- solveIsotonicProblemW(dTrain$x, dTrain$yObserved, NULL)
 
 sum((dTrain$yIdeal - dTrain$soln)^2)
 ```
@@ -41,8 +56,7 @@ sum((dTrain$yIdeal - dTrain$yObserved)^2)
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
 xg <- pmax(min(dTrain$x), pmin(max(dTrain$x),dTest$x))
-dTest$soln <- approx(x = dTrain$x, y = dTrain$soln, 
-                     xout = xg)$y
+
 sum((dTest$yIdeal - dTest$soln)^2)
 ```
 
@@ -65,3 +79,7 @@ ggplot(data=d, aes(x=x)) +
 ```
 
 ![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-2.png)
+
+TODO: classification example.
+
+TODO: categorical input isontone example.

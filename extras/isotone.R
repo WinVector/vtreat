@@ -1,5 +1,6 @@
 
 
+# varName character, name of variable
 # x numeric input 
 # y numeric same length as x, output to match
 # w numeric positive, same length as x (weights)
@@ -7,27 +8,27 @@
 # this is a vector of length y that is a function of x
 # with at least as many order constraints as x and as close
 # to y (by square-distance) as possible.
-solveIsotonicProblemW <- function(x, y, w) {
+solveIsotonicProblemW <- function(varName, x, y, w) {
   if(!is.numeric(x)) {
-    stop("expect x numeric")
+    stop(paste("solveIsotonicProblemW", varName, "expect x numeric"))
   }
   if(!is.numeric(y)) {
-    stop("expect y numeric")
+    stop(paste("solveIsotonicProblemW", varName, "expect y numeric"))
   }
   if(is.null(w)) {
     w <- rep(1.0, length(x))
   }
   if(!is.numeric(w)) {
-    stop("expect w numeric")
+    stop(paste("solveIsotonicProblemW", varName, "expect w numeric"))
   }
   if(length(y)!=length(x)) {
-    stop("expect length(y)==length(x)")
+    stop(paste("solveIsotonicProblemW", varName, "expect length(y)==length(x)"))
   }
   if(length(w)!=length(x)) {
-    stop("expect length(w)==length(x)")
+    stop(paste("solveIsotonicProblemW", varName, "expect length(w)==length(x)"))
   }
   if(min(w)<=0) {
-    stop("expect positive weights")
+    stop(paste("solveIsotonicProblemW", varName, "expect positive weights"))
   }
   d <- data.frame(x=x, y=y, w=w)
   n <- nrow(d)

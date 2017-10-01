@@ -1,7 +1,7 @@
 Custom Level Coding in vtreat
 ================
 Nina Zumel, John Mount
-2017-09-20
+2017-09-30
 
 One of the services that `vtreat` provides is *level coding* (what we sometimes call *impact coding*): converting the levels of a categorical variable to a meaningful and concise single numeric variable, rather than coding them as indicator variables (AKA "one-hot encoding"). Level coding can be computationally preferable to one-hot encoding for variables that have an extremely large number of possible levels.
 
@@ -22,6 +22,8 @@ The Data: Radon levels in Minnesota
 library("vtreat")
 library("lme4")
 ```
+
+    ## Warning: package 'lme4' was built under R version 3.4.2
 
     ## Loading required package: Matrix
 
@@ -191,8 +193,8 @@ scoreFrame %>% select(varName, sig, origName, code)
 ```
 
     ##        varName          sig origName  code
-    ## 1 county_poolN 1.258185e-20   county poolN
-    ## 2  county_catN 2.489012e-14   county  catN
+    ## 1 county_poolN 3.375674e-19   county poolN
+    ## 2  county_catN 7.527290e-16   county  catN
 
 Note that the treatment plan returns both the `catN` variable (default level encoding) and the pooled level encoding (`poolN`). You can restrict to just using one coding or the other using the `codeRestriction` argument in `prepare()`.
 

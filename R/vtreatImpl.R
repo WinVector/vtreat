@@ -187,6 +187,137 @@ mkVtreatListWorker <- function(scale,doCollar) {
 }
 
 
+.varDesignerW <- function(argv,
+                          zoY,
+                          zC,
+                          zTarget,
+                          weights,
+                          minFraction,
+                          smFactor,
+                          rareCount,
+                          rareSig,
+                          collarProb,
+                          codeRestriction,
+                          customCoders,
+                          catScaling,
+                          verbose,
+                          nRows,
+                          yMoves,
+                          codeRestictionWasNULL) {
+  v <- argv$v
+  vcolOrig <- argv$vcolOrig
+  vcol <- argv$vcol
+  hasRange <- argv$hasRange
+  levRestriction <- argv$levRestriction
+  if(verbose) {
+    print(paste('design var',v,date()))
+  }
+  treatments <- list()
+  acceptTreatment <- function(ti) {
+    if(!is.null(ti)) {
+      ti$origType <- typeof(vcolOrig)
+      ti$origClass <- paste(class(vcolOrig))
+      ti$convertedColClass <- paste(class(vcol))
+      treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
+    }
+  }
+  if(is.null(vcol)) {
+    warning(paste('column',v,
+                  'is not a type/class/value vtreat can work with (',
+                  class(vcolOrig),')'))
+  } else {
+    colclass <- class(vcol)
+    if(.has.range(vcol)) {
+      ti <- NULL
+      if((colclass=='numeric') || (colclass=='integer')) {
+        for(customCode in names(customCoders)) {
+          coder <- customCoders[[customCode]]
+          customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
+          codeType <- customeCodeV[[1]]
+          codeName <- customeCodeV[[2]]
+          if(codeRestictionWasNULL || (codeName %in% codeRestriction)) {
+            codeSeq <- NULL
+            if(length(customeCodeV)>2) {
+              codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
+            }
+            if('num' %in% codeSeq) {
+              if((codeType=='n')==is.null(zC)) {
+                ti <- makeCustomCoderNum(codeName, coder, codeSeq, 
+                                         v,vcol,zoY,zC,zTarget,weights,catScaling)
+                acceptTreatment(ti)
+              }
+            }
+          }
+        }
+        ti = NULL
+        if(codeRestictionWasNULL || ('clean' %in% codeRestriction)) {
+          ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
+          acceptTreatment(ti)
+        }
+        if(codeRestictionWasNULL || ('isBAD' %in% codeRestriction)) {
+          ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
+          acceptTreatment(ti)
+        }
+      } else if((colclass=='character') || (colclass=='factor')) {
+        # expect character or factor here
+        for(customCode in names(customCoders)) {
+          coder <- customCoders[[customCode]]
+          customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
+          codeType <- customeCodeV[[1]]
+          codeName <- customeCodeV[[2]]
+          if(codeRestictionWasNULL || (codeName %in% codeRestriction)) {
+            codeSeq <- NULL
+            if(length(customeCodeV)>2) {
+              codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
+            }
+            if(!('num' %in% codeSeq)) {
+              if((codeType=='n')==is.null(zC)) {
+                ti <- makeCustomCoder(codeName, coder, codeSeq, 
+                                      v,vcol,zoY,zC,zTarget,weights,catScaling)
+                acceptTreatment(ti)
+              }
+            }
+          }
+        }
+        ti = NULL
+        if(length(levRestriction$safeLevs)>0) {
+          if(codeRestictionWasNULL || ('lev' %in% codeRestriction)) {
+            ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+            acceptTreatment(ti)
+          }
+          if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
+            if(codeRestictionWasNULL || ('catP' %in% codeRestriction)) {
+              ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights,catScaling)
+              acceptTreatment(ti)
+            }
+            if(yMoves) {
+              if(!is.null(zC)) {  # in categorical mode
+                if(codeRestictionWasNULL || ('catB' %in% codeRestriction)) {
+                  ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights,catScaling)
+                  acceptTreatment(ti)
+                }
+              }
+              if(is.null(zC)) { # is numeric mode
+                if(codeRestictionWasNULL || ('catN' %in% codeRestriction)) {
+                  ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
+                  acceptTreatment(ti)
+                }
+                if(codeRestictionWasNULL || ('catD' %in% codeRestriction)) {
+                  ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
+                  acceptTreatment(ti)
+                }
+              }
+            }
+          }
+        }
+      } else {
+        warning(paste('variable',v,'has unexpected class:',colclass,
+                      ', skipping, (want one of numeric,integer,character,factor)'))
+      }  
+    }
+  }
+  treatments
+}
 
 # design a treatment for a single variable
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
@@ -217,119 +348,23 @@ mkVtreatListWorker <- function(scale,doCollar) {
   codeRestictionWasNULL <- length(codeRestriction)<=0
   
   function(argv) {
-    v <- argv$v
-    vcolOrig <- argv$vcolOrig
-    vcol <- argv$vcol
-    hasRange <- argv$hasRange
-    levRestriction <- argv$levRestriction
-    if(verbose) {
-      print(paste('design var',v,date()))
-    }
-    treatments <- list()
-    acceptTreatment <- function(ti) {
-      if(!is.null(ti)) {
-        ti$origType <- typeof(vcolOrig)
-        ti$origClass <- paste(class(vcolOrig))
-        ti$convertedColClass <- paste(class(vcol))
-        treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
-      }
-    }
-    if(is.null(vcol)) {
-      warning(paste('column',v,
-                    'is not a type/class/value vtreat can work with (',
-                    class(vcolOrig),')'))
-    } else {
-      colclass <- class(vcol)
-      if(.has.range(vcol)) {
-        ti <- NULL
-        if((colclass=='numeric') || (colclass=='integer')) {
-          for(customCode in names(customCoders)) {
-            coder <- customCoders[[customCode]]
-            customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
-            codeType <- customeCodeV[[1]]
-            codeName <- customeCodeV[[2]]
-            if(codeRestictionWasNULL || (codeName %in% codeRestriction)) {
-              codeSeq <- NULL
-              if(length(customeCodeV)>2) {
-                codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
-              }
-              if('num' %in% codeSeq) {
-                if((codeType=='n')==is.null(zC)) {
-                  ti <- makeCustomCoderNum(codeName, coder, codeSeq, 
-                                           v,vcol,zoY,zC,zTarget,weights,catScaling)
-                  acceptTreatment(ti)
-                }
-              }
-            }
-          }
-          ti = NULL
-          if(codeRestictionWasNULL || ('clean' %in% codeRestriction)) {
-            ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
-            acceptTreatment(ti)
-          }
-          if(codeRestictionWasNULL || ('isBAD' %in% codeRestriction)) {
-            ti <- .mkIsBAD(v,vcol,zoY,zC,zTarget,weights,catScaling)
-            acceptTreatment(ti)
-          }
-        } else if((colclass=='character') || (colclass=='factor')) {
-          # expect character or factor here
-          for(customCode in names(customCoders)) {
-            coder <- customCoders[[customCode]]
-            customeCodeV <- base::strsplit(customCode, '.', fixed=TRUE)[[1]]
-            codeType <- customeCodeV[[1]]
-            codeName <- customeCodeV[[2]]
-            if(codeRestictionWasNULL || (codeName %in% codeRestriction)) {
-              codeSeq <- NULL
-              if(length(customeCodeV)>2) {
-                codeSeq <- customeCodeV[seq(3, length(customeCodeV))]
-              }
-              if(!('num' %in% codeSeq)) {
-                if((codeType=='n')==is.null(zC)) {
-                  ti <- makeCustomCoder(codeName, coder, codeSeq, 
-                                        v,vcol,zoY,zC,zTarget,weights,catScaling)
-                  acceptTreatment(ti)
-                }
-              }
-            }
-          }
-          ti = NULL
-          if(length(levRestriction$safeLevs)>0) {
-            if(codeRestictionWasNULL || ('lev' %in% codeRestriction)) {
-              ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
-              acceptTreatment(ti)
-            }
-            if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
-              if(codeRestictionWasNULL || ('catP' %in% codeRestriction)) {
-                ti <- .mkCatP(v,vcol,zoY,zC,zTarget,levRestriction,weights,catScaling)
-                acceptTreatment(ti)
-              }
-              if(yMoves) {
-                if(!is.null(zC)) {  # in categorical mode
-                  if(codeRestictionWasNULL || ('catB' %in% codeRestriction)) {
-                    ti <- .mkCatBayes(v,vcol,zC,zTarget,smFactor,levRestriction,weights,catScaling)
-                    acceptTreatment(ti)
-                  }
-                }
-                if(is.null(zC)) { # is numeric mode
-                  if(codeRestictionWasNULL || ('catN' %in% codeRestriction)) {
-                    ti <- .mkCatNum(v,vcol,zoY,smFactor,levRestriction,weights)
-                    acceptTreatment(ti)
-                  }
-                  if(codeRestictionWasNULL || ('catD' %in% codeRestriction)) {
-                    ti <- .mkCatD(v,vcol,zoY,smFactor,levRestriction,weights)
-                    acceptTreatment(ti)
-                  }
-                }
-              }
-            }
-          }
-        } else {
-          warning(paste('variable',v,'has unexpected class:',colclass,
-                        ', skipping, (want one of numeric,integer,character,factor)'))
-        }  
-      }
-    }
-    treatments
+    .varDesignerW(argv = argv,
+                  zoY = zoY,
+                  zC = zC,
+                  zTarget = zTarget,
+                  weights = weights,
+                  minFraction = minFraction,
+                  smFactor = smFactor,
+                  rareCount = rareCount,
+                  rareSig = rareSig,
+                  collarProb = collarProb,
+                  codeRestriction = codeRestriction,
+                  customCoders = customCoders,
+                  catScaling = catScaling,
+                  verbose = verbose,
+                  nRows = nRows,
+                  yMoves = yMoves,
+                  codeRestictionWasNULL = codeRestictionWasNULL)
   }
 }
 

@@ -131,20 +131,14 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
     weights <- rep(1.0, length(vcolin))
   }
   xNotNA <- xcol[!napositions]
-  yNotNa <- ycol[!napositions]
+  yNotNa <- zoY[!napositions]
   wNotNa <- weights[!napositions]
-  if(xNotNA(xcol)<=xNotNA(xcol)) {
+  if(max(xcol)<=min(xcol)) {
     return(c())
   }
-  if(collarProb>0.0) {
-    # TODO: weighted version
-    cuts <- as.numeric(stats::quantile(xNotNA,
-                                       probs=c(collarProb,1-collarProb)))
-  } else {
-    cuts <- c(min(xNotNA), max(xNotNA))
-  }
+  cuts <- c(min(xNotNA), max(xNotNA))
   if(sum(napositions)>0) {
-    missingValueCode <- .wmean(ycol[napositions], weigh[napositions])
+    missingValueCode <- .wmean(zoY[napositions], weights[napositions])
   } else {
     missingValueCode <- .wmean(yNotNa, wNotNa)
   }
@@ -153,22 +147,22 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   scores <- NULL
   tryCatch(
     if(is.null(zC)) {
-      scores <- coder(v, xNotNA,zoYl[!napositions], wNotNa)
+      scores <- coder(v, xNotNA, zoY[!napositions], wNotNa)
     } else {
       scores <- coder(v, xNotNA,
                       (zC[!napositions])==(zTarget[!napositions]), wNotNa)
     },
     error = function(e) { warning(e) }
   )
-  if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(vcol))) {
-    scores <- rep(0.0, length(vcol))
+  if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(xcol))) {
+    scores <- rep(0.0, length(xcol))
   } else {
     if('center' %in% codeSeq) {
       # shift scores to be mean zero with respect to weights
       scores <- scores -  sum(scores*wNotNa)/sum(wNotNa)
     }
   }
-  d <- data.frame(x = vcol,
+  d <- data.frame(x = xcol,
                   pred = scores)
   # TODO: weighted version
   agg <- aggregate(pred~x, data=d, mean)
@@ -183,7 +177,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   newVarName <- make.names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,
-                    f=.customCode,
+                    f=.customCodeNum,
                     args=list(predXs=predXs,
                               predYs=predYs,
                               cuts=cuts,
