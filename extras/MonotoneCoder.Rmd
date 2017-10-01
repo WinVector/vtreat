@@ -1,5 +1,5 @@
 ---
-title: "Custom Level Coding in vtreat"
+title: "Isotone Coding in vtreat"
 author: "John Mount, Win-Vector LLC"
 date: "`r Sys.Date()`"
 output: github_document
@@ -9,7 +9,7 @@ output: github_document
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
 
-
+# set up example data
 set.seed(23525)
 d <- data.frame(x = 10*runif(200))
 d$yIdeal <- d$x^2
@@ -20,25 +20,27 @@ ggplot(data=d, aes(x=x)) +
   geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
   geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
   ylab('y') +
-  ggtitle("ideal and observed responses as functions of x")
+  ggtitle("ideal and observed responses as functions of x",
+          subtitle = "dashed curve: ideal (pre-noise) values")
 
-customCoders = list('n.increasingV.num' = solveIsotonicProblemW )
+customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing )
 treatments <- vtreat::designTreatmentsN( d[d$isTrain, , drop=FALSE], 
                                          'x', 'yObserved', 
                                         customCoders = customCoders,
                                         verbose = FALSE)
 print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
 dTreated <- vtreat::prepare(treatments, d)
-d$soln <- dTreated$x_increasingV
+d$soln <- dTreated$x_NonDecreasingV
 
 dTrain <- d[d$isTrain, , drop=FALSE]
 
+# good inference on train
 sum((dTrain$yIdeal - dTrain$soln)^2)
 sum((dTrain$yIdeal - dTrain$yObserved)^2)
 
 dTest <- d[!d$isTrain, , drop=FALSE]
-xg <- pmax(min(dTrain$x), pmin(max(dTrain$x),dTest$x))
 
+# good performance on test
 sum((dTest$yIdeal - dTest$soln)^2)
 sum((dTest$yIdeal - dTest$yObserved)^2)
 
@@ -48,12 +50,8 @@ ggplot(data=d, aes(x=x)) +
   geom_line(data= dTrain, aes(x=x, y=soln), color='darkgreen') +
   ylab('y') +
   ggtitle("ideal and observed responses as functions of x",
-          subtitle = "dashed line monotone fit")
+          subtitle = "solid path: monotone fit")
 
 ```
 
-TODO: classification example.
-
-TODO: categorical input isontone example.
-
-
+Can also easily adapt to classification and to categorical inputs.

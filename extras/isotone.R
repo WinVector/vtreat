@@ -1,37 +1,52 @@
 
 
-# varName character, name of variable
-# x numeric input 
-# y numeric same length as x, output to match
-# w numeric positive, same length as x (weights)
-# return isotonicly adjusted y (non-decreasing)
-# this is a vector of length y that is a function of x
-# with at least as many order constraints as x and as close
-# to y (by square-distance) as possible.
-solveIsotonicProblemW <- function(varName, x, y, w) {
+#' Solve for best non-decreasing fit.
+#'
+#' Return a vector of length y that is a function of x
+#' (differs at must where x differs) obeying the same order
+#' constraints as x.  This vector is picked as close to
+#' y (by square-distance) as possible.
+#'
+#' @param varName character, name of variable
+#' @param x numeric input (not empty, no NAs). 
+#' @param y numeric (same length as x no NAs), output to match
+#' @param w numeric positive, same length as x (weights, can be NULL)
+#' @return isotonicly adjusted y (non-decreasing)
+#'
+#'
+#' @examples
+#' 
+#' 
+#' solveIsotonicProblemW('v', 1:3, c(1,2,1))
+#' # [1] 1.0 1.5 1.5
+#' 
+solveNonDecreasing <- function(varName, x, y, w=NULL) {
   if(!is.numeric(x)) {
     stop(paste("solveIsotonicProblemW", varName, "expect x numeric"))
+  }
+  n <- length(x)
+  if(n<=0) {
+    return(NULL)
   }
   if(!is.numeric(y)) {
     stop(paste("solveIsotonicProblemW", varName, "expect y numeric"))
   }
+  if(length(y)!=n) {
+    stop(paste("solveIsotonicProblemW", varName, "expect length(y)==length(x)"))
+  }
   if(is.null(w)) {
-    w <- rep(1.0, length(x))
+    w <- rep(1.0, n)
   }
   if(!is.numeric(w)) {
     stop(paste("solveIsotonicProblemW", varName, "expect w numeric"))
   }
-  if(length(y)!=length(x)) {
-    stop(paste("solveIsotonicProblemW", varName, "expect length(y)==length(x)"))
-  }
-  if(length(w)!=length(x)) {
+  if(length(w)!=n) {
     stop(paste("solveIsotonicProblemW", varName, "expect length(w)==length(x)"))
   }
   if(min(w)<=0) {
     stop(paste("solveIsotonicProblemW", varName, "expect positive weights"))
   }
   d <- data.frame(x=x, y=y, w=w)
-  n <- nrow(d)
   # get some corner cases
   if(n<=2) {
     v <- sum(w*y)/sum(w)
@@ -60,7 +75,7 @@ solveIsotonicProblemW <- function(varName, x, y, w) {
   if(length(noIncrease)>0) {
     Atot <- rbind(Atot,cbind(noIncrease+1,noIncrease))
   }
-  # sum of squares objective 
+  # sum of squares objective is default if y is specified
   sqIso <- isotone::activeSet(Atot, y=d$y, weights=d$w)
   adjPred <- sqIso$x
   # undo permutation
