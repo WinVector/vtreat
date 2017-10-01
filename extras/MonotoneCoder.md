@@ -1,7 +1,7 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2017-09-30
+2017-10-01
 
 Isotone regression.
 
@@ -119,6 +119,7 @@ treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE],
                                         'x', 'yObserved', 1,
                                         customCoders = customCoders,
                                         verbose = FALSE)
+# examing variables
 print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
 ```
 
@@ -127,6 +128,7 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
     ## 2          x_clean 0.3522417 1.138713e-10      FALSE
 
 ``` r
+# copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
 d$soln <- dTreated$x_NonIncreasingV
 
