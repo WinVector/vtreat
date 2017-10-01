@@ -4,7 +4,8 @@
 
 - Minor documentation fixes.
 - More work on novel values for non-centered custom coders.
-- Start on numeric custom coders.
+- Numeric custom coders.
+- Isotone examples.
 
 # vtreat 0.6.0 2017/09/20
 
