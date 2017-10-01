@@ -14,7 +14,7 @@ source("isotone.R")
 # set up example data
 set.seed(23525)
 d <- data.frame(x = 10*runif(200))
-d$yIdeal <- -d$x^2
+d$yIdeal <- d$x^2
 d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
 d$isTrain <- runif(nrow(d))<=0.5
 
@@ -33,7 +33,7 @@ treatments <- vtreat::designTreatmentsN(d[d$isTrain, , drop=FALSE],
                                         verbose = FALSE)
 print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
 dTreated <- vtreat::prepare(treatments, d)
-d$soln <- dTreated$x_NonIncreasingV
+d$soln <- dTreated$x_NonDecreasingV
 
 dTrain <- d[d$isTrain, , drop=FALSE]
 
@@ -80,6 +80,7 @@ ggplot(data=d, aes(x=x)) +
   ggtitle("ideal and observed responses as functions of x",
           subtitle = "dashed curve: ideal (pre-noise) values")
 
+# could also build link-space versions
 customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing,
                     'c.NonIncreasingV.num' = solveNonIncreasing)
 treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 

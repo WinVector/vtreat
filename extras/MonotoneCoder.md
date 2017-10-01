@@ -12,7 +12,7 @@ source("isotone.R")
 # set up example data
 set.seed(23525)
 d <- data.frame(x = 10*runif(200))
-d$yIdeal <- -d$x^2
+d$yIdeal <- d$x^2
 d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
 d$isTrain <- runif(nrow(d))<=0.5
 
@@ -37,12 +37,12 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
 ```
 
     ##            varName       rsq          sig needsSplit
-    ## 1 x_NonIncreasingV 0.4805710 9.993014e-14       TRUE
-    ## 2          x_clean 0.5116085 7.071026e-15      FALSE
+    ## 1 x_NonDecreasingV 0.5809673 9.905695e-18       TRUE
+    ## 2          x_clean 0.6129088 3.320652e-19      FALSE
 
 ``` r
 dTreated <- vtreat::prepare(treatments, d)
-d$soln <- dTreated$x_NonIncreasingV
+d$soln <- dTreated$x_NonDecreasingV
 
 dTrain <- d[d$isTrain, , drop=FALSE]
 
@@ -50,7 +50,7 @@ dTrain <- d[d$isTrain, , drop=FALSE]
 sum((dTrain$yIdeal - dTrain$soln)^2)
 ```
 
-    ## [1] 6648.642
+    ## [1] 7460.391
 
 ``` r
 sum((dTrain$yIdeal - dTrain$yObserved)^2)
@@ -65,7 +65,7 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 sum((dTest$yIdeal - dTest$soln)^2)
 ```
 
-    ## [1] 9841.673
+    ## [1] 14315.25
 
 ``` r
 sum((dTest$yIdeal - dTest$yObserved)^2)
@@ -112,6 +112,7 @@ ggplot(data=d, aes(x=x)) +
 ![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/classification-1.png)
 
 ``` r
+# could also build link-space versions
 customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing,
                     'c.NonIncreasingV.num' = solveNonIncreasing)
 treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
