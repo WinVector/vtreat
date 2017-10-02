@@ -1,9 +1,9 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2017-10-01
+2017-10-02
 
-Isotone regression.
+Isotone regression (also give [`scam`](https://CRAN.R-project.org/package=scam) a look, which should have the advantage of also being low complexity).
 
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
