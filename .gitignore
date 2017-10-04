@@ -5,6 +5,6 @@
 *~
 #*
 *#
-rsconnect/
-
+rsconnect
 inst/doc
+revdep
