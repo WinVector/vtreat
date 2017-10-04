@@ -1,6 +1,6 @@
 
 
-# vtreat 0.6.1 2017/09/30
+# vtreat 1.0.0 2017/10/04
 
 - Minor documentation fixes.
 - More work on novel values for non-centered custom coders.
