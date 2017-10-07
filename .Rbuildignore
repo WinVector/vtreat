@@ -12,7 +12,6 @@
 ^html$
 ^.*rsconnect.*$
 ^vtreat.png$
-
 ^docs$
 ^_pkgdown\.yml$
 ^extras$
