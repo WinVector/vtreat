@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: github_document
 ---
 
-Isotone regression (also give [`scam`](https://CRAN.R-project.org/package=scam) a look, which should have the advantage of also being low complexity).
+Isotone regression (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
 ```{r regression}
 suppressPackageStartupMessages(library("ggplot2"))
