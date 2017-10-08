@@ -156,7 +156,7 @@ ggplot(data=d, aes(x=x)) +
 Notice the controlled spline directly found the shape.
 
 However, we have found the `scam` package to be fairly sensitive to the exact relations of a large number
-of spline controls to the distribution of the data (get these wrong and the fit fails).  We don't currently recommend using the `scam` package in production.
+of spline controls to the distribution of the data (get these wrong and the fit fails).  We don't currently recommend using the `scam` package in for non-governed (i.e., no person on the loop) fitting production (though it can be a key part in hands-on analysis).
 
 Our current idea is to fit or smooth the predictions from the raw isotone predictor with a low-degree spline. The idea is the raw-isotone step gets a monotone data set and the low degree spine then has a good chance of not losing such structure.
 
