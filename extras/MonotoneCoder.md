@@ -172,3 +172,5 @@ ggplot(data=d, aes(x=x)) +
 ```
 
 ![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/classification-2.png)
+
+One application we have used the monotone methodology with good success is: calibrating regressions and classifiers. That is we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
