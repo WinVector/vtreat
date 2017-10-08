@@ -107,13 +107,13 @@ The above sort of inference is *critical* in at least the following situations:
  * Econometric fitting (such as inferring elasticity).
  * Prescriptive fitting (such as trying to find "fair salary trends" in unfair historic data, i.e. trying to peel off even a porting of age or gender discrimination in an analysis or plan).
 
-The idea process was hidden from us by an omitted variable or un-labeled mixture issue.  If we had a variable that
+The ideal process was hidden from us by an omitted variable or un-labeled mixture issue.  If we had a variable that
 recorded hours worked we could directly account for the two populations and get a good model.  What we are showing with
 the monotone process is what can be done by using a domain-specific inductive bias (non-decreasing) in the case where
 we don't have the required extra variable.  Better data (more and better variables) trumps complicated analysis, but 
 sometimes the data is what it is.
 
-To deal with the jagged issue we would like to use a spline.  We see that unconstrained splines may not be the ideal choice (as that was what was behind one of the smoothers on the first graph).  To work around that we find a model fitter that itself has a monotone or isotone option.  One such fitter is in the [`R`](https://www.r-project.org) package [`scam` "Shape Constrained Additive Models"](https://CRAN.R-project.org/package=scam).  By using  a shape constrained spline we can simultaneously ask for:
+To deal with the jagged fit issue we would like to use a spline.  We see that unconstrained splines may not be the ideal choice (as that was what was behind one of the smoothers on the first graph).  To work around that we find a model fitter that itself has a monotone or isotone option.  One such fitter is in the [`R`](https://www.r-project.org) package [`scam` "Shape Constrained Additive Models"](https://CRAN.R-project.org/package=scam).  By using  a shape constrained spline we can simultaneously ask for:
 
  * Low model complexity.
  * Monotone shape.
