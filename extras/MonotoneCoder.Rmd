@@ -156,6 +156,14 @@ treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE],
                                         'rawScore', 'yObserved', TRUE,
                                         customCoders = customCoders,
                                         verbose = FALSE)
+print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
+```
+
+Notice in the score frame `vtreat`'s cross validation based scoring correctly 
+indentifies that the isotone encoding is over-fitting and not in fact better than
+the sigmoid link function.
+
+```{r score}
 # copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
 d$adjScore <- dTreated$rawScore_NonDecreasingV
