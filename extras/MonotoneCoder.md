@@ -216,6 +216,8 @@ Model calibration/polish
 
 One application we have used the monotone methodology with good success is: calibrating regressions and classifiers.
 
+This is an idea that came up in discussion with [Jeremy Howard](http://www.fast.ai/about/). Jeremy, while CTO of Kaggle, decided AUC was a good "early to see if you have something" metric for running contests. That leaves the question: what is a principled mechanical way to convert a score with a good AUC to a score with correct probabilities (a good deviance). Kaggle participants are famous for good solutions. But here is our solution: a arbitrary isotone transform.
+
 That is: we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
 
 We can try- that. Suppose we forgot to set `type="response"` on a logistic regression and we didn't know the link function is the sigmoid (so we can't directly apply the correction).
@@ -424,4 +426,4 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
 Conclusion
 ----------
 
-And we see the adjusted prediction is pretty good, even with the nested model bias issue. In fact even though it shows sings of over-fit on the testing set, it outperforms the original links score in recovering the (unobserved) original concept.
+And we see the adjusted prediction is pretty good, even with the nested model bias issue. In fact even though it shows sings of over-fit on the testing set, it outperforms the original links score in recovering the (unobserved) original concept. This is because the inductive bias we introduced (monotone solution) was something true for the concept (the mapping of link scores to probabilities) but not a property of the noise model; so the transform prefers signal.
