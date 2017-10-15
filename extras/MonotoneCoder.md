@@ -5,6 +5,9 @@ John Mount, Win-Vector LLC
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
+Regression
+----------
+
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
@@ -89,10 +92,12 @@ The above formulation is kind of exciting. You get one degree of freedom per dat
 
 Some notes on smoother implementations can be found [here](https://github.com/WinVector/vtreat/blob/master/extras/Monotone2.md).
 
+Clasification
+-------------
+
 We can also easily adapt to classification and to categorical inputs.
 
 ``` r
-suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
 
 # set up example data
@@ -204,4 +209,140 @@ sigr::wrapFisherTest(dTest, 'yObserved', 'yIdeal')
 
     ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.9, p<1e-05)."
 
-One application we have used the monotone methodology with good success is: calibrating regressions and classifiers. That is: we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
+Model calibration/polish
+------------------------
+
+One application we have used the monotone methodology with good success is: calibrating regressions and classifiers.
+
+That is: we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
+
+We can try- that. Suppose we forgot to set `type="response"` on a logistic regression and we didn't know the link function is the sigmoid (so we can't directly apply the correction).
+
+``` r
+source("isotone.R")
+
+# set up example data
+set.seed(23525)
+d <- data.frame(x = 10*runif(200))
+d$yIdeal <- -d$x^2
+d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
+d$isTrain <- runif(nrow(d))<=0.5
+threshold <- -50
+d$yIdeal <- d$yIdeal >= threshold
+d$yObserved <- d$yObserved >= threshold
+
+
+
+model <- glm(yObserved ~ x, data = d[d$isTrain, , drop=FALSE], family = binomial)
+sigr::wrapChiSqTest(model)
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.35 (X2(1,N=87)=42, p<1e-05)."
+
+``` r
+d$rawPred <- predict(model, newdata = d)  # oops forgot type='response'
+head(d)
+```
+
+    ##          x yIdeal yObserved isTrain    rawPred
+    ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394
+    ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170
+    ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434
+    ## 4 9.732597  FALSE     FALSE    TRUE -2.1956494
+    ## 5 3.726201   TRUE      TRUE   FALSE  1.9416808
+    ## 6 2.197222   TRUE      TRUE   FALSE  2.9948735
+
+``` r
+# fix it with isotone regression
+customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing)
+treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
+                                        'rawPred', 'yObserved', TRUE,
+                                        customCoders = customCoders,
+                                        verbose = FALSE)
+# copy fit over to original data frame
+dTreated <- vtreat::prepare(treatments, d)
+d$adjPred <- dTreated$rawPred_NonDecreasingV
+
+# and the correct link
+d$linkPred <-  predict(model, newdata = d, type = 'response')
+
+dTrain <- d[d$isTrain, , drop=FALSE]
+
+sigr::wrapChiSqTest(dTrain, 'adjPred', 'yObserved')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.47 (X2(1,N=87)=55, p<1e-05)."
+
+``` r
+sigr::wrapChiSqTest(dTrain, 'linkPred', 'yObserved')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.35 (X2(1,N=87)=42, p<1e-05)."
+
+``` r
+sigr::wrapChiSqTest(dTrain, 'adjPred', 'yIdeal')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.69 (X2(1,N=87)=77, p<1e-05)."
+
+``` r
+sigr::wrapChiSqTest(dTrain, 'linkPred', 'yIdeal')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.62 (X2(1,N=87)=69, p<1e-05)."
+
+``` r
+dTest <- d[!d$isTrain, , drop=FALSE]
+
+sigr::wrapChiSqTest(dTest, 'adjPred', 'yObserved')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=-0.29 (X2(1,N=113)=-41, p=n.s.)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+                           "adjusted prediction against observations")
+```
+
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-1.png)
+
+``` r
+sigr::wrapChiSqTest(dTest, 'linkPred', 'yObserved')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.2 (X2(1,N=113)=28, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+                           "link prediction against observations")
+```
+
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-2.png)
+
+``` r
+sigr::wrapChiSqTest(dTest, 'adjPred', 'yIdeal')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.72 (X2(1,N=113)=1.1e+02, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+                           "adjusted prediction against ideal (unobserved) concept")
+```
+
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-3.png)
+
+``` r
+sigr::wrapChiSqTest(dTest, 'linkPred', 'yIdeal')
+```
+
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.64 (X2(1,N=113)=93, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+                           "link prediction against ideal (unobserved) concept")
+```
+
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-4.png)
+
+And we see the adjusted prediction is pretty good, even with the nested model bias issue. In fact it out-performs the original link-based score (as it used its extra degrees of freedom to better uncover the concept).

@@ -7,6 +7,8 @@ output: github_document
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone)  (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
+## Regression
+
 ```{r regression}
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
@@ -64,10 +66,11 @@ a sort of dual-formulation of a smaller primal problem.
 
 Some notes on smoother implementations can be found [here](https://github.com/WinVector/vtreat/blob/master/extras/Monotone2.md).
 
+## Clasification
+
 We can also easily adapt to classification and to categorical inputs.
 
 ```{r classification}
-suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
 
 # set up example data
@@ -104,7 +107,6 @@ sigr::wrapFisherTest(dTrain, 'prediction', 'yIdeal')
 table(dTrain$yObserved, dTrain$yIdeal)
 sigr::wrapFisherTest(dTrain, 'yObserved', 'yIdeal')
 
-
 dTest <- d[!d$isTrain, , drop=FALSE]
 
 # good performance on test
@@ -115,9 +117,78 @@ table(dTest$yObserved, dTest$yIdeal)
 sigr::wrapFisherTest(dTest, 'yObserved', 'yIdeal')
 ```
 
+## Model calibration/polish
 
 One application we have used the monotone methodology with good success is: calibrating regressions and classifiers.
+
 That is: we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order
 relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance).  Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or 
 polish step can be an improvement (assuming one is careful about nested model bias issues).
+
+We can try- that. Suppose we forgot to set `type="response"` on a logistic regression and we didn't know the link function is the sigmoid (so we can't directly apply the correction).
+
+```{r polish}
+source("isotone.R")
+
+# set up example data
+set.seed(23525)
+d <- data.frame(x = 10*runif(200))
+d$yIdeal <- -d$x^2
+d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
+d$isTrain <- runif(nrow(d))<=0.5
+threshold <- -50
+d$yIdeal <- d$yIdeal >= threshold
+d$yObserved <- d$yObserved >= threshold
+
+
+
+model <- glm(yObserved ~ x, data = d[d$isTrain, , drop=FALSE], family = binomial)
+sigr::wrapChiSqTest(model)
+
+d$rawPred <- predict(model, newdata = d)  # oops forgot type='response'
+head(d)
+
+# fix it with isotone regression
+customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing)
+treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
+                                        'rawPred', 'yObserved', TRUE,
+                                        customCoders = customCoders,
+                                        verbose = FALSE)
+# copy fit over to original data frame
+dTreated <- vtreat::prepare(treatments, d)
+d$adjPred <- dTreated$rawPred_NonDecreasingV
+
+# and the correct link
+d$linkPred <-  predict(model, newdata = d, type = 'response')
+
+dTrain <- d[d$isTrain, , drop=FALSE]
+
+sigr::wrapChiSqTest(dTrain, 'adjPred', 'yObserved')
+sigr::wrapChiSqTest(dTrain, 'linkPred', 'yObserved')
+
+sigr::wrapChiSqTest(dTrain, 'adjPred', 'yIdeal')
+sigr::wrapChiSqTest(dTrain, 'linkPred', 'yIdeal')
+
+dTest <- d[!d$isTrain, , drop=FALSE]
+
+sigr::wrapChiSqTest(dTest, 'adjPred', 'yObserved')
+WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+                           "adjusted prediction against observations")
+sigr::wrapChiSqTest(dTest, 'linkPred', 'yObserved')
+WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+                           "link prediction against observations")
+
+
+sigr::wrapChiSqTest(dTest, 'adjPred', 'yIdeal')
+WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+                           "adjusted prediction against ideal (unobserved) concept")
+sigr::wrapChiSqTest(dTest, 'linkPred', 'yIdeal')
+WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+                           "link prediction against ideal (unobserved) concept")
+```
+
+And we see the adjusted prediction is pretty good, even with the nested model bias issue.
+In fact it out-performs the original link-based score (as it used its extra degrees of freedom
+to better uncover the concept).
+
 
