@@ -5,6 +5,8 @@ John Mount, Win-Vector LLC
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
+We will use the [`vtreat` package](https://winvector.github.io/vtreat/) [custom coder interface](https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md), which will supply cross-validated significance calculations and out-of sample interpolation (allowing us to apply the monotone transforms to new data). For a more substantial application of `vtreat` custom coding please see the [partial pooling application](http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/).
+
 Regression
 ----------
 

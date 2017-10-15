@@ -5,6 +5,8 @@ John Mount, Win-Vector LLC
 
 Isotone regression (please see [`vtreat` Monotone Coders](https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md)).
 
+We will use the [`vtreat` package](https://winvector.github.io/vtreat/) [custom coder interface](https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md), which will supply cross-validated significance calculations and out-of sample interpolation (allowing us to apply the monotone transforms to new data). For a more substantial application of `vtreat` custom coding please see the [partial pooling application](http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/).
+
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
 source("isotone.R")
