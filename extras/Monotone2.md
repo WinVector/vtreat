@@ -1,7 +1,7 @@
 Using Isotone Coding to Find Themes
 ================
 John Mount, Win-Vector LLC
-2017-10-08
+2017-10-15
 
 Isotone regression (please see [`vtreat` Monotone Coders](https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md)).
 
@@ -194,8 +194,8 @@ ggplot(data=d, aes(x=x)) +
 
 ![](Monotone2_files/figure-markdown_github-ascii_identifiers/scam-1.png)
 
-Notice the controlled spline directly found the shape.
+Notice the controlled spline directly at least found the shape.
 
 However, we have found the `scam` package to be fairly sensitive to the exact relations of a large number of spline controls to the distribution of the data (get these wrong and the fit fails). We don't currently recommend using the `scam` package in for non-governed (i.e., no person on the loop) fitting production (though it can be a key part in hands-on analysis).
 
-Our current idea is to fit or smooth the predictions from the raw isotone predictor with a low-degree spline. The idea is the raw-isotone step gets a monotone data set and the low degree spine then has a good chance of not losing such structure.
+One idea is to fit or smooth the predictions from the raw isotone predictor with a low-degree spline. The idea is: the raw-isotone step gets a monotone data set and the low degree spine then has a good chance of not losing such structure.

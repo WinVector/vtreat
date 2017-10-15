@@ -1,9 +1,9 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2017-10-08
+2017-10-15
 
-Isotone regression via the (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
+Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
@@ -87,7 +87,9 @@ ggplot(data=d, aes(x=x)) +
 
 The above formulation is kind of exciting. You get one degree of freedom per data-row (a very large number), but a simple constraint system (that the produced predictions must follow the x-order constraints) is enough to produce reasonable fits. This reminiscent of the [maximum entropy formulation of logistic regression](http://www.win-vector.com/dfiles/LogisticRegressionMaxEnt.pdf), and is evidence one is working with a sort of dual-formulation of a smaller primal problem.
 
-Can also easily adapt to classification and to categorical inputs.
+Some notes on smoother implementations can be found [here](https://github.com/WinVector/vtreat/blob/master/extras/Monotone2.md).
+
+We can also easily adapt to classification and to categorical inputs.
 
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
@@ -100,25 +102,15 @@ d$yIdeal <- -d$x^2
 d$yObserved <- d$yIdeal + 25*rnorm(nrow(d))
 d$isTrain <- runif(nrow(d))<=0.5
 threshold <- -50
-d$yIdeal <- ifelse(d$yIdeal >= threshold, 1.0, 0.0)
-d$yObserved <- ifelse(d$yObserved >= threshold, 1.0, 0.0)
+d$yIdeal <- d$yIdeal >= threshold
+d$yObserved <- d$yObserved >= threshold
 
-ggplot(data=d, aes(x=x)) + 
-  geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
-  geom_point(aes(y=yObserved, color=isTrain, shape=isTrain), alpha=0.5) + 
-  ylab('y') +
-  ggtitle("ideal and observed responses as functions of x",
-          subtitle = "dashed curve: ideal (pre-noise) values")
-```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/classification-1.png)
-
-``` r
 # could also build link-space versions
 customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing,
                     'c.NonIncreasingV.num' = solveNonIncreasing)
 treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
-                                        'x', 'yObserved', 1,
+                                        'x', 'yObserved', TRUE,
                                         customCoders = customCoders,
                                         verbose = FALSE)
 # examining variables
@@ -133,46 +125,83 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
 # copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
 d$soln <- dTreated$x_NonIncreasingV
+d$prediction <- d$soln>0.5
 
 dTrain <- d[d$isTrain, , drop=FALSE]
 
 # good inference on train
-sum((dTrain$yIdeal - dTrain$soln)^2)
+sigr::wrapChiSqTest(dTrain, 'soln', 'yIdeal')
 ```
 
-    ## [1] 4.390476
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.69 (X2(1,N=87)=77, p<1e-05)."
 
 ``` r
-sum((dTrain$yIdeal - dTrain$yObserved)^2)
+table(dTrain$prediction, dTrain$yIdeal)
 ```
 
-    ## [1] 16
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    28    0
+    ##   TRUE      2   57
+
+``` r
+sigr::wrapFisherTest(dTrain, 'prediction', 'yIdeal')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=Inf, p<1e-05)."
+
+``` r
+table(dTrain$yObserved, dTrain$yIdeal)
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    25   11
+    ##   TRUE      5   46
+
+``` r
+sigr::wrapFisherTest(dTrain, 'yObserved', 'yIdeal')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=20, p<1e-05)."
 
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
 
 # good performance on test
-sum((dTest$yIdeal - dTest$soln)^2)
+sigr::wrapChiSqTest(dTest, 'soln', 'yIdeal')
 ```
 
-    ## [1] 4.860317
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.72 (X2(1,N=113)=1.1e+02, p<1e-05)."
 
 ``` r
-sum((dTest$yIdeal - dTest$yObserved)^2)
+table(dTest$prediction, dTest$yIdeal)
 ```
 
-    ## [1] 26
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    38    0
+    ##   TRUE      1   74
 
 ``` r
-ggplot(data=d, aes(x=x)) + 
-  geom_line(aes(y=yIdeal), color='blue', linetype=2) + 
-  geom_point(aes(y=yObserved, color=isTrain, shape=isTrain)) +
-  geom_line(aes(x=x, y=soln), color='darkgreen') +
-  ylab('y') +
-  ggtitle("ideal and observed responses as functions of x",
-          subtitle = "solid path: isotone fit")
+sigr::wrapFisherTest(dTest, 'prediction', 'yIdeal')
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/classification-2.png)
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=Inf, p<1e-05)."
 
-One application we have used the monotone methodology with good success is: calibrating regressions and classifiers. That is we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
+``` r
+table(dTest$yObserved, dTest$yIdeal)
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    24   11
+    ##   TRUE     15   63
+
+``` r
+sigr::wrapFisherTest(dTest, 'yObserved', 'yIdeal')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.9, p<1e-05)."
+
+One application we have used the monotone methodology with good success is: calibrating regressions and classifiers. That is: we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
