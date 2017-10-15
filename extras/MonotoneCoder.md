@@ -242,11 +242,11 @@ sigr::wrapChiSqTest(model)
     ## [1] "Chi-Square Test summary: pseudo-R2=0.35 (X2(1,N=87)=42, p<1e-05)."
 
 ``` r
-d$rawPred <- predict(model, newdata = d)  # oops forgot type='response'
+d$rawScore <- predict(model, newdata = d)  # oops forgot type='response'
 head(d)
 ```
 
-    ##          x yIdeal yObserved isTrain    rawPred
+    ##          x yIdeal yObserved isTrain   rawScore
     ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394
     ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170
     ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434
@@ -258,93 +258,160 @@ head(d)
 # fix it with isotone regression
 customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing)
 treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
-                                        'rawPred', 'yObserved', TRUE,
+                                        'rawScore', 'yObserved', TRUE,
                                         customCoders = customCoders,
                                         verbose = FALSE)
 # copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
-d$adjPred <- dTreated$rawPred_NonDecreasingV
+d$adjScore <- dTreated$rawScore_NonDecreasingV
+d$adjPred <- d$adjScore>=0.5
 
 # and the correct link
-d$linkPred <-  predict(model, newdata = d, type = 'response')
-
-dTrain <- d[d$isTrain, , drop=FALSE]
-
-sigr::wrapChiSqTest(dTrain, 'adjPred', 'yObserved')
+d$linkScore <-  predict(model, newdata = d, type = 'response')
+d$linkPred <- d$linkScore>=0.5
+head(d)
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.47 (X2(1,N=87)=55, p<1e-05)."
-
-``` r
-sigr::wrapChiSqTest(dTrain, 'linkPred', 'yObserved')
-```
-
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.35 (X2(1,N=87)=42, p<1e-05)."
-
-``` r
-sigr::wrapChiSqTest(dTrain, 'adjPred', 'yIdeal')
-```
-
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.69 (X2(1,N=87)=77, p<1e-05)."
-
-``` r
-sigr::wrapChiSqTest(dTrain, 'linkPred', 'yIdeal')
-```
-
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.62 (X2(1,N=87)=69, p<1e-05)."
+    ##          x yIdeal yObserved isTrain   rawScore  adjScore adjPred linkScore
+    ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394 0.9166667    TRUE 0.8826781
+    ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170 0.6111111    TRUE 0.4542739
+    ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434 0.2857143   FALSE 0.3934475
+    ## 4 9.732597  FALSE     FALSE    TRUE -2.1956494 0.0000000   FALSE 0.1001419
+    ## 5 3.726201   TRUE      TRUE   FALSE  1.9416808 0.9166667    TRUE 0.8745367
+    ## 6 2.197222   TRUE      TRUE   FALSE  2.9948735 0.9166667    TRUE 0.9523420
+    ##   linkPred
+    ## 1     TRUE
+    ## 2    FALSE
+    ## 3    FALSE
+    ## 4    FALSE
+    ## 5     TRUE
+    ## 6     TRUE
 
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
+```
 
-sigr::wrapChiSqTest(dTest, 'adjPred', 'yObserved')
+### Adjusted Score versus observed outcomes
+
+``` r
+sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=-0.29 (X2(1,N=113)=-41, p=n.s.)."
 
 ``` r
-WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+table(dTest$adjPred, dTest$yObserved)
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    23   15
+    ##   TRUE     12   63
+
+``` r
+sigr::wrapFisherTest(dTest, 'adjPred', 'yObserved')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=7.9, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-1.png)
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/adjscoreyobs-1.png)
+
+### Link Score versus observed outcomes
 
 ``` r
-sigr::wrapChiSqTest(dTest, 'linkPred', 'yObserved')
+sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.2 (X2(1,N=113)=28, p<1e-05)."
 
 ``` r
-WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+table(dTest$linkPred, dTest$yObserved)
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    26   19
+    ##   TRUE      9   59
+
+``` r
+sigr::wrapFisherTest(dTest, 'linkPred', 'yObserved')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.8, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
                            "link prediction against observations")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-2.png)
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/linkscoreyobs-1.png)
+
+### Adjusted Score versus Ideal (Unobserved) Concept
 
 ``` r
-sigr::wrapChiSqTest(dTest, 'adjPred', 'yIdeal')
+sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.72 (X2(1,N=113)=1.1e+02, p<1e-05)."
 
 ``` r
-WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+table(dTest$adjPred, dTest$yIdeal)
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    38    0
+    ##   TRUE      1   74
+
+``` r
+sigr::wrapFisherTest(dTest, 'adjPred', 'yIdeal')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=Inf, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-3.png)
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/adjscoreyideal-1.png)
+
+### Link Score versus Ideal (Unobserved) Concept
 
 ``` r
-sigr::wrapChiSqTest(dTest, 'linkPred', 'yIdeal')
+sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.64 (X2(1,N=113)=93, p<1e-05)."
 
 ``` r
-WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+table(dTest$linkPred, dTest$yIdeal)
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE    39    6
+    ##   TRUE      0   68
+
+``` r
+sigr::wrapFisherTest(dTest, 'linkPred', 'yIdeal')
+```
+
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=Inf, p<1e-05)."
+
+``` r
+WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
                            "link prediction against ideal (unobserved) concept")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/polish-4.png)
+![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/linkscoreyideal-1.png)
 
-And we see the adjusted prediction is pretty good, even with the nested model bias issue. In fact it out-performs the original link-based score (as it used its extra degrees of freedom to better uncover the concept).
+Conclusion
+----------
+
+And we see the adjusted prediction is pretty good, even with the nested model bias issue. In fact even though it shows sings of over-fit on the testing set, it outperforms the original links score in recovering the (unobserved) original concept.

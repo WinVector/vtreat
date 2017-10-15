@@ -147,50 +147,72 @@ d$yObserved <- d$yObserved >= threshold
 model <- glm(yObserved ~ x, data = d[d$isTrain, , drop=FALSE], family = binomial)
 sigr::wrapChiSqTest(model)
 
-d$rawPred <- predict(model, newdata = d)  # oops forgot type='response'
+d$rawScore <- predict(model, newdata = d)  # oops forgot type='response'
 head(d)
 
 # fix it with isotone regression
 customCoders = list('c.NonDecreasingV.num' = solveNonDecreasing)
 treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE], 
-                                        'rawPred', 'yObserved', TRUE,
+                                        'rawScore', 'yObserved', TRUE,
                                         customCoders = customCoders,
                                         verbose = FALSE)
 # copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
-d$adjPred <- dTreated$rawPred_NonDecreasingV
+d$adjScore <- dTreated$rawScore_NonDecreasingV
+d$adjPred <- d$adjScore>=0.5
 
 # and the correct link
-d$linkPred <-  predict(model, newdata = d, type = 'response')
-
-dTrain <- d[d$isTrain, , drop=FALSE]
-
-sigr::wrapChiSqTest(dTrain, 'adjPred', 'yObserved')
-sigr::wrapChiSqTest(dTrain, 'linkPred', 'yObserved')
-
-sigr::wrapChiSqTest(dTrain, 'adjPred', 'yIdeal')
-sigr::wrapChiSqTest(dTrain, 'linkPred', 'yIdeal')
+d$linkScore <-  predict(model, newdata = d, type = 'response')
+d$linkPred <- d$linkScore>=0.5
+head(d)
 
 dTest <- d[!d$isTrain, , drop=FALSE]
+```
 
-sigr::wrapChiSqTest(dTest, 'adjPred', 'yObserved')
-WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+### Adjusted Score versus observed outcomes
+
+```{r adjscoreyobs}
+sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
+table(dTest$adjPred, dTest$yObserved)
+sigr::wrapFisherTest(dTest, 'adjPred', 'yObserved')
+WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
-sigr::wrapChiSqTest(dTest, 'linkPred', 'yObserved')
-WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+```
+
+### Link Score versus observed outcomes
+
+```{r linkscoreyobs}
+sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
+table(dTest$linkPred, dTest$yObserved)
+sigr::wrapFisherTest(dTest, 'linkPred', 'yObserved')
+WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
                            "link prediction against observations")
+```
 
+### Adjusted Score versus Ideal (Unobserved) Concept
 
-sigr::wrapChiSqTest(dTest, 'adjPred', 'yIdeal')
-WVPlots::DoubleDensityPlot(dTest, 'adjPred', 'yObserved',
+```{r adjscoreyideal}
+sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
+table(dTest$adjPred, dTest$yIdeal)
+sigr::wrapFisherTest(dTest, 'adjPred', 'yIdeal')
+WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
-sigr::wrapChiSqTest(dTest, 'linkPred', 'yIdeal')
-WVPlots::DoubleDensityPlot(dTest, 'linkPred', 'yObserved',
+```
+
+### Link Score versus Ideal (Unobserved) Concept
+
+```{r linkscoreyideal}
+sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
+table(dTest$linkPred, dTest$yIdeal)
+sigr::wrapFisherTest(dTest, 'linkPred', 'yIdeal')
+WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
                            "link prediction against ideal (unobserved) concept")
 ```
 
+## Conclusion
+
 And we see the adjusted prediction is pretty good, even with the nested model bias issue.
-In fact it out-performs the original link-based score (as it used its extra degrees of freedom
-to better uncover the concept).
+In fact even though it shows sings of over-fit on the testing set, it outperforms the 
+original links score in recovering the (unobserved) original concept.
 
 
