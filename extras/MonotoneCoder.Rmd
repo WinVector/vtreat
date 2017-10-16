@@ -183,8 +183,6 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 
 ```{r adjscoreyobs}
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
-table(dTest$adjPred, dTest$yObserved)
-sigr::wrapFisherTest(dTest, 'adjPred', 'yObserved')
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
@@ -193,8 +191,6 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
 
 ```{r linkscoreyobs}
 sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
-table(dTest$linkPred, dTest$yObserved)
-sigr::wrapFisherTest(dTest, 'linkPred', 'yObserved')
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
                            "link prediction against observations")
 ```
@@ -203,8 +199,6 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
 
 ```{r adjscoreyideal}
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
-table(dTest$adjPred, dTest$yIdeal)
-sigr::wrapFisherTest(dTest, 'adjPred', 'yIdeal')
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
@@ -213,8 +207,6 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
 
 ```{r linkscoreyideal}
 sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
-table(dTest$linkPred, dTest$yIdeal)
-sigr::wrapFisherTest(dTest, 'linkPred', 'yIdeal')
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
                            "link prediction against ideal (unobserved) concept")
 ```

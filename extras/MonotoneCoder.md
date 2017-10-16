@@ -1,7 +1,7 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2017-10-15
+2017-10-16
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
@@ -312,21 +312,6 @@ sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
     ## [1] "Chi-Square Test summary: pseudo-R2=-0.29 (X2(1,N=113)=-41, p=n.s.)."
 
 ``` r
-table(dTest$adjPred, dTest$yObserved)
-```
-
-    ##        
-    ##         FALSE TRUE
-    ##   FALSE    23   15
-    ##   TRUE     12   63
-
-``` r
-sigr::wrapFisherTest(dTest, 'adjPred', 'yObserved')
-```
-
-    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=7.9, p<1e-05)."
-
-``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
@@ -340,21 +325,6 @@ sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.2 (X2(1,N=113)=28, p<1e-05)."
-
-``` r
-table(dTest$linkPred, dTest$yObserved)
-```
-
-    ##        
-    ##         FALSE TRUE
-    ##   FALSE    26   19
-    ##   TRUE      9   59
-
-``` r
-sigr::wrapFisherTest(dTest, 'linkPred', 'yObserved')
-```
-
-    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.8, p<1e-05)."
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
@@ -372,21 +342,6 @@ sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
     ## [1] "Chi-Square Test summary: pseudo-R2=0.72 (X2(1,N=113)=1.1e+02, p<1e-05)."
 
 ``` r
-table(dTest$adjPred, dTest$yIdeal)
-```
-
-    ##        
-    ##         FALSE TRUE
-    ##   FALSE    38    0
-    ##   TRUE      1   74
-
-``` r
-sigr::wrapFisherTest(dTest, 'adjPred', 'yIdeal')
-```
-
-    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=Inf, p<1e-05)."
-
-``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
@@ -400,21 +355,6 @@ sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.64 (X2(1,N=113)=93, p<1e-05)."
-
-``` r
-table(dTest$linkPred, dTest$yIdeal)
-```
-
-    ##        
-    ##         FALSE TRUE
-    ##   FALSE    39    6
-    ##   TRUE      0   68
-
-``` r
-sigr::wrapFisherTest(dTest, 'linkPred', 'yIdeal')
-```
-
-    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=Inf, p<1e-05)."
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
