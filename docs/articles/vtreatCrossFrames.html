@@ -149,18 +149,18 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../re
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "designing treatments Mon Oct 16 15:42:44 2017"
-## [1] "designing treatments Mon Oct 16 15:42:44 2017"
-## [1] " have level statistics Mon Oct 16 15:42:44 2017"
-## [1] "design var xBad1 Mon Oct 16 15:42:44 2017"
-## [1] "design var xBad2 Mon Oct 16 15:42:45 2017"
-## [1] "design var xBad3 Mon Oct 16 15:42:45 2017"
-## [1] "design var xGood1 Mon Oct 16 15:42:45 2017"
-## [1] "design var xGood2 Mon Oct 16 15:42:45 2017"
-## [1] " scoring treatments Mon Oct 16 15:42:45 2017"
-## [1] "have treatment plan Mon Oct 16 15:42:45 2017"
-## [1] "rescoring complex variables Mon Oct 16 15:42:45 2017"
-## [1] "done rescoring complex variables Mon Oct 16 15:42:46 2017"</code></pre>
+<pre><code>## [1] "designing treatments Mon Oct 16 16:20:40 2017"
+## [1] "designing treatments Mon Oct 16 16:20:40 2017"
+## [1] " have level statistics Mon Oct 16 16:20:41 2017"
+## [1] "design var xBad1 Mon Oct 16 16:20:41 2017"
+## [1] "design var xBad2 Mon Oct 16 16:20:41 2017"
+## [1] "design var xBad3 Mon Oct 16 16:20:41 2017"
+## [1] "design var xGood1 Mon Oct 16 16:20:41 2017"
+## [1] "design var xGood2 Mon Oct 16 16:20:41 2017"
+## [1] " scoring treatments Mon Oct 16 16:20:41 2017"
+## [1] "have treatment plan Mon Oct 16 16:20:41 2017"
+## [1] "rescoring complex variables Mon Oct 16 16:20:41 2017"
+## [1] "done rescoring complex variables Mon Oct 16 16:20:42 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -230,18 +230,18 @@ treatments &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../re
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "designing treatments Mon Oct 16 15:42:46 2017"
-## [1] "designing treatments Mon Oct 16 15:42:46 2017"
-## [1] " have level statistics Mon Oct 16 15:42:46 2017"
-## [1] "design var xBad1 Mon Oct 16 15:42:46 2017"
-## [1] "design var xBad2 Mon Oct 16 15:42:46 2017"
-## [1] "design var xBad3 Mon Oct 16 15:42:46 2017"
-## [1] "design var xGood1 Mon Oct 16 15:42:46 2017"
-## [1] "design var xGood2 Mon Oct 16 15:42:46 2017"
-## [1] " scoring treatments Mon Oct 16 15:42:46 2017"
-## [1] "have treatment plan Mon Oct 16 15:42:46 2017"
-## [1] "rescoring complex variables Mon Oct 16 15:42:46 2017"
-## [1] "done rescoring complex variables Mon Oct 16 15:42:47 2017"</code></pre>
+<pre><code>## [1] "designing treatments Mon Oct 16 16:20:42 2017"
+## [1] "designing treatments Mon Oct 16 16:20:42 2017"
+## [1] " have level statistics Mon Oct 16 16:20:42 2017"
+## [1] "design var xBad1 Mon Oct 16 16:20:42 2017"
+## [1] "design var xBad2 Mon Oct 16 16:20:43 2017"
+## [1] "design var xBad3 Mon Oct 16 16:20:43 2017"
+## [1] "design var xGood1 Mon Oct 16 16:20:43 2017"
+## [1] "design var xGood2 Mon Oct 16 16:20:43 2017"
+## [1] " scoring treatments Mon Oct 16 16:20:43 2017"
+## [1] "have treatment plan Mon Oct 16 16:20:43 2017"
+## [1] "rescoring complex variables Mon Oct 16 16:20:43 2017"
+## [1] "done rescoring complex variables Mon Oct 16 16:20:44 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)

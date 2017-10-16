@@ -1,9 +1,9 @@
 
 
-# vtreat 1.0.0 2017/10/16
+# vtreat 1.0.1 2017/10/16
 
-- Minor documentation fixes
-- rm data.table (issue)
+- Minor documentation fixes.
+- rm data.table (possibly related to issues 2413 or 2418).
 
 # vtreat 1.0.0 2017/10/04
 
