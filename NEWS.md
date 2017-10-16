@@ -1,5 +1,9 @@
 
 
+# vtreat 1.0.0 2017/10/16
+
+- Minor documentation fixes
+
 # vtreat 1.0.0 2017/10/04
 
 - Minor documentation fixes.
