@@ -23,7 +23,6 @@ Suggests:
     knitr,
     parallel,
     rmarkdown,
-    data.table,
     dplyr,
     ggplot2,
     RSQLite,

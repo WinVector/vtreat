@@ -15,4 +15,3 @@
 ^docs$
 ^_pkgdown\.yml$
 ^extras$
-^revdep$

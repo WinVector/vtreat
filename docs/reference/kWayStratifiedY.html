@@ -163,10 +163,10 @@
 <span class='no'>pSimple</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='kWayCrossValidation.html'>kWayCrossValidation</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='fl'>5</span>,<span class='no'>d</span>,<span class='no'>d</span>$<span class='no'>y</span>)
 <span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='fl'>5</span>,<span class='no'>pSimple</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='no'>d</span>$<span class='no'>simpleGroup</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/vtreat/topics/getSplitPlanAppLabels'>getSplitPlanAppLabels</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='no'>pSimple</span>)
 <span class='fu'>summary</span>(<span class='fu'>tapply</span>(<span class='no'>d</span>$<span class='no'>y</span>,<span class='no'>d</span>$<span class='no'>simpleGroup</span>,<span class='no'>mean</span>))</div><div class='output co'>#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#&gt; -0.144400 -0.068230  0.045370 -0.001272  0.057090  0.103800 </div><div class='input'><span class='co'># ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + </span>
+#&gt; -0.144403 -0.068234  0.045368 -0.001272  0.057092  0.103817 </div><div class='input'><span class='co'># ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + </span>
 <span class='co'>#   geom_density() + ggtitle('simple grouping')</span>
 <span class='fu'>summary</span>(<span class='fu'>tapply</span>(<span class='no'>d</span>$<span class='no'>y</span>,<span class='no'>d</span>$<span class='no'>stratGroup</span>,<span class='no'>mean</span>))</div><div class='output co'>#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#&gt; -0.018750 -0.006771  0.004188 -0.001272  0.006391  0.008583 </div><div class='input'># ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
+#&gt; -0.018749 -0.006771  0.004188 -0.001272  0.006391  0.008583 </div><div class='input'># ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
 #   geom_density() + ggtitle('y-stratified grouping')
 
 
