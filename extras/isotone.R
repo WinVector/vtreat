@@ -74,6 +74,21 @@ solveNonDecreasing <- function(varName, x, y, w=NULL) {
   if(length(noIncrease)>0) {
     Atot <- rbind(Atot,cbind(noIncrease+1,noIncrease))
   }
+  if(!is.matrix(Atot)) {
+    stop("solveNonDecreasing: !is.matrix(Atot)")
+  }
+  if(nrow(Atot)<1) {
+    stop("solveNonDecreasing: nrow(Atot)<1")
+  }
+  if(ncol(Atot)!=2) {
+    stop("solveNonDecreasing: ncol(Atot)!=2")
+  }
+  if(min(Atot)<1) {
+    stop("solveNonDecreasing: min(Atot)<1")
+  }
+  if(max(Atot)>length(d$y)) {
+    stop("solveNonDecreasing: (max(Atot)>length(d$y)")
+  }
   # sum of squares objective is default if y is specified
   sqIso <- isotone::activeSet(Atot, y=d$y, weights=d$w)
   adjPred <- sqIso$x
