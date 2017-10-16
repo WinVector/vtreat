@@ -5,7 +5,6 @@ date: "10/16/2017"
 output: html_document
 ---
 
-Note: RStudio crashing a lot on save.  Suspect isotone packge corrupting memory.
 
 ```{r polish}
 library("seplyr")
@@ -32,8 +31,7 @@ mkData <- function(n=200) {
 
 doModeling <- function(d) {
   model <- glm(yObserved ~ x, data = d[d$isTrain, , drop=FALSE], family = binomial)
-  sigr::wrapChiSqTest(model)
-  
+
   d$rawScore <- predict(model, newdata = d)  # oops forgot type='response'
   
   # fix it with isotone regression
