@@ -595,7 +595,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
     stop("most have rows")
   }
   if(verbose) {
-    print(paste("desigining treatments",date()))
+    print(paste("designing treatments",date()))
   }
   varlist <- setdiff(unique(varlist),outcomename)
   varlist <- intersect(varlist,colnames(dframe))
