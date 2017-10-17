@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2017-10-16" />
+<meta name="date" content="2017-10-17" />
 
 <title>vtreat scale mode</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat scale mode</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2017-10-16</em></h4>
+<h4 class="date"><em>2017-10-17</em></h4>
 
 
 
@@ -116,24 +116,24 @@ dTrainCTreatedScaled &lt;-<span class="st"> </span><span class="kw">prepare</spa
 ## 5     -0.1  0.1666667         0    0.1 -0.07564865  TRUE
 ## 6      0.5  0.1666667         0    0.4  0.51058851  TRUE</code></pre>
 <p>First we can check the claims. Are the variables mean-zero and slope 1 when regressed against y?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">slopeFrame &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">varName =</span> treatmentsC$scoreFrame$varName,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">slopeFrame &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">varName =</span> treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>varName,
                          <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-slopeFrame$mean &lt;-
-<span class="st">  </span><span class="kw">vapply</span>(dTrainCTreatedScaled[, slopeFrame$varName, <span class="dt">drop =</span> <span class="ot">FALSE</span>], mean,
+slopeFrame<span class="op">$</span>mean &lt;-
+<span class="st">  </span><span class="kw">vapply</span>(dTrainCTreatedScaled[, slopeFrame<span class="op">$</span>varName, <span class="dt">drop =</span> <span class="ot">FALSE</span>], mean,
          <span class="kw">numeric</span>(<span class="dv">1</span>))
-slopeFrame$slope &lt;-<span class="st"> </span><span class="kw">vapply</span>(slopeFrame$varName,
-                           function(c) {
+slopeFrame<span class="op">$</span>slope &lt;-<span class="st"> </span><span class="kw">vapply</span>(slopeFrame<span class="op">$</span>varName,
+                           <span class="cf">function</span>(c) {
                              <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>, c, <span class="dt">sep =</span> <span class="st">'~'</span>),
-                                <span class="dt">data =</span> dTrainCTreatedScaled)$coefficients[[<span class="dv">2</span>]]
+                                <span class="dt">data =</span> dTrainCTreatedScaled)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]
                            },
                            <span class="kw">numeric</span>(<span class="dv">1</span>))
-slopeFrame$sig &lt;-<span class="st"> </span><span class="kw">vapply</span>(slopeFrame$varName,
-                         function(c) {
-                           treatmentsC$scoreFrame[treatmentsC$scoreFrame$varName ==<span class="st"> </span>c, <span class="st">'sig'</span>]
+slopeFrame<span class="op">$</span>sig &lt;-<span class="st"> </span><span class="kw">vapply</span>(slopeFrame<span class="op">$</span>varName,
+                         <span class="cf">function</span>(c) {
+                           treatmentsC<span class="op">$</span>scoreFrame[treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>varName <span class="op">==</span><span class="st"> </span>c, <span class="st">'sig'</span>]
                          },
                          <span class="kw">numeric</span>(<span class="dv">1</span>))
-slopeFrame$badSlope &lt;-
-<span class="st">  </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(slopeFrame$slope), <span class="ot">TRUE</span>, <span class="kw">abs</span>(slopeFrame$slope -<span class="st"> </span><span class="dv">1</span>) &gt;<span class="st"> </span><span class="fl">1.e-8</span>)
+slopeFrame<span class="op">$</span>badSlope &lt;-
+<span class="st">  </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(slopeFrame<span class="op">$</span>slope), <span class="ot">TRUE</span>, <span class="kw">abs</span>(slopeFrame<span class="op">$</span>slope <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.e-8</span>)
 <span class="kw">print</span>(slopeFrame)</code></pre></div>
 <pre><code>##     varName          mean slope       sig badSlope
 ## 1  x_lev_NA -6.938894e-18     1 0.2076623    FALSE
@@ -168,7 +168,7 @@ dTrainCTreatedScaled2 &lt;-<span class="st"> </span><span class="kw">prepare</sp
 ## 0.000000e+00 0.000000e+00 0.000000e+00 3.700743e-16 7.401487e-17 
 ##            y 
 ## 5.000000e-01</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(y~x_lev_NA,<span class="dt">data=</span>dTrainCTreatedScaled)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(y<span class="op">~</span>x_lev_NA,<span class="dt">data=</span>dTrainCTreatedScaled)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x_lev_NA, data = dTrainCTreatedScaled)
@@ -176,7 +176,7 @@ dTrainCTreatedScaled2 &lt;-<span class="st"> </span><span class="kw">prepare</sp
 ## Coefficients:
 ## (Intercept)     x_lev_NA  
 ##         0.5          1.0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(y~x_lev_NA,<span class="dt">data=</span>dTrainCTreatedScaled2)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(y<span class="op">~</span>x_lev_NA,<span class="dt">data=</span>dTrainCTreatedScaled2)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x_lev_NA, data = dTrainCTreatedScaled2)
@@ -185,10 +185,10 @@ dTrainCTreatedScaled2 &lt;-<span class="st"> </span><span class="kw">prepare</sp
 ## (Intercept)     x_lev_NA  
 ##     0.50000      0.03163</code></pre>
 <p>The new scaled columns, however are in good logistic link units.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="kw">vapply</span>(slopeFrame$varName,
-                           function(c) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="kw">vapply</span>(slopeFrame<span class="op">$</span>varName,
+                           <span class="cf">function</span>(c) {
                              <span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>, c, <span class="dt">sep =</span> <span class="st">'~'</span>),<span class="dt">family=</span>binomial,
-                                <span class="dt">data =</span> dTrainCTreatedScaled2)$coefficients[[<span class="dv">2</span>]]
+                                <span class="dt">data =</span> dTrainCTreatedScaled2)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]
                            },
                            <span class="kw">numeric</span>(<span class="dv">1</span>))</code></pre></div>
 <pre><code>##  x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catB 
@@ -209,12 +209,12 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
                       <span class="dt">x2=</span><span class="kw">rnorm</span>(<span class="dv">100</span>),
                       <span class="dt">x3=</span><span class="kw">rnorm</span>(<span class="dv">100</span>),
                       <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
-dTrainN$y &lt;-<span class="st"> </span><span class="dv">1000</span>*(dTrainN$x1 +<span class="st"> </span>dTrainN$x2)
-cEraw &lt;-<span class="st"> </span>vtreat::<span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
+dTrainN<span class="op">$</span>y &lt;-<span class="st"> </span><span class="dv">1000</span><span class="op">*</span>(dTrainN<span class="op">$</span>x1 <span class="op">+</span><span class="st"> </span>dTrainN<span class="op">$</span>x2)
+cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
                                          <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,
                                          <span class="dt">scale=</span><span class="ot">TRUE</span>)
-dM1 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEraw$crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
-pCraw &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM1,
+dM1 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEraw<span class="op">$</span>crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
+pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">prcomp</span>(dM1,
                        <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(pCraw)</code></pre></div>
 <pre><code>## Standard deviations (1, .., p=3):
@@ -225,12 +225,12 @@ pCraw &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM1,
 ## x1_clean  0.98564543 -0.16880819 0.002623125
 ## x2_clean  0.16849926  0.98457413 0.047135824
 ## x3_clean -0.01053957 -0.04601721 0.998885045</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainN$yScaled &lt;-<span class="st"> </span><span class="kw">scale</span>(dTrainN$y,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
-cEscaled &lt;-<span class="st"> </span>vtreat::<span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainN<span class="op">$</span>yScaled &lt;-<span class="st"> </span><span class="kw">scale</span>(dTrainN<span class="op">$</span>y,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
+cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
                                             <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
                                             <span class="dt">scale=</span><span class="ot">TRUE</span>)
-dM2 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEscaled$crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
-pCscaled &lt;-<span class="st"> </span>stats::<span class="kw">prcomp</span>(dM2,
+dM2 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEscaled<span class="op">$</span>crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
+pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">prcomp</span>(dM2,
                           <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(pCscaled)</code></pre></div>
 <pre><code>## Standard deviations (1, .., p=3):

@@ -20,10 +20,13 @@ plapply <- function(workList,worker,parallelCluster) {
     }
     return(rowlist[[1]])
   }
-  # see if a library can supply a fast method
-  if(requireNamespace("dplyr", quietly = TRUE)) {
-    return(as.data.frame(dplyr::bind_rows(rowlist),
-                         stringsAsFactor=FALSE))
+  vtreat_use_dplyr_binding <- getOption('vtreat.use_dplyr_binding')
+  if(is.null(vtreat_use_dplyr_binding) || (vtreat_use_dplyr_binding==TRUE)) {
+    # see if a library can supply a fast method
+    if(requireNamespace("dplyr", quietly = TRUE)) {
+      return(as.data.frame(dplyr::bind_rows(rowlist),
+                           stringsAsFactor=FALSE))
+    }
   }
   # fall back to base R
   do.call(rbind,rowlist)

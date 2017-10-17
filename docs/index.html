@@ -134,7 +134,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">'vtreat'</span>)</code></pre></div>
 <p>Or from GitHub:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('devtools')</span>
-devtools::<span class="kw">install_github</span>(<span class="st">'WinVector/vtreat'</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">'WinVector/vtreat'</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
 <p>And then:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">'vtreat'</span>)
 <span class="kw">help</span>(<span class="st">'vtreat'</span>)</code></pre></div>
@@ -194,7 +194,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">'WinVector/vtr
 <p>Trivial example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)
 <span class="kw">packageVersion</span>(<span class="st">"vtreat"</span>)
- <span class="co">#  [1] '1.0.1'</span>
+ <span class="co">#  [1] '1.0.2'</span>
 <span class="kw">citation</span>(<span class="st">'vtreat'</span>)
  <span class="co">#  </span>
  <span class="co">#  To cite package 'vtreat' in publications use:</span>
@@ -223,13 +223,13 @@ dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw">print</span>(treatmentsC$scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
+<span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
  <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
  <span class="co">#  1        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span>
  <span class="co">#  2        x x_lev_x.a   lev 1.300057e-01 0.26490379                 0</span>
  <span class="co">#  3        x x_lev_x.b   lev 6.067337e-03 0.80967242                 0</span>
  <span class="co">#  4        x    x_catP  catP 1.559780e-01 0.22202097                 2</span>
- <span class="co">#  5        x    x_catB  catB 1.142159e-05 0.99166241                 2</span>
+ <span class="co">#  5        x    x_catB  catB 1.177202e-05 0.99153548                 2</span>
  <span class="co">#  6        z   z_clean clean 2.376018e-01 0.13176020                 0</span>
  <span class="co">#  7        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span>
 
@@ -244,8 +244,8 @@ varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class=
  <span class="co">#        z_clean       z_isBAD </span>
  <span class="co">#   7.927952e-18 -7.926292e-18</span>
 <span class="co"># all non NA slopes should be 1</span>
-<span class="kw">sapply</span>(varsC,function(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainCTreated)$coefficients[[<span class="dv">2</span>]]})
+<span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
+   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})
  <span class="co">#   x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catB   z_clean   z_isBAD </span>
  <span class="co">#          1         1         1         1         1         1         1</span>
 dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
@@ -267,14 +267,14 @@ dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 <span class="co"># help("designTreatmentsN")</span>
 treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>,
                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw">print</span>(treatmentsN$scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
+<span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
  <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
  <span class="co">#  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>
  <span class="co">#  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0</span>
  <span class="co">#  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0</span>
- <span class="co">#  4        x    x_catP  catP 1.441176e-01 0.3536290                 2</span>
- <span class="co">#  5        x    x_catN  catN 1.866542e-03 0.9190942                 2</span>
- <span class="co">#  6        x    x_catD  catD 2.302479e-01 0.2288609                 2</span>
+ <span class="co">#  4        x    x_catP  catP 2.941176e-01 0.1649303                 2</span>
+ <span class="co">#  5        x    x_catN  catN 6.583561e-02 0.5396025                 2</span>
+ <span class="co">#  6        x    x_catD  catD 9.777348e-03 0.8158041                 2</span>
  <span class="co">#  7        z   z_clean clean 2.880952e-01 0.1701892                 0</span>
  <span class="co">#  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
 dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
@@ -286,8 +286,8 @@ varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class=
  <span class="co">#         x_catD       z_clean       z_isBAD </span>
  <span class="co">#  -2.775558e-17  4.857226e-17  6.938894e-18</span>
 <span class="co"># all non NA slopes should be 1</span>
-<span class="kw">sapply</span>(varsN,function(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainNTreated)$coefficients[[<span class="dv">2</span>]]}) 
+<span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
+   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) 
  <span class="co">#   x_lev_NA x_lev_x.a x_lev_x.b    x_catP    x_catN    x_catD   z_clean </span>
  <span class="co">#          1         1         1         1         1         1         1 </span>
  <span class="co">#    z_isBAD </span>

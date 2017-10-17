@@ -99,7 +99,7 @@
       <h1>Saving Treatment Plans</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2017-10-16</h4>
+            <h4 class="date">2017-10-17</h4>
           </div>
 
     
@@ -129,7 +129,7 @@ dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 <span class="kw">unlink</span>(fileName)</code></pre></div>
 <p>Treatment plans can also be stored as binary blobs in databases. Using ideas from <a href="http://jfaganuk.github.io/2015/01/12/storing-r-objects-in-sqlite-tables/">here</a> gives us the following through the <code>DBI</code> interface.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">con &lt;-<span class="st"> </span><span class="ot">NULL</span>
-if (<span class="kw">requireNamespace</span>(<span class="st">'RSQLite'</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {
+<span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">'RSQLite'</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {
   <span class="kw">library</span>(<span class="st">"RSQLite"</span>)
   con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="dt">drv=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/RSQLite/topics/SQLite">SQLite</a></span>(), <span class="dt">dbname=</span><span class="st">":memory:"</span>)
   <span class="co"># create table</span>
@@ -165,10 +165,10 @@ if (<span class="kw">requireNamespace</span>(<span class="st">'RSQLite'</span>, 
 <pre><code>## [1] "saved to db:  &lt;SQLiteConnection&gt;\n  Path: :memory:\n  Extensions: TRUE"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span> <span class="kw">c</span>(<span class="st">'treatmentsC'</span>, <span class="st">'dTestCTreated'</span>))</code></pre></div>
 <p>And we can read the treatment back in as follows.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(!<span class="kw">is.null</span>(con)) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(con)) {
   treatmentsList &lt;-<span class="st"> </span><span class="kw">lapply</span>(
     <span class="kw">dbGetQuery</span>(con, 
-               <span class="st">"select * from treatments where key='treatmentsC'"</span>)$treatment,
+               <span class="st">"select * from treatments where key='treatmentsC'"</span>)<span class="op">$</span>treatment,
     unserialize)
   treatmentsC &lt;-<span class="st"> </span>treatmentsList[[<span class="dv">1</span>]]
   <span class="kw">dbDisconnect</span>(con)

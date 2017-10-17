@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2017-10-16" />
+<meta name="date" content="2017-10-17" />
 
 <title>Variable Types</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Variable Types</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2017-10-16</em></h4>
+<h4 class="date"><em>2017-10-17</em></h4>
 
 
 
@@ -96,17 +96,17 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Mon Oct 16 16:19:39 2017&quot;
-## [1] &quot;designing treatments Mon Oct 16 16:19:39 2017&quot;
-## [1] &quot; have level statistics Mon Oct 16 16:19:39 2017&quot;
-## [1] &quot;design var x Mon Oct 16 16:19:39 2017&quot;
-## [1] &quot;design var z Mon Oct 16 16:19:39 2017&quot;
-## [1] &quot; scoring treatments Mon Oct 16 16:19:39 2017&quot;
-## [1] &quot;have treatment plan Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;rescoring complex variables Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;done rescoring complex variables Mon Oct 16 16:19:40 2017&quot;</code></pre>
+<pre><code>## [1] &quot;designing treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;designing treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot; have level statistics Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;design var x Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;design var z Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot; scoring treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;have treatment plan Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;rescoring complex variables Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;done rescoring complex variables Tue Oct 17 07:04:17 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
-<span class="kw">print</span>(treatmentsC$scoreFrame[,scoreColsToPrint])</code></pre></div>
+<span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
 ## 1        x  x_lev_NA   lev 0.19087450 0.2076623                 0
 ## 2        x x_lev_x.a   lev 0.08170417 0.4097258                 0
@@ -117,13 +117,13 @@ treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</sp
 ## 7        z   z_isBAD isBAD 0.19087450 0.2076623                 0</code></pre>
 <p>For each user supplied variable or column (in this case <code>x</code> and <code>z</code>) ‘vtreat’ proposes derived or treated variables (in this case <code>x_lev_x.a</code>, <code>x_lev_x.b</code>, <code>x_catP</code>, <code>x_catB</code>, <code>z_clean</code>, and <code>z_isBAD</code>). The mapping from original variable name to derived variable name is given by comparing the columns <code>origName</code> and <code>varName</code>. One can map facts about the new variables back to the original variables as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Build a map from vtreat names back to reasonable display names</span>
-vmap &lt;-<span class="st"> </span><span class="kw">as.list</span>(treatmentsC$scoreFrame$origName)
-<span class="kw">names</span>(vmap) &lt;-<span class="st"> </span>treatmentsC$scoreFrame$varName
+vmap &lt;-<span class="st"> </span><span class="kw">as.list</span>(treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>origName)
+<span class="kw">names</span>(vmap) &lt;-<span class="st"> </span>treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>varName
 <span class="kw">print</span>(vmap[<span class="st">'x_catB'</span>])</code></pre></div>
 <pre><code>## $x_catB
 ## [1] &quot;x&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Map significances back to original variables</span>
-<span class="kw">aggregate</span>(sig~origName,<span class="dt">data=</span>treatmentsC$scoreFrame,<span class="dt">FUN=</span>min)</code></pre></div>
+<span class="kw">aggregate</span>(sig<span class="op">~</span>origName,<span class="dt">data=</span>treatmentsC<span class="op">$</span>scoreFrame,<span class="dt">FUN=</span>min)</code></pre></div>
 <pre><code>##   origName       sig
 ## 1        x 0.1547700
 ## 2        z 0.1429977</code></pre>
@@ -146,16 +146,16 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;designing treatments Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot; have level statistics Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;design var x Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;design var z Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot; scoring treatments Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;have treatment plan Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;rescoring complex variables Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;done rescoring complex variables Mon Oct 16 16:19:40 2017&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN$scoreFrame[,scoreColsToPrint])</code></pre></div>
+<pre><code>## [1] &quot;designing treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;designing treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot; have level statistics Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;design var x Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;design var z Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot; scoring treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;have treatment plan Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;rescoring complex variables Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;done rescoring complex variables Tue Oct 17 07:04:17 2017&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 2        x x_lev_x.a   lev 0.1111111 0.5185185                 0
@@ -185,14 +185,14 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw">designTreatmentsZ</span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;designing treatments Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot; have level statistics Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;design var x Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;design var z Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot; scoring treatments Mon Oct 16 16:19:40 2017&quot;
-## [1] &quot;have treatment plan Mon Oct 16 16:19:40 2017&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ$scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
+<pre><code>## [1] &quot;designing treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;designing treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot; have level statistics Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;design var x Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;design var z Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot; scoring treatments Tue Oct 17 07:04:17 2017&quot;
+## [1] &quot;have treatment plan Tue Oct 17 07:04:17 2017&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x  x_lev_NA   lev                 0
 ## 2        x x_lev_x.a   lev                 0
@@ -223,7 +223,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 
 <span class="co"># no catP or catD variables</span>
-<span class="kw">print</span>(treatmentsN$scoreFrame[,scoreColsToPrint])</code></pre></div>
+<span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 2        x x_lev_x.a   lev 0.1111111 0.5185185                 0
@@ -268,7 +268,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
                                                       <span class="st">'clean'</span>,
                                                       <span class="st">'isBAD'</span>),
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw">print</span>(treatmentsN$scoreFrame[,scoreColsToPrint])</code></pre></div>
+<span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 2        x x_lev_x.a   lev 0.1111111 0.5185185                 0
@@ -277,11 +277,11 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
 ## 5        z   z_clean clean 0.3045045 0.2562868                 0
 ## 6        z   z_isBAD isBAD 0.2000000 0.3739010                 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pruneSig &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
-vScoreFrame &lt;-<span class="st"> </span>treatmentsN$scoreFrame
-varsToUse &lt;-<span class="st"> </span>vScoreFrame$varName[(vScoreFrame$sig&lt;=pruneSig)]
+vScoreFrame &lt;-<span class="st"> </span>treatmentsN<span class="op">$</span>scoreFrame
+varsToUse &lt;-<span class="st"> </span>vScoreFrame<span class="op">$</span>varName[(vScoreFrame<span class="op">$</span>sig<span class="op">&lt;=</span>pruneSig)]
 <span class="kw">print</span>(varsToUse)</code></pre></div>
 <pre><code>## [1] &quot;x_lev_NA&quot;  &quot;x_lev_x.a&quot; &quot;x_lev_x.b&quot; &quot;x_catN&quot;    &quot;z_clean&quot;   &quot;z_isBAD&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame$origName[vScoreFrame$varName %in%<span class="st"> </span>varsToUse]))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame<span class="op">$</span>origName[vScoreFrame<span class="op">$</span>varName <span class="op">%in%</span><span class="st"> </span>varsToUse]))
 <span class="kw">print</span>(origVarNames)</code></pre></div>
 <pre><code>## [1] &quot;x&quot; &quot;z&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># prepare a treated data frame using only the &quot;significant&quot; variables</span>
@@ -298,11 +298,11 @@ dTreated =<span class="st"> </span><span class="kw">prepare</span>(treatmentsN, 
 ## 6        1         0         0  0.5000000     6.0       0 1</code></pre>
 <p>We strongly suggest using the standard variables coded as ‘lev’, ‘clean’, and ‘isBad’; and the “y aware” variables coded as ‘catN’ and ‘catB’. The non sub-model variables (‘catP’ and ‘catD’) can be useful (possibly as interactions or guards on the corresponding ‘catN’ and ‘catB’ variables) but also encode distributional facts about the data that may or may not be appropriate depending on your problem domain.</p>
 <p>When displaying variables to end users we suggest using the original names and the min significance seen on any derived variable:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame$origName[vScoreFrame$varName %in%<span class="st"> </span>varsToUse]))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame<span class="op">$</span>origName[vScoreFrame<span class="op">$</span>varName <span class="op">%in%</span><span class="st"> </span>varsToUse]))
 <span class="kw">print</span>(origVarNames)</code></pre></div>
 <pre><code>## [1] &quot;x&quot; &quot;z&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarSigs &lt;-<span class="st"> </span>vScoreFrame[vScoreFrame$varName %in%<span class="st"> </span>varsToUse,]
-<span class="kw">aggregate</span>(sig~origName,<span class="dt">data=</span>origVarSigs,<span class="dt">FUN=</span>min)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarSigs &lt;-<span class="st"> </span>vScoreFrame[vScoreFrame<span class="op">$</span>varName <span class="op">%in%</span><span class="st"> </span>varsToUse,]
+<span class="kw">aggregate</span>(sig<span class="op">~</span>origName,<span class="dt">data=</span>origVarSigs,<span class="dt">FUN=</span>min)</code></pre></div>
 <pre><code>##   origName       sig
 ## 1        x 0.3739010
 ## 2        z 0.2562868</code></pre>

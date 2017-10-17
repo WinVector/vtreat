@@ -114,7 +114,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.0.1'
+ #  [1] '1.0.2'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -195,9 +195,9 @@ print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'ex
  #  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
  #  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
  #  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
- #  4        x    x_catP  catP 3.558824e-01 0.1184999                 2
- #  5        x    x_catN  catN 3.132648e-02 0.6750039                 2
- #  6        x    x_catD  catD 4.512437e-02 0.6135229                 2
+ #  4        x    x_catP  catP 1.764706e-01 0.3001022                 2
+ #  5        x    x_catN  catN 3.533569e-03 0.8888051                 2
+ #  6        x    x_catD  catD 3.743113e-01 0.1069707                 2
  #  7        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)

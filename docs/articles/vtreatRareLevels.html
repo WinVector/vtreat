@@ -99,7 +99,7 @@
       <h1>vtreat Rare Levels</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2017-10-16</h4>
+            <h4 class="date">2017-10-17</h4>
           </div>
 
     
@@ -117,27 +117,27 @@
 populationFrame &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
    <span class="dt">popsize =</span> <span class="kw">round</span>(<span class="kw">rlnorm</span>(<span class="dv">100</span>,<span class="dt">meanlog=</span><span class="kw">log</span>(<span class="dv">4000</span>),<span class="dt">sdlog=</span><span class="dv">1</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-populationFrame$code &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">'z'</span>,<span class="kw">formatC</span>(<span class="kw">sample.int</span>(<span class="dv">100000</span>,
+populationFrame<span class="op">$</span>code &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">'z'</span>,<span class="kw">formatC</span>(<span class="kw">sample.int</span>(<span class="dv">100000</span>,
                                               <span class="dt">size=</span><span class="kw">nrow</span>(populationFrame),
                                               <span class="dt">replace=</span><span class="ot">FALSE</span>),<span class="dt">width=</span><span class="dv">5</span>,<span class="dt">flag=</span><span class="st">'0'</span>))
-rareCodes &lt;-<span class="st"> </span>populationFrame$code[populationFrame$popsize&lt;<span class="dv">1000</span>]
+rareCodes &lt;-<span class="st"> </span>populationFrame<span class="op">$</span>code[populationFrame<span class="op">$</span>popsize<span class="op">&lt;</span><span class="dv">1000</span>]
 
 <span class="co"># Draw individuals from code-regions proportional to size of code region</span>
 <span class="co"># (or uniformly over all individuals labeled by code region).</span>
 <span class="co"># Also add the outcome which has altered conditional probability for rareCodes.</span>
-drawIndividualsAndReturnCodes &lt;-<span class="st"> </span>function(n) {
-  ords &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">sample.int</span>(<span class="kw">sum</span>(populationFrame$popsize),<span class="dt">size=</span>n,<span class="dt">replace=</span><span class="ot">TRUE</span>))
-  cs &lt;-<span class="st"> </span><span class="kw">cumsum</span>(populationFrame$popsize)
-  indexes &lt;-<span class="st"> </span><span class="kw">findInterval</span>(ords,cs)+<span class="dv">1</span>
+drawIndividualsAndReturnCodes &lt;-<span class="st"> </span><span class="cf">function</span>(n) {
+  ords &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">sample.int</span>(<span class="kw">sum</span>(populationFrame<span class="op">$</span>popsize),<span class="dt">size=</span>n,<span class="dt">replace=</span><span class="ot">TRUE</span>))
+  cs &lt;-<span class="st"> </span><span class="kw">cumsum</span>(populationFrame<span class="op">$</span>popsize)
+  indexes &lt;-<span class="st"> </span><span class="kw">findInterval</span>(ords,cs)<span class="op">+</span><span class="dv">1</span>
   indexes &lt;-<span class="st"> </span>indexes[<span class="kw">sample.int</span>(n,<span class="dt">size=</span>n,<span class="dt">replace=</span><span class="ot">FALSE</span>)]
-  samp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">code=</span>populationFrame$code[indexes],
+  samp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">code=</span>populationFrame<span class="op">$</span>code[indexes],
                      <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-  samp$inClass &lt;-<span class="st"> </span><span class="kw">runif</span>(n) &lt;<span class="st"> </span><span class="kw">ifelse</span>(samp$code %in%<span class="st"> </span>rareCodes,<span class="fl">0.3</span>,<span class="fl">0.01</span>)
+  samp<span class="op">$</span>inClass &lt;-<span class="st"> </span><span class="kw">runif</span>(n) <span class="op">&lt;</span><span class="st"> </span><span class="kw">ifelse</span>(samp<span class="op">$</span>code <span class="op">%in%</span><span class="st"> </span>rareCodes,<span class="fl">0.3</span>,<span class="fl">0.01</span>)
   samp
 }</code></pre></div>
 <p>We then draw a sample we want to make some observations on.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testSet &lt;-<span class="st"> </span><span class="kw">drawIndividualsAndReturnCodes</span>(<span class="dv">2000</span>)
-<span class="kw">table</span>(<span class="dt">generatedAsRare=</span>testSet$code %in%<span class="st"> </span>rareCodes,<span class="dt">inClass=</span>testSet$inClass)</code></pre></div>
+<span class="kw">table</span>(<span class="dt">generatedAsRare=</span>testSet<span class="op">$</span>code <span class="op">%in%</span><span class="st"> </span>rareCodes,<span class="dt">inClass=</span>testSet<span class="op">$</span>inClass)</code></pre></div>
 <pre><code>##                inClass
 ## generatedAsRare FALSE TRUE
 ##           FALSE  1962   15
@@ -145,10 +145,10 @@ drawIndividualsAndReturnCodes &lt;-<span class="st"> </span>function(n) {
 <p>Notice that in the sample we can observe the elevated rate of <code>inClass==TRUE</code> conditioned on coming from a <code>code</code> that is one of the <code>rareCodes</code>.</p>
 <p>We could try to learn this relation using <code>vtreat</code>. To do this we set up another sample (<code>designSet</code>) to work on, so we are not inferring from <code>testSet</code> (where we will evaluate results).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">designSet &lt;-<span class="st"> </span><span class="kw">drawIndividualsAndReturnCodes</span>(<span class="dv">2000</span>)
-treatments &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(designSet,<span class="st">'code'</span>,<span class="st">'inClass'</span>,<span class="ot">TRUE</span>,
+treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(designSet,<span class="st">'code'</span>,<span class="st">'inClass'</span>,<span class="ot">TRUE</span>,
                                         <span class="dt">rareCount=</span><span class="dv">5</span>,<span class="dt">rareSig=</span><span class="ot">NULL</span>,
                                         <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-treatments$scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>),drop=<span class="ot">FALSE</span>]</code></pre></div>
+treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>),drop=<span class="ot">FALSE</span>]</code></pre></div>
 <pre><code>##              varName          sig
 ## 1      code_lev_rare 1.050358e-07
 ## 2  code_lev_x.z03696 2.012044e-01
@@ -166,62 +166,62 @@ treatments$scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</spa
 ## 14         code_catP 2.946894e-01
 ## 15         code_catB 1.592276e-02</code></pre>
 <p>We see in <code>treatments$scoreFrame</code> we have a level called <code>code_lev_rare</code>, which is where a number of rare levels are re-coding. We can also confirm levels that occur <code>rareCount</code> or fewer times are eligable to code to to <code>code_lev_rare</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">designSetTreated &lt;-<span class="st">  </span>vtreat::<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments,designSet,<span class="dt">pruneSig=</span><span class="fl">0.5</span>)
-designSetTreated$code &lt;-<span class="st"> </span>designSet$code
-<span class="kw">summary</span>(<span class="kw">as.numeric</span>(<span class="kw">table</span>(designSetTreated$code[designSetTreated$code_lev_rare==<span class="dv">1</span>])))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">designSetTreated &lt;-<span class="st">  </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,designSet,<span class="dt">pruneSig=</span><span class="fl">0.5</span>)
+designSetTreated<span class="op">$</span>code &lt;-<span class="st"> </span>designSet<span class="op">$</span>code
+<span class="kw">summary</span>(<span class="kw">as.numeric</span>(<span class="kw">table</span>(designSetTreated<span class="op">$</span>code[designSetTreated<span class="op">$</span>code_lev_rare<span class="op">==</span><span class="dv">1</span>])))</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.000   2.000   3.000   3.161   5.000   5.000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(<span class="kw">table</span>(designSetTreated$code[designSetTreated$code_lev_rare!=<span class="dv">1</span>])))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(<span class="kw">table</span>(designSetTreated<span class="op">$</span>code[designSetTreated<span class="op">$</span>code_lev_rare<span class="op">!=</span><span class="dv">1</span>])))</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##    6.00   11.50   21.00   28.39   33.50  176.00</code></pre>
 <p>We can now apply this treatment to <code>testSet</code> to see how this inferred rare level performs. Notice also the <code>code_catP</code> which directly encodes prevalence or frequency of the level during training also gives usable estimate of size (likely a more useful one then the rare-level code itself).</p>
 <p>As we can see below the <code>code_lev_rare</code> correlates with the condition, and usefully re-codes novel levels (levels in <code>testSet</code> that were not seen in <code>designSet</code>) to rare.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testSetTreated &lt;-<span class="st"> </span>vtreat::<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments,testSet,<span class="dt">pruneSig=</span><span class="fl">0.5</span>)
-testSetTreated$code &lt;-<span class="st"> </span>testSet$code
-testSetTreated$newCode &lt;-<span class="st"> </span>!(testSetTreated$code %in%<span class="st"> </span><span class="kw">unique</span>(designSet$code))
-testSetTreated$generatedAsRareCode &lt;-<span class="st"> </span>testSetTreated$code %in%<span class="st"> </span>rareCodes
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testSetTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,testSet,<span class="dt">pruneSig=</span><span class="fl">0.5</span>)
+testSetTreated<span class="op">$</span>code &lt;-<span class="st"> </span>testSet<span class="op">$</span>code
+testSetTreated<span class="op">$</span>newCode &lt;-<span class="st"> </span><span class="op">!</span>(testSetTreated<span class="op">$</span>code <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(designSet<span class="op">$</span>code))
+testSetTreated<span class="op">$</span>generatedAsRareCode &lt;-<span class="st"> </span>testSetTreated<span class="op">$</span>code <span class="op">%in%</span><span class="st"> </span>rareCodes
 
 <span class="co"># Show code_lev_rare==1 corresponds to a subset of rows with elevated inClass==TRUE rate.</span>
-<span class="kw">table</span>(<span class="dt">code_lev_rare=</span>testSetTreated$code_lev_rare,
-      <span class="dt">inClass=</span>testSetTreated$inClass)</code></pre></div>
+<span class="kw">table</span>(<span class="dt">code_lev_rare=</span>testSetTreated<span class="op">$</span>code_lev_rare,
+      <span class="dt">inClass=</span>testSetTreated<span class="op">$</span>inClass)</code></pre></div>
 <pre><code>##              inClass
 ## code_lev_rare FALSE TRUE
 ##             0  1873   15
 ##             1   105    7</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Show newCodes get coded with code_level_rare==1.</span>
 
-<span class="kw">table</span>(<span class="dt">newCode=</span>testSetTreated$newCode,<span class="dt">code_lev_rare=</span>testSetTreated$code_lev_rare)</code></pre></div>
+<span class="kw">table</span>(<span class="dt">newCode=</span>testSetTreated<span class="op">$</span>newCode,<span class="dt">code_lev_rare=</span>testSetTreated<span class="op">$</span>code_lev_rare)</code></pre></div>
 <pre><code>##        code_lev_rare
 ## newCode    0    1
 ##   FALSE 1888  108
 ##   TRUE     0    4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Show newCodes tend to come from defined rareCodes.</span>
-<span class="kw">table</span>(<span class="dt">newCode=</span>testSetTreated$newCode,
-      <span class="dt">generatedAsRare=</span>testSetTreated$generatedAsRareCode)</code></pre></div>
+<span class="kw">table</span>(<span class="dt">newCode=</span>testSetTreated<span class="op">$</span>newCode,
+      <span class="dt">generatedAsRare=</span>testSetTreated<span class="op">$</span>generatedAsRareCode)</code></pre></div>
 <pre><code>##        generatedAsRare
 ## newCode FALSE TRUE
 ##   FALSE  1977   19
 ##   TRUE      0    4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Show code_catP's behavior on rare and novel levels.</span>
-<span class="kw">summary</span>(testSetTreated$code_catP)</code></pre></div>
+<span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## 0.00000 0.01000 0.01700 0.02599 0.03050 0.08800</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP)) +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>()</code></pre></div>
 <p><img src="vtreatRareLevels_files/figure-html/unnamed-chunk-6-1.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated$code_catP[testSetTreated$code_lev_rare==<span class="dv">1</span>])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP[testSetTreated<span class="op">$</span>code_lev_rare<span class="op">==</span><span class="dv">1</span>])</code></pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000000 0.001000 0.002000 0.001754 0.002500 0.002500</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated$code_lev_rare))) +<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>() +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated<span class="op">$</span>code_lev_rare))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
 <p><img src="vtreatRareLevels_files/figure-html/unnamed-chunk-6-2.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated$code_catP[testSetTreated$newCode])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP[testSetTreated<span class="op">$</span>newCode])</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##       0       0       0       0       0       0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated$code_catP[testSetTreated$generatedAsRareCode])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP[testSetTreated<span class="op">$</span>generatedAsRareCode])</code></pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000000 0.000500 0.001000 0.001304 0.002500 0.003000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated$generatedAsRareCode))) +<span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>() +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated<span class="op">$</span>generatedAsRareCode))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
 <p><img src="vtreatRareLevels_files/figure-html/unnamed-chunk-6-3.png" width="576"></p>
 </div>
   </div>
