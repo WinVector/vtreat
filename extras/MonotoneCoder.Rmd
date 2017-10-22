@@ -159,6 +159,7 @@ treatments <- vtreat::designTreatmentsC(d[d$isTrain, , drop=FALSE],
                                         customCoders = customCoders,
                                         verbose = FALSE)
 print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FALSE])
+predictionCollar <- 2/(sum(d$isTrain)-1)
 ```
 
 Notice in the score frame `vtreat`'s cross validation based scoring correctly 
@@ -169,6 +170,7 @@ the sigmoid link function.
 # copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
 d$adjScore <- dTreated$rawScore_NonDecreasingV
+d$adjScore <- pmax(predictionCollar, pmin(1-predictionCollar, d$adjScore))
 d$adjPred <- d$adjScore>=0.5
 
 # and the correct link

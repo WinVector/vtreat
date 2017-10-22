@@ -1,7 +1,7 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2017-10-16
+2017-10-22
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
@@ -270,12 +270,17 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
     ## 1 rawScore_NonDecreasingV 0.3370146 2.856172e-10       TRUE
     ## 2          rawScore_clean 0.3522417 1.138713e-10      FALSE
 
+``` r
+predictionCollar <- 2/(sum(d$isTrain)-1)
+```
+
 Notice in the score frame `vtreat`'s cross validation based scoring correctly indentifies that the isotone encoding is over-fitting and not in fact better than the sigmoid link function.
 
 ``` r
 # copy fit over to original data frame
 dTreated <- vtreat::prepare(treatments, d)
 d$adjScore <- dTreated$rawScore_NonDecreasingV
+d$adjScore <- pmax(predictionCollar, pmin(1-predictionCollar, d$adjScore))
 d$adjPred <- d$adjScore>=0.5
 
 # and the correct link
@@ -284,20 +289,20 @@ d$linkPred <- d$linkScore>=0.5
 head(d)
 ```
 
-    ##          x yIdeal yObserved isTrain   rawScore  adjScore adjPred linkScore
-    ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394 0.9166667    TRUE 0.8826781
-    ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170 0.6111111    TRUE 0.4542739
-    ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434 0.2857143   FALSE 0.3934475
-    ## 4 9.732597  FALSE     FALSE    TRUE -2.1956494 0.0000000   FALSE 0.1001419
-    ## 5 3.726201   TRUE      TRUE   FALSE  1.9416808 0.9166667    TRUE 0.8745367
-    ## 6 2.197222   TRUE      TRUE   FALSE  2.9948735 0.9166667    TRUE 0.9523420
-    ##   linkPred
-    ## 1     TRUE
-    ## 2    FALSE
-    ## 3    FALSE
-    ## 4    FALSE
-    ## 5     TRUE
-    ## 6     TRUE
+    ##          x yIdeal yObserved isTrain   rawScore   adjScore adjPred
+    ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394 0.91666667    TRUE
+    ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170 0.61111111    TRUE
+    ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434 0.28571429   FALSE
+    ## 4 9.732597  FALSE     FALSE    TRUE -2.1956494 0.02325581   FALSE
+    ## 5 3.726201   TRUE      TRUE   FALSE  1.9416808 0.91666667    TRUE
+    ## 6 2.197222   TRUE      TRUE   FALSE  2.9948735 0.91666667    TRUE
+    ##   linkScore linkPred
+    ## 1 0.8826781     TRUE
+    ## 2 0.4542739    FALSE
+    ## 3 0.3934475    FALSE
+    ## 4 0.1001419    FALSE
+    ## 5 0.8745367     TRUE
+    ## 6 0.9523420     TRUE
 
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
@@ -309,7 +314,7 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=-0.29 (X2(1,N=113)=-41, p=n.s.)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.14 (X2(1,N=113)=19, p=1.3e-05)."
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
@@ -339,7 +344,7 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.72 (X2(1,N=113)=1.1e+02, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.71 (X2(1,N=113)=1e+02, p<1e-05)."
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
