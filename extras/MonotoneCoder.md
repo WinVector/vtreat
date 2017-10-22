@@ -12,6 +12,12 @@ Regression
 
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
+library("seplyr")
+```
+
+    ## Loading required package: wrapr
+
+``` r
 source("isotone.R")
 
 # set up example data
@@ -317,6 +323,18 @@ sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
     ## [1] "Chi-Square Test summary: pseudo-R2=0.14 (X2(1,N=113)=19, p=1.3e-05)."
 
 ``` r
+dTest %.>% 
+  group_by_se(., "yObserved") %.>%
+  summarize_nse(., minAdj := min(adjScore), maxAdj := max(adjScore))
+```
+
+    ## # A tibble: 2 x 3
+    ##   yObserved     minAdj    maxAdj
+    ##       <lgl>      <dbl>     <dbl>
+    ## 1     FALSE 0.02325581 0.9767442
+    ## 2      TRUE 0.02325581 0.9767442
+
+``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
@@ -330,6 +348,18 @@ sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.2 (X2(1,N=113)=28, p<1e-05)."
+
+``` r
+dTest %.>% 
+  group_by_se(., "yObserved") %.>%
+  summarize_nse(., minAdj := min(linkScore), maxAdj := max(linkScore))
+```
+
+    ## # A tibble: 2 x 3
+    ##   yObserved     minAdj    maxAdj
+    ##       <lgl>      <dbl>     <dbl>
+    ## 1     FALSE 0.08597325 0.9886465
+    ## 2      TRUE 0.13227667 0.9890721
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
@@ -347,6 +377,18 @@ sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
     ## [1] "Chi-Square Test summary: pseudo-R2=0.71 (X2(1,N=113)=1e+02, p<1e-05)."
 
 ``` r
+dTest %.>% 
+  group_by_se(., "yIdeal") %.>%
+  summarize_nse(., minAdj := min(adjScore), maxAdj := max(adjScore))
+```
+
+    ## # A tibble: 2 x 3
+    ##   yIdeal     minAdj    maxAdj
+    ##    <lgl>      <dbl>     <dbl>
+    ## 1  FALSE 0.02325581 0.5211316
+    ## 2   TRUE 0.61111111 0.9767442
+
+``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
@@ -360,6 +402,18 @@ sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
 ```
 
     ## [1] "Chi-Square Test summary: pseudo-R2=0.64 (X2(1,N=113)=93, p<1e-05)."
+
+``` r
+dTest %.>% 
+  group_by_se(., "yIdeal") %.>%
+  summarize_nse(., minAdj := min(linkScore), maxAdj := max(linkScore))
+```
+
+    ## # A tibble: 2 x 3
+    ##   yIdeal     minAdj    maxAdj
+    ##    <lgl>      <dbl>     <dbl>
+    ## 1  FALSE 0.08597325 0.4011796
+    ## 2   TRUE 0.41764783 0.9890721
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
