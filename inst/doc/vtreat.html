@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2017-10-17" />
+<meta name="date" content="2017-11-27" />
 
 <title>vtreat package</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat package</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2017-10-17</em></h4>
+<h4 class="date"><em>2017-11-27</em></h4>
 
 
 
@@ -137,15 +137,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;designing treatments Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot; have level statistics Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;design var x Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;design var z Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot; scoring treatments Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;have treatment plan Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;rescoring complex variables Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;done rescoring complex variables Tue Oct 17 07:04:05 2017&quot;</code></pre>
+<pre><code>## [1] &quot;designing treatments Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;designing treatments Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot; have level statistics Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;design var x Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;design var z Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot; scoring treatments Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;have treatment plan Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;rescoring complex variables Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;done rescoring complex variables Mon Nov 27 11:01:16 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -169,8 +169,8 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 1  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
 ## 2 x_lev_x.a     TRUE 0.08170417 0.4097258      FALSE                 0
 ## 3 x_lev_x.b     TRUE 0.00000000 1.0000000      FALSE                 0
-## 4    x_catP     TRUE 0.24340634 0.1547700       TRUE                 2
-## 5    x_catB     TRUE 0.05070201 0.5160763       TRUE                 2
+## 4    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
+## 5    x_catB     TRUE 0.12081050 0.3161341       TRUE                 2
 ## 6   z_clean     TRUE 0.25792985 0.1429977      FALSE                 0
 ## 7   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
 ##   origName  code
@@ -264,15 +264,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;designing treatments Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot; have level statistics Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;design var x Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;design var z Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot; scoring treatments Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;have treatment plan Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;rescoring complex variables Tue Oct 17 07:04:05 2017&quot;
-## [1] &quot;done rescoring complex variables Tue Oct 17 07:04:05 2017&quot;</code></pre>
+<pre><code>## [1] &quot;designing treatments Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;designing treatments Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot; have level statistics Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;design var x Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;design var z Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot; scoring treatments Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;have treatment plan Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;rescoring complex variables Mon Nov 27 11:01:16 2017&quot;
+## [1] &quot;done rescoring complex variables Mon Nov 27 11:01:16 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -299,9 +299,9 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 1  x_lev_NA     TRUE 0.222222222 0.2855909      FALSE                 0
 ## 2 x_lev_x.a     TRUE 0.173611111 0.3524132      FALSE                 0
 ## 3 x_lev_x.b     TRUE 0.008333333 0.8456711      FALSE                 0
-## 4    x_catP     TRUE 0.440104167 0.1042469       TRUE                 2
-## 5    x_catN     TRUE 0.010258994 0.8289310       TRUE                 2
-## 6    x_catD     TRUE 0.005613741 0.8731603       TRUE                 2
+## 4    x_catP     TRUE 0.291358992 0.2110842       TRUE                 2
+## 5    x_catN     TRUE 0.033400839 0.6948942       TRUE                 2
+## 6    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 7   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 8   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
 ##   origName  code

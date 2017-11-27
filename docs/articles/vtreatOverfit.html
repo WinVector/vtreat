@@ -99,7 +99,7 @@
       <h1>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2017-10-17</h4>
+            <h4 class="date">2017-11-27</h4>
           </div>
 
     
@@ -128,14 +128,14 @@ dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span clas
 treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "designing treatments Tue Oct 17 07:05:08 2017"
-## [1] "designing treatments Tue Oct 17 07:05:08 2017"
-## [1] " have level statistics Tue Oct 17 07:05:08 2017"
-## [1] "design var x Tue Oct 17 07:05:08 2017"
-## [1] " scoring treatments Tue Oct 17 07:05:08 2017"
-## [1] "have treatment plan Tue Oct 17 07:05:08 2017"
-## [1] "rescoring complex variables Tue Oct 17 07:05:08 2017"
-## [1] "done rescoring complex variables Tue Oct 17 07:05:08 2017"</code></pre>
+<pre><code>## [1] "designing treatments Mon Nov 27 11:02:06 2017"
+## [1] "designing treatments Mon Nov 27 11:02:06 2017"
+## [1] " have level statistics Mon Nov 27 11:02:06 2017"
+## [1] "design var x Mon Nov 27 11:02:06 2017"
+## [1] " scoring treatments Mon Nov 27 11:02:06 2017"
+## [1] "have treatment plan Mon Nov 27 11:02:06 2017"
+## [1] "rescoring complex variables Mon Nov 27 11:02:06 2017"
+## [1] "done rescoring complex variables Mon Nov 27 11:02:07 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -229,14 +229,14 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] "designing treatments Tue Oct 17 07:05:08 2017"
-## [1] "designing treatments Tue Oct 17 07:05:08 2017"
-## [1] " have level statistics Tue Oct 17 07:05:08 2017"
-## [1] "design var x Tue Oct 17 07:05:08 2017"
-## [1] " scoring treatments Tue Oct 17 07:05:08 2017"
-## [1] "have treatment plan Tue Oct 17 07:05:08 2017"
-## [1] "rescoring complex variables Tue Oct 17 07:05:08 2017"
-## [1] "done rescoring complex variables Tue Oct 17 07:05:08 2017"</code></pre>
+<pre><code>## [1] "designing treatments Mon Nov 27 11:02:07 2017"
+## [1] "designing treatments Mon Nov 27 11:02:07 2017"
+## [1] " have level statistics Mon Nov 27 11:02:07 2017"
+## [1] "design var x Mon Nov 27 11:02:07 2017"
+## [1] " scoring treatments Mon Nov 27 11:02:07 2017"
+## [1] "have treatment plan Mon Nov 27 11:02:07 2017"
+## [1] "rescoring complex variables Mon Nov 27 11:02:07 2017"
+## [1] "done rescoring complex variables Mon Nov 27 11:02:07 2017"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )

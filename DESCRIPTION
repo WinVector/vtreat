@@ -2,7 +2,7 @@ Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
 Version: 1.0.2
-Date: 2017-10-17
+Date: 2017-11-27
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
@@ -18,6 +18,8 @@ Description: A 'data.frame' processor/conditioner that prepares real-world data 
     categorical levels (levels seen during application, but not during training).
     'vtreat::prepare' should be used as you would use 'model.matrix'.
 License: GPL-3
+Imports:
+    stats
 Suggests:
     testthat,
     knitr,
@@ -26,8 +28,7 @@ Suggests:
     dplyr,
     ggplot2,
     RSQLite,
-    datasets,
-    stats
+    datasets
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1

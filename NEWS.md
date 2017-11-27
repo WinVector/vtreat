@@ -1,7 +1,8 @@
 
-# vtreat 1.0.2 2017/10/17
+# vtreat 1.0.2 2017/11/27
 
 - bind options.
+- fix deps.
 
 # vtreat 1.0.1 2017/10/16
 
