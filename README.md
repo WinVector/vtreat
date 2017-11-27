@@ -191,15 +191,15 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x  x_lev_NA   lev 3.333333e-01 0.13397460                 0
- #  2        x x_lev_x.a   lev 2.500000e-01 0.20703125                 0
- #  3        x x_lev_x.b   lev 1.110223e-16 0.99999998                 0
- #  4        x    x_catP  catP 4.047085e-01 0.08994062                 2
- #  5        x    x_catN  catN 2.822908e-01 0.17539581                 2
- #  6        x    x_catD  catD 2.096931e-02 0.73225708                 2
- #  7        z   z_clean clean 2.880952e-01 0.17018920                 0
- #  8        z   z_isBAD isBAD 3.333333e-01 0.13397460                 0
+ #    origName   varName  code          rsq       sig extraModelDegrees
+ #  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
+ #  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
+ #  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
+ #  4        x    x_catP  catP 2.500000e-01 0.2070312                 2
+ #  5        x    x_catN  catN 2.571429e-01 0.1996217                 2
+ #  6        x    x_catD  catD 1.620332e-01 0.3228162                 2
+ #  7        z   z_clean clean 2.880952e-01 0.1701892                 0
+ #  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0

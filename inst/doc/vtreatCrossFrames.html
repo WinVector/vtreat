@@ -117,18 +117,18 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;designing treatments Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot; have level statistics Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xBad1 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xBad2 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xBad3 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xGood1 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xGood2 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot; scoring treatments Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;have treatment plan Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;rescoring complex variables Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;done rescoring complex variables Mon Nov 27 11:01:17 2017&quot;</code></pre>
+<pre><code>## [1] &quot;designing treatments Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;designing treatments Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot; have level statistics Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xBad1 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xBad2 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xBad3 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xGood1 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xGood2 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot; scoring treatments Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;have treatment plan Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;rescoring complex variables Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;done rescoring complex variables Mon Nov 27 12:01:33 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -197,18 +197,18 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] &quot;designing treatments Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;designing treatments Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot; have level statistics Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xBad1 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xBad2 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xBad3 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xGood1 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;design var xGood2 Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot; scoring treatments Mon Nov 27 11:01:17 2017&quot;
-## [1] &quot;have treatment plan Mon Nov 27 11:01:18 2017&quot;
-## [1] &quot;rescoring complex variables Mon Nov 27 11:01:18 2017&quot;
-## [1] &quot;done rescoring complex variables Mon Nov 27 11:01:18 2017&quot;</code></pre>
+<pre><code>## [1] &quot;designing treatments Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;designing treatments Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot; have level statistics Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xBad1 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xBad2 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xBad3 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xGood1 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;design var xGood2 Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot; scoring treatments Mon Nov 27 12:01:33 2017&quot;
+## [1] &quot;have treatment plan Mon Nov 27 12:01:34 2017&quot;
+## [1] &quot;rescoring complex variables Mon Nov 27 12:01:34 2017&quot;
+## [1] &quot;done rescoring complex variables Mon Nov 27 12:01:34 2017&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">prepare</span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)
@@ -330,7 +330,7 @@ newvars &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="
 <pre><code>## [1] &quot;xBad1_catB&quot;   &quot;xBad2_catB&quot;   &quot;xBad3_catB&quot;   &quot;xGood1_clean&quot;
 ## [5] &quot;xGood2_clean&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>prep<span class="op">$</span>crossFrame</code></pre></div>
-<p>We ensured the undesirable <code>xBad*_catB</code> variables back in to demonstrate that even if they sneak past a lose <code>pruneSig</code>, the crosframe lets the downstream model deal with them correctly. To ensure more consistent filtering of the complicated variables one can increase the <code>ncross</code> argument in <code>vtreat::mkCrossFrame?Experiment</code>.</p>
+<p>We ensured the undesirable <code>xBad*_catB</code> variables back in to demonstrate that even if they sneak past a lose <code>pruneSig</code>, the crosframe lets the downstream model deal with them correctly. To ensure more consistent filtering of the complicated variables one can increase the <code>ncross</code> argument in <code>vtreat::mkCrossFrameCExperiment</code>/<code>vtreat::mkCrossFrameNExperiment</code>.</p>
 <p>Now we fit the model to <em>the cross-frame</em> rather than to <code>prepare(treatments, dTrain)</code> (the treated training data).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,<span class="kw">paste</span>(newvars,<span class="dt">collapse=</span><span class="st">' + '</span>),<span class="dt">sep=</span><span class="st">' ~ '</span>),
           <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))

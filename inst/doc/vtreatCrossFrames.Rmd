@@ -193,7 +193,7 @@ dTrainTreated <- prep$crossFrame
 
 We ensured the undesirable `xBad*_catB` variables back in to demonstrate that even if they sneak past a lose `pruneSig`, the crosframe
 lets the downstream model deal with them correctly.  To ensure more consistent filtering of the complicated variables one can
-increase the `ncross` argument in `vtreat::mkCrossFrame?Experiment`.
+increase the `ncross` argument in `vtreat::mkCrossFrameCExperiment`/`vtreat::mkCrossFrameNExperiment`.
 
 Now we fit the model to *the cross-frame* rather than to `prepare(treatments, dTrain)` (the treated training data).
 
