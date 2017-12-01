@@ -148,8 +148,8 @@ print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'ex
  #  1        x  x_lev_NA   lev 0.296065432 0.09248399                 0
  #  2        x x_lev_x.a   lev 0.130005705 0.26490379                 0
  #  3        x x_lev_x.b   lev 0.006067337 0.80967242                 0
- #  4        x    x_catP  catP 0.111456141 0.30194137                 2
- #  5        x    x_catB  catB 0.115273608 0.29380616                 2
+ #  4        x    x_catP  catP 0.059315943 0.45141252                 2
+ #  5        x    x_catB  catB 0.029824903 0.59334713                 2
  #  6        z   z_clean clean 0.237601767 0.13176020                 0
  #  7        z   z_isBAD isBAD 0.296065432 0.09248399                 0
 
@@ -195,9 +195,9 @@ print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'ex
  #  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
  #  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0
  #  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0
- #  4        x    x_catP  catP 2.500000e-01 0.2070312                 2
- #  5        x    x_catN  catN 2.571429e-01 0.1996217                 2
- #  6        x    x_catD  catD 1.620332e-01 0.3228162                 2
+ #  4        x    x_catP  catP 1.304740e-01 0.3793327                 2
+ #  5        x    x_catN  catN 1.262238e-01 0.3877835                 2
+ #  6        x    x_catD  catD 3.657626e-01 0.1121995                 2
  #  7        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)

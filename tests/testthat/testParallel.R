@@ -3,13 +3,14 @@ library('vtreat')
 context("Parallel Example")
 
 test_that("testParallel: Parallel works", {
+  # seems to kill testthat on stop, possibly https://github.com/hadley/testthat/issues/129
+  Sys.setenv("R_TESTS" = "")
   # load('tests/testthat/uci.car.data.Rdata')
   load('uci.car.data.Rdata')
   cl <- NULL
-  # seems to kill testthat on stop, possibly https://github.com/hadley/testthat/issues/129
-  # if(requireNamespace("parallel",quietly=TRUE)) {
-  #   cl <- parallel::makeCluster(2)
-  # }
+  if(requireNamespace("parallel",quietly=TRUE)) {
+    cl <- parallel::makeCluster(2)
+  }
   
   dYName <- "rating"
   dYTarget <- 'vgood'
