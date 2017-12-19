@@ -404,7 +404,7 @@ prepare <- function(treatmentplan, dframe,
   vtreatVersion <- packageVersion('vtreat')
   if(is.null(treatmentplan$vtreatVersion) ||
      (treatmentplan$vtreatVersion!=vtreatVersion)) {
-    warning(paste('treatments desined with vtreat version',
+    warning(paste('treatments designed with vtreat version',
                treatmentplan$vtreatVersion,
                'and preparing data.frame with vtreat version',
                vtreatVersion))
