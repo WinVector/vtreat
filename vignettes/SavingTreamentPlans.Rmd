@@ -9,6 +9,8 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+You can save and load treatment plans.  Note: treatments plans are intended to be used with the version of `vtreat` they were constructed with (though we try to make plans forward-compatible).  So it is good idea to have procedures to re-build treatment plans.
+
 The easiest way to save `vtreat` treatment plans is to use `R`'s built in
 `saveRDS` function.
 
