@@ -211,16 +211,20 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
   # order by y
   d <- d[order(d$y),]
   # mix within order segments
-  for(si in seq_len(ceiling(nRows/nSplits))) {
+  rows_per_split <- ceiling(nRows/nSplits)
+  mix_idx <- vector("list", rows_per_split)
+  for(si in seq_len(rows_per_split)) {
     leftI <- si*nSplits - (nSplits-1)
     rightI <- min(si*nSplits,nRows)
     widthI <- 1+rightI-leftI
     if(widthI>1) {
       oldIndices <- leftI:rightI
-      newIndices <- oldIndices[sample.int(widthI,widthI,replace=FALSE)]
-      d[newIndices,] <- d[oldIndices,]
+      mix_idx[[si]] <- oldIndices[sample.int(widthI,widthI,replace=FALSE)]
+    } else {
+      mix_idx[[si]] <- leftI:rightI
     }
   }
+  d[unlist(mix_idx),] <- d
   d$group <- (fullSeq %% nSplits) + 1
   carveUp <-  split(d$index,d$group)
   evalSets <- lapply(carveUp,
