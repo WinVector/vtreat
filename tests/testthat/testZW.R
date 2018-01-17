@@ -56,4 +56,5 @@ test_that("testZW: Test Zero Weights Don't Crash", {
   sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainNTreated)$coefficients[[2]]}) 
   dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
+  expect_true(!is.null(dTestNTreated))
 })

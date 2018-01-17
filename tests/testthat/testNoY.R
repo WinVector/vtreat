@@ -12,4 +12,5 @@ test_that("testNoY: Can transform without Y", {
                                   verbose=FALSE)
   dTrainZTreated <- prepare(treatmentsZ,dTrainZ,pruneSig=NULL)
   dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=NULL)
+  expect_true(!is.null(dTestZTreated))
 })

@@ -1,9 +1,10 @@
 
-# vtreat 1.0.2 2017/11/30
+# vtreat 1.0.2 2017/01/17
 
   * bind options.
   * fix deps.
-  * restore parallel test
+  * restore parallel test.
+  * kWayStratifiedY performance fix from @khotilov Vadim Khotilovich.
 
 # vtreat 1.0.1 2017/10/16
 

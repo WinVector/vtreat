@@ -30,5 +30,7 @@ test_that("testWeirdTypes: Protect from odd columns types (and warn)", {
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
+  expect_true(!is.null(treatmentsC))
+  expect_true(!is.null(treatmentsN))
   })
 })

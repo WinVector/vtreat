@@ -37,4 +37,5 @@ test_that("testUniqValue: Can work with unique values", {
                                   verbose=FALSE)
   dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
   dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
+  expect_true(!is.null(dTestZTreated))
 })
