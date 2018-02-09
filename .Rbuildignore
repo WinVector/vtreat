@@ -15,3 +15,5 @@
 ^docs$
 ^_pkgdown\.yml$
 ^extras$
+^paper.md$
+
