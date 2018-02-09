@@ -16,4 +16,5 @@
 ^_pkgdown\.yml$
 ^extras$
 ^paper.md$
+^paper.bib$
 
