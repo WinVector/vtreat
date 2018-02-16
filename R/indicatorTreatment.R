@@ -22,7 +22,6 @@
     return(c())
   }
   counts <- counts[tracked]
-  missingMass <- 1 - sum(counts)/totMass
   newVarNames <- make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE)
   treatment <- list(origvar=origVarName,
                     newvars=newVarNames,

@@ -547,7 +547,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                        )})
   workList <- Filter(function(wi) {wi$hasRange}, workList)
   if(verbose) {
-    print(paste(" have level statistics",date()))
+    print(paste(" have initial level statistics", date()))
   }
   # build the treatments we will return to the user
   worker <- .mkVarDesigner(zoY,
