@@ -586,16 +586,51 @@ mkVtreatListWorker <- function(scale,doCollar) {
   if(verbose) {
     print(paste(" scoring treatments",date()))
   }
-  scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
-  # TODO: finer grain parallelism here (more like .mkScoreColWorker )
-  tP <- lapply(treatments,
-               function(ti) {
-                 list(ti=ti,
-                      dfcol=dframe[[vorig(ti)]])
-               })
-  sFrames <- plapply(tP,scrW,parallelCluster)
-  sFrames <- Filter(Negate(is.null),sFrames)
-  sFrame <- .rbindListOfFrames(sFrames)
+  is_ind <- vapply(treatments,
+                   function(ti) { ti$treatmentCode == "lev"},
+                   logical(1))
+  treatments_ind <- treatments[is_ind]
+  treatments_non_ind <- treatments[!is_ind]
+  sFrame <- NULL
+  if(length(treatments_non_ind)>0) {
+    scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
+    tP <- lapply(treatments_non_ind,
+                 function(ti) {
+                   list(ti=ti,
+                        dfcol=dframe[[vorig(ti)]])
+                 })
+    sFrames <- plapply(tP, scrW, parallelCluster)
+    sFrames <- Filter(Negate(is.null), sFrames)
+    sFrame <- .rbindListOfFrames(sFrames)
+  }
+  # Finer grain parallelism on indicators (more like .mkScoreColWorker )
+  if(length(treatments_ind)>0) {
+    swkr <- .mkScoreColWorker(zoY, zC, zTarget, weights)
+    sframel <- vector(length(treatments_ind), mode = "list")
+    for(ii in seq_len(length(treatments_ind))) {
+      ti <- treatments_ind[[ii]]
+      origName <- ti$origvar
+      dfcol <- dframe[[origName]]
+      xcolClean <- .cleanColumn(dfcol, nRows)
+      fi <- .vtreatA(ti, xcolClean, FALSE, FALSE)
+      newVarsSP <- lapply(ti$newvars,
+                          function(nv) {
+                            list(nv = nv, dfc = fi[[nv]])
+                          })
+      sfij <- plapply(newVarsSP, swkr,
+                      parallelCluster = parallelCluster)
+      sfij <-  .rbindListOfFrames(sfij)
+      sfij$needsSplit <- FALSE
+      sfij$extraModelDegrees <- 0
+      sfij$origName <- origName
+      sfij$code <- ti$treatmentCode
+      sframel[[ii]] <- sfij
+    }
+    sframel <- .rbindListOfFrames(sframel)
+    sframel <- Filter(Negate(is.null), sframel)
+    siFrame <- .rbindListOfFrames(sframel)
+    sFrame <- rbind(sFrame, siFrame)
+  }
   plan <- list(treatments=treatments,
                scoreFrame=sFrame,
                outcomename=outcomename)
