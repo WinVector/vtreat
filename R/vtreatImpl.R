@@ -143,6 +143,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
   tracked <- setdiff(tracked, supressedLevs)
+  tracked <- setdiff(tracked,'zap') # don't let zap group code
   list(safeLevs = safeLevs, 
        supressedLevs = supressedLevs,
        tracked = tracked)
@@ -201,6 +202,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
   tracked <- setdiff(tracked, supressedLevs)
+  tracked <- setdiff(tracked,'zap') # don't let zap group code
   list(safeLevs = safeLevs, 
        supressedLevs = supressedLevs,
        tracked = tracked)
