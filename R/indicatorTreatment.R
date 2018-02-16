@@ -11,7 +11,13 @@
   vals
 }
 
-.mkCatInd_a <- function(origVarName,vcolin,ynumeric,zC,zTarget,minFraction,levRestriction,weights,catScaling) {
+# same signature as .mkCatInd (except no parallelCluster argument)
+.mkCatInd_a <- function(origVarName,
+                        vcolin,
+                        ynumeric, zC, zTarget,
+                        minFraction, levRestriction,
+                        weights,
+                        catScaling) {
   tracked <- levRestriction$tracked
   if(length(tracked)<=0) {
     return(c())
@@ -84,7 +90,12 @@
                       weights,
                       catScaling,
                       parallelCluster) {
-  treatment <- .mkCatInd_a(origVarName,vcolin,ynumeric,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+  treatment <- .mkCatInd_a(origVarName,
+                           vcolin,
+                           ynumeric, zC, zTarget,
+                           minFraction, levRestriction,
+                           weights,
+                           catScaling)
   treatment <- .mkCatInd_scales(treatment,
                                 ynumeric, zC, zTarget,
                                 weights, catScaling,

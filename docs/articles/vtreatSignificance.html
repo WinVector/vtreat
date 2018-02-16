@@ -150,15 +150,15 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d<span class="op
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "designing treatments Fri Feb 16 08:38:54 2018"
-## [1] "designing treatments Fri Feb 16 08:38:54 2018"
-## [1] " have initial level statistics Fri Feb 16 08:38:54 2018"
-## [1] "design var catVarNoise Fri Feb 16 08:38:54 2018"
-## [1] "design var catVarPerfect Fri Feb 16 08:38:54 2018"
-## [1] " scoring treatments Fri Feb 16 08:38:54 2018"
-## [1] "have treatment plan Fri Feb 16 08:38:55 2018"
-## [1] "rescoring complex variables Fri Feb 16 08:38:55 2018"
-## [1] "done rescoring complex variables Fri Feb 16 08:38:55 2018"</code></pre>
+<pre><code>## [1] "designing treatments Fri Feb 16 10:35:27 2018"
+## [1] "designing treatments Fri Feb 16 10:35:27 2018"
+## [1] " have initial level statistics Fri Feb 16 10:35:27 2018"
+## [1] "design var catVarNoise Fri Feb 16 10:35:27 2018"
+## [1] "design var catVarPerfect Fri Feb 16 10:35:27 2018"
+## [1] " scoring treatments Fri Feb 16 10:35:27 2018"
+## [1] "have treatment plan Fri Feb 16 10:35:27 2018"
+## [1] "rescoring complex variables Fri Feb 16 10:35:27 2018"
+## [1] "done rescoring complex variables Fri Feb 16 10:35:27 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)

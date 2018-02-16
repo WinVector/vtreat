@@ -304,9 +304,10 @@ mkVtreatListWorker <- function(scale,doCollar) {
         ti = NULL
         if(length(levRestriction$safeLevs)>0) {
           if(codeRestictionWasNULL || ('lev' %in% codeRestriction)) {
-            ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling,
-                            parallelCluster = NULL)
-            acceptTreatment(ti)
+            ti <- .mkCatInd_a(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+            if( (!is.null(ti)) && (length(ti$newvars)>0) ) {
+              acceptTreatment(ti)
+            }
           }
           if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
             if(codeRestictionWasNULL || ('catP' %in% codeRestriction)) {
@@ -554,16 +555,27 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   # build the treatments we will return to the user
   worker <- .mkVarDesigner(zoY,
-                         zC,zTarget,
-                         weights,
-                         minFraction,smFactor,rareCount,rareSig,
-                         collarProb,
-                         codeRestriction, customCoders,
-                         catScaling,
-                         verbose)
-  treatments <- plapply(workList,worker,parallelCluster)
-  treatments <- Filter(Negate(is.null),treatments)
-  treatments <- unlist(treatments,recursive=FALSE)
+                           zC,zTarget,
+                           weights,
+                           minFraction,smFactor,rareCount,rareSig,
+                           collarProb,
+                           codeRestriction, customCoders,
+                           catScaling,
+                           verbose)
+  treatments <- plapply(workList, worker, parallelCluster)
+  treatments <- unlist(treatments, recursive=FALSE)
+  treatments <- Filter(Negate(is.null), treatments)
+  # parallelize on levels for cat ind
+  for(i in seq_len(length(treatments))) {
+    ti <- treatments[[i]]
+    if(ti$treatmentCode == 'lev') {
+      ti <- .mkCatInd_scales(ti,
+                             zoY, zC, zTarget,
+                             weights, catScaling,
+                             parallelCluster = parallelCluster)
+      treatments[[i]] <- ti;
+    }
+  }
   if(justWantTreatments) {
     return(treatments)
   }
@@ -575,6 +587,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
     print(paste(" scoring treatments",date()))
   }
   scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
+  # TODO: finer grain parallelism here (more like .mkScoreColWorker )
   tP <- lapply(treatments,
                function(ti) {
                  list(ti=ti,

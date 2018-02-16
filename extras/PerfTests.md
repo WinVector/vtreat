@@ -6,6 +6,8 @@ Win-Vector LLC
 ``` r
 library("vtreat")
 
+useParallel <- FALSE
+
 mkEx <- function(n_rows, 
                  n_cat_columns, n_num_columns, n_irrel_columns,
                  n_cat_levels_a, n_cat_levels_b) {
@@ -49,9 +51,12 @@ mkEx <- function(n_rows,
   d
 }
 
-ncores <- parallel::detectCores()
-parallelCluster <- parallel::makeCluster(ncores)
-n_rows <- 500000
+parallelCluster <- NULL
+if(useParallel) {
+  ncores <- parallel::detectCores()
+  parallelCluster <- parallel::makeCluster(ncores)
+}
+n_rows <- 100000
 ```
 
 Get a base timing of a moderately large task.
@@ -77,30 +82,30 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##  12.646   1.693  66.073
+    ##  18.793   3.004  21.878
 
 ``` r
 knitr::kable(tplan$treatments$scoreFrame)
 ```
 
-| varName                       | varMoves |      rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
-|:------------------------------|:---------|--------:|----------:|:-----------|------------------:|:------------|:------|
-| var\_cat\_1\_lev\_x.lev\_a\_1 | TRUE     |  3.5e-06|  0.1184941| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_2 | TRUE     |  1.3e-06|  0.3489834| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_3 | TRUE     |  4.0e-07|  0.6002284| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_4 | TRUE     |  1.0e-07|  0.7721816| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_5 | TRUE     |  7.4e-06|  0.0235845| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_catP             | TRUE     |  8.0e-07|  0.4496472| TRUE       |                  4| var\_cat\_1 | catP  |
-| var\_cat\_1\_catB             | TRUE     |  1.4e-06|  0.3181307| TRUE       |                  4| var\_cat\_1 | catB  |
-| var\_cat\_2\_lev\_x.lev\_a\_1 | TRUE     |  5.0e-07|  0.5401118| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_2 | TRUE     |  5.0e-07|  0.5543446| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_3 | TRUE     |  1.5e-06|  0.3035759| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_4 | TRUE     |  2.0e-06|  0.2371430| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_5 | TRUE     |  2.7e-06|  0.1744633| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_catP             | TRUE     |  1.0e-07|  0.8296674| TRUE       |                  4| var\_cat\_2 | catP  |
-| var\_cat\_2\_catB             | TRUE     |  6.0e-07|  0.5060664| TRUE       |                  4| var\_cat\_2 | catB  |
-| var\_num\_1\_clean            | TRUE     |  5.0e-07|  0.5480537| FALSE      |                  0| var\_num\_1 | clean |
-| var\_num\_2\_clean            | TRUE     |  2.0e-07|  0.6857887| FALSE      |                  0| var\_num\_2 | clean |
+| varName                       | varMoves |       rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
+|:------------------------------|:---------|---------:|----------:|:-----------|------------------:|:------------|:------|
+| var\_cat\_1\_lev\_x.lev\_a\_1 | TRUE     |  4.00e-07|  0.8186675| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_2 | TRUE     |  3.92e-05|  0.0197285| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_3 | TRUE     |  1.52e-05|  0.1468370| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_4 | TRUE     |  5.30e-06|  0.3928081| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_5 | TRUE     |  3.00e-07|  0.8361545| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_catP             | TRUE     |  0.00e+00|  0.9744813| TRUE       |                  4| var\_cat\_1 | catP  |
+| var\_cat\_1\_catB             | TRUE     |  4.00e-07|  0.8169474| TRUE       |                  4| var\_cat\_1 | catB  |
+| var\_cat\_2\_lev\_x.lev\_a\_1 | TRUE     |  8.80e-06|  0.2698670| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_2 | TRUE     |  1.40e-06|  0.6578840| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_3 | TRUE     |  4.00e-07|  0.8130080| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_4 | TRUE     |  2.61e-05|  0.0571737| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_5 | TRUE     |  1.00e-07|  0.9074268| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_catP             | TRUE     |  3.80e-06|  0.4679437| TRUE       |                  4| var\_cat\_2 | catP  |
+| var\_cat\_2\_catB             | TRUE     |  3.40e-06|  0.4905754| TRUE       |                  4| var\_cat\_2 | catB  |
+| var\_num\_1\_clean            | TRUE     |  1.20e-05|  0.1968953| FALSE      |                  0| var\_num\_1 | clean |
+| var\_num\_2\_clean            | TRUE     |  4.70e-06|  0.4212914| FALSE      |                  0| var\_num\_2 | clean |
 
 Measure the effect of irrelevant columns.
 
@@ -125,30 +130,30 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##  13.268   3.024  66.795
+    ##  16.719   3.721  20.511
 
 ``` r
 knitr::kable(tplan$treatments$scoreFrame)
 ```
 
-| varName                       | varMoves |      rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
-|:------------------------------|:---------|--------:|----------:|:-----------|------------------:|:------------|:------|
-| var\_cat\_1\_lev\_x.lev\_a\_1 | TRUE     |  3.1e-06|  0.1422848| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_2 | TRUE     |  0.0e+00|  0.9134043| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_3 | TRUE     |  2.5e-06|  0.1903770| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_4 | TRUE     |  7.0e-07|  0.5014171| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_5 | TRUE     |  6.0e-07|  0.5314905| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_catP             | TRUE     |  2.4e-06|  0.2009637| TRUE       |                  4| var\_cat\_1 | catP  |
-| var\_cat\_1\_catB             | TRUE     |  4.0e-07|  0.5792881| TRUE       |                  4| var\_cat\_1 | catB  |
-| var\_cat\_2\_lev\_x.lev\_a\_1 | TRUE     |  6.0e-07|  0.5062554| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_2 | TRUE     |  0.0e+00|  0.8594026| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_3 | TRUE     |  8.6e-06|  0.0145220| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_4 | TRUE     |  8.4e-06|  0.0160443| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_5 | TRUE     |  4.0e-07|  0.6015339| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_catP             | TRUE     |  1.3e-06|  0.3499355| TRUE       |                  4| var\_cat\_2 | catP  |
-| var\_cat\_2\_catB             | TRUE     |  1.5e-06|  0.3052102| TRUE       |                  4| var\_cat\_2 | catB  |
-| var\_num\_1\_clean            | TRUE     |  7.1e-06|  0.0269835| FALSE      |                  0| var\_num\_1 | clean |
-| var\_num\_2\_clean            | TRUE     |  5.0e-07|  0.5686294| FALSE      |                  0| var\_num\_2 | clean |
+| varName                       | varMoves |       rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
+|:------------------------------|:---------|---------:|----------:|:-----------|------------------:|:------------|:------|
+| var\_cat\_1\_lev\_x.lev\_a\_1 | TRUE     |  1.00e-07|  0.9139941| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_2 | TRUE     |  3.00e-07|  0.8264812| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_3 | TRUE     |  4.00e-07|  0.8058465| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_4 | TRUE     |  2.27e-05|  0.0760933| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_5 | TRUE     |  1.96e-05|  0.0991551| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_catP             | TRUE     |  2.54e-05|  0.0603643| TRUE       |                  4| var\_cat\_1 | catP  |
+| var\_cat\_1\_catB             | TRUE     |  1.17e-05|  0.2030959| TRUE       |                  4| var\_cat\_1 | catB  |
+| var\_cat\_2\_lev\_x.lev\_a\_1 | TRUE     |  1.80e-06|  0.6150371| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_2 | TRUE     |  2.29e-05|  0.0751039| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_3 | TRUE     |  4.00e-06|  0.4576871| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_4 | TRUE     |  3.50e-06|  0.4867216| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_5 | TRUE     |  2.00e-07|  0.8739281| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_catP             | TRUE     |  4.00e-06|  0.4541639| TRUE       |                  4| var\_cat\_2 | catP  |
+| var\_cat\_2\_catB             | TRUE     |  1.80e-06|  0.6222977| TRUE       |                  4| var\_cat\_2 | catB  |
+| var\_num\_1\_clean            | TRUE     |  1.70e-06|  0.6262061| FALSE      |                  0| var\_num\_1 | clean |
+| var\_num\_2\_clean            | TRUE     |  8.10e-06|  0.2895603| FALSE      |                  0| var\_num\_2 | clean |
 
 Measure the effect of more levels (both common and uncommon).
 
@@ -173,40 +178,40 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##  31.897   2.322 129.107
+    ##  40.972   5.796  46.929
 
 ``` r
 knitr::kable(tplan$treatments$scoreFrame)
 ```
 
-| varName                        | varMoves |      rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
-|:-------------------------------|:---------|--------:|----------:|:-----------|------------------:|:------------|:------|
-| var\_cat\_1\_lev\_x.lev\_a\_1  | TRUE     |  1.1e-06|  0.3827034| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_10 | TRUE     |  9.0e-07|  0.4191885| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_2  | TRUE     |  2.7e-06|  0.1724857| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_3  | TRUE     |  1.3e-06|  0.3442932| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_4  | TRUE     |  1.0e-07|  0.7618650| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_5  | TRUE     |  9.0e-07|  0.4218736| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_6  | TRUE     |  3.0e-07|  0.6333071| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_7  | TRUE     |  9.0e-07|  0.4251998| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_8  | TRUE     |  8.0e-07|  0.4479263| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_lev\_x.lev\_a\_9  | TRUE     |  0.0e+00|  0.8671992| FALSE      |                  0| var\_cat\_1 | lev   |
-| var\_cat\_1\_catP              | TRUE     |  0.0e+00|  0.9142925| TRUE       |              49677| var\_cat\_1 | catP  |
-| var\_cat\_1\_catB              | TRUE     |  6.0e-07|  0.5067359| TRUE       |              49677| var\_cat\_1 | catB  |
-| var\_cat\_2\_lev\_x.lev\_a\_1  | TRUE     |  2.3e-06|  0.2051185| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_10 | TRUE     |  5.7e-06|  0.0467089| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_2  | TRUE     |  1.9e-06|  0.2461854| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_3  | TRUE     |  3.0e-07|  0.6231381| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_4  | TRUE     |  0.0e+00|  0.8879168| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_5  | TRUE     |  1.0e-06|  0.3945299| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_6  | TRUE     |  0.0e+00|  0.9361832| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_7  | TRUE     |  1.0e-07|  0.7960926| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_8  | TRUE     |  3.5e-06|  0.1213795| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_lev\_x.lev\_a\_9  | TRUE     |  1.8e-06|  0.2632273| FALSE      |                  0| var\_cat\_2 | lev   |
-| var\_cat\_2\_catP              | TRUE     |  1.9e-06|  0.2497871| TRUE       |              49692| var\_cat\_2 | catP  |
-| var\_cat\_2\_catB              | TRUE     |  2.5e-06|  0.1882758| TRUE       |              49692| var\_cat\_2 | catB  |
-| var\_num\_1\_clean             | TRUE     |  1.0e-06|  0.4101674| FALSE      |                  0| var\_num\_1 | clean |
-| var\_num\_2\_clean             | TRUE     |  9.0e-07|  0.4172523| FALSE      |                  0| var\_num\_2 | clean |
+| varName                        | varMoves |       rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
+|:-------------------------------|:---------|---------:|----------:|:-----------|------------------:|:------------|:------|
+| var\_cat\_1\_lev\_x.lev\_a\_1  | TRUE     |  2.10e-06|  0.5867832| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_10 | TRUE     |  5.40e-06|  0.3883052| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_2  | TRUE     |  3.78e-05|  0.0220539| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_3  | TRUE     |  1.58e-05|  0.1387308| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_4  | TRUE     |  2.03e-05|  0.0935265| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_5  | TRUE     |  4.00e-07|  0.8108051| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_6  | TRUE     |  7.70e-06|  0.3009286| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_7  | TRUE     |  2.50e-06|  0.5555287| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_8  | TRUE     |  4.20e-06|  0.4437054| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_lev\_x.lev\_a\_9  | TRUE     |  1.80e-06|  0.6160210| FALSE      |                  0| var\_cat\_1 | lev   |
+| var\_cat\_1\_catP              | TRUE     |  5.23e-05|  0.0071103| TRUE       |              31600| var\_cat\_1 | catP  |
+| var\_cat\_1\_catB              | TRUE     |  0.00e+00|  0.9487024| TRUE       |              31600| var\_cat\_1 | catB  |
+| var\_cat\_2\_lev\_x.lev\_a\_1  | TRUE     |  3.80e-06|  0.4690029| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_10 | TRUE     |  0.00e+00|  0.9970259| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_2  | TRUE     |  1.11e-05|  0.2141750| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_3  | TRUE     |  2.00e-06|  0.5975780| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_4  | TRUE     |  1.80e-05|  0.1138243| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_5  | TRUE     |  0.00e+00|  0.9600604| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_6  | TRUE     |  3.00e-06|  0.5213055| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_7  | TRUE     |  1.00e-06|  0.7030782| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_8  | TRUE     |  1.10e-06|  0.6989218| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_lev\_x.lev\_a\_9  | TRUE     |  3.63e-05|  0.0249580| FALSE      |                  0| var\_cat\_2 | lev   |
+| var\_cat\_2\_catP              | TRUE     |  6.90e-06|  0.3275645| TRUE       |              31682| var\_cat\_2 | catP  |
+| var\_cat\_2\_catB              | TRUE     |  4.20e-06|  0.4473055| TRUE       |              31682| var\_cat\_2 | catB  |
+| var\_num\_1\_clean             | TRUE     |  1.00e-07|  0.9074727| FALSE      |                  0| var\_num\_1 | clean |
+| var\_num\_2\_clean             | TRUE     |  0.00e+00|  0.9479890| FALSE      |                  0| var\_num\_2 | clean |
 
 See if it is the indicators.
 
@@ -234,21 +239,24 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##  30.756   2.182  76.184
+    ##  26.113   2.030  28.248
 
 ``` r
 knitr::kable(tplan$treatments$scoreFrame)
 ```
 
-| varName            | varMoves |      rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
-|:-------------------|:---------|--------:|----------:|:-----------|------------------:|:------------|:------|
-| var\_cat\_1\_catP  | TRUE     |  1.0e-07|  0.7974485| TRUE       |              49672| var\_cat\_1 | catP  |
-| var\_cat\_1\_catB  | TRUE     |  2.0e-07|  0.6923148| TRUE       |              49672| var\_cat\_1 | catB  |
-| var\_cat\_2\_catP  | TRUE     |  4.0e-07|  0.6127074| TRUE       |              49659| var\_cat\_2 | catP  |
-| var\_cat\_2\_catB  | TRUE     |  1.0e-06|  0.4031716| TRUE       |              49659| var\_cat\_2 | catB  |
-| var\_num\_1\_clean | TRUE     |  1.5e-06|  0.3116733| FALSE      |                  0| var\_num\_1 | clean |
-| var\_num\_2\_clean | TRUE     |  1.2e-06|  0.3649808| FALSE      |                  0| var\_num\_2 | clean |
+| varName            | varMoves |        rsq|        sig| needsSplit |  extraModelDegrees| origName    | code  |
+|:-------------------|:---------|----------:|----------:|:-----------|------------------:|:------------|:------|
+| var\_cat\_1\_catP  | TRUE     |  0.0000025|  0.5523080| TRUE       |              31587| var\_cat\_1 | catP  |
+| var\_cat\_1\_catB  | TRUE     |  0.0001057|  0.0001297| TRUE       |              31587| var\_cat\_1 | catB  |
+| var\_cat\_2\_catP  | TRUE     |  0.0000153|  0.1458198| TRUE       |              31582| var\_cat\_2 | catP  |
+| var\_cat\_2\_catB  | TRUE     |  0.0000104|  0.2288463| TRUE       |              31582| var\_cat\_2 | catB  |
+| var\_num\_1\_clean | TRUE     |  0.0000009|  0.7226074| FALSE      |                  0| var\_num\_1 | clean |
+| var\_num\_2\_clean | TRUE     |  0.0000054|  0.3850018| FALSE      |                  0| var\_num\_2 | clean |
 
 ``` r
-parallel::stopCluster(parallelCluster)
+if(!is.null(parallelCluster)) {
+  parallel::stopCluster(parallelCluster)
+  parallelCluster <- NULL
+}
 ```
