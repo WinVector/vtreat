@@ -29,7 +29,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="/index.html">
+  <a href="index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -194,12 +194,12 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <p>Trivial example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)
 <span class="kw">packageVersion</span>(<span class="st">"vtreat"</span>)
- <span class="co">#  [1] '1.0.2'</span>
+ <span class="co">#  [1] '1.0.3'</span>
 <span class="kw">citation</span>(<span class="st">'vtreat'</span>)
  <span class="co">#  </span>
  <span class="co">#  To cite package 'vtreat' in publications use:</span>
  <span class="co">#  </span>
- <span class="co">#    John Mount and Nina Zumel (2017). vtreat: A Statistically Sound</span>
+ <span class="co">#    John Mount and Nina Zumel (2018). vtreat: A Statistically Sound</span>
  <span class="co">#    'data.frame' Processor/Conditioner.</span>
  <span class="co">#    https://github.com/WinVector/vtreat/,</span>
  <span class="co">#    https://winvector.github.io/vtreat/.</span>
@@ -209,7 +209,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
  <span class="co">#    @Manual{,</span>
  <span class="co">#      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},</span>
  <span class="co">#      author = {John Mount and Nina Zumel},</span>
- <span class="co">#      year = {2017},</span>
+ <span class="co">#      year = {2018},</span>
  <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span>
  <span class="co">#    }</span>
 
@@ -228,8 +228,8 @@ treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/de
  <span class="co">#  1        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span>
  <span class="co">#  2        x x_lev_x.a   lev 0.130005705 0.26490379                 0</span>
  <span class="co">#  3        x x_lev_x.b   lev 0.006067337 0.80967242                 0</span>
- <span class="co">#  4        x    x_catP  catP 0.111456141 0.30194137                 2</span>
- <span class="co">#  5        x    x_catB  catB 0.115273608 0.29380616                 2</span>
+ <span class="co">#  4        x    x_catP  catP 0.130498074 0.26400089                 2</span>
+ <span class="co">#  5        x    x_catB  catB 0.030345745 0.59013918                 2</span>
  <span class="co">#  6        z   z_clean clean 0.237601767 0.13176020                 0</span>
  <span class="co">#  7        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span>
 
@@ -272,9 +272,9 @@ treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/design
  <span class="co">#  1        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>
  <span class="co">#  2        x x_lev_x.a   lev 2.500000e-01 0.2070312                 0</span>
  <span class="co">#  3        x x_lev_x.b   lev 1.110223e-16 1.0000000                 0</span>
- <span class="co">#  4        x    x_catP  catP 3.137255e-01 0.1487686                 2</span>
- <span class="co">#  5        x    x_catN  catN 2.093023e-01 0.2543735                 2</span>
- <span class="co">#  6        x    x_catD  catD 1.370969e-02 0.7824576                 2</span>
+ <span class="co">#  4        x    x_catP  catP 2.105263e-01 0.2528101                 2</span>
+ <span class="co">#  5        x    x_catN  catN 3.205128e-03 0.8940756                 2</span>
+ <span class="co">#  6        x    x_catD  catD 6.666667e-02 0.5369633                 2</span>
  <span class="co">#  7        z   z_clean clean 2.880952e-01 0.1701892                 0</span>
  <span class="co">#  8        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
 dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)

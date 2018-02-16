@@ -1,4 +1,8 @@
 
+# vtreat 1.0.3 2017/01/20
+
+  * parallel indicator calculation.
+
 # vtreat 1.0.2 2017/01/20
 
   * bind options.
