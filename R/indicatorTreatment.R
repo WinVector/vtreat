@@ -82,12 +82,13 @@
                       ynumeric, zC, zTarget,
                       minFraction, levRestriction,
                       weights,
-                      catScaling) {
+                      catScaling,
+                      parallelCluster) {
   treatment <- .mkCatInd_a(origVarName,vcolin,ynumeric,zC,zTarget,minFraction,levRestriction,weights,catScaling)
   treatment <- .mkCatInd_scales(treatment,
                                 ynumeric, zC, zTarget,
                                 weights, catScaling,
-                                parallelCluster = NULL)
+                                parallelCluster = parallelCluster)
   treatment
 }
 

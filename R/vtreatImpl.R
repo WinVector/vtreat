@@ -304,7 +304,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
         ti = NULL
         if(length(levRestriction$safeLevs)>0) {
           if(codeRestictionWasNULL || ('lev' %in% codeRestriction)) {
-            ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+            ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling,
+                            parallelCluster = NULL)
             acceptTreatment(ti)
           }
           if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
