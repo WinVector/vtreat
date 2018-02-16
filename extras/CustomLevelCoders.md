@@ -1,7 +1,7 @@
 Custom Level Coding in vtreat
 ================
 Nina Zumel, John Mount
-2017-09-30
+2018-02-16
 
 One of the services that `vtreat` provides is *level coding* (what we sometimes call *impact coding*): converting the levels of a categorical variable to a meaningful and concise single numeric variable, rather than coding them as indicator variables (AKA "one-hot encoding"). Level coding can be computationally preferable to one-hot encoding for variables that have an extremely large number of possible levels.
 
@@ -22,8 +22,6 @@ The Data: Radon levels in Minnesota
 library("vtreat")
 library("lme4")
 ```
-
-    ## Warning: package 'lme4' was built under R version 3.4.2
 
     ## Loading required package: Matrix
 
@@ -98,7 +96,7 @@ radonMN %>% group_by(county) %>%
   ggtitle("Distribution of county stats")
 ```
 
-![](CustomLevelCoders_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-1.png)
+![](CustomLevelCoders_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 As the graph shows, the conditional mean of log radon activity by county ranges from nearly zero to about 3, and the conditional expectation of a critical reading ranges from zero to one. On the other hand, the number of readings per county is quite low for many counties -- only one or two -- though some counties have a large number of readings. That means some of the conditional expectations are quite uncertain.
 
@@ -193,8 +191,8 @@ scoreFrame %>% select(varName, sig, origName, code)
 ```
 
     ##        varName          sig origName  code
-    ## 1 county_poolN 3.375674e-19   county poolN
-    ## 2  county_catN 7.527290e-16   county  catN
+    ## 1 county_poolN 8.768985e-17   county poolN
+    ## 2  county_catN 1.859974e-12   county  catN
 
 Note that the treatment plan returns both the `catN` variable (default level encoding) and the pooled level encoding (`poolN`). You can restrict to just using one coding or the other using the `codeRestriction` argument in `prepare()`.
 
@@ -224,7 +222,7 @@ gather(outframe, key=scoreType, value=score,
   ggtitle("Distribution of scores")
 ```
 
-![](CustomLevelCoders_files/figure-markdown_github-ascii_identifiers/nex-1.png)
+![](CustomLevelCoders_files/figure-markdown_github/nex-1.png)
 
 Notice that the `poolN` scores are "tucked in" compared to the `catN` encoding. In a later article, we'll show that the counties with the most tucking in (or *shrinkage*) tend to be those with fewer measurements.
 
@@ -252,7 +250,7 @@ gather(outframe, key=scoreType, value=linkscore,
   ggtitle("Distribution of link scores")
 ```
 
-![](CustomLevelCoders_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-2-1.png)
+![](CustomLevelCoders_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 Notice that the `poolC` link scores are even more tucked in compared to the `catB` link scores, and that the `catB` scores are multimodal. The smaller link scores means that the pooled model avoids estimates of conditional expectation close to either zero or one, because, again, these estimates come from counties with few readings.
 

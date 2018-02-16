@@ -118,24 +118,34 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 # determine non-rare and significant levels for numeric/regression target
 # regression mode
-.safeLevelsR <- function(vcolin,yNumeric,weights,rareCount,rareSig,
+.safeLevelsR <- function(vcolin, 
+                         yNumeric, 
+                         weights, 
+                         minFraction,
+                         rareCount, rareSig,
                          parallelCluster) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  totMass <- sum(counts)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
   supressedLevs <- character(0)
   # re-code with rare symbol eligable
   vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
   counts <- tapply(weights,vcol,sum)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  totMass <- sum(counts)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <-.mkAOVWorkder(yNumeric,vcol,weights)
     sigs <- as.numeric(plapply(safeLevs,aovCalc,parallelCluster))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
-  list(safeLevs=safeLevs,supressedLevs=supressedLevs)
+  tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
+  tracked <- setdiff(tracked, supressedLevs)
+  list(safeLevs = safeLevs, 
+       supressedLevs = supressedLevs,
+       tracked = tracked)
 }
 
 
@@ -166,24 +176,34 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 # determine non-rare and significant levels for numeric/regression target
 # classification mode
-.safeLevelsC <- function(vcolin,zC,zTarget,weights,rareCount,rareSig,
+.safeLevelsC <- function(vcolin,
+                         zC,zTarget,
+                         weights,
+                         minFraction,
+                         rareCount, rareSig,
                          parallelCluster) {
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  totMass <- sum(counts)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
   supressedLevs <- character(0)
   # re-code with rare symbol eligable
   vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
   counts <- tapply(weights,vcol,sum)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(sum(weights)-rareCount))]
+  totMass <- sum(counts)
+  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     sigCalc <- .mkCSigWorker(zC,zTarget,vcol,weights)
     sigs <- as.numeric(plapply(safeLevs,sigCalc,parallelCluster))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
-  list(safeLevs=safeLevs,supressedLevs=supressedLevs)
+  tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
+  tracked <- setdiff(tracked, supressedLevs)
+  list(safeLevs = safeLevs, 
+       supressedLevs = supressedLevs,
+       tracked = tracked)
 }
 
 
@@ -473,7 +493,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
 .designTreatmentsXS <- function(dframe, varlist, outcomename, zoY,
                                 zC,zTarget,
                                 weights,
-                                minFraction,smFactor,
+                                minFraction, smFactor,
                                 rareCount,rareSig,
                                 collarProb,
                                 codeRestriction, customCoders,
@@ -504,13 +524,15 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            if((colclass=='character') || (colclass=='factor')) {
                              # expect character or factor here
                              if(!is.null(zC)) {  # in categorical mode
-                               levRestriction <- .safeLevelsC(vcol,zC,zTarget,
+                               levRestriction <- .safeLevelsC(vcol, zC, zTarget,
                                                               weights,
-                                                              rareCount,rareSig,
+                                                              minFraction,
+                                                              rareCount, rareSig,
                                                               parallelCluster)
                              } else {
-                               levRestriction <- .safeLevelsR(vcol,zoY,
+                               levRestriction <- .safeLevelsR(vcol, zoY,
                                                               weights,
+                                                              minFraction,
                                                               rareCount,rareSig,
                                                               parallelCluster)
                              }
