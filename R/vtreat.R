@@ -591,6 +591,7 @@ prepare <- function(treatmentplan, dframe,
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
+#' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
@@ -627,6 +628,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     splitFunction=NULL,ncross=3,
                                     forceSplit = FALSE,
                                     catScaling=FALSE,
+                                    verbose= TRUE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -647,6 +649,11 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   }
+  if(verbose) {
+    print(paste("vtreat", 
+                packageVersion("vtreat"),
+                "start initial treatment design", date()))
+  }
   treatments <- designTreatmentsC(dframe,varlist,outcomename,outcometarget,
                                   weights=weights,
                                   minFraction=minFraction,smFactor=smFactor,
@@ -663,6 +670,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   zoY <- ifelse(zC==outcometarget,1,0)
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
                                               (treatments$scoreFrame$sig<1)]
+  if(verbose) {
+    print(paste(" start cross frame work", date()))
+  }
   crossDat <- .mkCrossFrame(dframe,treatments,
                             varlist,newVarsS,outcomename,zoY,
                             zC,outcometarget,
@@ -686,6 +696,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   # Make sure scoreFrame and crossFrame are consistent in variables mentioned
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varName %in% goodVars,]
   crossFrame <- crossFrame[,colnames(crossFrame) %in% c(goodVars,outcomename),drop=FALSE]
+  if(verbose) {
+    print(paste(" vtreat::mkCrossFrameCExperiment done", date()))
+  }
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,
@@ -719,6 +732,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
+#' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
@@ -753,6 +767,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
                                     forceSplit=FALSE,
+                                    verbose= TRUE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -774,6 +789,11 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   }
+  if(verbose) {
+    print(paste("vtreat", 
+                packageVersion("vtreat"),
+                "start initial treatment design", date()))
+  }
   treatments <- designTreatmentsN(dframe,varlist,outcomename,
                                   weights=weights,
                                   minFraction=minFraction,smFactor=smFactor,
@@ -789,6 +809,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   zoY <- dframe[[outcomename]]
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
                                               (treatments$scoreFrame$sig<1)]
+  if(verbose) {
+    print(paste(" start cross frame work", date()))
+  }
   crossDat <- .mkCrossFrame(dframe,treatments,
                             varlist,newVarsS,outcomename,zoY,
                             zC,NULL,
@@ -811,6 +834,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   # Make sure scoreFrame and crossFrame are consistent in variables mentioned
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varName %in% goodVars,]
   crossFrame <- crossFrame[,colnames(crossFrame) %in% c(goodVars,outcomename),drop=FALSE]
+  if(verbose) {
+    print(paste(" vtreat::mkCrossFrameNExperiment done", date()))
+  }
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,

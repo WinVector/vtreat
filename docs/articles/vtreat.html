@@ -178,15 +178,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "inspecting inputs Sat Feb 17 08:48:01 2018"
-## [1] "designing treatments Sat Feb 17 08:48:01 2018"
-## [1] " have initial level statistics Sat Feb 17 08:48:01 2018"
-## [1] "design var x Sat Feb 17 08:48:01 2018"
-## [1] "design var z Sat Feb 17 08:48:01 2018"
-## [1] " scoring treatments Sat Feb 17 08:48:01 2018"
-## [1] "have treatment plan Sat Feb 17 08:48:01 2018"
-## [1] "rescoring complex variables Sat Feb 17 08:48:01 2018"
-## [1] "done rescoring complex variables Sat Feb 17 08:48:01 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Sat Feb 17 12:09:47 2018"
+## [1] "designing treatments Sat Feb 17 12:09:47 2018"
+## [1] " have initial level statistics Sat Feb 17 12:09:47 2018"
+## [1] "design var x Sat Feb 17 12:09:47 2018"
+## [1] "design var z Sat Feb 17 12:09:47 2018"
+## [1] " scoring treatments Sat Feb 17 12:09:47 2018"
+## [1] "have treatment plan Sat Feb 17 12:09:47 2018"
+## [1] "rescoring complex variables Sat Feb 17 12:09:47 2018"
+## [1] "done rescoring complex variables Sat Feb 17 12:09:48 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -206,14 +206,14 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## 
 ## $scoreFrame
-##     varName varMoves        rsq        sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.54085208 0.03392101       TRUE                 2
-## 2    x_catB     TRUE 0.00000000 1.00000000       TRUE                 2
-## 3   z_clean     TRUE 0.25792985 0.14299775      FALSE                 0
-## 4   z_isBAD     TRUE 0.19087450 0.20766228      FALSE                 0
-## 5  x_lev_NA     TRUE 0.19087450 0.20766228      FALSE                 0
-## 6 x_lev_x.a     TRUE 0.08170417 0.40972582      FALSE                 0
-## 7 x_lev_x.b     TRUE 0.00000000 1.00000000      FALSE                 0
+##     varName varMoves        rsq       sig needsSplit extraModelDegrees
+## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
+## 2    x_catB     TRUE 0.12081050 0.3161341       TRUE                 2
+## 3   z_clean     TRUE 0.25792985 0.1429977      FALSE                 0
+## 4   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
+## 5  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
+## 6 x_lev_x.a     TRUE 0.08170417 0.4097258      FALSE                 0
+## 7 x_lev_x.b     TRUE 0.00000000 1.0000000      FALSE                 0
 ##   origName  code
 ## 1        x  catP
 ## 2        x  catB
@@ -306,15 +306,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "inspecting inputs Sat Feb 17 08:48:01 2018"
-## [1] "designing treatments Sat Feb 17 08:48:01 2018"
-## [1] " have initial level statistics Sat Feb 17 08:48:01 2018"
-## [1] "design var x Sat Feb 17 08:48:01 2018"
-## [1] "design var z Sat Feb 17 08:48:01 2018"
-## [1] " scoring treatments Sat Feb 17 08:48:01 2018"
-## [1] "have treatment plan Sat Feb 17 08:48:01 2018"
-## [1] "rescoring complex variables Sat Feb 17 08:48:01 2018"
-## [1] "done rescoring complex variables Sat Feb 17 08:48:01 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Sat Feb 17 12:09:48 2018"
+## [1] "designing treatments Sat Feb 17 12:09:48 2018"
+## [1] " have initial level statistics Sat Feb 17 12:09:48 2018"
+## [1] "design var x Sat Feb 17 12:09:48 2018"
+## [1] "design var z Sat Feb 17 12:09:48 2018"
+## [1] " scoring treatments Sat Feb 17 12:09:48 2018"
+## [1] "have treatment plan Sat Feb 17 12:09:48 2018"
+## [1] "rescoring complex variables Sat Feb 17 12:09:48 2018"
+## [1] "done rescoring complex variables Sat Feb 17 12:09:48 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -338,8 +338,8 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## $scoreFrame
 ##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.213674336 0.2963404       TRUE                 2
-## 2    x_catN     TRUE 0.001432768 0.9357866       TRUE                 2
+## 1    x_catP     TRUE 0.098552276 0.4929238       TRUE                 2
+## 2    x_catN     TRUE 0.070223623 0.5657545       TRUE                 2
 ## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0

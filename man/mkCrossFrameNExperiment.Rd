@@ -8,7 +8,7 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
   collarProb = 0, codeRestriction = NULL, customCoders = NULL,
   scale = FALSE, doCollar = FALSE, splitFunction = NULL, ncross = 3,
-  forceSplit = FALSE, parallelCluster = NULL)
+  forceSplit = FALSE, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -44,6 +44,8 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 \item{ncross}{optional scalar>=2 number of cross-validation rounds to design.}
 
 \item{forceSplit}{logical, if TRUE force cross-validated significance calculatons on all variables.}
+
+\item{verbose}{if TRUE print progress.}
 
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }
