@@ -1,5 +1,5 @@
 
-# vtreat 1.0.3 2017/01/20
+# vtreat 1.0.3 2017/02/17
 
   * parallel indicator calculation.
 
