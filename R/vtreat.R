@@ -335,6 +335,91 @@ designTreatmentsZ <- function(dframe,varlist,
 
 
 
+#' Track unique character values for variables.
+#' 
+#' Builds lists of observed unique character values of varlist variables from the data frame.
+#'  
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
+#' @param varlist Names of columns to treat (effective variables).
+#' @return named list of values seen.
+#' 
+#' @seealso \code{\link{prepare}}, \code{\link{novel_value_summary}}
+#' 
+#' @examples
+#' 
+#' set.seed(23525)
+#' zip <- c(NA, paste('z', 1:100, sep = "_"))
+#' N <- 500
+#' d <- data.frame(zip = sample(zip, N, replace=TRUE),
+#'                 zip2 = sample(zip, N, replace=TRUE),
+#'                 y = runif(N))
+#' dSample <- d[1:300, , drop = FALSE]
+#' tplan <- designTreatmentsN(dSample, 
+#'                            c("zip", "zip2"), "y", 
+#'                            verbose = FALSE)
+#' trackedValues <- track_values(dSample, c("zip", "zip2"))
+#' # don't normally want to catch warnings,
+#' # doing it here as this is an example 
+#' # and must not have unhandled warnings.
+#' tryCatch(
+#'   prepare(tplan, d, trackedValues = trackedValues),
+#'   warning = function(w) { cat(paste(w, collapse = "\n")) })
+#' 
+#' @export
+#' 
+track_values <- function(dframe, varlist) {
+  observed_values <- lapply(varlist, 
+                            function(vi) {
+                              unique(as.character(dframe[[vi]]))
+                            })
+  names(observed_values) <- varlist
+  observed_values
+}
+
+#' Report new/novel appearances of character values.
+#'  
+#' @param dframe Data frame to inspect.
+#' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
+#' @return frame of novel occurrences
+#' 
+#' @seealso \code{\link{prepare}}, \code{\link{track_values}}
+#' 
+#' @examples
+#' 
+#' set.seed(23525)
+#' zip <- c(NA, paste('z', 1:10, sep = "_"))
+#' N <- 10
+#' d <- data.frame(zip = sample(zip, N, replace=TRUE),
+#'                 zip2 = sample(zip, N, replace=TRUE),
+#'                 y = runif(N))
+#' dSample <- d[1:5, , drop = FALSE]
+#' trackedValues <- track_values(dSample, c("zip", "zip2"))
+#' novel_value_summary(d, trackedValues)
+#' 
+#' @export
+#' 
+novel_value_summary <- function(dframe, trackedValues) {
+  novel <- data.frame(row_index = 1, column = "", value = "",
+                      stringsAsFactors = FALSE)
+  novel <- novel[c(), , drop = FALSE]
+  novels <- lapply(sort(intersect(names(trackedValues),
+                                  colnames(dframe))),
+                   function(v) {
+                     newstuff <- !(dframe[[v]] %in% trackedValues[[v]])
+                     if(sum(newstuff)>0) {
+                       idxs <- which(newstuff)
+                       vals <- as.character(dframe[[v]][idxs])
+                       return(data.frame(row_index = idxs,
+                                         column = v,
+                                         value = vals,
+                                         stringsAsFactors = FALSE))
+                     } 
+                     NULL
+                   })
+  novels <- c(list(novel), novels)
+  novels <- novels[!is.null(novels)]
+  .rbindListOfFrames(novels)
+}
 
 #' Apply treatments and restrict to useful variables.
 #' 
@@ -355,6 +440,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @param codeRestriction optional list of treated variable codes to restrict to
+#' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
@@ -396,6 +482,7 @@ prepare <- function(treatmentplan, dframe,
                     doCollar= FALSE,
                     varRestriction= NULL,
                     codeRestriction= NULL,
+                    trackedValues= NULL,
                     parallelCluster= NULL) {
   .checkArgs1(dframe=dframe,...)
   if(class(treatmentplan)!='treatmentplan') {
@@ -414,6 +501,25 @@ prepare <- function(treatmentplan, dframe,
   }
   if(nrow(dframe)<=0) {
     stop("no rows")
+  }
+  if(!is.null(trackedValues)) {
+    for(v in sort(intersect(names(trackedValues),
+                            colnames(dframe)))) {
+      new_values <- setdiff(dframe[[v]], trackedValues[[v]])
+      if(length(new_values)>0) {
+        if(length(new_values)>5) {
+          vsample <- paste(new_values[1:5], collapse = ", ")
+          vsample <- paste0(vsample, ", ...")
+        } else {
+          vsample <- paste(new_values, collapse = ", ")
+        }
+        wmsg <- paste0("vtreat::prepare: column \"", v, "\" has ",
+                      length(new_values), 
+                      " previously unseen values:",
+                      vsample, " .")
+        warning(wmsg)
+      }
+    }
   }
   if(treatmentplan$outcomeType=='None') {
     pruneSig <- NULL
@@ -492,7 +598,7 @@ prepare <- function(treatmentplan, dframe,
 #' 
 #' set.seed(23525)
 #' zip <- paste('z',1:100)
-#' N = 200
+#' N <- 200
 #' d <- data.frame(zip=sample(zip,N,replace=TRUE),
 #'                 zip2=sample(zip,20,replace=TRUE),
 #'                 y=runif(N))
@@ -620,7 +726,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' 
 #' set.seed(23525)
 #' zip <- paste('z',1:100)
-#' N = 200
+#' N <- 200
 #' d <- data.frame(zip=sample(zip,N,replace=TRUE),
 #'                 zip2=sample(zip,N,replace=TRUE),
 #'                 y=runif(N))

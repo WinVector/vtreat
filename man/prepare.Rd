@@ -6,7 +6,7 @@
 \usage{
 prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
   doCollar = FALSE, varRestriction = NULL, codeRestriction = NULL,
-  parallelCluster = NULL)
+  trackedValues = NULL, parallelCluster = NULL)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -24,6 +24,8 @@ prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
 \item{varRestriction}{optional list of treated variable names to restrict to}
 
 \item{codeRestriction}{optional list of treated variable codes to restrict to}
+
+\item{trackedValues}{optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})}
 
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }

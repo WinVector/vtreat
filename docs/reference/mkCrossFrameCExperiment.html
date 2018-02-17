@@ -235,7 +235,7 @@ into calibration, training, test sets.</p>
     <pre class="examples"><div class='input'>
 <span class='fu'>set.seed</span>(<span class='fl'>23525</span>)
 <span class='no'>zip</span> <span class='kw'>&lt;-</span> <span class='fu'>paste</span>(<span class='st'>'z'</span>,<span class='fl'>1</span>:<span class='fl'>100</span>)
-<span class='no'>N</span> <span class='kw'>=</span> <span class='fl'>200</span>
+<span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>200</span>
 <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>zip</span><span class='kw'>=</span><span class='fu'>sample</span>(<span class='no'>zip</span>,<span class='no'>N</span>,<span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),
                 <span class='kw'>zip2</span><span class='kw'>=</span><span class='fu'>sample</span>(<span class='no'>zip</span>,<span class='fl'>20</span>,<span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),
                 <span class='kw'>y</span><span class='kw'>=</span><span class='fu'>runif</span>(<span class='no'>N</span>))

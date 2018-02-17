@@ -66,7 +66,7 @@ into calibration, training, test sets.
 
 set.seed(23525)
 zip <- paste('z',1:100)
-N = 200
+N <- 200
 d <- data.frame(zip=sample(zip,N,replace=TRUE),
                 zip2=sample(zip,20,replace=TRUE),
                 y=runif(N))
