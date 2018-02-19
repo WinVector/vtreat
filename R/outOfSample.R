@@ -238,6 +238,67 @@ kWayStratifiedY <- function(nRows,nSplits,dframe,y) {
 
 
 
+#' k-fold cross validation stratified with replacement on y, a splitFunction in the sense of vtreat::buildEvalSets .
+#' 
+#' Build a k-fold cross validation sample where training sets are the same size as the original data,
+#' and built by sampling disjoint from test/application sets (sampled with replacement).
+#' 
+#' @param nRows number of rows to split (>1)
+#' @param nSplits number of groups to split into (<nRows,>1).
+#' @param dframe original data frame (ignored).
+#' @param y numeric outcome variable try to have equidistributed in each split.
+#' @return split plan
+#' 
+#' @examples
+#' 
+#' set.seed(23255)
+#' d <- data.frame(y=sin(1:100))
+#' pStrat <- kWayStratifiedYReplace(nrow(d),5,d,d$y)
+#' 
+#' @export
+kWayStratifiedYReplace <- function(nRows,nSplits,dframe,y) {
+  if((nRows<=1)||(nSplits<=1)||(nSplits>nRows)) {
+    return(NULL)
+  }
+  if(is.null(y)||(length(unique(y))<=1)) {
+    return(kWayCrossValidation(nRows,nSplits,NULL,NULL))
+  }
+  fullSeq <- seq_len(nRows)
+  d <- data.frame(index=fullSeq,y=y)
+  # initial permutation in case y has large constant blocks
+  d <- d[order(sample.int(nRows,nRows,replace=FALSE)),]
+  # order by y
+  d <- d[order(d$y),]
+  # mix within order segments
+  rows_per_split <- ceiling(nRows/nSplits)
+  mix_idx <- vector("list", rows_per_split)
+  for(si in seq_len(rows_per_split)) {
+    leftI <- si*nSplits - (nSplits-1)
+    rightI <- min(si*nSplits,nRows)
+    widthI <- 1+rightI-leftI
+    if(widthI>1) {
+      oldIndices <- leftI:rightI
+      mix_idx[[si]] <- oldIndices[sample.int(widthI,widthI,replace=FALSE)]
+    } else {
+      mix_idx[[si]] <- leftI:rightI
+    }
+  }
+  d[unlist(mix_idx),] <- d
+  d$group <- (fullSeq %% nSplits) + 1
+  carveUp <-  split(d$index,d$group)
+  evalSets <- lapply(carveUp,
+                     function(appi) { 
+                       trainIdxs <- setdiff(fullSeq,appi)
+                       si <- sample.int(length(trainIdxs), nRows, replace=TRUE)
+                       list(train=trainIdxs[si], app=appi)
+                     })
+  names(evalSets) <- NULL
+  attr(evalSets,'splitmethod') <- 'kwaycrossystratifiedreplace'
+  evalSets
+}
+
+
+
 
 #' Build a k-fold cross validation splitter, respecting (never splitting) groupingColumn.
 #' 

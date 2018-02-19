@@ -99,7 +99,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-02-17</h4>
+            <h4 class="date">2018-02-19</h4>
           </div>
 
     
@@ -178,15 +178,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Sat Feb 17 12:09:47 2018"
-## [1] "designing treatments Sat Feb 17 12:09:47 2018"
-## [1] " have initial level statistics Sat Feb 17 12:09:47 2018"
-## [1] "design var x Sat Feb 17 12:09:47 2018"
-## [1] "design var z Sat Feb 17 12:09:47 2018"
-## [1] " scoring treatments Sat Feb 17 12:09:47 2018"
-## [1] "have treatment plan Sat Feb 17 12:09:47 2018"
-## [1] "rescoring complex variables Sat Feb 17 12:09:47 2018"
-## [1] "done rescoring complex variables Sat Feb 17 12:09:48 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Mon Feb 19 15:48:06 2018"
+## [1] "designing treatments Mon Feb 19 15:48:07 2018"
+## [1] " have initial level statistics Mon Feb 19 15:48:07 2018"
+## [1] "design var x Mon Feb 19 15:48:07 2018"
+## [1] "design var z Mon Feb 19 15:48:07 2018"
+## [1] " scoring treatments Mon Feb 19 15:48:07 2018"
+## [1] "have treatment plan Mon Feb 19 15:48:07 2018"
+## [1] "rescoring complex variables Mon Feb 19 15:48:07 2018"
+## [1] "done rescoring complex variables Mon Feb 19 15:48:07 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -306,15 +306,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Sat Feb 17 12:09:48 2018"
-## [1] "designing treatments Sat Feb 17 12:09:48 2018"
-## [1] " have initial level statistics Sat Feb 17 12:09:48 2018"
-## [1] "design var x Sat Feb 17 12:09:48 2018"
-## [1] "design var z Sat Feb 17 12:09:48 2018"
-## [1] " scoring treatments Sat Feb 17 12:09:48 2018"
-## [1] "have treatment plan Sat Feb 17 12:09:48 2018"
-## [1] "rescoring complex variables Sat Feb 17 12:09:48 2018"
-## [1] "done rescoring complex variables Sat Feb 17 12:09:48 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Mon Feb 19 15:48:07 2018"
+## [1] "designing treatments Mon Feb 19 15:48:07 2018"
+## [1] " have initial level statistics Mon Feb 19 15:48:07 2018"
+## [1] "design var x Mon Feb 19 15:48:07 2018"
+## [1] "design var z Mon Feb 19 15:48:07 2018"
+## [1] " scoring treatments Mon Feb 19 15:48:07 2018"
+## [1] "have treatment plan Mon Feb 19 15:48:07 2018"
+## [1] "rescoring complex variables Mon Feb 19 15:48:07 2018"
+## [1] "done rescoring complex variables Mon Feb 19 15:48:07 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -338,8 +338,8 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## $scoreFrame
 ##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.098552276 0.4929238       TRUE                 2
-## 2    x_catN     TRUE 0.070223623 0.5657545       TRUE                 2
+## 1    x_catP     TRUE 0.156532606 0.3796474       TRUE                 2
+## 2    x_catN     TRUE 0.045758227 0.6451033       TRUE                 2
 ## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
