@@ -29,7 +29,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -99,7 +99,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2017-12-25</h4>
+            <h4 class="date">2018-02-19</h4>
           </div>
 
     
@@ -149,18 +149,18 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "designing treatments Mon Dec 25 08:51:08 2017"
-## [1] "designing treatments Mon Dec 25 08:51:08 2017"
-## [1] " have level statistics Mon Dec 25 08:51:08 2017"
-## [1] "design var xBad1 Mon Dec 25 08:51:08 2017"
-## [1] "design var xBad2 Mon Dec 25 08:51:08 2017"
-## [1] "design var xBad3 Mon Dec 25 08:51:08 2017"
-## [1] "design var xGood1 Mon Dec 25 08:51:08 2017"
-## [1] "design var xGood2 Mon Dec 25 08:51:08 2017"
-## [1] " scoring treatments Mon Dec 25 08:51:08 2017"
-## [1] "have treatment plan Mon Dec 25 08:51:09 2017"
-## [1] "rescoring complex variables Mon Dec 25 08:51:09 2017"
-## [1] "done rescoring complex variables Mon Dec 25 08:51:09 2017"</code></pre>
+<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Mon Feb 19 15:48:09 2018"
+## [1] "designing treatments Mon Feb 19 15:48:09 2018"
+## [1] " have initial level statistics Mon Feb 19 15:48:09 2018"
+## [1] "design var xBad1 Mon Feb 19 15:48:09 2018"
+## [1] "design var xBad2 Mon Feb 19 15:48:09 2018"
+## [1] "design var xBad3 Mon Feb 19 15:48:09 2018"
+## [1] "design var xGood1 Mon Feb 19 15:48:09 2018"
+## [1] "design var xGood2 Mon Feb 19 15:48:09 2018"
+## [1] " scoring treatments Mon Feb 19 15:48:09 2018"
+## [1] "have treatment plan Mon Feb 19 15:48:09 2018"
+## [1] "rescoring complex variables Mon Feb 19 15:48:09 2018"
+## [1] "done rescoring complex variables Mon Feb 19 15:48:09 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -230,18 +230,18 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "designing treatments Mon Dec 25 08:51:09 2017"
-## [1] "designing treatments Mon Dec 25 08:51:09 2017"
-## [1] " have level statistics Mon Dec 25 08:51:09 2017"
-## [1] "design var xBad1 Mon Dec 25 08:51:09 2017"
-## [1] "design var xBad2 Mon Dec 25 08:51:10 2017"
-## [1] "design var xBad3 Mon Dec 25 08:51:10 2017"
-## [1] "design var xGood1 Mon Dec 25 08:51:10 2017"
-## [1] "design var xGood2 Mon Dec 25 08:51:10 2017"
-## [1] " scoring treatments Mon Dec 25 08:51:10 2017"
-## [1] "have treatment plan Mon Dec 25 08:51:10 2017"
-## [1] "rescoring complex variables Mon Dec 25 08:51:10 2017"
-## [1] "done rescoring complex variables Mon Dec 25 08:51:10 2017"</code></pre>
+<pre><code>## [1] "vtreat 1.0.3 inspecting inputs Mon Feb 19 15:48:10 2018"
+## [1] "designing treatments Mon Feb 19 15:48:10 2018"
+## [1] " have initial level statistics Mon Feb 19 15:48:10 2018"
+## [1] "design var xBad1 Mon Feb 19 15:48:10 2018"
+## [1] "design var xBad2 Mon Feb 19 15:48:10 2018"
+## [1] "design var xBad3 Mon Feb 19 15:48:10 2018"
+## [1] "design var xGood1 Mon Feb 19 15:48:10 2018"
+## [1] "design var xGood2 Mon Feb 19 15:48:10 2018"
+## [1] " scoring treatments Mon Feb 19 15:48:10 2018"
+## [1] "have treatment plan Mon Feb 19 15:48:10 2018"
+## [1] "rescoring complex variables Mon Feb 19 15:48:10 2018"
+## [1] "done rescoring complex variables Mon Feb 19 15:48:10 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)
@@ -343,8 +343,11 @@ prep &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="
            <span class="kw">c</span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),
            <span class="st">'y'</span>,<span class="ot">TRUE</span>,
            <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
-)
-treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments
+)</code></pre></div>
+<pre><code>## [1] "vtreat 1.0.3 start initial treatment design Mon Feb 19 15:48:10 2018"
+## [1] " start cross frame work Mon Feb 19 15:48:10 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Mon Feb 19 15:48:11 2018"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##        varName          sig
 ## 1   xBad1_catP 9.578124e-01

@@ -29,7 +29,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -99,7 +99,7 @@
       <h1>vtreat Rare Levels</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2017-12-25</h4>
+            <h4 class="date">2018-02-19</h4>
           </div>
 
     
@@ -150,22 +150,22 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>),drop=<span class="ot">FALSE</span>]</code></pre></div>
 <pre><code>##              varName          sig
-## 1      code_lev_rare 1.050358e-07
-## 2  code_lev_x.z03696 2.012044e-01
-## 3  code_lev_x.z12247 9.121218e-01
-## 4  code_lev_x.z13241 7.190457e-01
-## 5  code_lev_x.z16423 1.758354e-01
-## 6  code_lev_x.z24466 3.885375e-01
-## 7  code_lev_x.z31626 2.535686e-01
-## 8  code_lev_x.z32809 1.574373e-01
-## 9  code_lev_x.z36679 4.806414e-01
-## 10 code_lev_x.z40704 2.419125e-01
-## 11 code_lev_x.z41783 1.574373e-01
-## 12 code_lev_x.z88424 5.330852e-01
-## 13 code_lev_x.z92143 6.615697e-01
-## 14         code_catP 2.946894e-01
-## 15         code_catB 1.592276e-02</code></pre>
-<p>We see in <code>treatments$scoreFrame</code> we have a level called <code>code_lev_rare</code>, which is where a number of rare levels are re-coding. We can also confirm levels that occur <code>rareCount</code> or fewer times are eligable to code to to <code>code_lev_rare</code>.</p>
+## 1          code_catP 2.946894e-01
+## 2          code_catB 1.592276e-02
+## 3      code_lev_rare 1.050358e-07
+## 4  code_lev_x.z03696 2.012044e-01
+## 5  code_lev_x.z12247 9.121218e-01
+## 6  code_lev_x.z13241 7.190457e-01
+## 7  code_lev_x.z16423 1.758354e-01
+## 8  code_lev_x.z24466 3.885375e-01
+## 9  code_lev_x.z31626 2.535686e-01
+## 10 code_lev_x.z32809 1.574373e-01
+## 11 code_lev_x.z36679 4.806414e-01
+## 12 code_lev_x.z40704 2.419125e-01
+## 13 code_lev_x.z41783 1.574373e-01
+## 14 code_lev_x.z88424 5.330852e-01
+## 15 code_lev_x.z92143 6.615697e-01</code></pre>
+<p>We see in <code>treatments$scoreFrame</code> we have a level called <code>code_lev_rare</code>, which is where a number of rare levels are re-coding. We can also confirm levels that occur <code>rareCount</code> or fewer times are eligible to code to to <code>code_lev_rare</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">designSetTreated &lt;-<span class="st">  </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,designSet,<span class="dt">pruneSig=</span><span class="fl">0.5</span>)
 designSetTreated<span class="op">$</span>code &lt;-<span class="st"> </span>designSet<span class="op">$</span>code
 <span class="kw">summary</span>(<span class="kw">as.numeric</span>(<span class="kw">table</span>(designSetTreated<span class="op">$</span>code[designSetTreated<span class="op">$</span>code_lev_rare<span class="op">==</span><span class="dv">1</span>])))</code></pre></div>

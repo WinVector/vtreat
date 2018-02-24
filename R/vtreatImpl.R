@@ -143,6 +143,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
   tracked <- setdiff(tracked, supressedLevs)
+  tracked <- setdiff(tracked,'zap') # don't let zap group code
   list(safeLevs = safeLevs, 
        supressedLevs = supressedLevs,
        tracked = tracked)
@@ -201,6 +202,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
   tracked <- setdiff(tracked, supressedLevs)
+  tracked <- setdiff(tracked,'zap') # don't let zap group code
   list(safeLevs = safeLevs, 
        supressedLevs = supressedLevs,
        tracked = tracked)
@@ -302,8 +304,10 @@ mkVtreatListWorker <- function(scale,doCollar) {
         ti = NULL
         if(length(levRestriction$safeLevs)>0) {
           if(codeRestictionWasNULL || ('lev' %in% codeRestriction)) {
-            ti <- .mkCatInd(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
-            acceptTreatment(ti)
+            ti <- .mkCatInd_a(v,vcol,zoY,zC,zTarget,minFraction,levRestriction,weights,catScaling)
+            if( (!is.null(ti)) && (length(ti$newvars)>0) ) {
+              acceptTreatment(ti)
+            }
           }
           if(is.null(ti)||(length(unique(vcol))>2)) {  # make an impactmodel if catInd construction failed or there are more than 2 levels
             if(codeRestictionWasNULL || ('catP' %in% codeRestriction)) {
@@ -551,16 +555,27 @@ mkVtreatListWorker <- function(scale,doCollar) {
   }
   # build the treatments we will return to the user
   worker <- .mkVarDesigner(zoY,
-                         zC,zTarget,
-                         weights,
-                         minFraction,smFactor,rareCount,rareSig,
-                         collarProb,
-                         codeRestriction, customCoders,
-                         catScaling,
-                         verbose)
-  treatments <- plapply(workList,worker,parallelCluster)
-  treatments <- Filter(Negate(is.null),treatments)
-  treatments <- unlist(treatments,recursive=FALSE)
+                           zC,zTarget,
+                           weights,
+                           minFraction,smFactor,rareCount,rareSig,
+                           collarProb,
+                           codeRestriction, customCoders,
+                           catScaling,
+                           verbose)
+  treatments <- plapply(workList, worker, parallelCluster)
+  treatments <- unlist(treatments, recursive=FALSE)
+  treatments <- Filter(Negate(is.null), treatments)
+  # parallelize on levels for cat ind
+  for(i in seq_len(length(treatments))) {
+    ti <- treatments[[i]]
+    if(ti$treatmentCode == 'lev') {
+      ti <- .mkCatInd_scales(ti,
+                             zoY, zC, zTarget,
+                             weights, catScaling,
+                             parallelCluster = parallelCluster)
+      treatments[[i]] <- ti;
+    }
+  }
   if(justWantTreatments) {
     return(treatments)
   }
@@ -571,15 +586,51 @@ mkVtreatListWorker <- function(scale,doCollar) {
   if(verbose) {
     print(paste(" scoring treatments",date()))
   }
-  scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
-  tP <- lapply(treatments,
-               function(ti) {
-                 list(ti=ti,
-                      dfcol=dframe[[vorig(ti)]])
-               })
-  sFrames <- plapply(tP,scrW,parallelCluster)
-  sFrames <- Filter(Negate(is.null),sFrames)
-  sFrame <- .rbindListOfFrames(sFrames)
+  is_ind <- vapply(treatments,
+                   function(ti) { ti$treatmentCode == "lev"},
+                   logical(1))
+  treatments_ind <- treatments[is_ind]
+  treatments_non_ind <- treatments[!is_ind]
+  sFrame <- NULL
+  if(length(treatments_non_ind)>0) {
+    scrW <- .mkScoreVarWorker(nrow(dframe),zoY,zC,zTarget,weights)
+    tP <- lapply(treatments_non_ind,
+                 function(ti) {
+                   list(ti=ti,
+                        dfcol=dframe[[vorig(ti)]])
+                 })
+    sFrames <- plapply(tP, scrW, parallelCluster)
+    sFrames <- Filter(Negate(is.null), sFrames)
+    sFrame <- .rbindListOfFrames(sFrames)
+  }
+  # Finer grain parallelism on indicators (more like .mkScoreColWorker )
+  if(length(treatments_ind)>0) {
+    swkr <- .mkScoreColWorker(zoY, zC, zTarget, weights)
+    sframel <- vector(length(treatments_ind), mode = "list")
+    for(ii in seq_len(length(treatments_ind))) {
+      ti <- treatments_ind[[ii]]
+      origName <- ti$origvar
+      dfcol <- dframe[[origName]]
+      xcolClean <- .cleanColumn(dfcol, nRows)
+      fi <- .vtreatA(ti, xcolClean, FALSE, FALSE)
+      newVarsSP <- lapply(ti$newvars,
+                          function(nv) {
+                            list(nv = nv, dfc = fi[[nv]])
+                          })
+      sfij <- plapply(newVarsSP, swkr,
+                      parallelCluster = parallelCluster)
+      sfij <-  .rbindListOfFrames(sfij)
+      sfij$needsSplit <- FALSE
+      sfij$extraModelDegrees <- 0
+      sfij$origName <- origName
+      sfij$code <- ti$treatmentCode
+      sframel[[ii]] <- sfij
+    }
+    sframel <- .rbindListOfFrames(sframel)
+    sframel <- Filter(Negate(is.null), sframel)
+    siFrame <- .rbindListOfFrames(sframel)
+    sFrame <- rbind(sFrame, siFrame)
+  }
   plan <- list(treatments=treatments,
                scoreFrame=sFrame,
                outcomename=outcomename)
@@ -617,7 +668,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
     stop("most have rows")
   }
   if(verbose) {
-    print(paste("designing treatments",date()))
+    print(paste("vtreat", 
+                packageVersion("vtreat"),
+                "inspecting inputs", date()))
   }
   varlist <- setdiff(unique(varlist),outcomename)
   varlist <- intersect(varlist,colnames(dframe))

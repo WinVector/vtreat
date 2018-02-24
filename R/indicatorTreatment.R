@@ -11,17 +11,17 @@
   vals
 }
 
-# build categorical indicators
-.mkCatInd <- function(origVarName,vcolin,ynumeric,zC,zTarget,minFraction,levRestriction,weights,catScaling) {
-  vcol <- .preProcCat(vcolin,levRestriction)
-  counts <- tapply(weights,vcol,sum)
-  totMass <- sum(counts)
-  tracked <- names(counts)[counts/totMass>=minFraction]
-  tracked <- setdiff(tracked,'zap') # don't let zap group code
+# same signature as .mkCatInd (except no parallelCluster argument)
+.mkCatInd_a <- function(origVarName,
+                        vcolin,
+                        ynumeric, zC, zTarget,
+                        minFraction, levRestriction,
+                        weights,
+                        catScaling) {
+  tracked <- levRestriction$tracked
   if(length(tracked)<=0) {
     return(c())
   }
-  counts <- counts[tracked]
   newVarNames <- make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE)
   treatment <- list(origvar=origVarName,
                     newvars=newVarNames,
@@ -34,18 +34,72 @@
                     extraModelDegrees=0)
   class(treatment) <- 'vtreatment'
   pred <- treatment$f(vcolin,treatment$args)
-  if((!catScaling)||(is.null(zC))) {
-    scaleList <- lapply(seq_len(length(newVarNames)),
-                      function(j) {
-                        linScore(newVarNames[[j]],pred[[j]],ynumeric,weights)
-                      })
-  } else {
-    scaleList <- lapply(seq_len(length(newVarNames)),
-                        function(j) {
-                          catScore(newVarNames[[j]],pred[[j]],zC,zTarget,weights)
-                        })
+  treatment$pred <- pred
+  treatment
+}
+
+
+.mkCatNworker <- function(newVarNames, pred, ynumeric, weights) {
+  force(newVarNames)
+  force(pred)
+  force(ynumeric)
+  force(weights)
+  function(j) {
+    linScore(newVarNames[[j]], pred[[j]], ynumeric, weights)
   }
-  treatment$scales <- .rbindListOfFrames(scaleList)
+}
+
+.mkCatCworker <-  function(newVarNames, pred, zC, zTarget, weights) {
+  force(newVarNames)
+  force(pred)
+  force(zC)
+  force(zTarget)
+  force(weights)
+  function(j) {
+    catScore(newVarNames[[j]], pred[[j]], zC, zTarget, weights)
+  }
+}
+
+.mkCatInd_scales <- function(treatment,
+                             ynumeric, zC, zTarget,
+                             weights, catScaling,
+                             parallelCluster) {
+  newVarNames <- treatment$newvars
+  pred <- treatment$pred
+  treatment$pred <- NULL
+  treatment$scales <- NULL
+  if(length(newVarNames)>0) {
+    if((!catScaling)||(is.null(zC))) {
+      worker <- .mkCatNworker(newVarNames, pred, ynumeric, weights) 
+    } else {
+      worker <- .mkCatCworker(newVarNames, pred, zC, zTarget, weights)
+    }
+    scaleList <- plapply(seq_len(length(newVarNames)),
+                         worker,
+                         parallelCluster)
+    treatment$scales <- .rbindListOfFrames(scaleList)
+  }
+  treatment
+}
+
+# build categorical indicators
+.mkCatInd <- function(origVarName,
+                      vcolin,
+                      ynumeric, zC, zTarget,
+                      minFraction, levRestriction,
+                      weights,
+                      catScaling,
+                      parallelCluster) {
+  treatment <- .mkCatInd_a(origVarName,
+                           vcolin,
+                           ynumeric, zC, zTarget,
+                           minFraction, levRestriction,
+                           weights,
+                           catScaling)
+  treatment <- .mkCatInd_scales(treatment,
+                                ynumeric, zC, zTarget,
+                                weights, catScaling,
+                                parallelCluster = parallelCluster)
   treatment
 }
 

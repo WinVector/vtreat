@@ -59,7 +59,7 @@ if(useParallel) {
   ncores <- parallel::detectCores()
   parallelCluster <- parallel::makeCluster(ncores)
 }
-n_rows <- 500000
+n_rows <- 2000000
 ```
 
 Get a base timing of a moderately large task.
@@ -94,7 +94,7 @@ Measure the effect of irrelevant columns.
 d <- mkEx(n_rows = n_rows,
           n_cat_columns = 2,
           n_num_columns = 2,
-          n_irrel_columns = 300,
+          n_irrel_columns = 100,
           n_cat_levels_a = 5,
           n_cat_levels_b = 0)
 yName <- "yC"
@@ -109,6 +109,13 @@ system.time(
       yTarget,
       parallelCluster = parallelCluster))
 knitr::kable(tplan$treatments$scoreFrame)
+```
+
+
+```{r}
+d <- NULL
+tplan <- NULL
+gc()
 ```
 
 
@@ -133,6 +140,12 @@ system.time(
       yTarget,
       parallelCluster = parallelCluster))
 knitr::kable(tplan$treatments$scoreFrame)
+```
+
+```{r}
+d <- NULL
+tplan <- NULL
+gc()
 ```
 
 See if it is the indicators.
@@ -161,6 +174,11 @@ system.time(
 knitr::kable(tplan$treatments$scoreFrame)
 ```
 
+```{r}
+d <- NULL
+tplan <- NULL
+gc()
+```
 
 ```{r cleanup}
 if(!is.null(parallelCluster)) {

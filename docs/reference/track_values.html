@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>check if appPlan is a good carve-up of 1:nRows into nSplits groups — problemAppPlan • vtreat</title>
+<title>Track unique character values for variables. — track_values • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -119,49 +119,56 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>check if appPlan is a good carve-up of 1:nRows into nSplits groups</h1>
+    <h1>Track unique character values for variables.</h1>
     </div>
 
     
-    <p>check if appPlan is a good carve-up of 1:nRows into nSplits groups</p>
+    <p>Builds lists of observed unique character values of varlist variables from the data frame.</p>
     
 
-    <pre class="usage"><span class='fu'>problemAppPlan</span>(<span class='no'>nRows</span>, <span class='no'>nSplits</span>, <span class='no'>appPlan</span>, <span class='no'>strictCheck</span>)</pre>
+    <pre class="usage"><span class='fu'>track_values</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nRows</th>
-      <td><p>number of rows to carve-up</p></td>
+      <th>dframe</th>
+      <td><p>Data frame to learn treatments from (training data), must have at least 1 row.</p></td>
     </tr>
     <tr>
-      <th>nSplits</th>
-      <td><p>number of sets to carve-up into</p></td>
-    </tr>
-    <tr>
-      <th>appPlan</th>
-      <td><p>carve-up to critique</p></td>
-    </tr>
-    <tr>
-      <th>strictCheck</th>
-      <td><p>logical, if true expect application data to be a carve-up and training data to be a maximal partition and to match nSplits.</p></td>
+      <th>varlist</th>
+      <td><p>Names of columns to treat (effective variables).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>problem with carve-up (null if good)</p>
+    <p>named list of values seen.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='kWayCrossValidation.html'>kWayCrossValidation</a></code>, <code><a href='kWayStratifiedY.html'>kWayStratifiedY</a></code>, and <code><a href='makekWayCrossValidationGroupedByColumn.html'>makekWayCrossValidationGroupedByColumn</a></code></p>
+    <p><code><a href='prepare.html'>prepare</a></code>, <code><a href='novel_value_summary.html'>novel_value_summary</a></code></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>plan</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='kWayStratifiedY.html'>kWayStratifiedY</a></span>(<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>)
-<span class='fu'>problemAppPlan</span>(<span class='fl'>3</span>,<span class='fl'>3</span>,<span class='no'>plan</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "didn't get requested number of groups in appPlan"</div><div class='input'>
+<span class='fu'>set.seed</span>(<span class='fl'>23525</span>)
+<span class='no'>zip</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>NA</span>, <span class='fu'>paste</span>(<span class='st'>'z'</span>, <span class='fl'>1</span>:<span class='fl'>100</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"_"</span>))
+<span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>500</span>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>zip</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='no'>zip</span>, <span class='no'>N</span>, <span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),
+                <span class='kw'>zip2</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='no'>zip</span>, <span class='no'>N</span>, <span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),
+                <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>runif</span>(<span class='no'>N</span>))
+<span class='no'>dSample</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>[<span class='fl'>1</span>:<span class='fl'>300</span>, , <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>]
+<span class='no'>tplan</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='designTreatmentsN.html'>designTreatmentsN</a></span>(<span class='no'>dSample</span>,
+                           <span class='fu'>c</span>(<span class='st'>"zip"</span>, <span class='st'>"zip2"</span>), <span class='st'>"y"</span>,
+                           <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>trackedValues</span> <span class='kw'>&lt;-</span> <span class='fu'>track_values</span>(<span class='no'>dSample</span>, <span class='fu'>c</span>(<span class='st'>"zip"</span>, <span class='st'>"zip2"</span>))
+<span class='co'># don't normally want to catch warnings,</span>
+<span class='co'># doing it here as this is an example </span>
+<span class='co'># and must not have unhandled warnings.</span>
+<span class='fu'>tryCatch</span>(
+  <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>tplan</span>, <span class='no'>d</span>, <span class='kw'>trackedValues</span> <span class='kw'>=</span> <span class='no'>trackedValues</span>),
+  <span class='kw'>warning</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>w</span>) { <span class='fu'>cat</span>(<span class='fu'>paste</span>(<span class='no'>w</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='st'>"\n"</span>)) })</div><div class='output co'>#&gt; simpleWarning in prepare(tplan, d, trackedValues = trackedValues): vtreat::prepare: column "zip" has 4 previously unseen values:z_77, z_42, z_97, z_33 .</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

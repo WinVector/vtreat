@@ -1,8 +1,8 @@
 Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
-Version: 1.0.2
-Date: 2018-01-20
+Version: 1.0.3
+Date: 2018-02-17
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
@@ -15,8 +15,8 @@ Description: A 'data.frame' processor/conditioner that prepares real-world data 
     'vtreat' prepares variables so that data has fewer exceptional cases, making
     it easier to safely use models in production. Common problems 'vtreat' defends
     against: 'Inf', 'NA', too many categorical levels, rare categorical levels, and new
-    categorical levels (levels seen during application, but not during training).
-    'vtreat::prepare' should be used as you would use 'model.matrix'.
+    categorical levels (levels seen during application, but not during training). Reference: 
+    "vtreat: a data.frame Processor for Predictive Modeling", Zumel, Mount, 2016, DOI:10.5281/zenodo.1173314.
 License: GPL-3
 Imports:
     stats

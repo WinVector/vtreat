@@ -335,6 +335,91 @@ designTreatmentsZ <- function(dframe,varlist,
 
 
 
+#' Track unique character values for variables.
+#' 
+#' Builds lists of observed unique character values of varlist variables from the data frame.
+#'  
+#' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
+#' @param varlist Names of columns to treat (effective variables).
+#' @return named list of values seen.
+#' 
+#' @seealso \code{\link{prepare}}, \code{\link{novel_value_summary}}
+#' 
+#' @examples
+#' 
+#' set.seed(23525)
+#' zip <- c(NA, paste('z', 1:100, sep = "_"))
+#' N <- 500
+#' d <- data.frame(zip = sample(zip, N, replace=TRUE),
+#'                 zip2 = sample(zip, N, replace=TRUE),
+#'                 y = runif(N))
+#' dSample <- d[1:300, , drop = FALSE]
+#' tplan <- designTreatmentsN(dSample, 
+#'                            c("zip", "zip2"), "y", 
+#'                            verbose = FALSE)
+#' trackedValues <- track_values(dSample, c("zip", "zip2"))
+#' # don't normally want to catch warnings,
+#' # doing it here as this is an example 
+#' # and must not have unhandled warnings.
+#' tryCatch(
+#'   prepare(tplan, d, trackedValues = trackedValues),
+#'   warning = function(w) { cat(paste(w, collapse = "\n")) })
+#' 
+#' @export
+#' 
+track_values <- function(dframe, varlist) {
+  observed_values <- lapply(varlist, 
+                            function(vi) {
+                              unique(as.character(dframe[[vi]]))
+                            })
+  names(observed_values) <- varlist
+  observed_values
+}
+
+#' Report new/novel appearances of character values.
+#'  
+#' @param dframe Data frame to inspect.
+#' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
+#' @return frame of novel occurrences
+#' 
+#' @seealso \code{\link{prepare}}, \code{\link{track_values}}
+#' 
+#' @examples
+#' 
+#' set.seed(23525)
+#' zip <- c(NA, paste('z', 1:10, sep = "_"))
+#' N <- 10
+#' d <- data.frame(zip = sample(zip, N, replace=TRUE),
+#'                 zip2 = sample(zip, N, replace=TRUE),
+#'                 y = runif(N))
+#' dSample <- d[1:5, , drop = FALSE]
+#' trackedValues <- track_values(dSample, c("zip", "zip2"))
+#' novel_value_summary(d, trackedValues)
+#' 
+#' @export
+#' 
+novel_value_summary <- function(dframe, trackedValues) {
+  novel <- data.frame(row_index = 1, column = "", value = "",
+                      stringsAsFactors = FALSE)
+  novel <- novel[c(), , drop = FALSE]
+  novels <- lapply(sort(intersect(names(trackedValues),
+                                  colnames(dframe))),
+                   function(v) {
+                     newstuff <- !(dframe[[v]] %in% trackedValues[[v]])
+                     if(sum(newstuff)>0) {
+                       idxs <- which(newstuff)
+                       vals <- as.character(dframe[[v]][idxs])
+                       return(data.frame(row_index = idxs,
+                                         column = v,
+                                         value = vals,
+                                         stringsAsFactors = FALSE))
+                     } 
+                     NULL
+                   })
+  novels <- c(list(novel), novels)
+  novels <- novels[!is.null(novels)]
+  .rbindListOfFrames(novels)
+}
 
 #' Apply treatments and restrict to useful variables.
 #' 
@@ -355,6 +440,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @param codeRestriction optional list of treated variable codes to restrict to
+#' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
@@ -396,6 +482,7 @@ prepare <- function(treatmentplan, dframe,
                     doCollar= FALSE,
                     varRestriction= NULL,
                     codeRestriction= NULL,
+                    trackedValues= NULL,
                     parallelCluster= NULL) {
   .checkArgs1(dframe=dframe,...)
   if(class(treatmentplan)!='treatmentplan') {
@@ -414,6 +501,25 @@ prepare <- function(treatmentplan, dframe,
   }
   if(nrow(dframe)<=0) {
     stop("no rows")
+  }
+  if(!is.null(trackedValues)) {
+    for(v in sort(intersect(names(trackedValues),
+                            colnames(dframe)))) {
+      new_values <- setdiff(dframe[[v]], trackedValues[[v]])
+      if(length(new_values)>0) {
+        if(length(new_values)>5) {
+          vsample <- paste(new_values[1:5], collapse = ", ")
+          vsample <- paste0(vsample, ", ...")
+        } else {
+          vsample <- paste(new_values, collapse = ", ")
+        }
+        wmsg <- paste0("vtreat::prepare: column \"", v, "\" has ",
+                      length(new_values), 
+                      " previously unseen values:",
+                      vsample, " .")
+        warning(wmsg)
+      }
+    }
   }
   if(treatmentplan$outcomeType=='None') {
     pruneSig <- NULL
@@ -485,6 +591,7 @@ prepare <- function(treatmentplan, dframe,
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
+#' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
@@ -492,7 +599,7 @@ prepare <- function(treatmentplan, dframe,
 #' 
 #' set.seed(23525)
 #' zip <- paste('z',1:100)
-#' N = 200
+#' N <- 200
 #' d <- data.frame(zip=sample(zip,N,replace=TRUE),
 #'                 zip2=sample(zip,20,replace=TRUE),
 #'                 y=runif(N))
@@ -521,6 +628,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     splitFunction=NULL,ncross=3,
                                     forceSplit = FALSE,
                                     catScaling=FALSE,
+                                    verbose= TRUE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -541,6 +649,11 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   }
+  if(verbose) {
+    print(paste("vtreat", 
+                packageVersion("vtreat"),
+                "start initial treatment design", date()))
+  }
   treatments <- designTreatmentsC(dframe,varlist,outcomename,outcometarget,
                                   weights=weights,
                                   minFraction=minFraction,smFactor=smFactor,
@@ -557,6 +670,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   zoY <- ifelse(zC==outcometarget,1,0)
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
                                               (treatments$scoreFrame$sig<1)]
+  if(verbose) {
+    print(paste(" start cross frame work", date()))
+  }
   crossDat <- .mkCrossFrame(dframe,treatments,
                             varlist,newVarsS,outcomename,zoY,
                             zC,outcometarget,
@@ -580,6 +696,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   # Make sure scoreFrame and crossFrame are consistent in variables mentioned
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varName %in% goodVars,]
   crossFrame <- crossFrame[,colnames(crossFrame) %in% c(goodVars,outcomename),drop=FALSE]
+  if(verbose) {
+    print(paste(" vtreat::mkCrossFrameCExperiment done", date()))
+  }
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,
@@ -613,6 +732,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
+#' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
@@ -620,7 +740,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' 
 #' set.seed(23525)
 #' zip <- paste('z',1:100)
-#' N = 200
+#' N <- 200
 #' d <- data.frame(zip=sample(zip,N,replace=TRUE),
 #'                 zip2=sample(zip,N,replace=TRUE),
 #'                 y=runif(N))
@@ -647,6 +767,7 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     scale=FALSE,doCollar=FALSE,
                                     splitFunction=NULL,ncross=3,
                                     forceSplit=FALSE,
+                                    verbose= TRUE,
                                     parallelCluster=NULL) {
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
   if(!is.data.frame(dframe)) {
@@ -668,6 +789,11 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   if(is.null(weights)) {
     weights <- rep(1.0,nrow(dframe))
   }
+  if(verbose) {
+    print(paste("vtreat", 
+                packageVersion("vtreat"),
+                "start initial treatment design", date()))
+  }
   treatments <- designTreatmentsN(dframe,varlist,outcomename,
                                   weights=weights,
                                   minFraction=minFraction,smFactor=smFactor,
@@ -683,6 +809,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   zoY <- dframe[[outcomename]]
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
                                               (treatments$scoreFrame$sig<1)]
+  if(verbose) {
+    print(paste(" start cross frame work", date()))
+  }
   crossDat <- .mkCrossFrame(dframe,treatments,
                             varlist,newVarsS,outcomename,zoY,
                             zC,NULL,
@@ -705,6 +834,9 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   # Make sure scoreFrame and crossFrame are consistent in variables mentioned
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varName %in% goodVars,]
   crossFrame <- crossFrame[,colnames(crossFrame) %in% c(goodVars,outcomename),drop=FALSE]
+  if(verbose) {
+    print(paste(" vtreat::mkCrossFrameNExperiment done", date()))
+  }
   list(treatments=treatments,
        crossFrame=crossFrame,
        crossWeights=crossDat$crossWeights,

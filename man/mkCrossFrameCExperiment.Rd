@@ -9,7 +9,7 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
   rareSig = 1, collarProb = 0, codeRestriction = NULL,
   customCoders = NULL, scale = FALSE, doCollar = FALSE,
   splitFunction = NULL, ncross = 3, forceSplit = FALSE,
-  catScaling = FALSE, parallelCluster = NULL)
+  catScaling = FALSE, verbose = TRUE, parallelCluster = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -50,6 +50,8 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{catScaling}{optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.}
 
+\item{verbose}{if TRUE print progress.}
+
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
 }
 \value{
@@ -66,7 +68,7 @@ into calibration, training, test sets.
 
 set.seed(23525)
 zip <- paste('z',1:100)
-N = 200
+N <- 200
 d <- data.frame(zip=sample(zip,N,replace=TRUE),
                 zip2=sample(zip,20,replace=TRUE),
                 y=runif(N))

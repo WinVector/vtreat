@@ -83,7 +83,7 @@ treatments$scoreFrame[,c('varName','sig'),drop=FALSE]
 
 We see in `treatments$scoreFrame` we have a level called `code_lev_rare`,
 which is where a number of rare levels are re-coding.
-We can also confirm levels that occur `rareCount` or fewer times are eligable to 
+We can also confirm levels that occur `rareCount` or fewer times are eligible to 
 code to to `code_lev_rare`.
 
 ```{r}
