@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 [vtreat](http://winvector.github.io/vtreat/) is an [R](https://cran.r-project.org) data.frame
 processor/conditioner that prepares real-world data for
-predictive modeling in a statistically sound manner.  For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477).  There is also a series of articles recording the
+predictive modeling in a statistically sound manner.  For more detail please see here: [arXiv:1611.09477 stat.AP](https://arxiv.org/abs/1611.09477) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173314.svg)](https://doi.org/10.5281/zenodo.1173314).  There is also a series of articles recording the
 evolution of `vtreat` including some tutorials [here](http://www.win-vector.com/blog/tag/vtreat/).
 
 ![](https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png)
