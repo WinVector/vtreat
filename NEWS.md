@@ -1,5 +1,5 @@
 
-# vtreat 1.0.3 2017/02/17
+# vtreat 1.0.3 2017/03/10
 
   * parallel indicator calculation.
   * add optional warning on encountering novel levels in prepare.
