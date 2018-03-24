@@ -1,5 +1,6 @@
 
 vtreat_default_options <- list(
+  vtreat.use_data.table_binding = FALSE,
   vtreat.use_dplyr_binding = TRUE
 )
 

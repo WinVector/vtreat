@@ -2,7 +2,8 @@
 
 # maybe run parallel
 plapply <- function(workList,worker,parallelCluster) {
-  if(is.null(parallelCluster) || (!requireNamespace("parallel",quietly=TRUE))) {
+  if(is.null(parallelCluster) || 
+     (!requireNamespace("parallel",quietly=TRUE))) {
     res <- lapply(workList,worker)
   } else {
     res <- parallel::parLapplyLB(parallelCluster,workList,worker)
@@ -12,24 +13,33 @@ plapply <- function(workList,worker,parallelCluster) {
 
 
 # rbind a list of dataframes into one
-.rbindListOfFrames <- function(rowlist) {
+.rbindListOfFrames <- function(frame_list) {
   # catch trivial cases
-  if(length(rowlist)<=1) {
-    if(length(rowlist)<=0) {
+  if(is.data.frame(frame_list)) {
+    return(frame_list)
+  }
+  frame_list <- Filter(Negate(is.null), frame_list)
+  if(length(frame_list)<=1) {
+    if(length(frame_list)<=0) {
       return(NULL)
     }
-    return(rowlist[[1]])
+    return(frame_list[[1]])
   }
-  vtreat_use_dplyr_binding <- getOption('vtreat.use_dplyr_binding')
-  if(is.null(vtreat_use_dplyr_binding) || (vtreat_use_dplyr_binding==TRUE)) {
-    # see if a library can supply a fast method
+  # see if a package can supply a fast method
+  if(isTRUE(getOption('vtreat.use_data.table_binding', FALSE))) {
+    if(requireNamespace("data.table", quietly = TRUE)) {
+      return(as.data.frame(data.table::rbindlist(frame_list),
+                           stringsAsFactor=FALSE))
+    }
+  }
+  if(isTRUE(getOption('vtreat.use_dplyr_binding', TRUE))) {
     if(requireNamespace("dplyr", quietly = TRUE)) {
-      return(as.data.frame(dplyr::bind_rows(rowlist),
+      return(as.data.frame(dplyr::bind_rows(frame_list),
                            stringsAsFactor=FALSE))
     }
   }
   # fall back to base R
-  do.call(rbind,rowlist)
+  do.call(rbind,frame_list)
 }
 
 

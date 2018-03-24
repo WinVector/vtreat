@@ -1,0 +1,37 @@
+---
+title: "Row Binding Times"
+author: "John Mount, Win-Vector LLC"
+date: "3/24/2018"
+output: html_document
+---
+
+```{r}
+library("dplyr")
+library("microbenchmark")
+
+mk_data <- function(nrow, ncol, value) {
+  d <- data.frame(col_1 = value)
+  for(i in seq_len(ncol)) {
+    d[[paste("col", i, sep = "_")]] <- value
+  }
+  d <- d[rep(1L, nrow), , drop = FALSE]
+  rownames(d) <- NULL
+  d
+}
+
+mk_data_list <- function(nrow, ncol, nframe) {
+  lst <- lapply(seq_len(nframe), 
+                function(i) { mk_data(nrow, ncol, i) })
+  lst
+}
+
+dlist <- mk_data_list(100, 100, 100)
+
+microbenchmark(
+  do.call(rbind, dlist),
+  as.data.frame(dplyr::bind_rows(dlist), stringsAsFactors=FALSE),
+  as.data.frame(data.table::rbindlist(dlist), stringsAsFactors=FALSE),
+  do.call(gtools::smartbind, dlist)
+)
+```
+

@@ -281,6 +281,7 @@ Trivial example:
 library("vtreat")
 packageVersion("vtreat")
 citation('vtreat')
+options(list(vtreat.use_data.table_binding = TRUE))
 
 # categorical example
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),
