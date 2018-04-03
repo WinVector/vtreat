@@ -1,5 +1,5 @@
 
-# vtreat 1.0.3 2017/03/10
+# vtreat 1.0.4 2017/03/24
 
   * add data.table as an optional row-binder.
 
