@@ -4,7 +4,8 @@ Maintenance release.
 ## Test environments
 
   * Windows
-
+  * using R Under development (unstable) (2018-04-30 r74674)
+  * using platform: x86_64-w64-mingw32 (64-bit)
  
   * OSX
   * using R version 3.4.4 (2018-03-15)
