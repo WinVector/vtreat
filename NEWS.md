@@ -1,7 +1,8 @@
 
-# vtreat 1.0.4 2017/03/24
+# vtreat 1.0.4 2017/05/05
 
-  * add data.table as an optional row-binder.
+  * Add data.table as an optional row-binder.
+  * Declare an R version.
 
 # vtreat 1.0.3 2017/03/10
 

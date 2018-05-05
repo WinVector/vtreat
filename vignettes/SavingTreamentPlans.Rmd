@@ -48,7 +48,8 @@ Using ideas from [here](http://jfaganuk.github.io/2015/01/12/storing-r-objects-i
 
 ```{r dbsave}
 con <- NULL
-if (requireNamespace('RSQLite', quietly = TRUE)) {
+if (requireNamespace('RSQLite', quietly = TRUE) &&
+    requireNamespace('DBI', quietly = TRUE)) {
   library("RSQLite")
   con <- dbConnect(drv=SQLite(), dbname=":memory:")
   # create table

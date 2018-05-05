@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Run a numeric cross frame experiment. — mkCrossFrameNExperiment" />
+
+<meta property="og:description" content="Builds a designTreatmentsN treatment plan and a data frame prepared 
+from dframe that is "cross" in the sense each row is treated using a treatment
+plan built from a subset of dframe disjoint from the given row.
+The goal is to try to and supply a method of breaking nested model bias other than splitting
+into calibration, training, test sets." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +60,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vtreat</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vtreat</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -58,7 +75,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/vtreat.html">Get Started</a>
+  <a href="../articles/vtreat.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -100,7 +117,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -109,6 +126,7 @@
   <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -116,12 +134,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Run a numeric cross frame experiment.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/vtreat.R'><code>R/vtreat.R</code></a></small>
+    <div class="hidden name"><code>mkCrossFrameNExperiment.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Builds a <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code> treatment plan and a data frame prepared 
 from <code>dframe</code> that is "cross" in the sense each row is treated using a treatment
@@ -129,6 +150,7 @@ plan built from a subset of dframe disjoint from the given row.
 The goal is to try to and supply a method of breaking nested model bias other than splitting
 into calibration, training, test sets.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>mkCrossFrameNExperiment</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>outcomename</span>, <span class='no'>...</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
   <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>,
@@ -136,7 +158,7 @@ into calibration, training, test sets.</p>
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
   <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -223,7 +245,7 @@ into calibration, training, test sets.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='designTreatmentsC.html'>designTreatmentsC</a></code> <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code> <code><a href='prepare.html'>prepare</a></code></p>
+    <div class='dont-index'><p><code><a href='designTreatmentsC.html'>designTreatmentsC</a></code> <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code> <code><a href='prepare.html'>prepare</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -239,9 +261,9 @@ into calibration, training, test sets.</p>
 <span class='no'>d</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span> + <span class='no'>del</span>[<span class='no'>d</span>$<span class='no'>zip2</span>]
 <span class='no'>d</span>$<span class='no'>yc</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span><span class='kw'>&gt;=</span><span class='fu'>mean</span>(<span class='no'>d</span>$<span class='no'>y</span>)
 <span class='no'>cN</span> <span class='kw'>&lt;-</span> <span class='fu'>mkCrossFrameNExperiment</span>(<span class='no'>d</span>,<span class='fu'>c</span>(<span class='st'>'zip'</span>,<span class='st'>'zip2'</span>),<span class='st'>'y'</span>,
-   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.0.4 start initial treatment design Sat Mar 24 11:09:18 2018"
-#&gt; [1] " start cross frame work Sat Mar 24 11:09:19 2018"
-#&gt; [1] " vtreat::mkCrossFrameNExperiment done Sat Mar 24 11:09:19 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] 0.02114663</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.2013498</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
+   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.0.4 start initial treatment design Sat May  5 10:06:10 2018"
+#&gt; [1] " start cross frame work Sat May  5 10:06:11 2018"
+#&gt; [1] " vtreat::mkCrossFrameNExperiment done Sat May  5 10:06:11 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] 0.02114663</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.2013498</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
 <span class='no'>dTrainV</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>crossFrame</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -265,11 +287,14 @@ into calibration, training, test sets.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

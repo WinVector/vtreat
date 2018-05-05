@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • vtreat</title>
+<title>Summary • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,7 +28,7 @@
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Summary" />
 
 
 <!-- mathjax -->
@@ -43,7 +43,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -130,23 +130,51 @@
 <div class="row">
   <div class="contents col-md-9">
     <div class="page-header">
-      <h1>Authors</h1>
+      <h1>Summary</h1>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>John Mount</strong>. Author, maintainer. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Nina Zumel</strong>. Author. 
-        </p>
-      </li>
-      <li>
-        <p><strong> Win-Vector LLC</strong>. Copyright holder. 
-        </p>
-      </li>
-    </ul>
+
+<hr>
+<p>title: “The vtreat R package: a statistically sound data processor for predictive modeling” tags:</p>
+<ul>
+<li>R</li>
+<li>data science</li>
+<li>predictive modeling</li>
+<li>classification</li>
+<li>regression</li>
+<li>data preparation</li>
+<li>significance</li>
+<li>dimensionality reduction</li>
+<li>reproducible research</li>
+<li>cross-validation authors:</li>
+<li>name: John Mount orcid: 0000-0002-3696-2012 email: <a href="mailto:jmount@win-vector.com">jmount@win-vector.com</a> affiliation: 1</li>
+<li>name: Nina Zumel orcid: 0000-0001-8831-0190 email: <a href="mailto:nzumel@win-vector.com">nzumel@win-vector.com</a> affiliation: 1 affiliations:</li>
+<li>name: Win-Vector, LLC index: 1 date: 9 February 2018 bibliography: paper.bib —</li>
+</ul>
+<div id="summary" class="section level1">
+
+<p>When applying statistical methods or applying machine learning techniques to real world data, there are common data issues that can cause modeling to fail. The <a href="https://github.com/WinVector/vtreat/"><code>vtreat</code></a> package</p>
+<p>(@vtreat) is an R data frame processor that prepares messy real world data for predictive modeling in a reproducible and statistically sound manner.</p>
+<p>The package’s objective is to produce clean data frames that preserve the original information, and are safe for model training and model application. <a href="https://github.com/WinVector/vtreat/"><code>Vtreat</code></a> does this by collecting statistics from training data in order to produce a <em>treatment plan</em>. <a href="https://github.com/WinVector/vtreat/"><code>Vtreat</code></a> then uses this treatment plan to process subsequent data frames prior to both model training and model application. The processed data frame is guaranteed to be purely numeric, with no missing or <code>NaN</code> values, and no string or categorical values. <a href="https://github.com/WinVector/vtreat/"><code>Vtreat</code></a> serves as a powerful alternative to R’s native <code>model.matrix</code> construct. The goals of the package differ from those of training harness systems such as <code>caret</code></p>
+<p>(@caret) and unsupervised ad-hoc processing systems such as <code>recipes</code> (@recipes).</p>
+<p>In particular vtreat emphasizes <em>safe but y-aware (supervised) pre-processing of data</em> for predictive modeling tasks. It automates:</p>
+<ul>
+<li>Treatment of missing values through safe replacement plus indicator column.</li>
+<li>Explicit coding of categorical variable levels as indicator variables.</li>
+<li>Robust handling of novel categorical levels (values seen during test or application, but not seen during training).</li>
+<li>Supervised re-coding of categorical variables with very large numbers of levels, using an approach similar to that described by @appliedmr.</li>
+<li>Cross validation to mitigate overfit and undesirable supervision bias.</li>
+<li>Optional significance-based and cross-validated variable selection.</li>
+</ul>
+<p><a href="https://github.com/WinVector/vtreat/"><code>Vtreat</code></a> is careful to automate only domain-agnostic data cleaning steps that are to common to many applications. This intentionally leaves domain-specific processing to the researcher and their own appropriate tools.</p>
+<p>The use of <a href="https://github.com/WinVector/vtreat/"><code>vtreat</code></a> avoids the perils of ad-hoc data treatment, and provides a reproducible, documented, and citable data treatment procedure.</p>
+<p>For more details and further discussion, please see our <a href="https://arxiv.org/abs/1611.09477">expository article</a> @vtreatX and the package <a href="https://winvector.github.io/vtreat/index.html">online documentation</a>.</p>
+</div>
+<div id="references" class="section level1">
+<h1 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h1>
+</div>
+
 
   </div>
 

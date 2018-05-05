@@ -18,13 +18,24 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Design variable treatments with no outcome variable. — designTreatmentsZ" />
+
+<meta property="og:description" content="Data frame is assumed to have only atomic columns
+except for dates (which are converted to numeric).
+Note: each column is processed independently of all others." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +58,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vtreat</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vtreat</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -58,7 +73,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/vtreat.html">Get Started</a>
+  <a href="../articles/vtreat.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -100,7 +115,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -109,6 +124,7 @@
   <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -116,23 +132,27 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Design variable treatments with no outcome variable.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/vtreat.R'><code>R/vtreat.R</code></a></small>
+    <div class="hidden name"><code>designTreatmentsZ.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Data frame is assumed to have only atomic columns
 except for dates (which are converted to numeric).
 Note: each column is processed independently of all others.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>designTreatmentsZ</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>...</span>, <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
   <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -194,7 +214,7 @@ Note: each column is processed independently of all others.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='prepare.html'>prepare</a></code> <code><a href='designTreatmentsC.html'>designTreatmentsC</a></code> <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code></p>
+    <div class='dont-index'><p><code><a href='prepare.html'>prepare</a></code> <code><a href='designTreatmentsC.html'>designTreatmentsC</a></code> <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -204,13 +224,13 @@ Note: each column is processed independently of all others.</p>
 <span class='no'>dTestZ</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
 <span class='no'>treatmentsZ</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsZ</span>(<span class='no'>dTrainZ</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainZ</span>),
-  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.0.4 inspecting inputs Sat Mar 24 11:09:15 2018"
-#&gt; [1] "designing treatments Sat Mar 24 11:09:15 2018"
-#&gt; [1] " have initial level statistics Sat Mar 24 11:09:15 2018"
-#&gt; [1] "design var x Sat Mar 24 11:09:15 2018"
-#&gt; [1] "design var z Sat Mar 24 11:09:15 2018"
-#&gt; [1] " scoring treatments Sat Mar 24 11:09:15 2018"
-#&gt; [1] "have treatment plan Sat Mar 24 11:09:15 2018"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
+  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.0.4 inspecting inputs Sat May  5 10:06:07 2018"
+#&gt; [1] "designing treatments Sat May  5 10:06:07 2018"
+#&gt; [1] " have initial level statistics Sat May  5 10:06:07 2018"
+#&gt; [1] "design var x Sat May  5 10:06:07 2018"
+#&gt; [1] "design var z Sat May  5 10:06:07 2018"
+#&gt; [1] " scoring treatments Sat May  5 10:06:07 2018"
+#&gt; [1] "have treatment plan Sat May  5 10:06:07 2018"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
 <span class='no'>dTestZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTestZ</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -236,11 +256,14 @@ Note: each column is processed independently of all others.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

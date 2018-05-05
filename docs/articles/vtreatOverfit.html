@@ -8,14 +8,17 @@
 <title>vtreat overfit • vtreat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="vtreat overfit">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vtreat</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vtreat</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -35,7 +42,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/vtreat.html">Get Started</a>
+  <a href="../articles/vtreat.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -77,7 +84,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -94,17 +101,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-03-24</h4>
-          </div>
+            <h4 class="date">2018-05-05</h4>
+      
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
+      <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <p>Example showing safe “best practice” use of the <a href="https://cran.r-project.org/package=vtreat">‘vtreat’</a> variable preparation library. For more on vtreat see <a href="http://www.win-vector.com/blog/2015/09/vtreat-up-on-cran/">here</a> and <a href="https://github.com/WinVector/vtreat">here</a>.</p>
 <p>Below we generate an example data frame with no relation between x and y. We are using a synthetic data set so we know what the “right answer is” (no signal). False fitting on no-signal variables is bad for several reasons:</p>
 <ul>
@@ -128,14 +138,14 @@ dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span clas
 treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat Mar 24 11:09:36 2018"
-## [1] "designing treatments Sat Mar 24 11:09:36 2018"
-## [1] " have initial level statistics Sat Mar 24 11:09:36 2018"
-## [1] "design var x Sat Mar 24 11:09:36 2018"
-## [1] " scoring treatments Sat Mar 24 11:09:36 2018"
-## [1] "have treatment plan Sat Mar 24 11:09:37 2018"
-## [1] "rescoring complex variables Sat Mar 24 11:09:37 2018"
-## [1] "done rescoring complex variables Sat Mar 24 11:09:37 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat May  5 10:06:37 2018"
+## [1] "designing treatments Sat May  5 10:06:37 2018"
+## [1] " have initial level statistics Sat May  5 10:06:37 2018"
+## [1] "design var x Sat May  5 10:06:37 2018"
+## [1] " scoring treatments Sat May  5 10:06:37 2018"
+## [1] "have treatment plan Sat May  5 10:06:37 2018"
+## [1] "rescoring complex variables Sat May  5 10:06:37 2018"
+## [1] "done rescoring complex variables Sat May  5 10:06:37 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -229,14 +239,14 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat Mar 24 11:09:37 2018"
-## [1] "designing treatments Sat Mar 24 11:09:37 2018"
-## [1] " have initial level statistics Sat Mar 24 11:09:37 2018"
-## [1] "design var x Sat Mar 24 11:09:37 2018"
-## [1] " scoring treatments Sat Mar 24 11:09:37 2018"
-## [1] "have treatment plan Sat Mar 24 11:09:37 2018"
-## [1] "rescoring complex variables Sat Mar 24 11:09:37 2018"
-## [1] "done rescoring complex variables Sat Mar 24 11:09:37 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat May  5 10:06:37 2018"
+## [1] "designing treatments Sat May  5 10:06:37 2018"
+## [1] " have initial level statistics Sat May  5 10:06:37 2018"
+## [1] "design var x Sat May  5 10:06:37 2018"
+## [1] " scoring treatments Sat May  5 10:06:37 2018"
+## [1] "have treatment plan Sat May  5 10:06:37 2018"
+## [1] "rescoring complex variables Sat May  5 10:06:37 2018"
+## [1] "done rescoring complex variables Sat May  5 10:06:37 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -305,9 +315,9 @@ dTest<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="
 xdat &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                   <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                   <span class="dt">rareSig=</span><span class="kw">c</span>())</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 start initial treatment design Sat Mar 24 11:09:37 2018"
-## [1] " start cross frame work Sat Mar 24 11:09:37 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Sat Mar 24 11:09:37 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 start initial treatment design Sat May  5 10:06:37 2018"
+## [1] " start cross frame work Sat May  5 10:06:38 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Sat May  5 10:06:38 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>xdat<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves          rsq       sig needsSplit extraModelDegrees
@@ -361,7 +371,6 @@ dTest<span class="op">$</span>predM3 &lt;-<span class="st"> </span><span class="
 ## [1] "accuracy 0.497237569060773"</code></pre>
 <p>Notice the glm significance is off, but the model quality is similar on train and test, and the scoreFrame significance is a correct indication.</p>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -384,11 +393,13 @@ dTest<span class="op">$</span>predM3 &lt;-<span class="st"> </span><span class="
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

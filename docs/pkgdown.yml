@@ -1,0 +1,15 @@
+pandoc: 1.19.2.1
+pkgdown: 1.0.0
+pkgdown_sha: ~
+articles:
+  SavingTreamentPlans: SavingTreamentPlans.html
+  vtreat: vtreat.html
+  vtreatCrossFrames: vtreatCrossFrames.html
+  vtreatGrouping: vtreatGrouping.html
+  vtreatOverfit: vtreatOverfit.html
+  vtreatRareLevels: vtreatRareLevels.html
+  vtreatScaleMode: vtreatScaleMode.html
+  vtreatSignificance: vtreatSignificance.html
+  vtreatSplitting: vtreatSplitting.html
+  vtreatVariableTypes: vtreatVariableTypes.html
+

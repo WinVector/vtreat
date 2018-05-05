@@ -8,14 +8,17 @@
 <title>vtreat scale mode • vtreat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="vtreat scale mode">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vtreat</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vtreat</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -35,7 +42,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/vtreat.html">Get Started</a>
+  <a href="../articles/vtreat.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -77,7 +84,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -94,21 +101,24 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>vtreat scale mode</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2018-03-24</h4>
-          </div>
+            <h4 class="date">2018-05-05</h4>
+      
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatScaleMode.Rmd"><code>vignettes/vtreatScaleMode.Rmd</code></a></small>
+      <div class="hidden name"><code>vtreatScaleMode.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
-<p><code><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">vtreat::prepare(scale=TRUE)</a></code> is a variation of <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">vtreat::prepare()</a></code> intended to prepare data frames so all the derived input or independent (<code>x</code>) variables are fully in outcome or dependent variable (<code>y</code>) units. This is in the sense of a linear regression for numeric <code>y</code>’s (<code><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsN">vtreat::designTreatmentsN</a></code> and <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">vtreat::mkCrossFrameNExperiment</a></code>).<br>
-For classification problems (or categorical <code>y</code>’s) as of version <code>0.5.26</code> and newer (available <a href="https://github.com/WinVector/vtreat">here</a>) scaling is established through a a logistic regression <a href="https://github.com/WinVector/Examples/blob/master/PCR/YAwarePCAclassification.md">“in link units”</a> or as 0/1 indicators depending on the setting of the <code>catScaling</code> argument in <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">vtreat::designTreatmentsC</a></code> or <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">vtreat::mkCrossFrameNExperiment</a></code>. Prior to this version classification the scaling calculation (and only the scaling calculation) was always handled as a linear regression against a 0/1 <code>y</code>-indicator. <code>catScaling=FALSE</code> can be a bit faster as the underlying regression can be a bit quicker than a logistic regression.</p>
+<p><code><a href="../reference/prepare.html">vtreat::prepare(scale=TRUE)</a></code> is a variation of <code><a href="../reference/prepare.html">vtreat::prepare()</a></code> intended to prepare data frames so all the derived input or independent (<code>x</code>) variables are fully in outcome or dependent variable (<code>y</code>) units. This is in the sense of a linear regression for numeric <code>y</code>’s (<code><a href="../reference/designTreatmentsN.html">vtreat::designTreatmentsN</a></code> and <code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>).<br>
+For classification problems (or categorical <code>y</code>’s) as of version <code>0.5.26</code> and newer (available <a href="https://github.com/WinVector/vtreat">here</a>) scaling is established through a a logistic regression <a href="https://github.com/WinVector/Examples/blob/master/PCR/YAwarePCAclassification.html">“in link units”</a> or as 0/1 indicators depending on the setting of the <code>catScaling</code> argument in <code><a href="../reference/designTreatmentsC.html">vtreat::designTreatmentsC</a></code> or <code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>. Prior to this version classification the scaling calculation (and only the scaling calculation) was always handled as a linear regression against a 0/1 <code>y</code>-indicator. <code>catScaling=FALSE</code> can be a bit faster as the underlying regression can be a bit quicker than a logistic regression.</p>
 <p>This is the appropriate preparation before a geometry/metric sensitive modeling step such as principal components analysis or clustering (such as k-means clustering).</p>
-<p>Normally (with <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">vtreat::prepare(scale=FALSE)</a></code>) vtreat passes through a number of variables with minimal alteration (cleaned numeric), builds 0/1 indicator variables for various conditions (categorical levels, presence of NAs, and so on), and builds some “in y-units” variables (catN, catB) that are in fact sub-models. With <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">vtreat::prepare(scale=TRUE)</a></code> all of these numeric variables are then re-processed to have mean zero, and slope 1 (when possible) when appropriately regressed against the y-variable.</p>
+<p>Normally (with <code><a href="../reference/prepare.html">vtreat::prepare(scale=FALSE)</a></code>) vtreat passes through a number of variables with minimal alteration (cleaned numeric), builds 0/1 indicator variables for various conditions (categorical levels, presence of NAs, and so on), and builds some “in y-units” variables (catN, catB) that are in fact sub-models. With <code><a href="../reference/prepare.html">vtreat::prepare(scale=TRUE)</a></code> all of these numeric variables are then re-processed to have mean zero, and slope 1 (when possible) when appropriately regressed against the y-variable.</p>
 <p>This is easiest to illustrate with a concrete example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">'vtreat'</span>)
 dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),
@@ -137,7 +147,7 @@ dTrainCTreatedScaled &lt;-<span class="st"> </span><span class="kw"><a href="../
 ## 5 0.3333333  0.0000000        0         0         1  TRUE
 ## 6 0.1666667  9.2104404        1         0         0  TRUE</code></pre>
 <p>This is the “standard way” to run vtreat – with the exception that for this example we set <code>pruneSig</code> to <code>NULL</code> to suppress variable pruning, instead of setting it to a value in the interval <code>(0,1)</code>. The principle is: vtreat inflicts the minimal possible alterations on the data, leaving as much as possible to the downstream machine learning code. This does turn out to already be a lot of alteration. Mostly vtreat is taking only steps that are unsafe to leave for later: re-encoding of large categoricals, re-coding of aberrant values, and bulk pruning of variables.</p>
-<p>However some procedures, in particular principal components analysis or geometric clustering, assume all of the columns have been fully transformed. The usual assumption (“more honored in the breach than the observance”) is that the columns are centered (mean zero) and scaled. The non y-aware meaning of “scaled” is unit variance. However, vtreat is designed to emphasize y-aware processing and we feel the y-aware sense of scaling should be: unit slope when regressed against y. If you want standard scaling you can use the standard frame produced by vtreat and scale it yourself. If you want vtreat style y-aware scaling you (which we strongly think is the right thing to do) you can use <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">vtreat::prepare(scale=TRUE)</a></code> which produces a frame that looks like the following:</p>
+<p>However some procedures, in particular principal components analysis or geometric clustering, assume all of the columns have been fully transformed. The usual assumption (“more honored in the breach than the observance”) is that the columns are centered (mean zero) and scaled. The non y-aware meaning of “scaled” is unit variance. However, vtreat is designed to emphasize y-aware processing and we feel the y-aware sense of scaling should be: unit slope when regressed against y. If you want standard scaling you can use the standard frame produced by vtreat and scale it yourself. If you want vtreat style y-aware scaling you (which we strongly think is the right thing to do) you can use <code><a href="../reference/prepare.html">vtreat::prepare(scale=TRUE)</a></code> which produces a frame that looks like the following:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dTrainCTreatedScaled)</code></pre></div>
 <pre><code>##   x_catP      x_catB x_lev_NA  x_lev_x.a x_lev_x.b     y
 ## 1   -0.2 -0.11976374     -0.1 -0.1666667         0 FALSE
@@ -180,7 +190,7 @@ slopeFrame<span class="op">$</span>badSlope &lt;-
 <a href="#categorical-outcome-mode-catscalingtrue" class="anchor"></a>Categorical outcome mode “catScaling=TRUE”</h3>
 <p>As of version <code>0.5.26</code> <code>vtreat</code> also supports a “scaling mode for categorical outcomes.” In this mode scaling is performed using the coefficient of a logistic regression fit on a categorical instead of the coefficient of a linear fit (with the outcome encoded as a zero/one indicator).</p>
 <p>The idea is with this mode on we are scaling as a logistic regression would- so we are in logistic regression “link space” (where logistic regression assume effects are additive). The mode may be well suited for principal components analysis or principal components regression where the target variable is a categorical (i.e. classification tasks).</p>
-<p>To ensure this effect we set the argument <code>catScaling=TRUE</code> in <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">vtreat::designTreatmentsC</a></code> or <code><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">vtreat::mkCrossFrameCExperiment</a></code>. WE demonstrate this below.</p>
+<p>To ensure this effect we set the argument <code>catScaling=TRUE</code> in <code><a href="../reference/designTreatmentsC.html">vtreat::designTreatmentsC</a></code> or <code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code>. WE demonstrate this below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                   <span class="dt">catScaling=</span><span class="ot">TRUE</span>,
                                   <span class="dt">verbose=</span><span class="ot">FALSE</span>)
@@ -246,9 +256,9 @@ dTrainN<span class="op">$</span>y &lt;-<span class="st"> </span><span class="dv"
 cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,
                                          <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,
                                          <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 start initial treatment design Sat Mar 24 11:09:45 2018"
-## [1] " start cross frame work Sat Mar 24 11:09:45 2018"
-## [1] " vtreat::mkCrossFrameNExperiment done Sat Mar 24 11:09:45 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 start initial treatment design Sat May  5 10:06:48 2018"
+## [1] " start cross frame work Sat May  5 10:06:48 2018"
+## [1] " vtreat::mkCrossFrameNExperiment done Sat May  5 10:06:48 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dM1 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEraw<span class="op">$</span>crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
 pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/stats/topics/prcomp">prcomp</a></span>(dM1,
                        <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
@@ -265,9 +275,9 @@ pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="
 cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,
                                             <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
                                             <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 start initial treatment design Sat Mar 24 11:09:45 2018"
-## [1] " start cross frame work Sat Mar 24 11:09:45 2018"
-## [1] " vtreat::mkCrossFrameNExperiment done Sat Mar 24 11:09:45 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 start initial treatment design Sat May  5 10:06:48 2018"
+## [1] " start cross frame work Sat May  5 10:06:48 2018"
+## [1] " vtreat::mkCrossFrameNExperiment done Sat May  5 10:06:48 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dM2 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEscaled<span class="op">$</span>crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
 pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/stats/topics/prcomp">prcomp</a></span>(dM2,
                           <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
@@ -282,7 +292,6 @@ pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span clas
 ## x3_clean -0.0304819 -0.003989572 0.999527357</code></pre>
 <p>Notice the second application of <code><a href="http://www.rdocumentation.org/packages/stats/topics/prcomp">stats::prcomp</a></code> has more standard scaling of the reported standard deviations (though we still do not advise choosing latent variables based on mere comparisons to unit magnitude).</p>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -296,11 +305,13 @@ pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span clas
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

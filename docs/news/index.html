@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>All news • vtreat</title>
+<title>Changelog • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,19 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Changelog" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +53,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vtreat</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vtreat</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -58,7 +68,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/vtreat.html">Get Started</a>
+  <a href="../articles/vtreat.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -100,7 +110,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -109,6 +119,7 @@
   <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -116,50 +127,54 @@
       
       </header>
 
-      <div class="row">
-
-  <div class="col-md-9">
+<div class="row">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Change log <small>All releases</small></h1>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/WinVector/vtreat//blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="contents">
-    <div id="vtreat-1-0-3-20170310" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-1-0-3-20170310" class="anchor"></a>vtreat 1.0.3 2017/03/10</h1>
+    <div id="vtreat-1-0-4-20170505" class="section level1">
+<h1 class="page-header">
+<a href="#vtreat-1-0-4-20170505" class="anchor"></a>vtreat 1.0.4 2017/05/05<small> Unreleased </small>
+</h1>
 <ul>
-<li>add data.table as an optional row-binder.</li>
+<li>Add data.table as an optional row-binder.</li>
 </ul>
 </div>
-    <div id="vtreat-1-0-3-20170310-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-1-0-3-20170310-1" class="anchor"></a>vtreat 1.0.3 2017/03/10</h1>
+    <div id="vtreat-1-0-3-20170310" class="section level1">
+<h1 class="page-header">
+<a href="#vtreat-1-0-3-20170310" class="anchor"></a>vtreat 1.0.3 2017/03/10<small> 2018-03-10 </small>
+</h1>
 <ul>
 <li>parallel indicator calculation.</li>
 <li>add optional warning on encountering novel levels in prepare.</li>
 </ul>
 </div>
     <div id="vtreat-1-0-2-20170120" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-1-0-2-20170120" class="anchor"></a>vtreat 1.0.2 2017/01/20</h1>
+<h1 class="page-header">
+<a href="#vtreat-1-0-2-20170120" class="anchor"></a>vtreat 1.0.2 2017/01/20<small> 2018-01-20 </small>
+</h1>
 <ul>
 <li>bind options.</li>
 <li>fix deps.</li>
 <li>restore parallel test.</li>
-<li>kWayStratifiedY performance fix from @khotilov Vadim Khotilovich.</li>
+<li>kWayStratifiedY performance fix from <a href='http://github.com/khotilov'>@khotilov</a> Vadim Khotilovich.</li>
 </ul>
 </div>
     <div id="vtreat-1-0-1-20171016" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-1-0-1-20171016" class="anchor"></a>vtreat 1.0.1 2017/10/16</h1>
+<h1 class="page-header">
+<a href="#vtreat-1-0-1-20171016" class="anchor"></a>vtreat 1.0.1 2017/10/16<small> 2017-10-17 </small>
+</h1>
 <ul>
 <li>Minor documentation fixes.</li>
 <li>rm data.table (possibly related to issues 2413 or 2418).</li>
 </ul>
 </div>
     <div id="vtreat-1-0-0-20171004" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-1-0-0-20171004" class="anchor"></a>vtreat 1.0.0 2017/10/04</h1>
+<h1 class="page-header">
+<a href="#vtreat-1-0-0-20171004" class="anchor"></a>vtreat 1.0.0 2017/10/04<small> 2017-10-04 </small>
+</h1>
 <ul>
 <li>Minor documentation fixes.</li>
 <li>More work on novel values for non-centered custom coders.</li>
@@ -168,8 +183,9 @@
 </ul>
 </div>
     <div id="vtreat-0-6-0-20170920" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-6-0-20170920" class="anchor"></a>vtreat 0.6.0 2017/09/20</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-6-0-20170920" class="anchor"></a>vtreat 0.6.0 2017/09/20<small> 2017-09-20 </small>
+</h1>
 <ul>
 <li>Add codeRestriction option to design steps.</li>
 <li>Prepare for custom models.</li>
@@ -178,38 +194,43 @@
 </ul>
 </div>
     <div id="vtreat-0-5-32-20170613" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-32-20170613" class="anchor"></a>vtreat 0.5.32 2017/06/13</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-32-20170613" class="anchor"></a>vtreat 0.5.32 2017/06/13<small> 2017-06-14 </small>
+</h1>
 <ul>
 <li>Add codeRestriction option to prepare().</li>
 </ul>
 </div>
     <div id="vtreat-0-5-31-20170413" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-31-20170413" class="anchor"></a>vtreat 0.5.31 2017/04/13</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-31-20170413" class="anchor"></a>vtreat 0.5.31 2017/04/13<small> 2017-04-14 </small>
+</h1>
 <ul>
 <li>make prueSig an optional argument in prepare, and force by-name access.</li>
 <li>Remove left.op=TRUE from findInterval in “vtreat Rare Levels” vignette (seems to be a new addition to findInterval, so fails CRAN check r-oldrel-windows-ix86+x86_64).</li>
 </ul>
 </div>
     <div id="vtreat-0-5-30-20170121" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-30-20170121" class="anchor"></a>vtreat 0.5.30 2017/01/21</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-30-20170121" class="anchor"></a>vtreat 0.5.30 2017/01/21<small> 2017-01-21 </small>
+</h1>
 <ul>
 <li>General improvements in documentation and vignettes.</li>
 <li>Document saving/loading treatment plans.</li>
 </ul>
 </div>
     <div id="vtreat-0-5-29-20161027" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-29-20161027" class="anchor"></a>vtreat 0.5.29 2016/10/27</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-29-20161027" class="anchor"></a>vtreat 0.5.29 2016/10/27<small> Unreleased </small>
+</h1>
 <ul>
 <li>Add ‘rsq’ column to scoreFrame (rsq- for numeric targets, pseudo-rsq for categorical targets).</li>
 </ul>
 </div>
     <div id="vtreat-0-5-28-20161024" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-28-20161024" class="anchor"></a>vtreat 0.5.28 2016/10/24</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-28-20161024" class="anchor"></a>vtreat 0.5.28 2016/10/24<small> 2016-10-25 </small>
+</h1>
 <ul>
 <li>Fix treatment of constant columns in cross-partitions.</li>
 <li>Switch doCollar default to FALSE.</li>
@@ -222,8 +243,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-27-20160816" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-27-20160816" class="anchor"></a>vtreat 0.5.27 2016/08/16</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-27-20160816" class="anchor"></a>vtreat 0.5.27 2016/08/16<small> 2016-08-17 </small>
+</h1>
 <p>Changes:</p>
 <ul>
 <li>Change catB variables to delta-logit score.</li>
@@ -233,8 +255,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-26-20160710" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-26-20160710" class="anchor"></a>vtreat 0.5.26 2016/07/10</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-26-20160710" class="anchor"></a>vtreat 0.5.26 2016/07/10<small> 2016-07-12 </small>
+</h1>
 <ul>
 <li>Facilities for y-stratified and grouped splitting (useful for unbalanced classes).</li>
 <li>catScaling=TRUE mode uses logistic regression for y-aware variable scaling.</li>
@@ -242,8 +265,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-25-20160502" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-25-20160502" class="anchor"></a>vtreat 0.5.25 2016/05/02</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-25-20160502" class="anchor"></a>vtreat 0.5.25 2016/05/02<small> 2016-05-03 </small>
+</h1>
 <ul>
 <li>Fix bug that caused catB variables to be scored as “insignificant”.</li>
 <li>Add test to check for above bug.</li>
@@ -252,8 +276,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-23-20160428" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-23-20160428" class="anchor"></a>vtreat 0.5.23 2016/04/28</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-23-20160428" class="anchor"></a>vtreat 0.5.23 2016/04/28<small> 2016-04-29 </small>
+</h1>
 <ul>
 <li>Fix issue of non-significant variables not being scaled.</li>
 <li>Documentation fixes, document variable types, improve vignettes.</li>
@@ -262,8 +287,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-22-20160107" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-22-20160107" class="anchor"></a>vtreat 0.5.22 2016/01/07</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-22-20160107" class="anchor"></a>vtreat 0.5.22 2016/01/07<small> 2016-01-08 </small>
+</h1>
 <ul>
 <li>Calculations of non catX significances are now deterministic</li>
 <li>Catch mis-naming or non-varying y earlier</li>
@@ -272,16 +298,18 @@
 </ul>
 </div>
     <div id="vtreat-0-5-21-20151123" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-21-20151123" class="anchor"></a>vtreat 0.5.21 2015/11/23</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-21-20151123" class="anchor"></a>vtreat 0.5.21 2015/11/23<small> 2015-11-11 </small>
+</h1>
 <ul>
 <li>Isolated “cross” or “out of sample” frame generation into mkCrossFrameCExperiment() and mkCrossFrameNExperiment()</li>
 <li>Many small bug fixes and corner cases patched</li>
 </ul>
 </div>
     <div id="vtreat-0-5-20-20151105" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-20-20151105" class="anchor"></a>vtreat 0.5.20 2015/11/05</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-20-20151105" class="anchor"></a>vtreat 0.5.20 2015/11/05<small> 2015-11-05 </small>
+</h1>
 <ul>
 <li>Simplified out of sample frame generation</li>
 <li>Added “no-Y” treatment option</li>
@@ -289,8 +317,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-18-20151007" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-18-20151007" class="anchor"></a>vtreat 0.5.18 2015/10/07</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-18-20151007" class="anchor"></a>vtreat 0.5.18 2015/10/07<small> 2015-10-07 </small>
+</h1>
 <ul>
 <li>Fixed bugs in cross-validated mode</li>
 <li>Force out of sample calculations in more situations</li>
@@ -300,8 +329,9 @@
 </ul>
 </div>
     <div id="vtreat-0-5-16-20150912" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-16-20150912" class="anchor"></a>vtreat 0.5.16 2015/09/12</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-16-20150912" class="anchor"></a>vtreat 0.5.16 2015/09/12<small> 2015-09-13 </small>
+</h1>
 <ul>
 <li>Unified rare level treatment</li>
 <li>Separate treatment of insignificant levels</li>
@@ -312,21 +342,21 @@
 </ul>
 </div>
     <div id="vtreat-0-5-14-20150906" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vtreat-0-5-14-20150906" class="anchor"></a>vtreat 0.5.14 2015/09/06</h1>
+<h1 class="page-header">
+<a href="#vtreat-0-5-14-20150906" class="anchor"></a>vtreat 0.5.14 2015/09/06<small> 2015-09-06 </small>
+</h1>
 <ul>
 <li>First CRAN release</li>
 </ul>
 </div>
-    </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#vtreat-1-0-4-20170505">1.0.4</a></li>
         <li><a href="#vtreat-1-0-3-20170310">1.0.3</a></li>
-        <li><a href="#vtreat-1-0-3-20170310-1">1.0.3</a></li>
         <li><a href="#vtreat-1-0-2-20170120">1.0.2</a></li>
         <li><a href="#vtreat-1-0-1-20171016">1.0.1</a></li>
         <li><a href="#vtreat-1-0-0-20171004">1.0.0</a></li>
@@ -358,11 +388,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

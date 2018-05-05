@@ -8,14 +8,17 @@
 <title>vtreat package • vtreat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="vtreat package">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vtreat</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vtreat</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -35,7 +42,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/vtreat.html">Get Started</a>
+  <a href="../articles/vtreat.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -77,7 +84,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -94,17 +101,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-03-24</h4>
-          </div>
+            <h4 class="date">2018-05-05</h4>
+      
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
+      <div class="hidden name"><code>vtreat.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <p>‘vtreat’ is a data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. A formal article on the method can be found here: <a href="https://arxiv.org/abs/1611.09477">arXiv:1611.09477 stat.AP</a>.</p>
 <p>A ‘vtreat’ clean data frame:</p>
 <ul>
@@ -178,15 +188,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat Mar 24 11:09:25 2018"
-## [1] "designing treatments Sat Mar 24 11:09:25 2018"
-## [1] " have initial level statistics Sat Mar 24 11:09:25 2018"
-## [1] "design var x Sat Mar 24 11:09:25 2018"
-## [1] "design var z Sat Mar 24 11:09:25 2018"
-## [1] " scoring treatments Sat Mar 24 11:09:26 2018"
-## [1] "have treatment plan Sat Mar 24 11:09:26 2018"
-## [1] "rescoring complex variables Sat Mar 24 11:09:26 2018"
-## [1] "done rescoring complex variables Sat Mar 24 11:09:26 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat May  5 10:06:19 2018"
+## [1] "designing treatments Sat May  5 10:06:19 2018"
+## [1] " have initial level statistics Sat May  5 10:06:19 2018"
+## [1] "design var x Sat May  5 10:06:19 2018"
+## [1] "design var z Sat May  5 10:06:19 2018"
+## [1] " scoring treatments Sat May  5 10:06:19 2018"
+## [1] "have treatment plan Sat May  5 10:06:19 2018"
+## [1] "rescoring complex variables Sat May  5 10:06:19 2018"
+## [1] "done rescoring complex variables Sat May  5 10:06:19 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -306,15 +316,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat Mar 24 11:09:26 2018"
-## [1] "designing treatments Sat Mar 24 11:09:26 2018"
-## [1] " have initial level statistics Sat Mar 24 11:09:26 2018"
-## [1] "design var x Sat Mar 24 11:09:26 2018"
-## [1] "design var z Sat Mar 24 11:09:26 2018"
-## [1] " scoring treatments Sat Mar 24 11:09:26 2018"
-## [1] "have treatment plan Sat Mar 24 11:09:26 2018"
-## [1] "rescoring complex variables Sat Mar 24 11:09:26 2018"
-## [1] "done rescoring complex variables Sat Mar 24 11:09:26 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.4 inspecting inputs Sat May  5 10:06:20 2018"
+## [1] "designing treatments Sat May  5 10:06:20 2018"
+## [1] " have initial level statistics Sat May  5 10:06:20 2018"
+## [1] "design var x Sat May  5 10:06:20 2018"
+## [1] "design var z Sat May  5 10:06:20 2018"
+## [1] " scoring treatments Sat May  5 10:06:20 2018"
+## [1] "have treatment plan Sat May  5 10:06:20 2018"
+## [1] "rescoring complex variables Sat May  5 10:06:20 2018"
+## [1] "done rescoring complex variables Sat May  5 10:06:20 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -338,8 +348,8 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## $scoreFrame
 ##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.156532606 0.3796474       TRUE                 2
-## 2    x_catN     TRUE 0.045758227 0.6451033       TRUE                 2
+## 1    x_catP     TRUE 0.228077807 0.2784461       TRUE                 2
+## 2    x_catN     TRUE 0.021219389 0.7553204       TRUE                 2
 ## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
@@ -447,7 +457,6 @@ dTestNTreatedS &lt;-<span class="st"> </span><span class="kw"><a href="../refere
 <a href="https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/">“Big Learning Made Easy – with Counts!”</a>, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
 </ul>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -469,11 +478,13 @@ dTestNTreatedS &lt;-<span class="st"> </span><span class="kw"><a href="../refere
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>
