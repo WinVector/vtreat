@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.5</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
       <h1>Saving Treatment Plans</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2018-05-05</h4>
+            <h4 class="date">2018-05-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/SavingTreamentPlans.Rmd"><code>vignettes/SavingTreamentPlans.Rmd</code></a></small>
       <div class="hidden name"><code>SavingTreamentPlans.Rmd</code></div>
@@ -140,7 +140,8 @@ dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 <span class="kw">unlink</span>(fileName)</code></pre></div>
 <p>Treatment plans can also be stored as binary blobs in databases. Using ideas from <a href="http://jfaganuk.github.io/2015/01/12/storing-r-objects-in-sqlite-tables/">here</a> gives us the following through the <code>DBI</code> interface.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">con &lt;-<span class="st"> </span><span class="ot">NULL</span>
-<span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">'RSQLite'</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {
+<span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">'RSQLite'</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>) <span class="op">&amp;&amp;</span>
+<span class="st">    </span><span class="kw">requireNamespace</span>(<span class="st">'DBI'</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {
   <span class="kw">library</span>(<span class="st">"RSQLite"</span>)
   con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="dt">drv=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/RSQLite/topics/SQLite">SQLite</a></span>(), <span class="dt">dbname=</span><span class="st">":memory:"</span>)
   <span class="co"># create table</span>

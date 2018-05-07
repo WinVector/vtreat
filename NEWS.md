@@ -1,15 +1,19 @@
 
-# vtreat 1.0.4 2017/05/05
+# vtreat 1.0.5 2018/05/07
+
+  * Minor documentation improvements.
+ 
+# vtreat 1.0.4 2018/05/05
 
   * Add data.table as an optional row-binder.
   * Declare an R version.
 
-# vtreat 1.0.3 2017/03/10
+# vtreat 1.0.3 2018/03/10
 
   * parallel indicator calculation.
   * add optional warning on encountering novel levels in prepare.
 
-# vtreat 1.0.2 2017/01/20
+# vtreat 1.0.2 2018/01/20
 
   * bind options.
   * fix deps.

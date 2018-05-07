@@ -118,7 +118,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.0.4'
+ #  [1] '1.0.5'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -197,9 +197,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 2.105263e-01 0.2528101                 2
- #  2        x    x_catN  catN 3.205128e-03 0.8940756                 2
- #  3        x    x_catD  catD 6.666667e-02 0.5369633                 2
+ #  1        x    x_catP  catP 3.137255e-01 0.1487686                 2
+ #  2        x    x_catN  catN 2.536663e-02 0.7063823                 2
+ #  3        x    x_catD  catD 1.620332e-01 0.3228162                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -248,3 +248,10 @@ Note
 ----
 
 Note: `vtreat` is meant only for "tame names", that is: variables and column names that are also valid *simple* (without quotes) `R` variables names.
+
+Also, `vtreat` now as a couple of package options that are not set until the package is attached. These are
+
+-   `vtreat.use_data.table_binding = FALSE`
+-   `vtreat.use_dplyr_binding = TRUE`
+
+So if `vtreat` is not attached: row binding is done in base `R` through `do.call(rbind, ...)`. If these options are set then `vtreat` will delegate row binding to `data.table` or `dplyr` in that order if they are installed (which is why we default `data.table` to `FALSE` as `vtreat.use_data.table_binding == TRUE` is checked first).
