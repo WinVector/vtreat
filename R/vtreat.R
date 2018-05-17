@@ -51,7 +51,7 @@ vnames <- function(x) { x$newvars }
 #' @param x treatment plan
 #' @param ... additional args (to match general signature).
 #' @export
-format.vtreatment <- function(x,...) { paste(
+format.vtreatment <- function(x, ...) { paste(
   'vtreat \'',x$treatmentName,
   '\'(\'',x$origvar,'\'(',x$origType,',',x$origClass,')->',
   x$convertedColClass,'->\'',
@@ -64,8 +64,8 @@ format.vtreatment <- function(x,...) { paste(
 #' @param ... additional args (to match general signature).
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{prepare}}
 #' @export
-print.vtreatment <- function(x,...) { 
-  print(format.vtreatment(x),...) 
+print.vtreatment <- function(x, ...) { 
+  print(format.vtreatment(x), ...) 
 }
 
 
@@ -138,8 +138,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               catScaling=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
-  
-  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsC")
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
@@ -230,7 +230,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               forceSplit=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL) {
-  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsN")
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!(outcomename %in% colnames(dframe))) {
     stop("outcomename must be a column name of dframe")
   }
@@ -308,6 +309,7 @@ designTreatmentsZ <- function(dframe,varlist,
                               customCoders=NULL,
                               verbose=TRUE,
                               parallelCluster=NULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsZ")
   # build a name disjoint from column names
   outcomename <- setdiff(paste('VTREATTEMPCOL',
                                seq_len(ncol(dframe) + length(varlist) + 1), 
@@ -315,7 +317,7 @@ designTreatmentsZ <- function(dframe,varlist,
                          c(colnames(dframe),varlist))[[1]]
   catScaling <- FALSE
   dframe[[outcomename]] <- 0
-  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   ycol <- dframe[[outcomename]]
   treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
                      c(),c(),
@@ -484,7 +486,8 @@ prepare <- function(treatmentplan, dframe,
                     codeRestriction= NULL,
                     trackedValues= NULL,
                     parallelCluster= NULL) {
-  .checkArgs1(dframe=dframe,...)
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare")
+  .checkArgs1(dframe=dframe)
   if(class(treatmentplan)!='treatmentplan') {
     stop("treatmentplan must be of class treatmentplan")
   }
@@ -630,7 +633,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     catScaling=FALSE,
                                     verbose= TRUE,
                                     parallelCluster=NULL) {
-  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameCExperiment")
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
@@ -769,7 +773,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     forceSplit=FALSE,
                                     verbose= TRUE,
                                     parallelCluster=NULL) {
-  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename,...)
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameNExperiment")
+  .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }

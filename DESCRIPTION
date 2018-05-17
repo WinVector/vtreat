@@ -2,7 +2,7 @@ Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
 Version: 1.0.5
-Date: 2018-05-07
+Date: 2018-05-17
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
@@ -21,7 +21,8 @@ License: GPL-3
 Depends:
   R (>= 3.0.0)
 Imports:
-    stats
+    stats,
+    wrapr (>= 1.4.0)
 Suggests:
     testthat,
     knitr,

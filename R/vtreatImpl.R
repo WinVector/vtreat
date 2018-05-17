@@ -795,25 +795,15 @@ mkVtreatListWorker <- function(scale,doCollar) {
   treatments
 }
 
-.checkArgs1 <- function(dframe,...) {
-  args <- list(...)
-  if(length(args)!=0) {
-    nm <- setdiff(paste(names(args),collapse=", "),'')
-    nv <- length(args)-length(nm)
-    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
-  }
+.checkArgs1 <- function(dframe, ...) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat checkargs")
   if(missing(dframe)||(!is.data.frame(dframe))||(nrow(dframe)<0)||(ncol(dframe)<=0)) {
     stop("dframe must be a non-empty data frame")
   }
 }
 
 .checkArgs <- function(dframe, varlist, outcomename, ...) {
-  args <- list(...)
-  if(length(args)!=0) {
-    nm <- setdiff(paste(names(args),collapse=", "),'')
-    nv <- length(args)-length(nm)
-    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
-  }
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat checkargs")
   if(missing(dframe)||(!is.data.frame(dframe))||
      (nrow(dframe)<0)||(ncol(dframe)<=0)) {
     stop("dframe must be a non-empty data frame")

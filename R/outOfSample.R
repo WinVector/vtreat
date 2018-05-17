@@ -439,13 +439,8 @@ buildEvalSets <- function(nRows,...,
                           y=NULL,
                           splitFunction=NULL,
                           nSplits=3) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::buildEvalSets")
   # check args
-  args <- list(...)
-  if(length(args)!=0) {
-    nm <- setdiff(paste(names(args),collapse=", "),'')
-    nv <- length(args)-length(nm)
-    stop(paste("unexpected arguments",nm,"(and",nv,"unexpected values)"))
-  }
   if(nSplits<2) {
     stop("vtreat::buildEvalSets must have nSplits>=2")
   }

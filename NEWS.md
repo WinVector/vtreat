@@ -1,7 +1,8 @@
 
-# vtreat 1.0.5 2018/05/07
+# vtreat 1.0.5 2018/05/17
 
   * Minor documentation improvements.
+  * Improve error messages on argument checking.
  
 # vtreat 1.0.4 2018/05/05
 
