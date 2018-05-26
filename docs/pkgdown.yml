@@ -1,6 +1,6 @@
 pandoc: 1.19.2.1
-pkgdown: 1.0.0
-pkgdown_sha: ~
+pkgdown: 1.0.0.9000
+pkgdown_sha: fba7dfcccbb3dc91ee4db4bf99a9519f9731febf
 articles:
   SavingTreamentPlans: SavingTreamentPlans.html
   vtreat: vtreat.html

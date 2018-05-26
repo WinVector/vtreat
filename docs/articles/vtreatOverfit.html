@@ -106,7 +106,7 @@
       <h1>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-05-18</h4>
+            <h4 class="date">2018-05-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
@@ -138,14 +138,14 @@ dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span clas
 treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.5 inspecting inputs Fri May 18 08:11:24 2018"
-## [1] "designing treatments Fri May 18 08:11:24 2018"
-## [1] " have initial level statistics Fri May 18 08:11:24 2018"
-## [1] "design var x Fri May 18 08:11:24 2018"
-## [1] " scoring treatments Fri May 18 08:11:24 2018"
-## [1] "have treatment plan Fri May 18 08:11:24 2018"
-## [1] "rescoring complex variables Fri May 18 08:11:24 2018"
-## [1] "done rescoring complex variables Fri May 18 08:11:24 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.5 inspecting inputs Sat May 26 08:56:51 2018"
+## [1] "designing treatments Sat May 26 08:56:51 2018"
+## [1] " have initial level statistics Sat May 26 08:56:51 2018"
+## [1] "design var x Sat May 26 08:56:51 2018"
+## [1] " scoring treatments Sat May 26 08:56:51 2018"
+## [1] "have treatment plan Sat May 26 08:56:51 2018"
+## [1] "rescoring complex variables Sat May 26 08:56:51 2018"
+## [1] "done rescoring complex variables Sat May 26 08:56:52 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -239,14 +239,14 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.5 inspecting inputs Fri May 18 08:11:24 2018"
-## [1] "designing treatments Fri May 18 08:11:24 2018"
-## [1] " have initial level statistics Fri May 18 08:11:24 2018"
-## [1] "design var x Fri May 18 08:11:24 2018"
-## [1] " scoring treatments Fri May 18 08:11:25 2018"
-## [1] "have treatment plan Fri May 18 08:11:25 2018"
-## [1] "rescoring complex variables Fri May 18 08:11:25 2018"
-## [1] "done rescoring complex variables Fri May 18 08:11:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.5 inspecting inputs Sat May 26 08:56:52 2018"
+## [1] "designing treatments Sat May 26 08:56:52 2018"
+## [1] " have initial level statistics Sat May 26 08:56:52 2018"
+## [1] "design var x Sat May 26 08:56:52 2018"
+## [1] " scoring treatments Sat May 26 08:56:52 2018"
+## [1] "have treatment plan Sat May 26 08:56:52 2018"
+## [1] "rescoring complex variables Sat May 26 08:56:52 2018"
+## [1] "done rescoring complex variables Sat May 26 08:56:52 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -315,9 +315,9 @@ dTest<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="
 xdat &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                   <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                   <span class="dt">rareSig=</span><span class="kw">c</span>())</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.5 start initial treatment design Fri May 18 08:11:25 2018"
-## [1] " start cross frame work Fri May 18 08:11:25 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Fri May 18 08:11:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.0.5 start initial treatment design Sat May 26 08:56:52 2018"
+## [1] " start cross frame work Sat May 26 08:56:52 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Sat May 26 08:56:52 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>xdat<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves          rsq       sig needsSplit extraModelDegrees
