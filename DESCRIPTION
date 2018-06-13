@@ -22,7 +22,7 @@ Depends:
   R (>= 3.2.1)
 Imports:
     stats,
-    wrapr (>= 1.4.1)
+    wrapr (>= 1.5.0)
 Suggests:
     testthat,
     knitr,
