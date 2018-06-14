@@ -34,18 +34,15 @@ if(requireNamespace("rquery", quietly = TRUE)) {
    if(requireNamespace("DBI", quietly = TRUE) &&
       requireNamespace("DBI", quietly = TRUE)) {
       db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-      rquery::rq_copy_to(db, "dTrainC", dTrainC, overwrite = TRUE, temporary = TRUE)
+      source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC, 
+                               overwrite = TRUE, temporary = TRUE)
       
-      for(ni in names(rqplan$tables)) {
-         rquery::rq_copy_to(db, ni, rqplan$tables[[ni]], overwrite = TRUE, temporary = TRUE)
-      }
-      cat(format(rquery::to_sql(ops, db)))
-      treated <- rquery::execute(db, ops, allow_executor = FALSE)
-      print(treated)
-      for(ni in names(rqplan$tables)) {
-         rquery::rq_remove_table(db, ni)
-      }
-      rquery::rq_remove_table(db, "dTrainC")
+      rest <- materialize_treated(db, rqplan, source_data, "dTreatedC")
+      resd <- DBI::dbReadTable(db, rest$table_name)
+      print(resd)
+      
+      rquery::rq_remove_table(db, source_data$table_name)
+      rquery::rq_remove_table(db, rest$table_name)
       DBI::dbDisconnect(db)
    }
 }
