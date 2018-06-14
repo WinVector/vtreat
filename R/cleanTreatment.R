@@ -11,6 +11,22 @@
   treated
 }
 
+#' @importFrom wrapr %:=%
+NULL
+
+as_rquery.vtreat_pass_through <- function(tstep, 
+                                          d,
+                                          ...) {
+  if(!requireNamespace("rquery", quietly = TRUE)) {
+    stop("vtreat::as_rquery.vtreat_pass_through treatmentplan requires the rquery package")
+  }
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_pass_through")
+  args <- tstep$args
+  rquery::extend_se(d, 
+                    tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", args$nadist, ", ", tstep$origvar, ")"))
+}
+
+
 .mkPassThrough <- function(origVarName,xcol,ycol,zC,zTarget,weights,collarProb,catScaling) {
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
@@ -41,7 +57,7 @@
                     treatmentCode='clean',
                     needsSplit=FALSE,
                     extraModelDegrees=0)
-  class(treatment) <- 'vtreatment'
+  class(treatment) <- c('vtreat_pass_through', 'vtreatment')
   if((!catScaling)||(is.null(zC))) {
     treatment$scales <- linScore(newVarName,xcol,ycol,weights)
   } else {

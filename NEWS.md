@@ -1,6 +1,7 @@
 
-# vtreat 1.0.5 2018/05/26
+# vtreat 1.2.0 2018/06/14
 
+  * Translate treatment plans to rquery.
   * Minor documentation improvements.
   * Improve error messages on argument checking.
  
