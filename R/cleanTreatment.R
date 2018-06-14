@@ -11,9 +11,6 @@
   treated
 }
 
-#' @importFrom wrapr %:=%
-NULL
-
 as_rquery.vtreat_pass_through <- function(tstep, 
                                           ...) {
   if(!requireNamespace("rquery", quietly = TRUE)) {

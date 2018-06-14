@@ -62,7 +62,7 @@ into calibration, training, test sets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.5</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.0</span>
       </span>
     </div>
 
@@ -261,9 +261,9 @@ into calibration, training, test sets.</p>
 <span class='no'>d</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span> + <span class='no'>del</span>[<span class='no'>d</span>$<span class='no'>zip2</span>]
 <span class='no'>d</span>$<span class='no'>yc</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span><span class='kw'>&gt;=</span><span class='fu'>mean</span>(<span class='no'>d</span>$<span class='no'>y</span>)
 <span class='no'>cN</span> <span class='kw'>&lt;-</span> <span class='fu'>mkCrossFrameNExperiment</span>(<span class='no'>d</span>,<span class='fu'>c</span>(<span class='st'>'zip'</span>,<span class='st'>'zip2'</span>),<span class='st'>'y'</span>,
-   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.0.5 start initial treatment design Sat May 26 08:56:26 2018"
-#&gt; [1] " start cross frame work Sat May 26 08:56:27 2018"
-#&gt; [1] " vtreat::mkCrossFrameNExperiment done Sat May 26 08:56:28 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] 0.02114663</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.2013498</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
+   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 start initial treatment design Thu Jun 14 14:55:16 2018"
+#&gt; [1] " start cross frame work Thu Jun 14 14:55:17 2018"
+#&gt; [1] " vtreat::mkCrossFrameNExperiment done Thu Jun 14 14:55:18 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] 0.02114663</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.2013498</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
 <span class='no'>dTrainV</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>crossFrame</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

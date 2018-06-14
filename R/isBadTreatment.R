@@ -5,6 +5,23 @@
   treated
 }
 
+as_rquery.vtreat_is_bad <- function(tstep, 
+                                          ...) {
+  if(!requireNamespace("rquery", quietly = TRUE)) {
+    stop("vtreat::as_rquery.vtreat_is_bad treatmentplan requires the rquery package")
+  }
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_is_bad")
+  args <- tstep$args
+  list(
+    optree_generators = list(
+      function(d) {
+        rquery::extend_se(d, 
+                          tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", 1, ", ", 0, ")"))
+      }),
+    tables = list()
+  )
+}
+
 .mkIsBAD <- function(origVarName,xcol,ynumeric,zC,zTarget,weights,catScaling) {
   badIDX <- .is.bad(xcol)
   nna <- sum(badIDX)
@@ -20,7 +37,7 @@
                     treatmentCode='isBAD',
                     needsSplit=FALSE,
                     extraModelDegrees=0)
-  class(treatment) <- 'vtreatment'
+  class(treatment) <- c('vtreat_is_bad', 'vtreatment')
   if((!catScaling)||(is.null(zC))) {
     treatment$scales <- linScore(newVarName,ifelse(badIDX,1.0,0.0),ynumeric,weights)
   } else {

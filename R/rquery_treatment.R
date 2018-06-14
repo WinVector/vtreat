@@ -1,4 +1,9 @@
 
+
+#' @importFrom wrapr %:=%
+NULL
+
+
 #' Flatten a list of functions onto d.
 #' 
 #' @param d object (usually a data souce)

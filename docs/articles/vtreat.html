@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.5</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.0</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-05-26</h4>
+            <h4 class="date">2018-06-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -188,15 +188,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.5 inspecting inputs Sat May 26 08:56:37 2018"
-## [1] "designing treatments Sat May 26 08:56:37 2018"
-## [1] " have initial level statistics Sat May 26 08:56:37 2018"
-## [1] "design var x Sat May 26 08:56:37 2018"
-## [1] "design var z Sat May 26 08:56:37 2018"
-## [1] " scoring treatments Sat May 26 08:56:37 2018"
-## [1] "have treatment plan Sat May 26 08:56:37 2018"
-## [1] "rescoring complex variables Sat May 26 08:56:37 2018"
-## [1] "done rescoring complex variables Sat May 26 08:56:37 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Thu Jun 14 14:55:22 2018"
+## [1] "designing treatments Thu Jun 14 14:55:22 2018"
+## [1] " have initial level statistics Thu Jun 14 14:55:22 2018"
+## [1] "design var x Thu Jun 14 14:55:22 2018"
+## [1] "design var z Thu Jun 14 14:55:22 2018"
+## [1] " scoring treatments Thu Jun 14 14:55:22 2018"
+## [1] "have treatment plan Thu Jun 14 14:55:22 2018"
+## [1] "rescoring complex variables Thu Jun 14 14:55:22 2018"
+## [1] "done rescoring complex variables Thu Jun 14 14:55:23 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -216,14 +216,14 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 
 ## 
 ## $scoreFrame
-##     varName varMoves        rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.24340634 0.1547700       TRUE                 2
-## 2    x_catB     TRUE 0.05070201 0.5160763       TRUE                 2
-## 3   z_clean     TRUE 0.25792985 0.1429977      FALSE                 0
-## 4   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
-## 5  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
-## 6 x_lev_x.a     TRUE 0.08170417 0.4097258      FALSE                 0
-## 7 x_lev_x.b     TRUE 0.00000000 1.0000000      FALSE                 0
+##     varName varMoves        rsq        sig needsSplit extraModelDegrees
+## 1    x_catP     TRUE 0.54085208 0.03392101       TRUE                 2
+## 2    x_catB     TRUE 0.00000000 1.00000000       TRUE                 2
+## 3   z_clean     TRUE 0.25792985 0.14299775      FALSE                 0
+## 4   z_isBAD     TRUE 0.19087450 0.20766228      FALSE                 0
+## 5  x_lev_NA     TRUE 0.19087450 0.20766228      FALSE                 0
+## 6 x_lev_x.a     TRUE 0.08170417 0.40972582      FALSE                 0
+## 7 x_lev_x.b     TRUE 0.00000000 1.00000000      FALSE                 0
 ##   origName  code
 ## 1        x  catP
 ## 2        x  catB
@@ -237,7 +237,7 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## [1] "y"
 ## 
 ## $vtreatVersion
-## [1] '1.0.5'
+## [1] '1.2.0'
 ## 
 ## $outcomeType
 ## [1] "Binary"
@@ -316,15 +316,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.0.5 inspecting inputs Sat May 26 08:56:37 2018"
-## [1] "designing treatments Sat May 26 08:56:37 2018"
-## [1] " have initial level statistics Sat May 26 08:56:37 2018"
-## [1] "design var x Sat May 26 08:56:37 2018"
-## [1] "design var z Sat May 26 08:56:37 2018"
-## [1] " scoring treatments Sat May 26 08:56:37 2018"
-## [1] "have treatment plan Sat May 26 08:56:37 2018"
-## [1] "rescoring complex variables Sat May 26 08:56:37 2018"
-## [1] "done rescoring complex variables Sat May 26 08:56:38 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Thu Jun 14 14:55:23 2018"
+## [1] "designing treatments Thu Jun 14 14:55:23 2018"
+## [1] " have initial level statistics Thu Jun 14 14:55:23 2018"
+## [1] "design var x Thu Jun 14 14:55:23 2018"
+## [1] "design var z Thu Jun 14 14:55:23 2018"
+## [1] " scoring treatments Thu Jun 14 14:55:23 2018"
+## [1] "have treatment plan Thu Jun 14 14:55:23 2018"
+## [1] "rescoring complex variables Thu Jun 14 14:55:23 2018"
+## [1] "done rescoring complex variables Thu Jun 14 14:55:23 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>## $treatments
 ## $treatments[[1]]
@@ -370,7 +370,7 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## [1] "y"
 ## 
 ## $vtreatVersion
-## [1] '1.0.5'
+## [1] '1.2.0'
 ## 
 ## $outcomeType
 ## [1] "Numeric"
