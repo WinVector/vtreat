@@ -1,10 +1,26 @@
 
+#' Flatten a list of functions onto d.
+#' 
+#' @param d object (usually a data souce)
+#' @param fnlist a list of functions
+#' @return fnlist[[length(fnlist)]](flatten_fn_list(d, fnlist[[-length(fnlist)]]) (or d if length(fnlist)<1)
+#' 
+#' @seealso \code{\link{as_rquery}}
+#' 
+#' @export
+#' 
+flatten_fn_list <- function(d, fnlist) {
+  for(i in seq_len(length(fnlist))) {
+    d <- fnlist[[i]](d)
+  }
+  d
+}
+
 #' Convert a vtreat tstep into an rquery operation tree.
 #' 
 #' @param tstep vtreat treatment plan
-#' @param d relop data source (usually of class relop_table_source)
 #' @param ... not used, force any later arguments to bind to names.
-#' @return rquery optree
+#' @return list(optree_generator (ordered list of functions), temp_tables (named list of tables))
 #' 
 #' @examples 
 #' 
@@ -13,33 +29,39 @@
 #'                          z= c(1,2,NA,4,5,6),
 #'                          y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
 #'    treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-#'    ops <- as_rquery(treatmentsC, rquery::local_td(dTrainC))
+#'    rqplan <- as_rquery(treatmentsC)
+#'    ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
 #'    cat(format(ops))
 #'    if(requireNamespace("rqdatatable", quietly = TRUE)) {
-#'       treated <- rqdatatable::ex_data_table(ops)
+#'       treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
 #'       print(treated[])
 #'    }
 #'    if(requireNamespace("DBI", quietly = TRUE) &&
 #'       requireNamespace("DBI", quietly = TRUE)) {
 #'       db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-#'       old_o <- options(list("rquery.rquery_db_executor" = list(db = db)))
+#'       rquery::rq_copy_to(db, "dTrainC", dTrainC, overwrite = TRUE, temporary = TRUE)
+#'       
+#'       for(ni in names(rqplan$tables)) {
+#'          rquery::rq_copy_to(db, ni, rqplan$tables[[ni]], overwrite = TRUE, temporary = TRUE)
+#'       }
 #'       cat(format(rquery::to_sql(ops, db)))
-#'       treated <- rquery::execute(dTrainC, ops, allow_executor = FALSE)
+#'       treated <- rquery::execute(db, ops, allow_executor = FALSE)
 #'       print(treated)
-#'       options(old_o)
+#'       for(ni in names(rqplan$tables)) {
+#'          rquery::rq_remove_table(db, ni)
+#'       }
+#'       rquery::rq_remove_table(db, "dTrainC")
 #'       DBI::dbDisconnect(db)
 #'    }
 #' }
 #' 
 #' @export
 as_rquery <- function(tstep, 
-                      d,
                       ...) {
   UseMethod("as_rquery")
 }
 
 as_rquery.vtreatment <- function(tstep, 
-                                 d,
                                  ...) {
   warning(paste("vtreat::as_rquery not yet implemented for ",
                 format(tstep),
@@ -50,7 +72,6 @@ as_rquery.vtreatment <- function(tstep,
 
 #' @export
 as_rquery.treatmentplan <- function(tstep, 
-                                    d,
                                     ...) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.treatmentplan requires the rquery package")
@@ -59,11 +80,16 @@ as_rquery.treatmentplan <- function(tstep,
   if(!("treatmentplan" %in% class(tstep))) {
     stop("vtreat::as_rquery.treatmentplan must be of class treatmentplan")
   }
-  res <- d
+  res <- list(
+    optree_generators = list(),
+    tables = list()
+  )
   for(ti in tstep$treatments) {
-    rs <- as_rquery(ti, res)
-    if(!is.null(rs)) {
-      res <- rs
+    ri <- as_rquery(ti)
+    if(!is.null(ri)) {
+      for(fld in c("optree_generators", "tables")) {
+        res[[fld]] <- c(res[[fld]], ri[[fld]])
+      }
     }
   }
   res

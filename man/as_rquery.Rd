@@ -4,17 +4,15 @@
 \alias{as_rquery}
 \title{Convert a vtreat tstep into an rquery operation tree.}
 \usage{
-as_rquery(tstep, d, ...)
+as_rquery(tstep, ...)
 }
 \arguments{
 \item{tstep}{vtreat treatment plan}
 
-\item{d}{relop data source (usually of class relop_table_source)}
-
 \item{...}{not used, force any later arguments to bind to names.}
 }
 \value{
-rquery optree
+list(optree_generator (ordered list of functions), temp_tables (named list of tables))
 }
 \description{
 Convert a vtreat tstep into an rquery operation tree.
@@ -26,20 +24,28 @@ if(requireNamespace("rquery", quietly = TRUE)) {
                          z= c(1,2,NA,4,5,6),
                          y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
    treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-   ops <- as_rquery(treatmentsC, rquery::local_td(dTrainC))
+   rqplan <- as_rquery(treatmentsC)
+   ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
    cat(format(ops))
    if(requireNamespace("rqdatatable", quietly = TRUE)) {
-      treated <- rqdatatable::ex_data_table(ops)
+      treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
       print(treated[])
    }
    if(requireNamespace("DBI", quietly = TRUE) &&
       requireNamespace("DBI", quietly = TRUE)) {
       db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-      old_o <- options(list("rquery.rquery_db_executor" = list(db = db)))
+      rquery::rq_copy_to(db, "dTrainC", dTrainC, overwrite = TRUE, temporary = TRUE)
+      
+      for(ni in names(rqplan$tables)) {
+         rquery::rq_copy_to(db, ni, rqplan$tables[[ni]], overwrite = TRUE, temporary = TRUE)
+      }
       cat(format(rquery::to_sql(ops, db)))
-      treated <- rquery::execute(dTrainC, ops, allow_executor = FALSE)
+      treated <- rquery::execute(db, ops, allow_executor = FALSE)
       print(treated)
-      options(old_o)
+      for(ni in names(rqplan$tables)) {
+         rquery::rq_remove_table(db, ni)
+      }
+      rquery::rq_remove_table(db, "dTrainC")
       DBI::dbDisconnect(db)
    }
 }
