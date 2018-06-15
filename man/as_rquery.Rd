@@ -20,9 +20,10 @@ Convert a vtreat tstep into an rquery operation tree.
 \examples{
 
 if(requireNamespace("rquery", quietly = TRUE)) {
-   dTrainC <- data.frame(x= c('a','a','a','b',NA,'b'),
-                         z= c(1,2,NA,4,5,6),
-                         y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+   dTrainC <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
+                         z= c(1, 2, NA, 4, 5, 6),
+                         y= c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE),
+                         stringsAsFactors = FALSE)
    dTrainC$id <- seq_len(nrow(dTrainC))
    treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
    rqplan <- as_rquery(treatmentsC)

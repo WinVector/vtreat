@@ -1,8 +1,10 @@
 
 
-#' @importFrom wrapr %:=%
+#' @importFrom wrapr %:=% %.>%
 NULL
 
+# don't look unitialized
+. <- NULL
 
 #' Flatten a list of functions onto d.
 #' 
@@ -76,9 +78,10 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #' @examples 
 #' 
 #' if(requireNamespace("rquery", quietly = TRUE)) {
-#'    dTrainC <- data.frame(x= c('a','a','a','b',NA,'b'),
-#'                          z= c(1,2,NA,4,5,6),
-#'                          y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
+#'    dTrainC <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
+#'                          z= c(1, 2, NA, 4, 5, 6),
+#'                          y= c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE),
+#'                          stringsAsFactors = FALSE)
 #'    dTrainC$id <- seq_len(nrow(dTrainC))
 #'    treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 #'    rqplan <- as_rquery(treatmentsC)
@@ -155,6 +158,70 @@ as_rquery.treatmentplan <- function(tstep,
   res$exprs <- NULL
   res$treatmentplan = tstep
   res
+}
+
+#' Build a function that will re-code a categorical value.
+#' 
+#' @param colname character, name of column to re-code.
+#' @param resname character, name of column to produce.
+#' @param coding_levels character, levels to not re-map to 'rare'
+#' @param effect_values named map to numeric, levels 
+#' @param ... not used, force later arguments to be bound by name.
+#' @param levRestriction level restriction object.
+#' @param default_value numeric, default value used on non-effect_values matches.
+#' @param name_source a wrapr::mk_tmp_name_source()
+#' @return function generator for rquery pipeline and advisory table.
+#' 
+#' @noRd
+#' 
+rquery_code_categorical <- function(colname, resname,
+                                    coding_levels,
+                                    effect_values,
+                                    ...,
+                                    levRestriction = NULL,
+                                    default_value = 0.0,
+                                    name_source = wrapr::mk_tmp_name_source("vtreat_tmp")) {
+  if(!requireNamespace("rquery", quietly = TRUE)) {
+    stop("vtreat::rquery_code_categorical requires the rquery package")
+  }
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::rquery_code_categorical")
+  # work out coding table
+  coding_levels <- coding_levels[grep("^x ", as.character(coding_levels))]
+  coding_levels <- sort(unique(gsub("^x ", "", coding_levels))) # sort kills NA
+  tnum <- 1
+  while(TRUE) {
+    new_novel_level <- paste0("new_novel_level_", tnum)
+    if(!(new_novel_level %in% coding_levels)) {
+      break
+    }
+    tnum <- tnum + 1
+  }
+  coding_levels <- c(coding_levels, new_novel_level, NA)
+  ctab <- data.frame(levels = coding_levels,
+                     stringsAsFactors = FALSE)
+  codes <- .preProcCat(ctab$levels, levRestriction)
+  ctab$levels[[nrow(ctab)]] <- "NA"
+  ctab$effect <- as.numeric(unlist(effect_values)[codes])
+  ctab$effect[is.na(ctab$effect)] <- default_value
+  new_novel_value <- ctab$effect[ctab$levels == new_novel_level]
+  na_value <- ctab$effect[ctab$levels == "NA"]
+  ctab <- ctab[seq_len(nrow(ctab)-2), , drop = FALSE]
+  names(ctab) <- c(colname, resname)
+  code_tab <- name_source()
+  ctabd <- rquery::table_source(code_tab, c(colname, resname))
+  expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, 
+                            ", ifelse(is.na(", resname, "), ", default_value, ", ", resname, "))")
+  f <- function(d) {
+    rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) %.>%
+      rquery::extend_se(., expr)
+  }
+  tables = list(code_tab = ctab)
+  names(tables) <- code_tab
+  list(
+    exprs = list(),
+    optree_generators = f, 
+    tables = tables)
 }
 
 

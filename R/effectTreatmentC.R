@@ -15,6 +15,21 @@
   pred
 }
 
+as_rquery.vtreat_cat_Bayes <- function(tstep, 
+                                       ...) {
+  if(!requireNamespace("rquery", quietly = TRUE)) {
+    stop("vtreat::as_rquery.vtreat_cat_Bayes treatmentplan requires the rquery package")
+  }
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_cat_Bayes")
+  args <- tstep$args
+  rquery_code_categorical(colname = tstep$origvar, 
+                          resname = tstep$newvars,
+                          coding_levels = names(args$conditionalScore),
+                          effect_values = args$conditionalScore,
+                          levRestriction = args$levRestriction,
+                          default_value = 0.0)
+}
+
 .logit <- function(x) {
   log(x/(1-x))
 }
@@ -57,7 +72,7 @@
   if(!.has.range.cn(pred)) {
     return(NULL)
   }
-  class(treatment) <- 'vtreatment'
+  class(treatment) <- c('vtreat_cat_Bayes', 'vtreatment')
   if(!catScaling) {
     treatment$scales <- linScore(newVarName,pred,as.numeric(rescol==resTarget),weights)
   } else {
