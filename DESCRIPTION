@@ -31,7 +31,6 @@ Suggests:
     parallel,
     rmarkdown,
     data.table,
-    dplyr,
     ggplot2,
     DBI,
     RSQLite,

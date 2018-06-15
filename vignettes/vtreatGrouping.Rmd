@@ -18,12 +18,12 @@ library(vtreat)
 set.seed(23255)
 
 have_ggplot = requireNamespace("ggplot2", quietly=TRUE)
-have_dplyr = requireNamespace("dplyr", quietly=TRUE)
+have_rqdatatable = requireNamespace("rqdatatable", quietly=TRUE)
 if(have_ggplot) {
   library(ggplot2)
 }
-if(have_dplyr) {
-  library(dplyr)
+if(have_rqdatatable) {
+  library(rqdatatable)
 }
 ```
 
@@ -41,14 +41,20 @@ showGroupingBehavior = function(groupcol, title) {
   print(means)
   print(paste("Standard deviation of group means:", sd(means)))
   
-  if(have_ggplot && have_dplyr) {
+  if(have_ggplot && have_rqdatatable) {
     # unify the time indices
-    d %>% group_by(Subject) %>% 
-      arrange(Time) %>% mutate(timeIndex=1:n()) -> dtmp
+    d %>>%
+      extend_nse(., 
+                 timeIndex := row_number(),
+                 partitionby = "Subject",
+                 orderby = "Time") -> dtmp
     
     # I want the time indices to have the same spacing as the original time points
     # dtmp$timeFrac = with(dtmp, round(100*Time/25)/100) # round to nearest 1/100th
-    dtmp %>% group_by(timeIndex) %>% summarize(approxTime=mean(Time)) -> atimef
+    dtmp %>>% 
+      project_nse(.,
+                  approxTime = mean(Time),
+                  groupby = "timeIndex") -> atimef
     dtmp$approxTime = atimef$approxTime[dtmp$timeIndex]
     
     dtmp[[groupcol]] = as.factor(dtmp[[groupcol]])
