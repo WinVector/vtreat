@@ -187,7 +187,8 @@
                                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
       <span class='no'>rest</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='materialize_treated.html'>materialize_treated</a></span>(<span class='no'>db</span>, <span class='no'>rqplan</span>, <span class='no'>source_data</span>, <span class='st'>"dTreatedC"</span>,
-                                  <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='st'>"id"</span>)
+                                  <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='st'>"id"</span>,
+                                  <span class='kw'>print_sql</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
       <span class='no'>resd</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/DBI/topics/dbReadTable'>dbReadTable</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='fu'>print</span>(<span class='no'>resd</span>)
 
@@ -195,15 +196,15 @@
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rquery/topics/rq_remove_table'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/DBI/topics/dbDisconnect'>dbDisconnect</a></span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 11:14:00 2018"
-#&gt; [1] "designing treatments Fri Jun 15 11:14:00 2018"
-#&gt; [1] " have initial level statistics Fri Jun 15 11:14:00 2018"
-#&gt; [1] "design var x Fri Jun 15 11:14:00 2018"
-#&gt; [1] "design var z Fri Jun 15 11:14:00 2018"
-#&gt; [1] " scoring treatments Fri Jun 15 11:14:00 2018"
-#&gt; [1] "have treatment plan Fri Jun 15 11:14:00 2018"
-#&gt; [1] "rescoring complex variables Fri Jun 15 11:14:00 2018"
-#&gt; [1] "done rescoring complex variables Fri Jun 15 11:14:00 2018"</div><div class='output co'>#&gt; <span class='warning'>Warning: vtreat::as_rquery not yet implemented for  vtreat 'Prevalence Code'('x'(character,character)-&gt;character-&gt;'x_catP') , class vtreatment</span></div><div class='output co'>#&gt; table('dTrainC'; 
+}</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 11:22:10 2018"
+#&gt; [1] "designing treatments Fri Jun 15 11:22:10 2018"
+#&gt; [1] " have initial level statistics Fri Jun 15 11:22:10 2018"
+#&gt; [1] "design var x Fri Jun 15 11:22:10 2018"
+#&gt; [1] "design var z Fri Jun 15 11:22:10 2018"
+#&gt; [1] " scoring treatments Fri Jun 15 11:22:10 2018"
+#&gt; [1] "have treatment plan Fri Jun 15 11:22:10 2018"
+#&gt; [1] "rescoring complex variables Fri Jun 15 11:22:10 2018"
+#&gt; [1] "done rescoring complex variables Fri Jun 15 11:22:10 2018"</div><div class='output co'>#&gt; <span class='warning'>Warning: vtreat::as_rquery not yet implemented for  vtreat 'Prevalence Code'('x'(character,character)-&gt;character-&gt;'x_catP') , class vtreatment</span></div><div class='output co'>#&gt; table('dTrainC'; 
 #&gt;   x,
 #&gt;   z,
 #&gt;   y,

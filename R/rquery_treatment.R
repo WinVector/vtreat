@@ -33,6 +33,7 @@ flatten_fn_list <- function(d, fnlist) {
 #' @param extracols extra columns to copy.
 #' @param temporary logical, if TRUE try to make result temporary.
 #' @param overwrite logical, if TRUE try to overwrite result.
+#' @param print_sql logical, if TRUE print the SQL.
 #' @return description of treated table.
 #' 
 #' @seealso \code{\link{as_rquery}}
@@ -43,7 +44,8 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
                                 ...,
                                 extracols = NULL,
                                 temporary = FALSE,
-                                overwrite = TRUE) {
+                                overwrite = TRUE,
+                                print_sql = FALSE) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::materialize_treated requires the rquery package.")
   }
@@ -59,6 +61,9 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
                          extracols))
   ops <- rquery::select_columns(ops, selcols)
   # cat(rquery::to_sql(ops, db))
+  if(print_sql) {
+    cat(rquery::to_sql(ops, db))
+  }
   treated <- rquery::materialize(db, ops, 
                                  table_name = result_table_name,
                                  temporary = temporary,
@@ -98,7 +103,8 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #'                                overwrite = TRUE, temporary = TRUE)
 #' 
 #'       rest <- materialize_treated(db, rqplan, source_data, "dTreatedC", 
-#'                                   extracols = "id")
+#'                                   extracols = "id",
+#'                                   print_sql = FALSE)
 #'       resd <- DBI::dbReadTable(db, rest$table_name)
 #'       print(resd)
 #' 

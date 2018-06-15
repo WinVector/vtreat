@@ -5,7 +5,8 @@
 \title{Materialize a treated data frame remotely.}
 \usage{
 materialize_treated(db, rqplan, data_source, result_table_name, ...,
-  extracols = NULL, temporary = FALSE, overwrite = TRUE)
+  extracols = NULL, temporary = FALSE, overwrite = TRUE,
+  print_sql = FALSE)
 }
 \arguments{
 \item{db}{a db handle.}
@@ -23,6 +24,8 @@ materialize_treated(db, rqplan, data_source, result_table_name, ...,
 \item{temporary}{logical, if TRUE try to make result temporary.}
 
 \item{overwrite}{logical, if TRUE try to overwrite result.}
+
+\item{print_sql}{logical, if TRUE print the SQL.}
 }
 \value{
 description of treated table.

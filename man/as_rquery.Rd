@@ -40,7 +40,8 @@ if(requireNamespace("rquery", quietly = TRUE)) {
                                overwrite = TRUE, temporary = TRUE)
 
       rest <- materialize_treated(db, rqplan, source_data, "dTreatedC", 
-                                  extracols = "id")
+                                  extracols = "id",
+                                  print_sql = FALSE)
       resd <- DBI::dbReadTable(db, rest$table_name)
       print(resd)
 
