@@ -13,11 +13,8 @@ as_rquery.vtreat_is_bad <- function(tstep,
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_is_bad")
   args <- tstep$args
   list(
-    optree_generators = list(
-      function(d) {
-        rquery::extend_se(d, 
-                          tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", 1, ", ", 0, ")"))
-      }),
+    exprs = tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", 1, ", ", 0, ")"),
+    optree_generators = list(),
     tables = list()
   )
 }

@@ -7,7 +7,7 @@
 as_rquery(tstep, ...)
 }
 \arguments{
-\item{tstep}{vtreat treatment plan}
+\item{tstep}{vtreat treatment plan.}
 
 \item{...}{not used, force any later arguments to bind to names.}
 }
@@ -23,7 +23,8 @@ if(requireNamespace("rquery", quietly = TRUE)) {
    dTrainC <- data.frame(x= c('a','a','a','b',NA,'b'),
                          z= c(1,2,NA,4,5,6),
                          y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-   treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
+   dTrainC$id <- seq_len(nrow(dTrainC))
+   treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
    rqplan <- as_rquery(treatmentsC)
    ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
    cat(format(ops))
@@ -34,13 +35,14 @@ if(requireNamespace("rquery", quietly = TRUE)) {
    if(requireNamespace("DBI", quietly = TRUE) &&
       requireNamespace("DBI", quietly = TRUE)) {
       db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-      source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC, 
+      source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
                                overwrite = TRUE, temporary = TRUE)
-      
-      rest <- materialize_treated(db, rqplan, source_data, "dTreatedC")
+
+      rest <- materialize_treated(db, rqplan, source_data, "dTreatedC", 
+                                  extracols = "id")
       resd <- DBI::dbReadTable(db, rest$table_name)
       print(resd)
-      
+
       rquery::rq_remove_table(db, source_data$table_name)
       rquery::rq_remove_table(db, rest$table_name)
       DBI::dbDisconnect(db)

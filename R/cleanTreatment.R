@@ -19,11 +19,8 @@ as_rquery.vtreat_pass_through <- function(tstep,
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_pass_through")
   args <- tstep$args
   list(
-    optree_generators = list(
-      function(d) {
-        rquery::extend_se(d, 
-                          tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", args$nadist, ", ", tstep$origvar, ")"))
-      }),
+    exprs = tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", args$nadist, ", ", tstep$origvar, ")"),
+    optree_generators = list(),
     tables = list()
   )
 }

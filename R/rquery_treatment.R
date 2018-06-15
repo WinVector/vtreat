@@ -28,6 +28,7 @@ flatten_fn_list <- function(d, fnlist) {
 #' @param data_source relop, data source (usually a relop_table_source).
 #' @param result_table_name character, table name to land result in
 #' @param ... force later arguments to bind by name.
+#' @param extracols extra columns to copy.
 #' @param temporary logical, if TRUE try to make result temporary.
 #' @param overwrite logical, if TRUE try to overwrite result.
 #' @return description of treated table.
@@ -38,6 +39,7 @@ flatten_fn_list <- function(d, fnlist) {
 #' 
 materialize_treated <- function(db, rqplan, data_source, result_table_name,
                                 ...,
+                                extracols = NULL,
                                 temporary = FALSE,
                                 overwrite = TRUE) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
@@ -49,6 +51,12 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
                        overwrite = TRUE, temporary = TRUE)
   }
   ops <- flatten_fn_list(data_source, rqplan$optree_generators)
+  selcols <- intersect(rquery::column_names(ops), 
+                       c(rqplan$treatmentplan$outcomename, 
+                         rqplan$treatmentplan$scoreFrame$varName,
+                         extracols))
+  ops <- rquery::select_columns(ops, selcols)
+  # cat(rquery::to_sql(ops, db))
   treated <- rquery::materialize(db, ops, 
                                  table_name = result_table_name,
                                  temporary = temporary,
@@ -61,7 +69,7 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 
 #' Convert a vtreat tstep into an rquery operation tree.
 #' 
-#' @param tstep vtreat treatment plan
+#' @param tstep vtreat treatment plan.
 #' @param ... not used, force any later arguments to bind to names.
 #' @return list(optree_generator (ordered list of functions), temp_tables (named list of tables))
 #' 
@@ -71,7 +79,8 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #'    dTrainC <- data.frame(x= c('a','a','a','b',NA,'b'),
 #'                          z= c(1,2,NA,4,5,6),
 #'                          y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-#'    treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
+#'    dTrainC$id <- seq_len(nrow(dTrainC))
+#'    treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 #'    rqplan <- as_rquery(treatmentsC)
 #'    ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
 #'    cat(format(ops))
@@ -82,13 +91,14 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #'    if(requireNamespace("DBI", quietly = TRUE) &&
 #'       requireNamespace("DBI", quietly = TRUE)) {
 #'       db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-#'       source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC, 
+#'       source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
 #'                                overwrite = TRUE, temporary = TRUE)
-#'       
-#'       rest <- materialize_treated(db, rqplan, source_data, "dTreatedC")
+#' 
+#'       rest <- materialize_treated(db, rqplan, source_data, "dTreatedC", 
+#'                                   extracols = "id")
 #'       resd <- DBI::dbReadTable(db, rest$table_name)
 #'       print(resd)
-#'       
+#' 
 #'       rquery::rq_remove_table(db, source_data$table_name)
 #'       rquery::rq_remove_table(db, rest$table_name)
 #'       DBI::dbDisconnect(db)
@@ -121,17 +131,29 @@ as_rquery.treatmentplan <- function(tstep,
     stop("vtreat::as_rquery.treatmentplan must be of class treatmentplan")
   }
   res <- list(
+    exprs = character(0),
     optree_generators = list(),
     tables = list()
   )
-  for(ti in tstep$treatments) {
+   for(ti in tstep$treatments) {
     ri <- as_rquery(ti)
     if(!is.null(ri)) {
-      for(fld in c("optree_generators", "tables")) {
+      for(fld in c("exprs", "optree_generators", "tables")) {
         res[[fld]] <- c(res[[fld]], ri[[fld]])
       }
     }
   }
+  if(length(res$exprs)>0) {
+    exprs <- res$exprs # don't get clobbered by res$exprs <- NULL assignment
+    f <- function(d) {
+      rquery::extend_se(d, exprs)
+    }
+    res$optree_generators <- c(
+      list(f),
+      res$optree_generators)
+  }
+  res$exprs <- NULL
+  res$treatmentplan = tstep
   res
 }
 

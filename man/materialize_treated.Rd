@@ -5,7 +5,7 @@
 \title{Materialize a treated data frame remotely.}
 \usage{
 materialize_treated(db, rqplan, data_source, result_table_name, ...,
-  temporary = FALSE, overwrite = TRUE)
+  extracols = NULL, temporary = FALSE, overwrite = TRUE)
 }
 \arguments{
 \item{db}{a db handle.}
@@ -17,6 +17,8 @@ materialize_treated(db, rqplan, data_source, result_table_name, ...,
 \item{result_table_name}{character, table name to land result in}
 
 \item{...}{force later arguments to bind by name.}
+
+\item{extracols}{extra columns to copy.}
 
 \item{temporary}{logical, if TRUE try to make result temporary.}
 
