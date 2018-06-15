@@ -11,6 +11,32 @@
   vals
 }
 
+as_rquery.vtreat_cat_ind <- function(tstep, 
+                                       ...) {
+  if(!requireNamespace("rquery", quietly = TRUE)) {
+    stop("vtreat::as_rquery.vtreat_cat_ind treatmentplan requires the rquery package")
+  }
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_cat_ind")
+  origvar <- tstep$origvar
+  exprs <- c()
+  for(i in seq_len(length(tstep$arg$tracked))) {
+    li <- tstep$arg$tracked[[i]]
+    vi <- tstep$newvars[[i]]
+    if(li == "NA") {
+      expri <- vi %:=% paste0("ifelse(is.na(", origvar, "), 1, 0)")
+    } else {
+      li <- gsub("^x ", "", li)
+      expri <- vi %:=% paste0("ifelse(is.na(", origvar, "), 0, ifelse(", origvar, " == \"", li, "\", 1, 0))")
+    }
+    exprs <- c(exprs, expri)
+  }
+  list(
+    exprs = exprs,
+    optree_generators = list(),
+    tables = list()
+  )
+}
+
 # same signature as .mkCatInd (except no parallelCluster argument)
 .mkCatInd_a <- function(origVarName,
                         vcolin,
@@ -32,7 +58,7 @@
                     treatmentCode='lev',
                     needsSplit=FALSE,
                     extraModelDegrees=0)
-  class(treatment) <- 'vtreatment'
+  class(treatment) <- c('vtreat_cat_ind', 'vtreatment')
   pred <- treatment$f(vcolin,treatment$args)
   treatment$pred <- pred
   treatment

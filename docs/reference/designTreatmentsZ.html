@@ -224,13 +224,13 @@ Note: each column is processed independently of all others.</p>
 <span class='no'>dTestZ</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
 <span class='no'>treatmentsZ</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsZ</span>(<span class='no'>dTrainZ</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainZ</span>),
-  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 07:45:29 2018"
-#&gt; [1] "designing treatments Fri Jun 15 07:45:29 2018"
-#&gt; [1] " have initial level statistics Fri Jun 15 07:45:29 2018"
-#&gt; [1] "design var x Fri Jun 15 07:45:29 2018"
-#&gt; [1] "design var z Fri Jun 15 07:45:29 2018"
-#&gt; [1] " scoring treatments Fri Jun 15 07:45:29 2018"
-#&gt; [1] "have treatment plan Fri Jun 15 07:45:29 2018"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
+  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 11:14:02 2018"
+#&gt; [1] "designing treatments Fri Jun 15 11:14:02 2018"
+#&gt; [1] " have initial level statistics Fri Jun 15 11:14:02 2018"
+#&gt; [1] "design var x Fri Jun 15 11:14:02 2018"
+#&gt; [1] "design var z Fri Jun 15 11:14:02 2018"
+#&gt; [1] " scoring treatments Fri Jun 15 11:14:02 2018"
+#&gt; [1] "have treatment plan Fri Jun 15 11:14:02 2018"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
 <span class='no'>dTestZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTestZ</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
