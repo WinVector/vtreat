@@ -1,10 +1,9 @@
 
-vtreat_default_options <- list(
-  vtreat.use_data.table_binding = FALSE,
-  vtreat.use_dplyr_binding = TRUE
-)
 
 .onLoad <- function(libname, pkgname) {
+  vtreat_default_options <- list(
+    vtreat.use_data.table_binding = TRUE
+  )
   op <- options()
   toset <- setdiff(names(vtreat_default_options), names(op))
   if(length(toset)>0) {

@@ -344,11 +344,10 @@ Related work:
 
 Note: `vtreat` is meant only for "tame names", that is: variables and column names that are also valid *simple* (without quotes) `R` variables names.
 
-Also, `vtreat` now as a couple of package options that are not set until the package is attached.   These are 
+Also, `vtreat` now has package options that are not set until the package is attached.   These are 
 
- * `vtreat.use_data.table_binding = FALSE`
- * `vtreat.use_dplyr_binding = TRUE`
+ * `vtreat.use_data.table_binding = TRUE`
 
 Test of these options also defaults to the values above, so behavior should be the same regardless if
-`vteat` is attached or not.  These options determine if `vtreat` will delegate row binding to `data.table` or `dplyr` in that order if they are installed (which is why we default `data.table` to `FALSE` as `vtreat.use_data.table_binding == TRUE` is checked first).
+`vteat` is attached or not.  These options determine if `vtreat` will delegate row binding to `data.table`.
 

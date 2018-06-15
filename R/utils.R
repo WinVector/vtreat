@@ -32,12 +32,6 @@ plapply <- function(workList,worker,parallelCluster) {
                            stringsAsFactor=FALSE))
     }
   }
-  if(isTRUE(getOption('vtreat.use_dplyr_binding', TRUE))) {
-    if(requireNamespace("dplyr", quietly = TRUE)) {
-      return(as.data.frame(dplyr::bind_rows(frame_list),
-                           stringsAsFactor=FALSE))
-    }
-  }
   # fall back to base R
   do.call(rbind,frame_list)
 }
