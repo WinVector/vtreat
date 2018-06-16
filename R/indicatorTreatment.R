@@ -23,11 +23,12 @@ as_rquery.vtreat_cat_ind <- function(tstep,
     li <- tstep$arg$tracked[[i]]
     vi <- tstep$newvars[[i]]
     if(li == "NA") {
-      expri <- vi %:=% paste0("ifelse(is.na(", origvar, "), 1, 0)")
+      expri <- paste0("ifelse(is.na(", origvar, "), 1, 0)")
     } else {
       li <- gsub("^x ", "", li)
-      expri <- vi %:=% paste0("ifelse(is.na(", origvar, "), 0, ifelse(", origvar, " == \"", li, "\", 1, 0))")
+      expri <- paste0("ifelse(is.na(", origvar, "), 0, ifelse(", origvar, " == \"", li, "\", 1, 0))")
     }
+    names(expri) <- vi
     exprs <- c(exprs, expri)
   }
   list(
@@ -48,7 +49,7 @@ as_rquery.vtreat_cat_ind <- function(tstep,
   if(length(tracked)<=0) {
     return(c())
   }
-  newVarNames <- make.names(paste(origVarName,'lev',tracked,sep="_"),unique=TRUE)
+  newVarNames <- vtreat_make_names(paste(origVarName,'lev',tracked,sep="_"))
   treatment <- list(origvar=origVarName,
                     newvars=newVarNames,
                     f=.catInd,

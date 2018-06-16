@@ -190,6 +190,7 @@ rquery_code_categorical <- function(colname, resname,
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::rquery_code_categorical requires the rquery package")
   }
+  effect_values <- unlist(effect_values)
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::rquery_code_categorical")
   # work out coding table
@@ -203,21 +204,24 @@ rquery_code_categorical <- function(colname, resname,
     }
     tnum <- tnum + 1
   }
-  coding_levels <- c(coding_levels, new_novel_level, NA)
+  new_novel_value <- as.numeric(effect_values[.preProcCat(new_novel_level, levRestriction)])
+  if(is.na(new_novel_value)) {
+    new_novel_value <- default_value
+  }
+  na_value <- as.numeric(effect_values[.preProcCat(NA_character_, levRestriction)])
+  if(is.na(na_value)) {
+    na_value <- default_value
+  }
   ctab <- data.frame(levels = coding_levels,
                      stringsAsFactors = FALSE)
   codes <- .preProcCat(ctab$levels, levRestriction)
-  ctab$levels[[nrow(ctab)]] <- "NA"
-  ctab$effect <- as.numeric(unlist(effect_values)[codes])
+  ctab$effect <- as.numeric(effect_values[codes])
   ctab$effect[is.na(ctab$effect)] <- default_value
-  new_novel_value <- ctab$effect[ctab$levels == new_novel_level]
-  na_value <- ctab$effect[ctab$levels == "NA"]
-  ctab <- ctab[seq_len(nrow(ctab)-2), , drop = FALSE]
   names(ctab) <- c(colname, resname)
   code_tab <- name_source()
   ctabd <- rquery::table_source(code_tab, c(colname, resname))
   expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, 
-                            ", ifelse(is.na(", resname, "), ", default_value, ", ", resname, "))")
+                            ", ifelse(is.na(", resname, "), ", new_novel_value, ", ", resname, "))")
   f <- function(d) {
     rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) %.>%
       rquery::extend_se(., expr)

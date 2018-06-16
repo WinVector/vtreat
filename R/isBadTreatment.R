@@ -25,7 +25,7 @@ as_rquery.vtreat_is_bad <- function(tstep,
   if((nna<=0)||(nna>=length(xcol))) {
     return(c())
   }
-  newVarName <- make.names(paste(origVarName,'isBAD',sep='_'))
+  newVarName <- vtreat_make_names(paste(origVarName,'isBAD',sep='_'))
   treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.isBAD,

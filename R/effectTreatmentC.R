@@ -58,7 +58,7 @@ as_rquery.vtreat_cat_Bayes <- function(tstep,
   conditionalScore <- as.list(conditionalScore)
   conditionalScore <- conditionalScore[names(conditionalScore)!='zap']  # don't let zap group code
   # fall back for novel levels, use zero impact
-  newVarName <- make.names(paste(origVarName,'catB',sep='_'))
+  newVarName <- vtreat_make_names(paste(origVarName,'catB',sep='_'))
   treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catBayes,

@@ -60,7 +60,7 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
   conditionalScore <- as.list(as.numeric(agg$pred))
   names(conditionalScore) <- as.character(agg$x)
   conditionalScore <- conditionalScore[names(conditionalScore)!='zap']  # don't let zap group code
-  newVarName <- make.names(paste(v, customCode, sep='_'))
+  newVarName <- vtreat_make_names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,
                     f=.customCode,
@@ -174,7 +174,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   ord <- order(agg$x)
   predXs <- predXs[ord]
   predYs <- predYs[ord]
-  newVarName <- make.names(paste(v, customCode, sep='_'))
+  newVarName <- vtreat_make_names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,
                     f=.customCodeNum,

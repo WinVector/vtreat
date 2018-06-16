@@ -36,7 +36,7 @@
   }
   scores <- as.list(scores)
   scores <- scores[names(scores)!='zap'] # don't let zap code
-  newVarName <- make.names(paste(origVarName,'catD',sep='_'))
+  newVarName <- vtreat_make_names(paste(origVarName,'catD',sep='_'))
   treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catD,

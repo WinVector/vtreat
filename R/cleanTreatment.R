@@ -47,7 +47,7 @@ as_rquery.vtreat_pass_through <- function(tstep,
   if(max(xcol)<=min(xcol)) {
     return(c())
   }
-  newVarName <- make.names(paste(origVarName,'clean',sep='_'))
+  newVarName <- vtreat_make_names(paste(origVarName,'clean',sep='_'))
   treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.passThrough,

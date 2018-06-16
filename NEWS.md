@@ -4,6 +4,7 @@
   * Translate treatment plans to rquery.
   * Minor documentation improvements.
   * Improve error messages on argument checking.
+  * Improve name generation (remove dots).
   * Remove use of dplyr.
  
 # vtreat 1.0.4 2018/05/05

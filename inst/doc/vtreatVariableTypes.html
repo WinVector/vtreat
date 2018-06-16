@@ -96,15 +96,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot;designing treatments Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot; have initial level statistics Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot;design var x Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot;design var z Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot; scoring treatments Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot;have treatment plan Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot;rescoring complex variables Fri Jun 15 11:21:44 2018&quot;
-## [1] &quot;done rescoring complex variables Fri Jun 15 11:21:44 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;designing treatments Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot; have initial level statistics Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;design var x Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;design var z Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot; scoring treatments Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;have treatment plan Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;rescoring complex variables Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;done rescoring complex variables Fri Jun 15 17:38:12 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
@@ -113,8 +113,8 @@ treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</sp
 ## 3        z   z_clean clean 0.25792985 0.1429977                 0
 ## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
 ## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
-## 6        x x_lev_x.a   lev 0.08170417 0.4097258                 0
-## 7        x x_lev_x.b   lev 0.00000000 1.0000000                 0</code></pre>
+## 6        x x_lev_x_a   lev 0.08170417 0.4097258                 0
+## 7        x x_lev_x_b   lev 0.00000000 1.0000000                 0</code></pre>
 <p>For each user supplied variable or column (in this case <code>x</code> and <code>z</code>) ‘vtreat’ proposes derived or treated variables (in this case <code>x_lev_x.a</code>, <code>x_lev_x.b</code>, <code>x_catP</code>, <code>x_catB</code>, <code>z_clean</code>, and <code>z_isBAD</code>). The mapping from original variable name to derived variable name is given by comparing the columns <code>origName</code> and <code>varName</code>. One can map facts about the new variables back to the original variables as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Build a map from vtreat names back to reasonable display names</span>
 vmap &lt;-<span class="st"> </span><span class="kw">as.list</span>(treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>origName)
@@ -146,15 +146,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;designing treatments Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot; have initial level statistics Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;design var x Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;design var z Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot; scoring treatments Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;have treatment plan Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;rescoring complex variables Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;done rescoring complex variables Fri Jun 15 11:21:45 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;designing treatments Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot; have initial level statistics Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;design var x Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;design var z Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot; scoring treatments Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;have treatment plan Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;rescoring complex variables Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;done rescoring complex variables Fri Jun 15 17:38:12 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x    x_catP  catP 0.2857143 0.2745766                 2
@@ -163,8 +163,8 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
 ## 4        z   z_clean clean 0.3045045 0.2562868                 0
 ## 5        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 6        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 7        x x_lev_x.a   lev 0.1111111 0.5185185                 0
-## 8        x x_lev_x.b   lev 0.0000000 1.0000000                 0</code></pre>
+## 7        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 8        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>The treatment of numeric targets is similar to that of categorical targets. In the numeric case the possible derived variable types are:</p>
 <ul>
 <li><strong>clean</strong> : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.</li>
@@ -185,21 +185,21 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw">designTreatmentsZ</span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;designing treatments Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot; have initial level statistics Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;design var x Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;design var z Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot; scoring treatments Fri Jun 15 11:21:45 2018&quot;
-## [1] &quot;have treatment plan Fri Jun 15 11:21:45 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;designing treatments Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot; have initial level statistics Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;design var x Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;design var z Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot; scoring treatments Fri Jun 15 17:38:12 2018&quot;
+## [1] &quot;have treatment plan Fri Jun 15 17:38:12 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
 ## 2        z   z_clean clean                 0
 ## 3        z   z_isBAD isBAD                 0
 ## 4        x  x_lev_NA   lev                 0
-## 5        x x_lev_x.a   lev                 0
-## 6        x x_lev_x.b   lev                 0</code></pre>
+## 5        x x_lev_x_a   lev                 0
+## 6        x x_lev_x_b   lev                 0</code></pre>
 <p>Note: because there is no user supplied target the <code>scoreFrame</code> significance columns are not meaningful, and are populated only for regularity of code interface. Also indicator variables are only formed by <code>designTreatmentsZ</code> for <code>vtreat</code> 0.5.28 or newer. Beyond that the no-target treatments are similar to the earlier treatments. Possible derived variable types in this case are:</p>
 <ul>
 <li><strong>clean</strong> : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.</li>
@@ -229,15 +229,15 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
 ## 2        z   z_clean clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 5        x x_lev_x.a   lev 0.1111111 0.5185185                 0
-## 6        x x_lev_x.b   lev 0.0000000 1.0000000                 0</code></pre>
+## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>Conversely, even if you have created a treatment plan for a particular type of variable, you may subsequently decide not to use it. For example, perhaps you only want to use indicator variables and not the <code>catN</code> variable for modeling. You can use <code>codeRestriction</code> in <code>prepare()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTreated =<span class="st"> </span><span class="kw">prepare</span>(treatmentsN, dTrainN, 
                    <span class="dt">codeRestriction =</span> <span class="kw">c</span>(<span class="st">'lev'</span>,<span class="st">'clean'</span>, <span class="st">'isBAD'</span>))
 
 <span class="co"># no catN variables</span>
 <span class="kw">head</span>(dTreated)</code></pre></div>
-<pre><code>##   z_clean z_isBAD x_lev_NA x_lev_x.a x_lev_x.b y
+<pre><code>##   z_clean z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
 ## 1     1.0       0        0         1         0 0
 ## 2     2.0       0        0         1         0 0
 ## 3     3.0       0        0         1         0 1
@@ -274,13 +274,13 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
 ## 2        z   z_clean clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 5        x x_lev_x.a   lev 0.1111111 0.5185185                 0
-## 6        x x_lev_x.b   lev 0.0000000 1.0000000                 0</code></pre>
+## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pruneSig &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
 vScoreFrame &lt;-<span class="st"> </span>treatmentsN<span class="op">$</span>scoreFrame
 varsToUse &lt;-<span class="st"> </span>vScoreFrame<span class="op">$</span>varName[(vScoreFrame<span class="op">$</span>sig<span class="op">&lt;=</span>pruneSig)]
 <span class="kw">print</span>(varsToUse)</code></pre></div>
-<pre><code>## [1] &quot;x_catN&quot;    &quot;z_clean&quot;   &quot;z_isBAD&quot;   &quot;x_lev_NA&quot;  &quot;x_lev_x.a&quot; &quot;x_lev_x.b&quot;</code></pre>
+<pre><code>## [1] &quot;x_catN&quot;    &quot;z_clean&quot;   &quot;z_isBAD&quot;   &quot;x_lev_NA&quot;  &quot;x_lev_x_a&quot; &quot;x_lev_x_b&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(vScoreFrame<span class="op">$</span>origName[vScoreFrame<span class="op">$</span>varName <span class="op">%in%</span><span class="st"> </span>varsToUse]))
 <span class="kw">print</span>(origVarNames)</code></pre></div>
 <pre><code>## [1] &quot;x&quot; &quot;z&quot;</code></pre>
@@ -289,7 +289,7 @@ dTreated =<span class="st"> </span><span class="kw">prepare</span>(treatmentsN, 
                    <span class="dt">varRestriction =</span> varsToUse)
 
 <span class="kw">head</span>(dTreated)</code></pre></div>
-<pre><code>##       x_catN z_clean z_isBAD x_lev_NA x_lev_x.a x_lev_x.b y
+<pre><code>##       x_catN z_clean z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
 ## 1 -0.1666667     1.0       0        0         1         0 0
 ## 2 -0.1666667     2.0       0        0         1         0 0
 ## 3 -0.1666667     3.0       0        0         1         0 1

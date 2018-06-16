@@ -26,7 +26,7 @@
   den <- tapply(weights,vcol,sum)
   scores <- as.list((num+smFactor*baseMean)/(den+smFactor)-baseMean)
   scores <- scores[names(scores)!='zap'] # don't let zap code
-  newVarName <- make.names(paste(origVarName,'catN',sep='_'))
+  newVarName <- vtreat_make_names(paste(origVarName,'catN',sep='_'))
   treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catNum,

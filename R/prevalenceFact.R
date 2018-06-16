@@ -22,7 +22,7 @@
   den <- sum(weights)
   scores <- num/den
   scores <- as.list(scores)
-  newVarName <- make.names(paste(origVarName,'catP',sep='_'))
+  newVarName <- vtreat_make_names(paste(origVarName,'catP',sep='_'))
   treatment <- list(origvar=origVarName,
                     newvars=newVarName,
                     f=.catP,

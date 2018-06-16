@@ -149,14 +149,14 @@ dTestC <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.166956795 0.20643885                 2
- #  2        x    x_catB  catB 0.254788311 0.11858143                 2
- #  3        z   z_clean clean 0.237601767 0.13176020                 0
- #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
- #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
- #  6        x x_lev_x.a   lev 0.130005705 0.26490379                 0
- #  7        x x_lev_x.b   lev 0.006067337 0.80967242                 0
+ #    origName   varName  code          rsq        sig extraModelDegrees
+ #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
+ #  2        x    x_catB  catB 1.142159e-05 0.99166241                 2
+ #  3        z   z_clean clean 2.376018e-01 0.13176020                 0
+ #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
+ #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
+ #  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0
+ #  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0
 
 # help("prepare")
 
@@ -166,21 +166,21 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
  #         x_catP        x_catB       z_clean       z_isBAD      x_lev_NA 
  #   1.585994e-16  0.000000e+00  7.927952e-18 -7.926292e-18  3.965082e-18 
- #      x_lev_x.a     x_lev_x.b 
+ #      x_lev_x_a     x_lev_x_b 
  #  -1.982154e-17  9.917546e-19
 # all non NA slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
- #     x_catP    x_catB   z_clean   z_isBAD  x_lev_NA x_lev_x.a x_lev_x.b 
+ #     x_catP    x_catB   z_clean   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
  #          1         1         1         1         1         1         1
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 print(dTestCTreated)
- #        x_catP     x_catB  z_clean    z_isBAD   x_lev_NA  x_lev_x.a
+ #        x_catP     x_catB  z_clean    z_isBAD   x_lev_NA  x_lev_x_a
  #  1 -0.2380952 -0.1897682 1.194595 -0.1714286 -0.1714286 -0.2380952
  #  2  0.1785714 -0.1489924 2.951351 -0.1714286 -0.1714286  0.1785714
  #  3  1.0119048 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714
  #  4  0.1785714  0.4336447 0.000000  0.4285714  0.4285714  0.1785714
- #      x_lev_x.b
+ #      x_lev_x_b
  #  1  0.02857143
  #  2 -0.07142857
  #  3  0.02857143
@@ -196,38 +196,38 @@ dTestN <- data.frame(x=c('a','b','c',NA),z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 4.047085e-01 0.08994062                 2
- #  2        x    x_catN  catN 2.822908e-01 0.17539581                 2
- #  3        x    x_catD  catD 2.096931e-02 0.73225708                 2
- #  4        z   z_clean clean 2.880952e-01 0.17018920                 0
- #  5        z   z_isBAD isBAD 3.333333e-01 0.13397460                 0
- #  6        x  x_lev_NA   lev 3.333333e-01 0.13397460                 0
- #  7        x x_lev_x.a   lev 2.500000e-01 0.20703125                 0
- #  8        x x_lev_x.b   lev 1.110223e-16 0.99999998                 0
+ #    origName   varName  code          rsq       sig extraModelDegrees
+ #  1        x    x_catP  catP 2.941176e-01 0.1649303                 2
+ #  2        x    x_catN  catN 6.583561e-02 0.5396025                 2
+ #  3        x    x_catD  catD 9.777348e-03 0.8158041                 2
+ #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
+ #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
+ #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
+ #  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0
+ #  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0
 dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1.0,scale=TRUE)
 varsN <- setdiff(colnames(dTrainNTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
  #         x_catP        x_catN        x_catD       z_clean       z_isBAD 
  #   2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 
- #       x_lev_NA     x_lev_x.a     x_lev_x.b 
+ #       x_lev_NA     x_lev_x_a     x_lev_x_b 
  #   6.938894e-18  0.000000e+00  7.703720e-34
 # all non NA slopes should be 1
 sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
- #     x_catP    x_catN    x_catD   z_clean   z_isBAD  x_lev_NA x_lev_x.a 
+ #     x_catP    x_catN    x_catD   z_clean   z_isBAD  x_lev_NA x_lev_x_a 
  #          1         1         1         1         1         1         1 
- #  x_lev_x.b 
+ #  x_lev_x_b 
  #          1
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
- #    x_catP x_catN      x_catD   z_clean    z_isBAD   x_lev_NA x_lev_x.a
+ #    x_catP x_catN      x_catD   z_clean    z_isBAD   x_lev_NA x_lev_x_a
  #  1  -0.25  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25
  #  2   0.25   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25
  #  3   0.75   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25
  #  4   0.25   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25
- #        x_lev_x.b
+ #        x_lev_x_b
  #  1 -2.266233e-17
  #  2  6.798700e-17
  #  3 -2.266233e-17
