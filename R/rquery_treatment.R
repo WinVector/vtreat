@@ -59,7 +59,8 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
                        c(rqplan$treatmentplan$outcomename, 
                          rqplan$treatmentplan$scoreFrame$varName,
                          extracols))
-  ops <- rquery::select_columns(ops, selcols)
+  # TODO: fix narrowing calculation and put this back
+  # ops <- rquery::select_columns(ops, selcols)
   # cat(rquery::to_sql(ops, db))
   if(print_sql) {
     cat(rquery::to_sql(ops, db))
