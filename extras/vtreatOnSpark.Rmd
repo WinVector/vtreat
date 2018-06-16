@@ -54,20 +54,15 @@ d_treat <- d %.>%
 
 ```{r treatdata}
 cl = parallel::makeCluster(4)
-vars <- "Var205"
+# vars <- c("Var228", "Var229")
 tp <- vtreat::designTreatmentsC(d_treat, vars, y_name, 1, parallelCluster = cl)
-newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
+# newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
 rqplan <- as_rquery(tp)
 d_train <- materialize_treated(db, rqplan, d_train, 
-                                tmp_name_gen(), temporary = TRUE, overwrite = TRUE)
+                               tmp_name_gen(), 
+                               temporary = TRUE, overwrite = TRUE)
 column_names(d_train)
 cdata::qlook(db, d_train$table_name)
-# ops <- flatten_fn_list(d_train, rqplan$optree_generators) 
-# nc <- column_names(ops)
-# ops <- select_columns(ops, c(y_name, intersect(nc, newvars)))
-# cat(format(ops))
-# q <- to_sql(ops, db)
-# res <- DBI::dbGetQuery(db, q)
 ```
 
 
