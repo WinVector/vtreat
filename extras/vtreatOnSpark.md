@@ -54,13 +54,13 @@ cl = parallel::makeCluster(4)
 tp <- vtreat::designTreatmentsC(d_treat, vars, y_name, 1, parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 07:48:00 2018"
-    ## [1] "designing treatments Sat Jun 16 07:48:00 2018"
-    ## [1] " have initial level statistics Sat Jun 16 07:48:00 2018"
-    ## [1] " scoring treatments Sat Jun 16 07:48:04 2018"
-    ## [1] "have treatment plan Sat Jun 16 07:48:10 2018"
-    ## [1] "rescoring complex variables Sat Jun 16 07:48:10 2018"
-    ## [1] "done rescoring complex variables Sat Jun 16 07:48:15 2018"
+    ## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 08:37:06 2018"
+    ## [1] "designing treatments Sat Jun 16 08:37:06 2018"
+    ## [1] " have initial level statistics Sat Jun 16 08:37:06 2018"
+    ## [1] " scoring treatments Sat Jun 16 08:37:08 2018"
+    ## [1] "have treatment plan Sat Jun 16 08:37:14 2018"
+    ## [1] "rescoring complex variables Sat Jun 16 08:37:14 2018"
+    ## [1] "done rescoring complex variables Sat Jun 16 08:37:19 2018"
 
 ``` r
 # newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
@@ -84,6 +84,10 @@ rqplan <- as_rquery(tp)
     ## >'Var195_catP') , class vtreatment
 
     ## Warning in as_rquery.vtreatment(ti): vtreat::as_rquery not yet implemented
+    ## for vtreat 'Prevalence Code'('Var196'(character,character)->character-
+    ## >'Var196_catP') , class vtreatment
+
+    ## Warning in as_rquery.vtreatment(ti): vtreat::as_rquery not yet implemented
     ## for vtreat 'Prevalence Code'('Var197'(character,character)->character-
     ## >'Var197_catP') , class vtreatment
 
@@ -98,10 +102,6 @@ rqplan <- as_rquery(tp)
     ## Warning in as_rquery.vtreatment(ti): vtreat::as_rquery not yet implemented
     ## for vtreat 'Prevalence Code'('Var200'(character,character)->character-
     ## >'Var200_catP') , class vtreatment
-
-    ## Warning in as_rquery.vtreatment(ti): vtreat::as_rquery not yet implemented
-    ## for vtreat 'Prevalence Code'('Var201'(character,character)->character-
-    ## >'Var201_catP') , class vtreatment
 
     ## Warning in as_rquery.vtreatment(ti): vtreat::as_rquery not yet implemented
     ## for vtreat 'Prevalence Code'('Var202'(character,character)->character-
@@ -403,8 +403,8 @@ column_names(d_train)
     ## [199] "Var194_lev_x_NA"                       
     ## [200] "Var194_lev_x_SEuy"                     
     ## [201] "Var195_catB"                           
-    ## [202] "Var195_lev_x_LfvqpCtLOY"               
-    ## [203] "Var195_lev_x_taul"                     
+    ## [202] "Var195_lev_x_taul"                     
+    ## [203] "Var196_catB"                           
     ## [204] "Var196_lev_x_1K8T"                     
     ## [205] "Var197_catB"                           
     ## [206] "Var197_lev_x_0Xwj"                     
@@ -417,10 +417,10 @@ column_names(d_train)
     ## [213] "Var198_lev_x_fhk21Ss"                  
     ## [214] "Var198_lev_x_PHNvXy8"                  
     ## [215] "Var199_catB"                           
-    ## [216] "Var2_isBAD"                            
-    ## [217] "Var200_catB"                           
-    ## [218] "Var200_lev_x_NA"                       
-    ## [219] "Var201_catB"                           
+    ## [216] "Var199_lev_x_r83_sZi"                  
+    ## [217] "Var2_isBAD"                            
+    ## [218] "Var200_catB"                           
+    ## [219] "Var200_lev_x_NA"                       
     ## [220] "Var201_lev_x_NA"                       
     ## [221] "Var201_lev_x_smXZ"                     
     ## [222] "Var202_catB"                           
@@ -429,141 +429,141 @@ column_names(d_train)
     ## [225] "Var203_lev_x_F3hy"                     
     ## [226] "Var203_lev_x_HLqf"                     
     ## [227] "Var204_catB"                           
-    ## [228] "Var204_lev_x_15m3"                     
-    ## [229] "Var204_lev_x_7WNq"                     
-    ## [230] "Var204_lev_x_DtNL"                     
+    ## [228] "Var204_lev_x_7WNq"                     
+    ## [229] "Var204_lev_x_DtNL"                     
+    ## [230] "Var204_lev_x_e7QV"                     
     ## [231] "Var204_lev_x_k13i"                     
     ## [232] "Var204_lev_x_m_h1"                     
-    ## [233] "Var204_lev_x_RcM7"                     
-    ## [234] "Var204_lev_x_rGJy"                     
-    ## [235] "Var204_lev_x_RVjC"                     
-    ## [236] "Var204_lev_x_SkZj"                     
-    ## [237] "Var204_lev_x_YULl"                     
-    ## [238] "Var205_catB"                           
-    ## [239] "Var205_lev_x_09_Q"                     
-    ## [240] "Var205_lev_x_NA"                       
-    ## [241] "Var205_lev_x_sJzTlal"                  
-    ## [242] "Var205_lev_x_VpdQ"                     
-    ## [243] "Var206_catB"                           
-    ## [244] "Var206_lev_x_43pnToF"                  
-    ## [245] "Var206_lev_x_6JmL"                     
-    ## [246] "Var206_lev_x_hAFG"                     
-    ## [247] "Var206_lev_x_haYg"                     
-    ## [248] "Var206_lev_x_IYzP"                     
-    ## [249] "Var206_lev_x_kxE9"                     
-    ## [250] "Var206_lev_x_NA"                       
-    ## [251] "Var206_lev_x_sYC_"                     
-    ## [252] "Var206_lev_x_wMei"                     
-    ## [253] "Var206_lev_x_y6dw"                     
-    ## [254] "Var206_lev_x_zm5i"                     
-    ## [255] "Var207_catB"                           
-    ## [256] "Var207_lev_x_7M47J5GA0pTYIFxg5uy"      
-    ## [257] "Var207_lev_x_DHn_WUyBhW_whjA88g9bvA64_"
-    ## [258] "Var207_lev_x_GjJ35utlTa_GNSvxxpb9ju"   
-    ## [259] "Var207_lev_x_Kxdu"                     
-    ## [260] "Var207_lev_x_me75fM6ugJ"               
-    ## [261] "Var207_lev_x_NKv3VA1BpP"               
-    ## [262] "Var208_catB"                           
-    ## [263] "Var208_lev_x_kIsH"                     
-    ## [264] "Var208_lev_x_sBgB"                     
-    ## [265] "Var21_clean"                           
-    ## [266] "Var21_isBAD"                           
-    ## [267] "Var210_catB"                           
-    ## [268] "Var210_lev_x_g5HH"                     
-    ## [269] "Var210_lev_x_uKAI"                     
-    ## [270] "Var211_lev_x_L84s"                     
-    ## [271] "Var211_lev_x_Mtgm"                     
-    ## [272] "Var212_catB"                           
-    ## [273] "Var212_lev_x_4kVnq_T26xq1p"            
-    ## [274] "Var212_lev_x_CrNX"                     
-    ## [275] "Var212_lev_x_FMSzZ91zL2"               
-    ## [276] "Var212_lev_x_Ie_5MZs"                  
-    ## [277] "Var212_lev_x_NhsEn4L"                  
-    ## [278] "Var212_lev_x_XfqtO3UdzaXh_"            
-    ## [279] "Var213_lev_x_KdSa"                     
-    ## [280] "Var213_lev_x_NA"                       
-    ## [281] "Var214_catB"                           
-    ## [282] "Var214_lev_x_NA"                       
-    ## [283] "Var215_lev_x_NA"                       
-    ## [284] "Var216_catB"                           
-    ## [285] "Var216_lev_x_11p4mKe"                  
-    ## [286] "Var216_lev_x_beK4AFX"                  
-    ## [287] "Var216_lev_x_kZJtVhC"                  
-    ## [288] "Var216_lev_x_kZJyVg2"                  
-    ## [289] "Var216_lev_x_mAja5EA"                  
-    ## [290] "Var216_lev_x_mAjbk_S"                  
-    ## [291] "Var216_lev_x_NGZxnJM"                  
-    ## [292] "Var216_lev_x_XTbPUYD"                  
-    ## [293] "Var217_catB"                           
-    ## [294] "Var218_catB"                           
-    ## [295] "Var218_lev_x_cJvF"                     
-    ## [296] "Var218_lev_x_UYBR"                     
-    ## [297] "Var219_catB"                           
-    ## [298] "Var219_lev_x_AU8pNoi"                  
-    ## [299] "Var219_lev_x_FzaX"                     
-    ## [300] "Var219_lev_x_NA"                       
-    ## [301] "Var22_clean"                           
-    ## [302] "Var22_isBAD"                           
-    ## [303] "Var220_catB"                           
-    ## [304] "Var220_lev_x_4UxGlow"                  
-    ## [305] "Var220_lev_x_UF16siJ"                  
-    ## [306] "Var221_catB"                           
-    ## [307] "Var221_lev_x_Al6ZaUT"                  
-    ## [308] "Var221_lev_x_d0EEeJi"                  
-    ## [309] "Var221_lev_x_oslk"                     
-    ## [310] "Var221_lev_x_QKW8DRm"                  
-    ## [311] "Var221_lev_x_zCkv"                     
-    ## [312] "Var222_catB"                           
-    ## [313] "Var222_lev_x_APgdzOv"                  
-    ## [314] "Var222_lev_x_catzS2D"                  
-    ## [315] "Var223_catB"                           
-    ## [316] "Var223_lev_x_jySVZNlOJy"               
-    ## [317] "Var223_lev_x_LM8l689qOp"               
-    ## [318] "Var223_lev_x_M_8D"                     
-    ## [319] "Var223_lev_x_NA"                       
-    ## [320] "Var224_lev_x_NA"                       
-    ## [321] "Var225_catB"                           
-    ## [322] "Var225_lev_x_ELof"                     
-    ## [323] "Var225_lev_x_kG3k"                     
-    ## [324] "Var225_lev_x_NA"                       
-    ## [325] "Var225_lev_x_xG3x"                     
-    ## [326] "Var226_catB"                           
-    ## [327] "Var226_lev_x_3Cy4"                     
-    ## [328] "Var226_lev_x_453m"                     
-    ## [329] "Var226_lev_x_5Acm"                     
-    ## [330] "Var226_lev_x_7aLG"                     
-    ## [331] "Var226_lev_x_7P5s"                     
-    ## [332] "Var226_lev_x_Aoh3"                     
-    ## [333] "Var226_lev_x_fKCe"                     
-    ## [334] "Var226_lev_x_FSa2"                     
-    ## [335] "Var226_lev_x_kwS7"                     
-    ## [336] "Var226_lev_x_me1d"                     
-    ## [337] "Var226_lev_x_PM2D"                     
-    ## [338] "Var226_lev_x_Qcbd"                     
-    ## [339] "Var226_lev_x_Qu4f"                     
-    ## [340] "Var226_lev_x_rgKb"                     
-    ## [341] "Var226_lev_x_szEZ"                     
-    ## [342] "Var226_lev_x_TNEC"                     
-    ## [343] "Var226_lev_x_uWr3"                     
-    ## [344] "Var226_lev_x_WqMG"                     
-    ## [345] "Var226_lev_x_wX53"                     
-    ## [346] "Var226_lev_x_Xa3G"                     
-    ## [347] "Var226_lev_x_xb3V"                     
-    ## [348] "Var227_catB"                           
-    ## [349] "Var227_lev_x_02N6s8f"                  
-    ## [350] "Var227_lev_x_6fzt"                     
-    ## [351] "Var227_lev_x_nIGXDli"                  
-    ## [352] "Var227_lev_x_RAYp"                     
-    ## [353] "Var227_lev_x_ZI9m"                     
-    ## [354] "Var228_catB"                           
-    ## [355] "Var228_lev_x_55YFVY9"                  
-    ## [356] "Var228_lev_x_F2FyR07IdsN7I"            
-    ## [357] "Var228_lev_x_ib5G6X1eUxUn6"            
-    ## [358] "Var228_lev_x_iyHGyLCEkQ"               
-    ## [359] "Var228_lev_x_R4y5gQQWY8OodqDV"         
-    ## [360] "Var228_lev_x_TCU50_Yjmm6GIBZ0lL_"      
-    ## [361] "Var228_lev_x_xwM2aC7IdeMC0"            
-    ## [362] "Var228_lev_x_Zy3gnGM"                  
+    ## [233] "Var204_lev_x_MBhA"                     
+    ## [234] "Var204_lev_x_RcM7"                     
+    ## [235] "Var204_lev_x_rGJy"                     
+    ## [236] "Var204_lev_x_RVjC"                     
+    ## [237] "Var204_lev_x_SkZj"                     
+    ## [238] "Var204_lev_x_vzJD"                     
+    ## [239] "Var204_lev_x_YULl"                     
+    ## [240] "Var205_catB"                           
+    ## [241] "Var205_lev_x_09_Q"                     
+    ## [242] "Var205_lev_x_NA"                       
+    ## [243] "Var205_lev_x_sJzTlal"                  
+    ## [244] "Var205_lev_x_VpdQ"                     
+    ## [245] "Var206_catB"                           
+    ## [246] "Var206_lev_x_43pnToF"                  
+    ## [247] "Var206_lev_x_6JmL"                     
+    ## [248] "Var206_lev_x_hAFG"                     
+    ## [249] "Var206_lev_x_haYg"                     
+    ## [250] "Var206_lev_x_IYzP"                     
+    ## [251] "Var206_lev_x_kxE9"                     
+    ## [252] "Var206_lev_x_NA"                       
+    ## [253] "Var206_lev_x_sYC_"                     
+    ## [254] "Var206_lev_x_wMei"                     
+    ## [255] "Var206_lev_x_y6dw"                     
+    ## [256] "Var206_lev_x_zm5i"                     
+    ## [257] "Var207_catB"                           
+    ## [258] "Var207_lev_x_7M47J5GA0pTYIFxg5uy"      
+    ## [259] "Var207_lev_x_DHn_WUyBhW_whjA88g9bvA64_"
+    ## [260] "Var207_lev_x_GjJ35utlTa_GNSvxxpb9ju"   
+    ## [261] "Var207_lev_x_Kxdu"                     
+    ## [262] "Var207_lev_x_me75fM6ugJ"               
+    ## [263] "Var207_lev_x_NKv3VA1BpP"               
+    ## [264] "Var208_catB"                           
+    ## [265] "Var208_lev_x_kIsH"                     
+    ## [266] "Var208_lev_x_sBgB"                     
+    ## [267] "Var21_clean"                           
+    ## [268] "Var21_isBAD"                           
+    ## [269] "Var210_catB"                           
+    ## [270] "Var210_lev_x_g5HH"                     
+    ## [271] "Var210_lev_x_uKAI"                     
+    ## [272] "Var211_lev_x_L84s"                     
+    ## [273] "Var211_lev_x_Mtgm"                     
+    ## [274] "Var212_catB"                           
+    ## [275] "Var212_lev_x_CrNX"                     
+    ## [276] "Var212_lev_x_FMSzZ91zL2"               
+    ## [277] "Var212_lev_x_Ie_5MZs"                  
+    ## [278] "Var212_lev_x_NhsEn4L"                  
+    ## [279] "Var212_lev_x_XfqtO3UdzaXh_"            
+    ## [280] "Var213_lev_x_KdSa"                     
+    ## [281] "Var213_lev_x_NA"                       
+    ## [282] "Var214_catB"                           
+    ## [283] "Var214_lev_x_NA"                       
+    ## [284] "Var215_lev_x_NA"                       
+    ## [285] "Var216_catB"                           
+    ## [286] "Var216_lev_x_11p4mKe"                  
+    ## [287] "Var216_lev_x_beK4AFX"                  
+    ## [288] "Var216_lev_x_kZJtVhC"                  
+    ## [289] "Var216_lev_x_kZJyVg2"                  
+    ## [290] "Var216_lev_x_mAja5EA"                  
+    ## [291] "Var216_lev_x_mAjbk_S"                  
+    ## [292] "Var216_lev_x_NGZxnJM"                  
+    ## [293] "Var216_lev_x_XTbPUYD"                  
+    ## [294] "Var217_catB"                           
+    ## [295] "Var218_catB"                           
+    ## [296] "Var218_lev_x_cJvF"                     
+    ## [297] "Var218_lev_x_UYBR"                     
+    ## [298] "Var219_catB"                           
+    ## [299] "Var219_lev_x_AU8pNoi"                  
+    ## [300] "Var219_lev_x_FzaX"                     
+    ## [301] "Var219_lev_x_NA"                       
+    ## [302] "Var219_lev_x_qxDb"                     
+    ## [303] "Var22_clean"                           
+    ## [304] "Var22_isBAD"                           
+    ## [305] "Var220_catB"                           
+    ## [306] "Var220_lev_x_4UxGlow"                  
+    ## [307] "Var220_lev_x_UF16siJ"                  
+    ## [308] "Var221_catB"                           
+    ## [309] "Var221_lev_x_Al6ZaUT"                  
+    ## [310] "Var221_lev_x_d0EEeJi"                  
+    ## [311] "Var221_lev_x_oslk"                     
+    ## [312] "Var221_lev_x_QKW8DRm"                  
+    ## [313] "Var221_lev_x_zCkv"                     
+    ## [314] "Var222_catB"                           
+    ## [315] "Var222_lev_x_APgdzOv"                  
+    ## [316] "Var222_lev_x_catzS2D"                  
+    ## [317] "Var223_catB"                           
+    ## [318] "Var223_lev_x_jySVZNlOJy"               
+    ## [319] "Var223_lev_x_LM8l689qOp"               
+    ## [320] "Var223_lev_x_M_8D"                     
+    ## [321] "Var223_lev_x_NA"                       
+    ## [322] "Var224_lev_x_NA"                       
+    ## [323] "Var225_catB"                           
+    ## [324] "Var225_lev_x_ELof"                     
+    ## [325] "Var225_lev_x_kG3k"                     
+    ## [326] "Var225_lev_x_NA"                       
+    ## [327] "Var225_lev_x_xG3x"                     
+    ## [328] "Var226_catB"                           
+    ## [329] "Var226_lev_x_3Cy4"                     
+    ## [330] "Var226_lev_x_453m"                     
+    ## [331] "Var226_lev_x_5Acm"                     
+    ## [332] "Var226_lev_x_7aLG"                     
+    ## [333] "Var226_lev_x_7P5s"                     
+    ## [334] "Var226_lev_x_Aoh3"                     
+    ## [335] "Var226_lev_x_fKCe"                     
+    ## [336] "Var226_lev_x_FSa2"                     
+    ## [337] "Var226_lev_x_kwS7"                     
+    ## [338] "Var226_lev_x_me1d"                     
+    ## [339] "Var226_lev_x_PM2D"                     
+    ## [340] "Var226_lev_x_Qcbd"                     
+    ## [341] "Var226_lev_x_Qu4f"                     
+    ## [342] "Var226_lev_x_rgKb"                     
+    ## [343] "Var226_lev_x_szEZ"                     
+    ## [344] "Var226_lev_x_TNEC"                     
+    ## [345] "Var226_lev_x_uWr3"                     
+    ## [346] "Var226_lev_x_WqMG"                     
+    ## [347] "Var226_lev_x_Xa3G"                     
+    ## [348] "Var226_lev_x_xb3V"                     
+    ## [349] "Var227_catB"                           
+    ## [350] "Var227_lev_x_02N6s8f"                  
+    ## [351] "Var227_lev_x_6fzt"                     
+    ## [352] "Var227_lev_x_nIGXDli"                  
+    ## [353] "Var227_lev_x_RAYp"                     
+    ## [354] "Var227_lev_x_ZI9m"                     
+    ## [355] "Var228_catB"                           
+    ## [356] "Var228_lev_x_55YFVY9"                  
+    ## [357] "Var228_lev_x_F2FyR07IdsN7I"            
+    ## [358] "Var228_lev_x_ib5G6X1eUxUn6"            
+    ## [359] "Var228_lev_x_iyHGyLCEkQ"               
+    ## [360] "Var228_lev_x_R4y5gQQWY8OodqDV"         
+    ## [361] "Var228_lev_x_TCU50_Yjmm6GIBZ0lL_"      
+    ## [362] "Var228_lev_x_xwM2aC7IdeMC0"            
     ## [363] "Var229_catB"                           
     ## [364] "Var229_lev_x_am7c"                     
     ## [365] "Var229_lev_x_mj86"                     
@@ -580,75 +580,75 @@ column_names(d_train)
     ## [376] "Var27_isBAD"                           
     ## [377] "Var28_clean"                           
     ## [378] "Var28_isBAD"                           
-    ## [379] "Var29_clean"                           
-    ## [380] "Var29_isBAD"                           
-    ## [381] "Var3_clean"                            
-    ## [382] "Var3_isBAD"                            
-    ## [383] "Var30_clean"                           
-    ## [384] "Var30_isBAD"                           
-    ## [385] "Var33_clean"                           
-    ## [386] "Var33_isBAD"                           
-    ## [387] "Var34_clean"                           
-    ## [388] "Var34_isBAD"                           
-    ## [389] "Var35_clean"                           
-    ## [390] "Var35_isBAD"                           
-    ## [391] "Var36_clean"                           
-    ## [392] "Var36_isBAD"                           
-    ## [393] "Var37_clean"                           
-    ## [394] "Var37_isBAD"                           
-    ## [395] "Var38_clean"                           
-    ## [396] "Var38_isBAD"                           
-    ## [397] "Var4_clean"                            
-    ## [398] "Var4_isBAD"                            
-    ## [399] "Var40_clean"                           
-    ## [400] "Var40_isBAD"                           
-    ## [401] "Var41_clean"                           
-    ## [402] "Var41_isBAD"                           
-    ## [403] "Var43_clean"                           
-    ## [404] "Var43_isBAD"                           
-    ## [405] "Var44_clean"                           
-    ## [406] "Var44_isBAD"                           
-    ## [407] "Var45_clean"                           
-    ## [408] "Var45_isBAD"                           
-    ## [409] "Var46_clean"                           
-    ## [410] "Var46_isBAD"                           
-    ## [411] "Var47_clean"                           
-    ## [412] "Var47_isBAD"                           
-    ## [413] "Var49_clean"                           
-    ## [414] "Var49_isBAD"                           
-    ## [415] "Var5_clean"                            
-    ## [416] "Var5_isBAD"                            
-    ## [417] "Var50_clean"                           
-    ## [418] "Var50_isBAD"                           
-    ## [419] "Var51_clean"                           
-    ## [420] "Var51_isBAD"                           
-    ## [421] "Var53_clean"                           
-    ## [422] "Var53_isBAD"                           
-    ## [423] "Var54_clean"                           
-    ## [424] "Var54_isBAD"                           
-    ## [425] "Var56_clean"                           
-    ## [426] "Var56_isBAD"                           
-    ## [427] "Var57_clean"                           
-    ## [428] "Var58_clean"                           
-    ## [429] "Var58_isBAD"                           
-    ## [430] "Var59_clean"                           
-    ## [431] "Var59_isBAD"                           
-    ## [432] "Var6_clean"                            
-    ## [433] "Var6_isBAD"                            
-    ## [434] "Var60_clean"                           
-    ## [435] "Var60_isBAD"                           
-    ## [436] "Var61_clean"                           
-    ## [437] "Var61_isBAD"                           
-    ## [438] "Var62_clean"                           
-    ## [439] "Var62_isBAD"                           
-    ## [440] "Var63_clean"                           
-    ## [441] "Var63_isBAD"                           
-    ## [442] "Var64_clean"                           
-    ## [443] "Var64_isBAD"                           
-    ## [444] "Var65_clean"                           
-    ## [445] "Var65_isBAD"                           
-    ## [446] "Var66_clean"                           
-    ## [447] "Var66_isBAD"                           
+    ## [379] "Var29_isBAD"                           
+    ## [380] "Var3_clean"                            
+    ## [381] "Var3_isBAD"                            
+    ## [382] "Var30_clean"                           
+    ## [383] "Var30_isBAD"                           
+    ## [384] "Var33_clean"                           
+    ## [385] "Var33_isBAD"                           
+    ## [386] "Var34_clean"                           
+    ## [387] "Var34_isBAD"                           
+    ## [388] "Var35_clean"                           
+    ## [389] "Var35_isBAD"                           
+    ## [390] "Var36_clean"                           
+    ## [391] "Var36_isBAD"                           
+    ## [392] "Var37_clean"                           
+    ## [393] "Var37_isBAD"                           
+    ## [394] "Var38_clean"                           
+    ## [395] "Var38_isBAD"                           
+    ## [396] "Var4_clean"                            
+    ## [397] "Var4_isBAD"                            
+    ## [398] "Var40_clean"                           
+    ## [399] "Var40_isBAD"                           
+    ## [400] "Var41_clean"                           
+    ## [401] "Var41_isBAD"                           
+    ## [402] "Var43_clean"                           
+    ## [403] "Var43_isBAD"                           
+    ## [404] "Var44_clean"                           
+    ## [405] "Var44_isBAD"                           
+    ## [406] "Var45_clean"                           
+    ## [407] "Var45_isBAD"                           
+    ## [408] "Var46_clean"                           
+    ## [409] "Var46_isBAD"                           
+    ## [410] "Var47_clean"                           
+    ## [411] "Var47_isBAD"                           
+    ## [412] "Var49_clean"                           
+    ## [413] "Var49_isBAD"                           
+    ## [414] "Var5_clean"                            
+    ## [415] "Var5_isBAD"                            
+    ## [416] "Var50_clean"                           
+    ## [417] "Var50_isBAD"                           
+    ## [418] "Var51_clean"                           
+    ## [419] "Var51_isBAD"                           
+    ## [420] "Var53_clean"                           
+    ## [421] "Var53_isBAD"                           
+    ## [422] "Var54_clean"                           
+    ## [423] "Var54_isBAD"                           
+    ## [424] "Var56_clean"                           
+    ## [425] "Var56_isBAD"                           
+    ## [426] "Var57_clean"                           
+    ## [427] "Var58_clean"                           
+    ## [428] "Var58_isBAD"                           
+    ## [429] "Var59_clean"                           
+    ## [430] "Var59_isBAD"                           
+    ## [431] "Var6_clean"                            
+    ## [432] "Var6_isBAD"                            
+    ## [433] "Var60_clean"                           
+    ## [434] "Var60_isBAD"                           
+    ## [435] "Var61_clean"                           
+    ## [436] "Var61_isBAD"                           
+    ## [437] "Var62_clean"                           
+    ## [438] "Var62_isBAD"                           
+    ## [439] "Var63_clean"                           
+    ## [440] "Var63_isBAD"                           
+    ## [441] "Var64_clean"                           
+    ## [442] "Var64_isBAD"                           
+    ## [443] "Var65_clean"                           
+    ## [444] "Var65_isBAD"                           
+    ## [445] "Var66_clean"                           
+    ## [446] "Var66_isBAD"                           
+    ## [447] "Var67_clean"                           
     ## [448] "Var67_isBAD"                           
     ## [449] "Var68_clean"                           
     ## [450] "Var68_isBAD"                           
@@ -719,107 +719,107 @@ column_names(d_train)
 cdata::qlook(db, d_train$table_name)
 ```
 
-    ## table `kddvtreat_27689681998226705126_0000000002` spark_connection spark_shell_connection DBIConnection 
-    ##  nrow: 4889 
+    ## table `kddvtreat_34616963887310456356_0000000002` spark_connection spark_shell_connection DBIConnection 
+    ##  nrow: 4968 
     ##  NOTE: "obs" below is count of sample, not number of rows of data.
     ## 'data.frame':    10 obs. of  512 variables:
-    ##  $ churn                                 : int  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-    ##  $ Var1_clean                            : num  8.47 8.47 8.47 8.47 8.47 ...
+    ##  $ churn                                 : int  -1 -1 -1 -1 -1 -1 1 -1 1 -1
+    ##  $ Var1_clean                            : num  5.68 5.68 5.68 5.68 5.68 ...
     ##  $ Var1_isBAD                            : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var10_clean                           : num  351172 351172 351172 351172 351172 ...
+    ##  $ Var10_clean                           : num  545656 545656 545656 545656 545656 ...
     ##  $ Var10_isBAD                           : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var100_clean                          : num  1.32 1.32 1.32 1.32 1.32 ...
+    ##  $ Var100_clean                          : num  0.677 0.677 0.677 0.677 0.677 ...
     ##  $ Var100_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var101_clean                          : num  14 14 14 14 14 ...
+    ##  $ Var101_clean                          : num  31.9 31.9 31.9 31.9 31.9 ...
     ##  $ Var101_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var102_clean                          : num  31280 31280 31280 31280 31280 ...
+    ##  $ Var102_clean                          : num  31377 31377 31377 31377 31377 ...
     ##  $ Var102_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var103_clean                          : num  17.2 17.2 17.2 17.2 17.2 ...
+    ##  $ Var103_clean                          : num  28.5 28.5 28.5 28.5 28.5 ...
     ##  $ Var103_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var104_clean                          : num  75.6 75.6 75.6 75.6 75.6 75.6 75.6 75.6 75.6 75.6
+    ##  $ Var104_clean                          : num  101 101 101 101 101 ...
     ##  $ Var104_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var105_clean                          : num  50.4 50.4 50.4 50.4 50.4 50.4 50.4 50.4 50.4 50.4
+    ##  $ Var105_clean                          : num  67.3 67.3 67.3 67.3 67.3 ...
     ##  $ Var105_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var106_clean                          : num  35239 35239 35239 35239 35239 ...
+    ##  $ Var106_clean                          : num  55035 55035 55035 55035 55035 ...
     ##  $ Var106_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var107_clean                          : num  3.81 3.81 3.81 3.81 3.81 ...
+    ##  $ Var107_clean                          : num  3.5 3.5 3.5 3.5 3.5 3.5 3.5 3.5 3.5 3.5
     ##  $ Var107_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var108_clean                          : num  119365 119365 119365 119365 119365 ...
+    ##  $ Var108_clean                          : num  124506 124506 124506 124506 124506 ...
     ##  $ Var108_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var109_clean                          : num  80 16 104 32 56 152 0 32 8 8
-    ##  $ Var109_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var11_clean                           : num  8.87 8.87 8.87 8.87 8.87 ...
+    ##  $ Var109_clean                          : num  16 16 24 128 58.5 ...
+    ##  $ Var109_isBAD                          : int  0 0 0 0 1 1 0 0 0 0
+    ##  $ Var11_clean                           : num  8.63 8.63 8.63 8.63 8.63 ...
     ##  $ Var11_isBAD                           : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var110_clean                          : num  6.85 6.85 6.85 6.85 6.85 ...
+    ##  $ Var110_clean                          : num  6.48 6.48 6.48 6.48 6.48 ...
     ##  $ Var110_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var111_clean                          : num  265220 265220 265220 265220 265220 ...
+    ##  $ Var111_clean                          : num  372467 372467 372467 372467 372467 ...
     ##  $ Var111_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var112_clean                          : num  88 0 184 64 48 152 0 24 32 16
+    ##  $ Var112_clean                          : num  16 0 16 64 0 0 16 64 32 48
     ##  $ Var112_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var113_clean                          : num  -709072 -1259516 -109088 209326 -692956 ...
-    ##  $ Var114_clean                          : num  616954 616954 616954 616954 616954 ...
+    ##  $ Var113_clean                          : num  -2135 -1259516 -1798800 201331 -449256 ...
+    ##  $ Var114_clean                          : num  746483 746483 746483 746483 746483 ...
     ##  $ Var114_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var115_clean                          : num  27.2 27.2 27.2 27.2 27.2 ...
+    ##  $ Var115_clean                          : num  40.4 40.4 40.4 40.4 40.4 ...
     ##  $ Var115_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var116_clean                          : num  0.0353 0.0353 0.0353 0.0353 0.0353 ...
+    ##  $ Var116_clean                          : num  0.145 0.145 0.145 0.145 0.145 ...
     ##  $ Var116_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var117_clean                          : num  119282 119282 119282 119282 119282 ...
+    ##  $ Var117_clean                          : num  132534 132534 132534 132534 132534 ...
     ##  $ Var117_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
     ##  $ Var118_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var119_clean                          : num  1480 85 1575 710 1145 ...
-    ##  $ Var119_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var12_clean                           : num  12.5 12.5 12.5 12.5 12.5 ...
+    ##  $ Var119_clean                          : num  20 85 75 8580 25 ...
+    ##  $ Var119_isBAD                          : int  0 0 0 0 0 1 0 0 0 0
+    ##  $ Var12_clean                           : num  10.4 10.4 10.4 10.4 10.4 ...
     ##  $ Var12_isBAD                           : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var120_clean                          : num  32 32 32 32 32 ...
+    ##  $ Var120_clean                          : num  29 29 29 29 29 ...
     ##  $ Var120_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var121_clean                          : num  5.2 5.2 5.2 5.2 5.2 5.2 5.2 5.2 5.2 5.2
+    ##  $ Var121_clean                          : num  4.1 4.1 4.1 4.1 4.1 ...
     ##  $ Var121_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var122_clean                          : num  0.075 0.075 0.075 0.075 0.075 0.075 0.075 0.075 0.075 0.075
+    ##  $ Var122_clean                          : num  0.0236 0.0236 0.0236 0.0236 0.0236 ...
     ##  $ Var122_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var123_clean                          : num  90 0 72 24 102 0 6 54 0 6
+    ##  $ Var123_clean                          : num  0 0 0 270 0 0 120 24 12 102
     ##  $ Var123_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var124_clean                          : num  282417 282417 282417 282417 282417 ...
+    ##  $ Var124_clean                          : num  271331 271331 271331 271331 271331 ...
     ##  $ Var124_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var125_clean                          : num  333 252 9432 16542 10755 ...
+    ##  $ Var125_clean                          : num  2574 252 30294 7119 52380 ...
     ##  $ Var125_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var126_clean                          : num  -18 -22 -0.454 -0.454 -0.454 ...
-    ##  $ Var126_isBAD                          : int  0 0 1 1 1 1 1 1 0 1
-    ##  $ Var127_clean                          : num  26.2 26.2 26.2 26.2 26.2 ...
+    ##  $ Var126_clean                          : num  0.0764 -22 -18 4 2 ...
+    ##  $ Var126_isBAD                          : int  1 0 0 0 0 0 0 0 1 1
+    ##  $ Var127_clean                          : num  39.4 39.4 39.4 39.4 39.4 ...
     ##  $ Var127_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var128_clean                          : num  75.2 75.2 75.2 75.2 75.2 ...
+    ##  $ Var128_clean                          : num  123 123 123 123 123 ...
     ##  $ Var128_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var129_clean                          : num  11 11 11 11 11 ...
+    ##  $ Var129_clean                          : num  6.68 6.68 6.68 6.68 6.68 ...
     ##  $ Var129_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var13_clean                           : num  632 0 540 5672 376 ...
+    ##  $ Var13_clean                           : num  348 0 512 2104 3832 ...
     ##  $ Var13_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var130_clean                          : num  0.504 0.504 0.504 0.504 0.504 ...
+    ##  $ Var130_clean                          : num  0.661 0.661 0.661 0.661 0.661 ...
     ##  $ Var130_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var131_clean                          : num  3859807 3859807 3859807 3859807 3859807 ...
+    ##  $ Var131_clean                          : num  11311943 11311943 11311943 11311943 11311943 ...
     ##  $ Var131_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var132_clean                          : num  0 0 0 0 8 0 0 0 0 0
+    ##  $ Var132_clean                          : num  0 0 0 0 0 0 0 0 0 8
     ##  $ Var132_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var133_clean                          : num  2881310 17915 640655 4777745 1720620 ...
+    ##  $ Var133_clean                          : num  0 17915 0 8168400 0 ...
     ##  $ Var133_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var134_clean                          : num  512588 13300 94004 115564 355120 ...
+    ##  $ Var134_clean                          : num  0 13300 19136 220560 0 ...
     ##  $ Var134_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var135_clean                          : num  210 210 210 210 210 ...
+    ##  $ Var135_clean                          : num  198 198 198 198 198 ...
     ##  $ Var135_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var136_clean                          : num  121261 121261 121261 121261 121261 ...
+    ##  $ Var136_clean                          : num  1e+05 1e+05 1e+05 1e+05 1e+05 ...
     ##  $ Var136_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var137_clean                          : num  2.59 2.59 2.59 2.59 2.59 ...
+    ##  $ Var137_clean                          : num  4.97 4.97 4.97 4.97 4.97 ...
     ##  $ Var137_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
     ##  $ Var138_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var139_clean                          : num  195421 195421 195421 195421 195421 ...
+    ##  $ Var139_clean                          : num  190192 190192 190192 190192 190192 ...
     ##  $ Var139_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var14_clean                           : num  0.639 0.639 0.639 0.639 0.639 ...
+    ##  $ Var14_clean                           : num  1.04 1.04 1.04 1.04 1.04 ...
     ##  $ Var14_isBAD                           : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var140_clean                          : num  205 0 295 4305 1860 ...
+    ##  $ Var140_clean                          : num  0 0 10 180 13975 ...
     ##  $ Var140_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var142_clean                          : num  1.13 1.13 1.13 1.13 1.13 ...
+    ##  $ Var142_clean                          : num  1.29 1.29 1.29 1.29 1.29 ...
     ##  $ Var142_isBAD                          : int  1 1 1 1 1 1 1 1 1 1
     ##  $ Var143_clean                          : num  0 0 0 0 0 0 0 0 0 0
     ##  $ Var143_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var144_clean                          : num  18 0 9 9 9 9 9 27 9 45
-    ##  $ Var144_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var145_clean                          : num  48.7 48.7 48.7 48.7 48.7 ...
+    ##  $ Var144_clean                          : num  9 0 0 18 9 ...
+    ##  $ Var144_isBAD                          : int  0 0 0 0 0 1 0 0 0 0
+    ##  $ Var145_clean                          : num  76 76 76 76 76 ...
     ##   [list output truncated]
