@@ -56,12 +56,10 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
   }
   ops <- flatten_fn_list(data_source, rqplan$optree_generators)
   selcols <- intersect(rquery::column_names(ops), 
-                       c(rqplan$treatmentplan$outcomename, 
-                         rqplan$treatmentplan$scoreFrame$varName,
-                         extracols))
-  # TODO: fix narrowing calculation and put this back
-  # ops <- rquery::select_columns(ops, selcols)
-  # cat(rquery::to_sql(ops, db))
+                       unique(c(rqplan$treatmentplan$outcomename, 
+                                rqplan$treatmentplan$scoreFrame$varName,
+                                extracols)))
+  ops <- rquery::select_columns(ops, selcols)
   if(print_sql) {
     cat(rquery::to_sql(ops, db))
   }
@@ -145,7 +143,7 @@ as_rquery.treatmentplan <- function(tstep,
     optree_generators = list(),
     tables = list()
   )
-   for(ti in tstep$treatments) {
+  for(ti in tstep$treatments) {
     ri <- as_rquery(ti)
     if(!is.null(ri)) {
       for(fld in c("exprs", "optree_generators", "tables")) {
@@ -222,7 +220,7 @@ rquery_code_categorical <- function(colname, resname,
   code_tab <- name_source()
   ctabd <- rquery::table_source(code_tab, c(colname, resname))
   expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, 
-                            ", ifelse(is.na(", resname, "), ", new_novel_value, ", ", resname, "))")
+                              ", ifelse(is.na(", resname, "), ", new_novel_value, ", ", resname, "))")
   f <- function(d) {
     rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) %.>%
       rquery::extend_se(., expr)

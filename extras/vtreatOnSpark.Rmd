@@ -1,6 +1,6 @@
 ---
 title: "vtreat on Spark"
-output: html_document
+output: github_document
 ---
 
 ```{r setup}
@@ -41,13 +41,6 @@ d <- db_td(db, "kdd2009") %.>%
 
 y_name <- "churn"
 vars <- setdiff(column_names(d), c(y_name, "sample_col"))
-
-# # leaving this is also triggers the narrowing issue. TODO: try it in and out to find the issue
-# d <- d %.>% 
-#   extend_nse(.,
-#              is_train = sample_col <= 0.8,
-#              is_treat = (sample_col > 0.8) & (sample_col <= 0.9),
-#              is_test = sample_col > 0.9)
 
 d_train <- d %.>%
   select_rows_nse(., sample_col <= 0.8) %.>%
