@@ -37,7 +37,7 @@ rm(list = c("dir", "d", "churn"))
 tmp_name_gen <- wrapr::mk_tmp_name_source("kddvtreat")
 
 d <- db_td(db, "kdd2009") %.>%
-  extend_nse(., sample_col = rand()) %.>%
+  extend_nse(., sample_col = random()) %.>%
   materialize(db, ., table_name = tmp_name_gen())
 
 y_name <- "churn"
@@ -46,7 +46,7 @@ vars <- setdiff(column_names(d), c(y_name, "sample_col"))
 d_train <- d %.>%
   select_rows_nse(., sample_col <= 0.8) %.>%
   materialize(db, ., table_name = tmp_name_gen()) # should not need to materialize this, doign this to debug
-d_train <- d %.>%
+d_test <- d %.>%
   select_rows_nse(., sample_col > 0.9)
 d_treat <- d %.>%
   select_rows_nse(., (sample_col > 0.8) & (sample_col <= 0.9)) %.>%
@@ -55,10 +55,13 @@ d_treat <- d %.>%
 
 ```{r treatdata}
 cl = parallel::makeCluster(4)
-# vars <- c("Var228", "Var229")
+# vars <- vars[seq_len(floor(length(vars)/2))]
 tp <- vtreat::designTreatmentsC(d_treat, vars, y_name, 1, parallelCluster = cl)
 # newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
 rqplan <- as_rquery(tp)
+# ops <- flatten_fn_list(d_train, rqplan$optree_generators)
+# cat(format(ops))
+# sql <- to_sql(ops, db)
 d_train <- materialize_treated(db, rqplan, d_train, 
                                tmp_name_gen(), 
                                temporary = TRUE, overwrite = TRUE)
