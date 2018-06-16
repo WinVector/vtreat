@@ -8,6 +8,7 @@ library("vtreat")
 packageVersion("vtreat")
 library("rquery")
 packageVersion("rquery")
+packageVersion("cdata")
 packageVersion("sparklyr")
 
 
