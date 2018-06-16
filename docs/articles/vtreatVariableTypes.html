@@ -106,7 +106,7 @@
       <h1>Variable Types</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2018-06-15</h4>
+            <h4 class="date">2018-06-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatVariableTypes.Rmd"><code>vignettes/vtreatVariableTypes.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatVariableTypes.Rmd</code></div>
@@ -138,15 +138,15 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 17:39:17 2018"
-## [1] "designing treatments Fri Jun 15 17:39:17 2018"
-## [1] " have initial level statistics Fri Jun 15 17:39:17 2018"
-## [1] "design var x Fri Jun 15 17:39:17 2018"
-## [1] "design var z Fri Jun 15 17:39:17 2018"
-## [1] " scoring treatments Fri Jun 15 17:39:17 2018"
-## [1] "have treatment plan Fri Jun 15 17:39:17 2018"
-## [1] "rescoring complex variables Fri Jun 15 17:39:17 2018"
-## [1] "done rescoring complex variables Fri Jun 15 17:39:17 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 10:20:06 2018"
+## [1] "designing treatments Sat Jun 16 10:20:06 2018"
+## [1] " have initial level statistics Sat Jun 16 10:20:06 2018"
+## [1] "design var x Sat Jun 16 10:20:06 2018"
+## [1] "design var z Sat Jun 16 10:20:06 2018"
+## [1] " scoring treatments Sat Jun 16 10:20:06 2018"
+## [1] "have treatment plan Sat Jun 16 10:20:06 2018"
+## [1] "rescoring complex variables Sat Jun 16 10:20:06 2018"
+## [1] "done rescoring complex variables Sat Jun 16 10:20:06 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
@@ -194,15 +194,15 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 17:39:17 2018"
-## [1] "designing treatments Fri Jun 15 17:39:17 2018"
-## [1] " have initial level statistics Fri Jun 15 17:39:17 2018"
-## [1] "design var x Fri Jun 15 17:39:17 2018"
-## [1] "design var z Fri Jun 15 17:39:17 2018"
-## [1] " scoring treatments Fri Jun 15 17:39:17 2018"
-## [1] "have treatment plan Fri Jun 15 17:39:17 2018"
-## [1] "rescoring complex variables Fri Jun 15 17:39:17 2018"
-## [1] "done rescoring complex variables Fri Jun 15 17:39:17 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 10:20:07 2018"
+## [1] "designing treatments Sat Jun 16 10:20:07 2018"
+## [1] " have initial level statistics Sat Jun 16 10:20:07 2018"
+## [1] "design var x Sat Jun 16 10:20:07 2018"
+## [1] "design var z Sat Jun 16 10:20:07 2018"
+## [1] " scoring treatments Sat Jun 16 10:20:07 2018"
+## [1] "have treatment plan Sat Jun 16 10:20:07 2018"
+## [1] "rescoring complex variables Sat Jun 16 10:20:07 2018"
+## [1] "done rescoring complex variables Sat Jun 16 10:20:07 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x    x_catP  catP 0.1538462 0.4418233                 2
@@ -240,13 +240,13 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 17:39:17 2018"
-## [1] "designing treatments Fri Jun 15 17:39:17 2018"
-## [1] " have initial level statistics Fri Jun 15 17:39:17 2018"
-## [1] "design var x Fri Jun 15 17:39:17 2018"
-## [1] "design var z Fri Jun 15 17:39:17 2018"
-## [1] " scoring treatments Fri Jun 15 17:39:17 2018"
-## [1] "have treatment plan Fri Jun 15 17:39:17 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 10:20:07 2018"
+## [1] "designing treatments Sat Jun 16 10:20:07 2018"
+## [1] " have initial level statistics Sat Jun 16 10:20:07 2018"
+## [1] "design var x Sat Jun 16 10:20:07 2018"
+## [1] "design var z Sat Jun 16 10:20:07 2018"
+## [1] " scoring treatments Sat Jun 16 10:20:07 2018"
+## [1] "have treatment plan Sat Jun 16 10:20:07 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -331,7 +331,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1131222 0.5145190                 2
+## 1        x    x_catN  catN 0.1052632 0.5304117                 2
 ## 2        z   z_clean clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0

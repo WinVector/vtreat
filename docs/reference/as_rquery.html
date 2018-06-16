@@ -173,6 +173,7 @@
                          <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
    <span class='no'>dTrainC</span>$<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'>seq_len</span>(<span class='fu'>nrow</span>(<span class='no'>dTrainC</span>))
    <span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='designTreatmentsC.html'>designTreatmentsC</a></span>(<span class='no'>dTrainC</span>, <span class='fu'>c</span>(<span class='st'>"x"</span>, <span class='st'>"z"</span>), <span class='st'>'y'</span>, <span class='fl'>TRUE</span>)
+   <span class='fu'>print</span>(<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>, <span class='no'>dTrainC</span>))
    <span class='no'>rqplan</span> <span class='kw'>&lt;-</span> <span class='fu'>as_rquery</span>(<span class='no'>treatmentsC</span>)
    <span class='no'>ops</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='flatten_fn_list.html'>flatten_fn_list</a></span>(<span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rquery/topics/local_td'>local_td</a></span>(<span class='no'>dTrainC</span>), <span class='no'>rqplan</span>$<span class='no'>optree_generators</span>)
    <span class='fu'>cat</span>(<span class='fu'>format</span>(<span class='no'>ops</span>))
@@ -196,15 +197,22 @@
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rquery/topics/rq_remove_table'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/DBI/topics/dbDisconnect'>dbDisconnect</a></span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 inspecting inputs Fri Jun 15 17:38:42 2018"
-#&gt; [1] "designing treatments Fri Jun 15 17:38:42 2018"
-#&gt; [1] " have initial level statistics Fri Jun 15 17:38:42 2018"
-#&gt; [1] "design var x Fri Jun 15 17:38:42 2018"
-#&gt; [1] "design var z Fri Jun 15 17:38:42 2018"
-#&gt; [1] " scoring treatments Fri Jun 15 17:38:42 2018"
-#&gt; [1] "have treatment plan Fri Jun 15 17:38:42 2018"
-#&gt; [1] "rescoring complex variables Fri Jun 15 17:38:42 2018"
-#&gt; [1] "done rescoring complex variables Fri Jun 15 17:38:42 2018"</div><div class='output co'>#&gt; <span class='warning'>Warning: vtreat::as_rquery not yet implemented for  vtreat 'Prevalence Code'('x'(character,character)-&gt;character-&gt;'x_catP') , class vtreatment</span></div><div class='output co'>#&gt; table('dTrainC'; 
+}</div><div class='output co'>#&gt; [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 10:19:32 2018"
+#&gt; [1] "designing treatments Sat Jun 16 10:19:32 2018"
+#&gt; [1] " have initial level statistics Sat Jun 16 10:19:32 2018"
+#&gt; [1] "design var x Sat Jun 16 10:19:32 2018"
+#&gt; [1] "design var z Sat Jun 16 10:19:32 2018"
+#&gt; [1] " scoring treatments Sat Jun 16 10:19:32 2018"
+#&gt; [1] "have treatment plan Sat Jun 16 10:19:32 2018"
+#&gt; [1] "rescoring complex variables Sat Jun 16 10:19:32 2018"
+#&gt; [1] "done rescoring complex variables Sat Jun 16 10:19:32 2018"
+#&gt;      x_catP     x_catB z_clean z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
+#&gt; 1 0.5000000 -0.6930972     1.0       0        0         1         0 FALSE
+#&gt; 2 0.5000000 -0.6930972     2.0       0        0         1         0 FALSE
+#&gt; 3 0.5000000 -0.6930972     3.6       1        0         1         0  TRUE
+#&gt; 4 0.3333333  0.0000000     4.0       0        0         0         1 FALSE
+#&gt; 5 0.1666667  9.2104404     5.0       0        1         0         0  TRUE
+#&gt; 6 0.3333333  0.0000000     6.0       0        0         0         1  TRUE</div><div class='output co'>#&gt; <span class='warning'>Warning: vtreat::as_rquery not yet implemented for  vtreat 'Prevalence Code'('x'(character,character)-&gt;character-&gt;'x_catP') , class vtreatment</span></div><div class='output co'>#&gt; table('dTrainC'; 
 #&gt;   x,
 #&gt;   z,
 #&gt;   y,

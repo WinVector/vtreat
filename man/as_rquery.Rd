@@ -26,6 +26,7 @@ if(requireNamespace("rquery", quietly = TRUE)) {
                          stringsAsFactors = FALSE)
    dTrainC$id <- seq_len(nrow(dTrainC))
    treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
+   print(prepare(treatmentsC, dTrainC))
    rqplan <- as_rquery(treatmentsC)
    ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
    cat(format(ops))
