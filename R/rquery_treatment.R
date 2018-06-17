@@ -162,8 +162,8 @@ as_rquery.treatmentplan <- function(tstep,
       rquery::extend_se(d, exprs)
     }
     res$optree_generators <- c(
-      list(f),
-      res$optree_generators)
+      res$optree_generators,      
+      list(f))
   }
   res$exprs <- NULL
   res$treatmentplan = tstep
@@ -230,13 +230,12 @@ rquery_code_categorical <- function(colname, resname,
   expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, 
                               ", ifelse(is.na(", resname, "), ", new_novel_value, ", ", resname, "))")
   f <- function(d) {
-    rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) %.>%
-      rquery::extend_se(., expr)
+    rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) 
   }
   tables = list(code_tab = ctab)
   names(tables) <- code_tab
   list(
-    exprs = list(),
+    exprs = expr,
     optree_generators = f, 
     tables = tables)
 }
