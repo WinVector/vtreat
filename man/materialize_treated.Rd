@@ -34,5 +34,5 @@ description of treated table.
 Materialize a treated data frame remotely.
 }
 \seealso{
-\code{\link{as_rquery}}
+\code{\link{as_rquery_plan}}
 }

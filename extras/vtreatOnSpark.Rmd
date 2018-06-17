@@ -49,23 +49,44 @@ vars <- setdiff(column_names(d), c(y_name, "sample_col"))
 
 d_train <- d %.>%
   select_rows_nse(., sample_col <= 0.5) %.>%
-  materialize(db, ., table_name = tmp_name_gen()) # should not need to materialize this, doign this to debug
+  materialize(db, ., table_name = tmp_name_gen())
 
 d_test <- d %.>%
-  select_rows_nse(., sample_col > 0.9)
+  select_rows_nse(., sample_col > 0.9) %.>%
+  materialize(db, ., table_name = tmp_name_gen())
 
-d_treat <- d %.>%
+d_variable_design <- d %.>%
   select_rows_nse(., (sample_col > 0.5) & (sample_col <= 0.9)) %.>%
-  execute(db, .)
+  materialize(db, ., table_name = tmp_name_gen())
 ```
 
-```{r treatdata}
+```{r design_var_treatments}
 cl = parallel::makeCluster(4)
 print(length(vars))
-tp <- vtreat::designTreatmentsC(d_treat, vars, y_name, 1, parallelCluster = cl)
-newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
+# treat variables in small groups to manage memory
+vgroups <- split(vars, ceiling(seq_len(length(vars))/10))
+treatment_plans <- lapply(vgroups,
+                          function(vi) {
+                            di <- d_variable_design %.>%
+                              select_columns(., c(y_name, vi)) %.>%
+                              execute(db, .)
+                            vtreat::designTreatmentsC(di, vi, y_name, 1, 
+                                                      parallelCluster = cl,
+                                                      verbose = FALSE)
+                          })
+threshold <- 1/(5*length(vars))
+newvars <- lapply(treatment_plans,
+                  function(tpi) {
+                    sfi <- tpi$scoreFrame
+                    sfi$varName[(sfi$sig < threshold) & (sfi$rsq >= 1.0e-3)]
+                  })
+newvars <- unlist(newvars)
 print(length(newvars))
-rqplan <- as_rquery(tp, var_restriction = newvars)
+```
+
+
+```{r treatdata}
+rqplan <- as_rquery_plan(treatment_plans, var_restriction = newvars)
 # ops <- flatten_fn_list(d_train, rqplan$optree_generators)
 # cat(format(ops))
 # sql <- to_sql(ops, db)

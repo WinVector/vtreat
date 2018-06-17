@@ -36,7 +36,7 @@ flatten_fn_list <- function(d, fnlist) {
 #' @param print_sql logical, if TRUE print the SQL.
 #' @return description of treated table.
 #' 
-#' @seealso \code{\link{as_rquery}}
+#' @seealso \code{\link{as_rquery_plan}}
 #' 
 #' @export
 #' 
@@ -56,8 +56,8 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
   }
   ops <- flatten_fn_list(data_source, rqplan$optree_generators)
   selcols <- intersect(rquery::column_names(ops), 
-                       unique(c(rqplan$treatmentplan$outcomename, 
-                                rqplan$treatmentplan$scoreFrame$varName,
+                       unique(c(rqplan$outcomename, 
+                                rqplan$newvars,
                                 extracols)))
   ops <- rquery::select_columns(ops, selcols)
   if(print_sql) {
@@ -73,9 +73,25 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
   treated
 }
 
-#' Convert a vtreat tstep into an rquery operation tree.
+as_rquery <- function(tstep, 
+                      ...,
+                      var_restriction = NULL) {
+  UseMethod("as_rquery")
+}
+
+as_rquery.vtreatment <- function(tstep, 
+                                 ...,
+                                 var_restriction = NULL) {
+  warning(paste("vtreat::as_rquery not yet implemented for ",
+                format(tstep),
+                ", class",
+                paste(class(tstep), collapse = ", ")))
+  NULL
+}
+
+#' Convert vtreatment plans into a sequence of rquery read operations.
 #' 
-#' @param tstep vtreat treatment plan.
+#' @param treatmentplans list of vtreat treatment plan sharing same outcome and outcome type.
 #' @param ... not used, force any later arguments to bind to names.
 #' @param var_restriction character, if not null restrict to producing these variables.
 #' @return list(optree_generator (ordered list of functions), temp_tables (named list of tables))
@@ -90,7 +106,7 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #'    dTrainC$id <- seq_len(nrow(dTrainC))
 #'    treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 #'    print(prepare(treatmentsC, dTrainC))
-#'    rqplan <- as_rquery(treatmentsC)
+#'    rqplan <- as_rquery_plan(list(treatmentsC))
 #'    ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
 #'    cat(format(ops))
 #'    if(requireNamespace("rqdatatable", quietly = TRUE)) {
@@ -115,44 +131,49 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #'    }
 #' }
 #' 
+#' @seealso \code{\link{materialize_treated}}
+#' 
 #' @export
-as_rquery <- function(tstep, 
-                      ...,
-                      var_restriction = NULL) {
-  UseMethod("as_rquery")
-}
-
-as_rquery.vtreatment <- function(tstep, 
-                                 ...,
-                                 var_restriction = NULL) {
-  warning(paste("vtreat::as_rquery not yet implemented for ",
-                format(tstep),
-                ", class",
-                paste(class(tstep), collapse = ", ")))
-  NULL
-}
-
-#' @export
-as_rquery.treatmentplan <- function(tstep, 
-                                    ...,
-                                    var_restriction = NULL) {
+#'
+as_rquery_plan <- function(treatmentplans, 
+                           ...,
+                           var_restriction = NULL) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.treatmentplan requires the rquery package")
   }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery")
-  if(!("treatmentplan" %in% class(tstep))) {
-    stop("vtreat::as_rquery.treatmentplan must be of class treatmentplan")
+  if((!is.list(treatmentplans)) || (length(treatmentplans)<1)) {
+      stop("vtreat::as_rquery_plan treatmentplans must be a non-empty list of treatmentplans")
   }
   res <- list(
     exprs = character(0),
     optree_generators = list(),
     tables = list()
   )
-  for(ti in tstep$treatments) {
-    ri <- as_rquery(ti, var_restriction = var_restriction)
-    if(!is.null(ri)) {
-      for(fld in c("exprs", "optree_generators", "tables")) {
-        res[[fld]] <- c(res[[fld]], ri[[fld]])
+  outcomename <- character(0)
+  newvars <- character(0)
+  for(tstep in treatmentplans) {
+    if(!is.null(tstep)) {
+      if(class(tstep)!='treatmentplan') {
+        stop("vtreat::as_rquery_plan treatmentplans must be a non-empty list of treatmentplans")
+      }
+      if(length(tstep$scoreFrame$varName)>0) {
+        outcomename <- unique(c(outcomename, tstep$outcomename))
+        if(length(outcomename)!=1) {
+          stop("vtreat::as_rquery_plan treatmentplans must all share outcomes")
+        }
+        if(length(intersect(tstep$scoreFrame$varName, newvars))>0) {
+          stop("vtreat::as_rquery_plan treatmentplans must produce disjoint sets of variables")
+        }
+        newvars <- c(newvars, tstep$scoreFrame$varName)
+        for(ti in tstep$treatments) {
+          ri <- as_rquery(ti, var_restriction = var_restriction)
+          if(!is.null(ri)) {
+            for(fld in c("exprs", "optree_generators", "tables")) {
+              res[[fld]] <- c(res[[fld]], ri[[fld]])
+            }
+          }
+        }
       }
     }
   }
@@ -166,7 +187,9 @@ as_rquery.treatmentplan <- function(tstep,
       list(f))
   }
   res$exprs <- NULL
-  res$treatmentplan = tstep
+  res$treatmentplans = treatmentplans
+  res$outcomename = outcomename
+  res$newvars = newvars
   res
 }
 
