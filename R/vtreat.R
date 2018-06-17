@@ -51,12 +51,19 @@ vnames <- function(x) { x$newvars }
 #' @param x treatment plan
 #' @param ... additional args (to match general signature).
 #' @export
-format.vtreatment <- function(x, ...) { paste(
-  'vtreat \'',x$treatmentName,
-  '\'(\'',x$origvar,'\'(',x$origType,',',x$origClass,')->',
-  x$convertedColClass,'->\'',
-  paste(x$newvars,collapse='\',\''),
-  '\')',sep='') }
+format.vtreatment <- function(x, ...) { 
+  paste(
+    'vtreat \'',x$treatmentName,
+    '\'(\'',x$origvar,'\'(',x$origType,',',x$origClass,')->',
+    x$convertedColClass,'->\'',
+    paste(x$newvars,collapse='\',\''),
+    '\')',sep='') 
+}
+
+#' @export
+as.character.vtreatment <- function (x, ...) {
+  format(x, ...)
+}
 
 #'
 #' Print treatmentplan.
@@ -65,9 +72,32 @@ format.vtreatment <- function(x, ...) { paste(
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{prepare}}
 #' @export
 print.vtreatment <- function(x, ...) { 
-  print(format.vtreatment(x), ...) 
+  print(format(x), ...) 
 }
 
+
+
+
+
+#' @export
+format.treatmentplan <- function(x, ...) { 
+  format(x$scoreFrame)
+}
+
+#' @export
+as.character.treatmentplan <- function (x, ...) {
+  format(x, ...)
+}
+
+#'
+#' Print treatmentplan.
+#' @param x treatmentplan
+#' @param ... additional args (to match general signature).
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{prepare}}
+#' @export
+print.treatmentplan <- function(x, ...) { 
+  print(format(x), ...) 
+}
 
 
 

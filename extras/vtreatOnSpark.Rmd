@@ -74,21 +74,20 @@ treatment_plans <- lapply(vgroups,
                                                       parallelCluster = cl,
                                                       verbose = FALSE)
                           })
-n_new <- vapply(treatment_plans,
+
+# get unified scoreFrame
+scoreFrame <- lapply(treatment_plans,
                 function(tpi) {
-                  nrow(tpi$scoreFrame)
-                }, numeric(1))
-n_new <- sum(n_new)
-approximate_df <- length(vars) + n_new
-theshold <- 1/(1 + approximate_df)
+                  tpi$scoreFrame
+                })
+scoreFrame <- do.call(rbind, scoreFrame)
+
 # try to get Bonferroni- corrected valid derived variables.
-newvars <- lapply(treatment_plans,
-                  function(tpi) {
-                    sfi <- tpi$scoreFrame
-                    sfi$varName[(sfi$sig < theshold) & 
-                                   (sfi$rsq >= 1.0e-3)]
-                  })
-newvars <- unlist(newvars)
+approximate_df <- length(vars) + nrow(scoreFrame)
+theshold <- 1/(1 + approximate_df)
+newvars <- scoreFrame$varName[ (scoreFrame$varMoves) &
+                                 (scoreFrame$sig < theshold) & 
+                                 (scoreFrame$rsq >= 1.0e-3) ]
 print(length(newvars))
 ```
 

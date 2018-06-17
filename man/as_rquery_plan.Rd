@@ -7,7 +7,7 @@
 as_rquery_plan(treatmentplans, ..., var_restriction = NULL)
 }
 \arguments{
-\item{treatmentplans}{list of vtreat treatment plan sharing same outcome and outcome type.}
+\item{treatmentplans}{vtreat treatment plan or list of vtreat treatment plan sharing same outcome and outcome type.}
 
 \item{...}{not used, force any later arguments to bind to names.}
 

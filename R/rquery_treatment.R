@@ -91,7 +91,7 @@ as_rquery.vtreatment <- function(tstep,
 
 #' Convert vtreatment plans into a sequence of rquery read operations.
 #' 
-#' @param treatmentplans list of vtreat treatment plan sharing same outcome and outcome type.
+#' @param treatmentplans vtreat treatment plan or list of vtreat treatment plan sharing same outcome and outcome type.
 #' @param ... not used, force any later arguments to bind to names.
 #' @param var_restriction character, if not null restrict to producing these variables.
 #' @return list(optree_generator (ordered list of functions), temp_tables (named list of tables))
@@ -142,8 +142,11 @@ as_rquery_plan <- function(treatmentplans,
     stop("vtreat::as_rquery.treatmentplan requires the rquery package")
   }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery")
+  if("treatmentplan" %in% class(treatmentplans)) {
+    treatmentplans <- list(treatmentplans)
+  }
   if((!is.list(treatmentplans)) || (length(treatmentplans)<1)) {
-      stop("vtreat::as_rquery_plan treatmentplans must be a non-empty list of treatmentplans")
+    stop("vtreat::as_rquery_plan treatmentplans must be a non-empty list of treatmentplans")
   }
   res <- list(
     exprs = character(0),
@@ -157,15 +160,19 @@ as_rquery_plan <- function(treatmentplans,
       if(class(tstep)!='treatmentplan') {
         stop("vtreat::as_rquery_plan treatmentplans must be a non-empty list of treatmentplans")
       }
-      if(length(tstep$scoreFrame$varName)>0) {
+      newvarsi <- tstep$scoreFrame$varName
+      if(!is.null(var_restriction)) {
+        newvarsi <- intersect(newvarsi, var_restriction)
+      }
+      if(length(newvarsi)>0) {
         outcomename <- unique(c(outcomename, tstep$outcomename))
         if(length(outcomename)!=1) {
           stop("vtreat::as_rquery_plan treatmentplans must all share outcomes")
         }
-        if(length(intersect(tstep$scoreFrame$varName, newvars))>0) {
+        if(length(intersect(newvarsi, newvars))>0) {
           stop("vtreat::as_rquery_plan treatmentplans must produce disjoint sets of variables")
         }
-        newvars <- c(newvars, tstep$scoreFrame$varName)
+        newvars <- c(newvars, newvarsi)
         for(ti in tstep$treatments) {
           ri <- as_rquery(ti, var_restriction = var_restriction)
           if(!is.null(ri)) {
@@ -221,7 +228,8 @@ rquery_code_categorical <- function(colname, resname,
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::rquery_code_categorical")
   if(length(resname)!=1) {
-    stop("vtreat::rquery_code_categorical resname must be a single string")
+    stop(paste("vtreat::rquery_code_categorical resname must be a single string",
+               colname, "->", resname))
   }
   # work out coding table
   coding_levels <- coding_levels[grep("^x ", as.character(coding_levels))]
@@ -247,16 +255,27 @@ rquery_code_categorical <- function(colname, resname,
   codes <- .preProcCat(ctab$levels, levRestriction)
   ctab$effect <- as.numeric(effect_values[codes])
   ctab$effect[is.na(ctab$effect)] <- default_value
-  names(ctab) <- c(colname, resname)
-  code_tab <- name_source()
-  ctabd <- rquery::table_source(code_tab, c(colname, resname))
-  expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, 
-                              ", ifelse(is.na(", resname, "), ", new_novel_value, ", ", resname, "))")
-  f <- function(d) {
-    rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) 
+  if(length(ctab$levels)!=length(unique(ctab$levels))) {
+    # should not happen, but let's catch it here so later joins are gauranteed to not blow-up
+    stop(paste("vtreat:::rquery_code_categorical encoding levels were not unique, var:",
+               colname, "->", resname))
   }
-  tables = list(code_tab = ctab)
-  names(tables) <- code_tab
+  if(nrow(ctab)>0) {
+    names(ctab) <- c(colname, resname)
+    code_tab <- name_source()
+    ctabd <- rquery::table_source(code_tab, c(colname, resname))
+    expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, 
+                                ", ifelse(is.na(", resname, "), ", new_novel_value, ", ", resname, "))")
+    f <- function(d) {
+      rquery::natural_join(d, ctabd, jointype = "LEFT", by = colname) 
+    }
+    tables = list(code_tab = ctab)
+    names(tables) <- code_tab
+  } else {
+    tables <- list()
+    f <- list()
+    expr <- resname %:=% paste0("ifelse(is.na(", colname, "), ", na_value, ", ", new_novel_value, ")")
+  }
   list(
     exprs = expr,
     optree_generators = f, 
