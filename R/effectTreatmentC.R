@@ -16,11 +16,15 @@
 }
 
 as_rquery.vtreat_cat_Bayes <- function(tstep, 
-                                       ...) {
+                                       ...,
+                                       var_restriction) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.vtreat_cat_Bayes treatmentplan requires the rquery package")
   }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_cat_Bayes")
+  if((!is.null(var_restriction)) && (!(tstep$newvars %in% var_restriction))) {
+    return(NULL)
+  }
   args <- tstep$args
   rquery_code_categorical(colname = tstep$origvar, 
                           resname = tstep$newvars,

@@ -12,11 +12,15 @@
 }
 
 as_rquery.vtreat_pass_through <- function(tstep, 
-                                          ...) {
+                                          ...,
+                                          var_restriction = NULL) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.vtreat_pass_through treatmentplan requires the rquery package")
   }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_pass_through")
+  if((!is.null(var_restriction)) && (!(tstep$newvars %in% var_restriction))) {
+    return(NULL)
+  }
   args <- tstep$args
   list(
     exprs = tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", args$nadist, ", ", tstep$origvar, ")"),

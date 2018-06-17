@@ -12,24 +12,33 @@
 }
 
 as_rquery.vtreat_cat_ind <- function(tstep, 
-                                       ...) {
+                                     ...,
+                                     var_restriction) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.vtreat_cat_ind treatmentplan requires the rquery package")
   }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_cat_ind")
+  if((!is.null(var_restriction)) && (length(intersect(tstep$newvars, var_restriction))<=0)) {
+    return(NULL)
+  }
   origvar <- tstep$origvar
   exprs <- c()
   for(i in seq_len(length(tstep$arg$tracked))) {
     li <- tstep$arg$tracked[[i]]
     vi <- tstep$newvars[[i]]
-    if(li == "NA") {
-      expri <- paste0("ifelse(is.na(", origvar, "), 1, 0)")
-    } else {
-      li <- gsub("^x ", "", li)
-      expri <- paste0("ifelse(is.na(", origvar, "), 0, ifelse(", origvar, " == \"", li, "\", 1, 0))")
+    if(is.null(var_restriction) || (vi %in% var_restriction)) {
+      if(li == "NA") {
+        expri <- paste0("ifelse(is.na(", origvar, "), 1, 0)")
+      } else {
+        li <- gsub("^x ", "", li)
+        expri <- paste0("ifelse(is.na(", origvar, "), 0, ifelse(", origvar, " == \"", li, "\", 1, 0))")
+      }
+      names(expri) <- vi
+      exprs <- c(exprs, expri)
     }
-    names(expri) <- vi
-    exprs <- c(exprs, expri)
+  }
+  if(length(exprs)<=0) {
+    return(NULL)
   }
   list(
     exprs = exprs,

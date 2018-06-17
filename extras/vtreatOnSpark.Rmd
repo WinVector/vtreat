@@ -61,9 +61,11 @@ d_treat <- d %.>%
 
 ```{r treatdata}
 cl = parallel::makeCluster(4)
+print(length(vars))
 tp <- vtreat::designTreatmentsC(d_treat, vars, y_name, 1, parallelCluster = cl)
-# newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
-rqplan <- as_rquery(tp)
+newvars <- tp$scoreFrame$varName[tp$scoreFrame$sig < 1/nrow(tp$scoreFrame)]
+print(length(newvars))
+rqplan <- as_rquery(tp, var_restriction = newvars)
 # ops <- flatten_fn_list(d_train, rqplan$optree_generators)
 # cat(format(ops))
 # sql <- to_sql(ops, db)

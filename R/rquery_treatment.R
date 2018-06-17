@@ -77,6 +77,7 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #' 
 #' @param tstep vtreat treatment plan.
 #' @param ... not used, force any later arguments to bind to names.
+#' @param var_restriction character, if not null restrict to producing these variables.
 #' @return list(optree_generator (ordered list of functions), temp_tables (named list of tables))
 #' 
 #' @examples 
@@ -116,12 +117,14 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
 #' 
 #' @export
 as_rquery <- function(tstep, 
-                      ...) {
+                      ...,
+                      var_restriction = NULL) {
   UseMethod("as_rquery")
 }
 
 as_rquery.vtreatment <- function(tstep, 
-                                 ...) {
+                                 ...,
+                                 var_restriction = NULL) {
   warning(paste("vtreat::as_rquery not yet implemented for ",
                 format(tstep),
                 ", class",
@@ -131,7 +134,8 @@ as_rquery.vtreatment <- function(tstep,
 
 #' @export
 as_rquery.treatmentplan <- function(tstep, 
-                                    ...) {
+                                    ...,
+                                    var_restriction = NULL) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.treatmentplan requires the rquery package")
   }
@@ -145,7 +149,7 @@ as_rquery.treatmentplan <- function(tstep,
     tables = list()
   )
   for(ti in tstep$treatments) {
-    ri <- as_rquery(ti)
+    ri <- as_rquery(ti, var_restriction = var_restriction)
     if(!is.null(ri)) {
       for(fld in c("exprs", "optree_generators", "tables")) {
         res[[fld]] <- c(res[[fld]], ri[[fld]])
@@ -193,6 +197,9 @@ rquery_code_categorical <- function(colname, resname,
   effect_values <- unlist(effect_values)
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::rquery_code_categorical")
+  if(length(resname)!=1) {
+    stop("vtreat::rquery_code_categorical resname must be a single string")
+  }
   # work out coding table
   coding_levels <- coding_levels[grep("^x ", as.character(coding_levels))]
   coding_levels <- sort(unique(gsub("^x ", "", coding_levels))) # sort kills NA

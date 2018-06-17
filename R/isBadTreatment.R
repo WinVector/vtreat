@@ -6,11 +6,15 @@
 }
 
 as_rquery.vtreat_is_bad <- function(tstep, 
-                                          ...) {
+                                    ...,
+                                    var_restriction) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::as_rquery.vtreat_is_bad treatmentplan requires the rquery package")
   }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::as_rquery.vtreat_is_bad")
+  if((!is.null(var_restriction)) && (!(tstep$newvars %in% var_restriction))) {
+    return(NULL)
+  }
   args <- tstep$args
   list(
     exprs = tstep$newvars %:=% paste0("ifelse(is.na(", tstep$origvar, "), ", 1, ", ", 0, ")"),

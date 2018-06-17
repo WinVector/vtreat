@@ -4,12 +4,14 @@
 \alias{as_rquery}
 \title{Convert a vtreat tstep into an rquery operation tree.}
 \usage{
-as_rquery(tstep, ...)
+as_rquery(tstep, ..., var_restriction = NULL)
 }
 \arguments{
 \item{tstep}{vtreat treatment plan.}
 
 \item{...}{not used, force any later arguments to bind to names.}
+
+\item{var_restriction}{character, if not null restrict to producing these variables.}
 }
 \value{
 list(optree_generator (ordered list of functions), temp_tables (named list of tables))
