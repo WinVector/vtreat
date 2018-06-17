@@ -48,14 +48,14 @@ y_name <- "churn"
 vars <- setdiff(column_names(d), c(y_name, "sample_col"))
 
 d_train <- d %.>%
-  select_rows_nse(., sample_col <= 0.8) %.>%
+  select_rows_nse(., sample_col <= 0.5) %.>%
   materialize(db, ., table_name = tmp_name_gen()) # should not need to materialize this, doign this to debug
 
 d_test <- d %.>%
   select_rows_nse(., sample_col > 0.9)
 
 d_treat <- d %.>%
-  select_rows_nse(., (sample_col > 0.8) & (sample_col <= 0.9)) %.>%
+  select_rows_nse(., (sample_col > 0.5) & (sample_col <= 0.9)) %.>%
   execute(db, .)
 ```
 
