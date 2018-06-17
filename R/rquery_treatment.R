@@ -12,7 +12,7 @@ NULL
 #' @param fnlist a list of functions
 #' @return fnlist[[length(fnlist)]](flatten_fn_list(d, fnlist[[-length(fnlist)]]) (or d if length(fnlist)<1)
 #' 
-#' @seealso \code{\link{as_rquery}}
+#' @seealso \code{\link{as_rquery_plan}}
 #' 
 #' @export
 #' 

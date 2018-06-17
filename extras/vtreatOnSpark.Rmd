@@ -74,11 +74,19 @@ treatment_plans <- lapply(vgroups,
                                                       parallelCluster = cl,
                                                       verbose = FALSE)
                           })
-threshold <- 1/(5*length(vars))
+n_new <- vapply(treatment_plans,
+                function(tpi) {
+                  nrow(tpi$scoreFrame)
+                }, numeric(1))
+n_new <- sum(n_new)
+approximate_df <- length(vars) + n_new
+theshold <- 1/(1 + approximate_df)
+# try to get Bonferroni- corrected valid derived variables.
 newvars <- lapply(treatment_plans,
                   function(tpi) {
                     sfi <- tpi$scoreFrame
-                    sfi$varName[(sfi$sig < threshold) & (sfi$rsq >= 1.0e-3)]
+                    sfi$varName[(sfi$sig < theshold) & 
+                                   (sfi$rsq >= 1.0e-3)]
                   })
 newvars <- unlist(newvars)
 print(length(newvars))

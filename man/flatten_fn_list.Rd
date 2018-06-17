@@ -18,5 +18,5 @@ fnlist[[length(fnlist)]](flatten_fn_list(d, fnlist[[-length(fnlist)]]) (or d if 
 Flatten a list of functions onto d.
 }
 \seealso{
-\code{\link{as_rquery}}
+\code{\link{as_rquery_plan}}
 }
