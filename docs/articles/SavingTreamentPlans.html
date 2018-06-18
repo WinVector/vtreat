@@ -8,8 +8,8 @@
 <title>Saving Treatment Plans • vtreat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Saving Treatment Plans">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Saving Treatment Plans">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -106,7 +106,7 @@
       <h1>Saving Treatment Plans</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2018-06-16</h4>
+            <h4 class="date">2018-06-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/SavingTreamentPlans.Rmd"><code>vignettes/SavingTreamentPlans.Rmd</code></a></small>
       <div class="hidden name"><code>SavingTreamentPlans.Rmd</code></div>
@@ -145,7 +145,7 @@ dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../referen
   <span class="kw">library</span>(<span class="st">"RSQLite"</span>)
   con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="dt">drv=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/RSQLite/topics/SQLite">SQLite</a></span>(), <span class="dt">dbname=</span><span class="st">":memory:"</span>)
   <span class="co"># create table</span>
-  <span class="kw">dbGetQuery</span>(con, <span class="st">'create table if not exists treatments </span>
+  <span class="kw">dbExecute</span>(con, <span class="st">'create table if not exists treatments </span>
 <span class="st">                 (key varchar(200) primary key, </span>
 <span class="st">                  treatment blob)'</span>)
   <span class="co"># wrap data</span>
@@ -153,27 +153,20 @@ dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../referen
     <span class="dt">key=</span><span class="st">'treatmentsC'</span>, 
     <span class="dt">treatment =</span> <span class="kw">I</span>(<span class="kw">list</span>(<span class="kw">serialize</span>(treatmentsC, <span class="ot">NULL</span>))))
   <span class="co"># Clear any previous version</span>
-  <span class="kw">dbGetQuery</span>(con, 
+  <span class="kw">dbExecute</span>(con, 
                <span class="st">"delete from treatments where key='treatmentsC'"</span>)
   <span class="co"># insert treatmentplan</span>
   <span class="co"># depreciated</span>
   <span class="co"># dbGetPreparedQuery(con,</span>
   <span class="co">#                    'insert into treatments (key, treatment) values (:key, :treatment)',</span>
   <span class="co">#                    bind.data=df)</span>
-  <span class="kw">dbGetQuery</span>(con, 
+  <span class="kw">dbExecute</span>(con, 
              <span class="st">'insert into treatments (key, treatment) values (:key, :treatment)'</span>,
              <span class="dt">params=</span>df)
   constr &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="kw">capture.output</span>(<span class="kw">print</span>(con)),<span class="dt">collapse=</span><span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)
   <span class="kw">paste</span>(<span class="st">'saved to db: '</span>, constr)
 }</code></pre></div>
-<pre><code>## Warning in result_fetch(res@ptr, n = n): Don't need to call dbFetch() for
-## statements, only for queries
-
-## Warning in result_fetch(res@ptr, n = n): Don't need to call dbFetch() for
-## statements, only for queries</code></pre>
 <pre><code>## Warning: Factors converted to character</code></pre>
-<pre><code>## Warning in result_fetch(res@ptr, n = n): Don't need to call dbFetch() for
-## statements, only for queries</code></pre>
 <pre><code>## [1] "saved to db:  &lt;SQLiteConnection&gt;\n  Path: :memory:\n  Extensions: TRUE"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span> <span class="kw">c</span>(<span class="st">'treatmentsC'</span>, <span class="st">'dTestCTreated'</span>))</code></pre></div>
 <p>And we can read the treatment back in as follows.</p>

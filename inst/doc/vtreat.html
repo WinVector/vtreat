@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2018-06-16" />
+<meta name="date" content="2018-06-18" />
 
 <title>vtreat package</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat package</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2018-06-16</em></h4>
+<h4 class="date"><em>2018-06-18</em></h4>
 
 
 
@@ -137,37 +137,19 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;designing treatments Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot; have initial level statistics Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;design var x Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;design var z Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot; scoring treatments Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;have treatment plan Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;rescoring complex variables Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;done rescoring complex variables Sat Jun 16 10:18:57 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;designing treatments Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot; have initial level statistics Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;design var x Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;design var z Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot; scoring treatments Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;have treatment plan Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;rescoring complex variables Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;done rescoring complex variables Mon Jun 18 09:11:44 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
-<pre><code>## $treatments
-## $treatments[[1]]
-## [1] &quot;vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')&quot;
-## 
-## $treatments[[2]]
-## [1] &quot;vtreat 'Prevalence Code'('x'(integer,factor)-&gt;character-&gt;'x_catP')&quot;
-## 
-## $treatments[[3]]
-## [1] &quot;vtreat 'Bayesian Impact Code'('x'(integer,factor)-&gt;character-&gt;'x_catB')&quot;
-## 
-## $treatments[[4]]
-## [1] &quot;vtreat 'Scalable pass through'('z'(double,numeric)-&gt;numeric-&gt;'z_clean')&quot;
-## 
-## $treatments[[5]]
-## [1] &quot;vtreat 'is.bad'('z'(double,numeric)-&gt;numeric-&gt;'z_isBAD')&quot;
-## 
-## 
-## $scoreFrame
-##     varName varMoves        rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.24340634 0.1547700       TRUE                 2
-## 2    x_catB     TRUE 0.05070201 0.5160763       TRUE                 2
+<pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
+## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
+## 2    x_catB     TRUE 0.12081050 0.3161341       TRUE                 2
 ## 3   z_clean     TRUE 0.25792985 0.1429977      FALSE                 0
 ## 4   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
 ## 5  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
@@ -180,28 +162,7 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 4        z isBAD
 ## 5        x   lev
 ## 6        x   lev
-## 7        x   lev
-## 
-## $outcomename
-## [1] &quot;y&quot;
-## 
-## $vtreatVersion
-## [1] '1.2.0'
-## 
-## $outcomeType
-## [1] &quot;Binary&quot;
-## 
-## $outcomeTarget
-## [1] TRUE
-## 
-## $meanY
-## [1] 0.5
-## 
-## $splitmethod
-## [1] &quot;kwaycrossystratified&quot;
-## 
-## attr(,&quot;class&quot;)
-## [1] &quot;treatmentplan&quot;</code></pre>
+## 7        x   lev</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] &quot;vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')&quot;</code></pre>
 <p>Here we demonstrate the optional scaling feature of <code>prepare()</code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it rescales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
@@ -264,40 +225,19 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;designing treatments Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot; have initial level statistics Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;design var x Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;design var z Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot; scoring treatments Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;have treatment plan Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;rescoring complex variables Sat Jun 16 10:18:57 2018&quot;
-## [1] &quot;done rescoring complex variables Sat Jun 16 10:18:57 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.0 inspecting inputs Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;designing treatments Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot; have initial level statistics Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;design var x Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;design var z Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot; scoring treatments Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;have treatment plan Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;rescoring complex variables Mon Jun 18 09:11:44 2018&quot;
+## [1] &quot;done rescoring complex variables Mon Jun 18 09:11:44 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
-<pre><code>## $treatments
-## $treatments[[1]]
-## [1] &quot;vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')&quot;
-## 
-## $treatments[[2]]
-## [1] &quot;vtreat 'Prevalence Code'('x'(integer,factor)-&gt;character-&gt;'x_catP')&quot;
-## 
-## $treatments[[3]]
-## [1] &quot;vtreat 'Scalable Impact Code'('x'(integer,factor)-&gt;character-&gt;'x_catN')&quot;
-## 
-## $treatments[[4]]
-## [1] &quot;vtreat 'Deviation Fact'('x'(integer,factor)-&gt;character-&gt;'x_catD')&quot;
-## 
-## $treatments[[5]]
-## [1] &quot;vtreat 'Scalable pass through'('z'(double,numeric)-&gt;numeric-&gt;'z_clean')&quot;
-## 
-## $treatments[[6]]
-## [1] &quot;vtreat 'is.bad'('z'(double,numeric)-&gt;numeric-&gt;'z_isBAD')&quot;
-## 
-## 
-## $scoreFrame
-##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.228077807 0.2784461       TRUE                 2
-## 2    x_catN     TRUE 0.021219389 0.7553204       TRUE                 2
+<pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
+## 1    x_catP     TRUE 0.098552276 0.4929238       TRUE                 2
+## 2    x_catN     TRUE 0.070223623 0.5657545       TRUE                 2
 ## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
@@ -312,28 +252,7 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 5        z isBAD
 ## 6        x   lev
 ## 7        x   lev
-## 8        x   lev
-## 
-## $outcomename
-## [1] &quot;y&quot;
-## 
-## $vtreatVersion
-## [1] '1.2.0'
-## 
-## $outcomeType
-## [1] &quot;Numeric&quot;
-## 
-## $outcomeTarget
-## [1] &quot;y&quot;
-## 
-## $meanY
-## [1] 0.4285714
-## 
-## $splitmethod
-## [1] &quot;kwaycrossystratified&quot;
-## 
-## attr(,&quot;class&quot;)
-## [1] &quot;treatmentplan&quot;</code></pre>
+## 8        x   lev</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainNTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTrainN,
                           <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
 <span class="kw">head</span>(dTrainNTreated)</code></pre></div>

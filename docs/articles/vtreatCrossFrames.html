@@ -8,8 +8,8 @@
 <title>vtreat cross frames • vtreat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="vtreat cross frames">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="vtreat cross frames">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -106,7 +106,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-06-16</h4>
+            <h4 class="date">2018-06-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -159,18 +159,18 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 10:19:46 2018"
-## [1] "designing treatments Sat Jun 16 10:19:46 2018"
-## [1] " have initial level statistics Sat Jun 16 10:19:46 2018"
-## [1] "design var xBad1 Sat Jun 16 10:19:46 2018"
-## [1] "design var xBad2 Sat Jun 16 10:19:46 2018"
-## [1] "design var xBad3 Sat Jun 16 10:19:46 2018"
-## [1] "design var xGood1 Sat Jun 16 10:19:46 2018"
-## [1] "design var xGood2 Sat Jun 16 10:19:46 2018"
-## [1] " scoring treatments Sat Jun 16 10:19:46 2018"
-## [1] "have treatment plan Sat Jun 16 10:19:47 2018"
-## [1] "rescoring complex variables Sat Jun 16 10:19:47 2018"
-## [1] "done rescoring complex variables Sat Jun 16 10:19:47 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 09:12:33 2018"
+## [1] "designing treatments Mon Jun 18 09:12:33 2018"
+## [1] " have initial level statistics Mon Jun 18 09:12:33 2018"
+## [1] "design var xBad1 Mon Jun 18 09:12:33 2018"
+## [1] "design var xBad2 Mon Jun 18 09:12:33 2018"
+## [1] "design var xBad3 Mon Jun 18 09:12:33 2018"
+## [1] "design var xGood1 Mon Jun 18 09:12:33 2018"
+## [1] "design var xGood2 Mon Jun 18 09:12:33 2018"
+## [1] " scoring treatments Mon Jun 18 09:12:33 2018"
+## [1] "have treatment plan Mon Jun 18 09:12:33 2018"
+## [1] "rescoring complex variables Mon Jun 18 09:12:33 2018"
+## [1] "done rescoring complex variables Mon Jun 18 09:12:34 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -240,18 +240,18 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Sat Jun 16 10:19:47 2018"
-## [1] "designing treatments Sat Jun 16 10:19:47 2018"
-## [1] " have initial level statistics Sat Jun 16 10:19:47 2018"
-## [1] "design var xBad1 Sat Jun 16 10:19:47 2018"
-## [1] "design var xBad2 Sat Jun 16 10:19:47 2018"
-## [1] "design var xBad3 Sat Jun 16 10:19:47 2018"
-## [1] "design var xGood1 Sat Jun 16 10:19:47 2018"
-## [1] "design var xGood2 Sat Jun 16 10:19:47 2018"
-## [1] " scoring treatments Sat Jun 16 10:19:47 2018"
-## [1] "have treatment plan Sat Jun 16 10:19:47 2018"
-## [1] "rescoring complex variables Sat Jun 16 10:19:47 2018"
-## [1] "done rescoring complex variables Sat Jun 16 10:19:47 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 09:12:34 2018"
+## [1] "designing treatments Mon Jun 18 09:12:34 2018"
+## [1] " have initial level statistics Mon Jun 18 09:12:34 2018"
+## [1] "design var xBad1 Mon Jun 18 09:12:34 2018"
+## [1] "design var xBad2 Mon Jun 18 09:12:34 2018"
+## [1] "design var xBad3 Mon Jun 18 09:12:34 2018"
+## [1] "design var xGood1 Mon Jun 18 09:12:34 2018"
+## [1] "design var xGood2 Mon Jun 18 09:12:34 2018"
+## [1] " scoring treatments Mon Jun 18 09:12:34 2018"
+## [1] "have treatment plan Mon Jun 18 09:12:34 2018"
+## [1] "rescoring complex variables Mon Jun 18 09:12:34 2018"
+## [1] "done rescoring complex variables Mon Jun 18 09:12:34 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)
@@ -354,9 +354,9 @@ prep &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="
            <span class="st">'y'</span>,<span class="ot">TRUE</span>,
            <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 start initial treatment design Sat Jun 16 10:19:47 2018"
-## [1] " start cross frame work Sat Jun 16 10:19:48 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Sat Jun 16 10:19:48 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.0 start initial treatment design Mon Jun 18 09:12:34 2018"
+## [1] " start cross frame work Mon Jun 18 09:12:35 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Mon Jun 18 09:12:35 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##        varName          sig
