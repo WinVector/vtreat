@@ -114,7 +114,7 @@ as_rquery.vtreatment <- function(tstep,
 #'       print(treated[])
 #'    }
 #'    if(requireNamespace("DBI", quietly = TRUE) &&
-#'       requireNamespace("DBI", quietly = TRUE)) {
+#'       requireNamespace("RSQLite", quietly = TRUE)) {
 #'       db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
 #'       source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
 #'                                overwrite = TRUE, temporary = TRUE)

@@ -1,0 +1,153 @@
+---
+title: "rquery vtreat"
+author: "John Mount, Win-Vector LLC"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rquery vtreat}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+[`vtreat`](https://github.com/WinVector/vtreat) transforms can be hosted on [`rquery`](https://github.com/WinVector/rquery).  This allows transforms at scale.
+
+```{r setup}
+library("vtreat")
+
+eval_examples <- requireNamespace("rquery", quietly = TRUE)
+eval_rqdt <- eval_examples && requireNamespace("rqdatatable", quietly = TRUE)
+eval_db <- eval_examples &&
+  requireNamespace("DBI", quietly = TRUE) &&
+  requireNamespace("RSQLite", quietly = TRUE)
+db <- NULL
+if(eval_db) {
+  db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+}
+```
+
+Classification example.
+
+```{r c, eval=eval_examples}
+dTrainC <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
+                      z= c(1, 2, NA, 4, 5, 6),
+                      y= c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE),
+                      stringsAsFactors = FALSE)
+dTrainC$id <- seq_len(nrow(dTrainC))
+treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
+prepare(treatmentsC, dTrainC) %.>%
+  knitr::kable(.)
+rqplan <- as_rquery_plan(list(treatmentsC))
+ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
+cat(format(ops))
+```
+
+```{r crqdt, eval=eval_rqdt}
+treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
+treated[]  %.>%
+  knitr::kable(.)
+```
+
+```{r cdb, eval=eval_db}
+source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
+                                  overwrite = TRUE, temporary = TRUE)
+
+rest <- materialize_treated(db, rqplan, source_data, "dTreatedC",
+                            extracols = "id",
+                            print_sql = FALSE)
+resd <- DBI::dbReadTable(db, rest$table_name)
+resd  %.>%
+  knitr::kable(.)
+
+rquery::rq_remove_table(db, source_data$table_name)
+rquery::rq_remove_table(db, rest$table_name)
+```
+
+Regression example.
+
+
+```{r n, eval=eval_examples}
+dTrainR <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
+                      z= c(1, 2, NA, 4, 5, 6),
+                      y= as.numeric(c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE)),
+                      stringsAsFactors = FALSE)
+dTrainR$id <- seq_len(nrow(dTrainR))
+treatmentsN <- designTreatmentsN(dTrainR, c("x", "z"), 'y')
+prepare(treatmentsN, dTrainR)  %.>%
+  knitr::kable(.)
+
+rqplan <- as_rquery_plan(list(treatmentsN))
+ops <- flatten_fn_list(rquery::local_td(dTrainR), rqplan$optree_generators)
+cat(format(ops))
+```
+
+```{r nrqdt, eval=eval_rqdt}
+treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
+treated[]  %.>%
+  knitr::kable(.)
+```
+
+```{r ndb, eval=eval_db}
+source_data <- rquery::rq_copy_to(db, "dTrainR", dTrainR,
+                                  overwrite = TRUE, temporary = TRUE)
+
+rest <- materialize_treated(db, rqplan, source_data, "dTreatedN",
+                            extracols = "id",
+                            print_sql = FALSE)
+resd <- DBI::dbReadTable(db, rest$table_name)
+resd %.>%
+  knitr::kable(.)
+
+rquery::rq_remove_table(db, source_data$table_name)
+rquery::rq_remove_table(db, rest$table_name)
+```
+
+
+
+y-free example.
+
+
+```{r z, eval=eval_examples}
+dTrainZ <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
+                      z= c(1, 2, NA, 4, 5, 6),
+                      stringsAsFactors = FALSE)
+dTrainZ$id <- seq_len(nrow(dTrainZ))
+treatmentsZ <- designTreatmentsZ(dTrainZ, c("x", "z"))
+prepare(treatmentsZ, dTrainZ)  %.>%
+  knitr::kable(.)
+
+rqplan <- as_rquery_plan(list(treatmentsZ))
+ops <- flatten_fn_list(rquery::local_td(dTrainZ), rqplan$optree_generators)
+cat(format(ops))
+```
+
+```{r zrqdt, eval=eval_rqdt}
+treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
+treated[]  %.>%
+  knitr::kable(.)
+```
+
+```{r zdb, eval=eval_db}
+source_data <- rquery::rq_copy_to(db, "dTrainZ", dTrainZ,
+                                  overwrite = TRUE, temporary = TRUE)
+
+rest <- materialize_treated(db, rqplan, source_data, "dTreatedZ",
+                            extracols = "id",
+                            print_sql = FALSE)
+resd <- DBI::dbReadTable(db, rest$table_name)
+resd  %.>%
+  knitr::kable(.)
+
+rquery::rq_remove_table(db, source_data$table_name)
+rquery::rq_remove_table(db, rest$table_name)
+```
+
+
+---------------
+
+
+```{r cleanup}
+if(!is.null(db)) {
+  DBI::dbDisconnect(db)
+}
+```
+

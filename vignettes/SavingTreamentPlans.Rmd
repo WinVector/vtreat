@@ -53,7 +53,7 @@ if (requireNamespace('RSQLite', quietly = TRUE) &&
   library("RSQLite")
   con <- dbConnect(drv=SQLite(), dbname=":memory:")
   # create table
-  dbGetQuery(con, 'create table if not exists treatments 
+  dbExecute(con, 'create table if not exists treatments 
                  (key varchar(200) primary key, 
                   treatment blob)')
   # wrap data
@@ -61,14 +61,14 @@ if (requireNamespace('RSQLite', quietly = TRUE) &&
     key='treatmentsC', 
     treatment = I(list(serialize(treatmentsC, NULL))))
   # Clear any previous version
-  dbGetQuery(con, 
+  dbExecute(con, 
                "delete from treatments where key='treatmentsC'")
   # insert treatmentplan
   # depreciated
   # dbGetPreparedQuery(con,
   #                    'insert into treatments (key, treatment) values (:key, :treatment)',
   #                    bind.data=df)
-  dbGetQuery(con, 
+  dbExecute(con, 
              'insert into treatments (key, treatment) values (:key, :treatment)',
              params=df)
   constr <- paste(capture.output(print(con)),collapse='\n')
