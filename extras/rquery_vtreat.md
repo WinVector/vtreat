@@ -30,15 +30,15 @@ dTrainC$id <- seq_len(nrow(dTrainC))
 treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 ```
 
-    ## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 10:14:50 2018"
-    ## [1] "designing treatments Mon Jun 18 10:14:50 2018"
-    ## [1] " have initial level statistics Mon Jun 18 10:14:50 2018"
-    ## [1] "design var x Mon Jun 18 10:14:50 2018"
-    ## [1] "design var z Mon Jun 18 10:14:50 2018"
-    ## [1] " scoring treatments Mon Jun 18 10:14:50 2018"
-    ## [1] "have treatment plan Mon Jun 18 10:14:50 2018"
-    ## [1] "rescoring complex variables Mon Jun 18 10:14:50 2018"
-    ## [1] "done rescoring complex variables Mon Jun 18 10:14:50 2018"
+    ## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 12:24:14 2018"
+    ## [1] "designing treatments Mon Jun 18 12:24:14 2018"
+    ## [1] " have initial level statistics Mon Jun 18 12:24:14 2018"
+    ## [1] "design var x Mon Jun 18 12:24:14 2018"
+    ## [1] "design var z Mon Jun 18 12:24:14 2018"
+    ## [1] " scoring treatments Mon Jun 18 12:24:14 2018"
+    ## [1] "have treatment plan Mon Jun 18 12:24:15 2018"
+    ## [1] "rescoring complex variables Mon Jun 18 12:24:15 2018"
+    ## [1] "done rescoring complex variables Mon Jun 18 12:24:15 2018"
 
 ``` r
 prepare(treatmentsC, dTrainC) %.>%
@@ -66,12 +66,12 @@ cat(format(ops))
     ##   y,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_11551169430501196124_0000000000'; 
+    ##   table('vtreat_tmp_03472868492546650789_0000000000'; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_62891856476427232275_0000000000'; 
+    ##   table('vtreat_tmp_94186196340455505002_0000000000'; 
     ##     x,
     ##     x_catB),
     ##   j= LEFT, by= x) %.>%
@@ -143,15 +143,15 @@ dTrainR$id <- seq_len(nrow(dTrainR))
 treatmentsN <- designTreatmentsN(dTrainR, c("x", "z"), 'y')
 ```
 
-    ## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 10:14:50 2018"
-    ## [1] "designing treatments Mon Jun 18 10:14:50 2018"
-    ## [1] " have initial level statistics Mon Jun 18 10:14:50 2018"
-    ## [1] "design var x Mon Jun 18 10:14:50 2018"
-    ## [1] "design var z Mon Jun 18 10:14:50 2018"
-    ## [1] " scoring treatments Mon Jun 18 10:14:50 2018"
-    ## [1] "have treatment plan Mon Jun 18 10:14:51 2018"
-    ## [1] "rescoring complex variables Mon Jun 18 10:14:51 2018"
-    ## [1] "done rescoring complex variables Mon Jun 18 10:14:51 2018"
+    ## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 12:24:15 2018"
+    ## [1] "designing treatments Mon Jun 18 12:24:15 2018"
+    ## [1] " have initial level statistics Mon Jun 18 12:24:15 2018"
+    ## [1] "design var x Mon Jun 18 12:24:15 2018"
+    ## [1] "design var z Mon Jun 18 12:24:15 2018"
+    ## [1] " scoring treatments Mon Jun 18 12:24:15 2018"
+    ## [1] "have treatment plan Mon Jun 18 12:24:15 2018"
+    ## [1] "rescoring complex variables Mon Jun 18 12:24:15 2018"
+    ## [1] "done rescoring complex variables Mon Jun 18 12:24:15 2018"
 
 ``` r
 prepare(treatmentsN, dTrainR)  %.>%
@@ -179,17 +179,17 @@ cat(format(ops))
     ##   y,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_92423344839052860105_0000000000'; 
+    ##   table('vtreat_tmp_57132366622905301845_0000000000'; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_52024122618589900845_0000000000'; 
+    ##   table('vtreat_tmp_73524593945511096416_0000000000'; 
     ##     x,
     ##     x_catN),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_48211051628933851272_0000000000'; 
+    ##   table('vtreat_tmp_83687408308298572629_0000000000'; 
     ##     x,
     ##     x_catD),
     ##   j= LEFT, by= x) %.>%
@@ -261,13 +261,13 @@ dTrainZ$id <- seq_len(nrow(dTrainZ))
 treatmentsZ <- designTreatmentsZ(dTrainZ, c("x", "z"))
 ```
 
-    ## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 10:14:51 2018"
-    ## [1] "designing treatments Mon Jun 18 10:14:51 2018"
-    ## [1] " have initial level statistics Mon Jun 18 10:14:51 2018"
-    ## [1] "design var x Mon Jun 18 10:14:51 2018"
-    ## [1] "design var z Mon Jun 18 10:14:51 2018"
-    ## [1] " scoring treatments Mon Jun 18 10:14:51 2018"
-    ## [1] "have treatment plan Mon Jun 18 10:14:51 2018"
+    ## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 12:24:15 2018"
+    ## [1] "designing treatments Mon Jun 18 12:24:15 2018"
+    ## [1] " have initial level statistics Mon Jun 18 12:24:15 2018"
+    ## [1] "design var x Mon Jun 18 12:24:15 2018"
+    ## [1] "design var z Mon Jun 18 12:24:15 2018"
+    ## [1] " scoring treatments Mon Jun 18 12:24:15 2018"
+    ## [1] "have treatment plan Mon Jun 18 12:24:15 2018"
 
 ``` r
 prepare(treatmentsZ, dTrainZ)  %.>%
@@ -294,7 +294,7 @@ cat(format(ops))
     ##   z,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_63512144531652126477_0000000000'; 
+    ##   table('vtreat_tmp_35168405337557620363_0000000000'; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%

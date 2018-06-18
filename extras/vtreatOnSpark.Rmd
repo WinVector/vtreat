@@ -96,7 +96,11 @@ print(length(newvars))
 rqplan <- as_rquery_plan(treatment_plans, var_restriction = newvars)
 # ops <- flatten_fn_list(d_train, rqplan$optree_generators)
 # cat(format(ops))
+# ops %.>%
+#   op_diagram(.) %.>% 
+#   DiagrammeR::grViz(.)
 # sql <- to_sql(ops, db)
+# cat(sql)
 d_train <- materialize_treated(db, rqplan, d_train, 
                                tmp_name_gen(), 
                                temporary = TRUE, overwrite = TRUE)
