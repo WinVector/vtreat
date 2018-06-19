@@ -1,11 +1,11 @@
 
-# vtreat 1.2.0 2018/06/15
+# vtreat 1.2.0 2018/06/19
 
   * Translate treatment plans to rquery.
   * Minor documentation improvements.
   * Improve error messages on argument checking.
   * Improve name generation (remove dots).
-  * Remove use of dplyr.
+  * Remove dplyr dependence.
  
 # vtreat 1.0.4 2018/05/05
 
