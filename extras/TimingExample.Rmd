@@ -27,6 +27,7 @@ n_cat_var_levels <- c(10, 100, 50000) # mix of cat sizes, smaller ones more like
 cat_effect_strength <- 0.1
 n_num_var <- 15 
 num_effect_strength <- 0.1
+na_rate <- 0.01
 
 set.seed(3252)
 d <- data.frame(id = seq_len(n_row),
@@ -34,7 +35,8 @@ d <- data.frame(id = seq_len(n_row),
 for(i in seq_len(n_num_var)) {
   vi <- paste0("nv", i)
   d[[vi]] <- rnorm(n_row)
-  d$yN <- d$yN + num_effect_strength*d[[vi]]
+  d[[vi]][runif(n_row)<=na_rate] <- NA_real_
+  d$yN <- d$yN + num_effect_strength*ifelse(is.na(d[[vi]]), 0.5, d[[vi]])
 }
 for(i in seq_len(n_cat_var)) {
   vi <- paste0("cv", i)
@@ -42,7 +44,8 @@ for(i in seq_len(n_cat_var)) {
                      n_row, 
                      replace = TRUE)
   d[[vi]] <- sample(paste0("lev_", veci))
-  d$yN <- d$yN + cat_effect_strength*ifelse((veci %% 2) == 1, 1, -1)
+  d[[vi]][runif(n_row)<=na_rate] <- NA_character_
+  d$yN <- d$yN + cat_effect_strength*ifelse(is.na(d[[vi]]), 0.5, ifelse((veci %% 2) == 1, 1, -1))
 }
 d$yC <- ifelse(d$yN>0, "YES", "NO")
 vars <- setdiff(colnames(d), c("id", "yN", "yC"))

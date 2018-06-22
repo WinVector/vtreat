@@ -41,6 +41,7 @@ n_cat_var_levels <- c(10, 100, 50000) # mix of cat sizes, smaller ones more like
 cat_effect_strength <- 0.1
 n_num_var <- 15 
 num_effect_strength <- 0.1
+na_rate <- 0.01
 
 set.seed(3252)
 d <- data.frame(id = seq_len(n_row),
@@ -48,7 +49,8 @@ d <- data.frame(id = seq_len(n_row),
 for(i in seq_len(n_num_var)) {
   vi <- paste0("nv", i)
   d[[vi]] <- rnorm(n_row)
-  d$yN <- d$yN + num_effect_strength*d[[vi]]
+  d[[vi]][runif(n_row)<=na_rate] <- NA_real_
+  d$yN <- d$yN + num_effect_strength*ifelse(is.na(d[[vi]]), 0.5, d[[vi]])
 }
 for(i in seq_len(n_cat_var)) {
   vi <- paste0("cv", i)
@@ -56,7 +58,8 @@ for(i in seq_len(n_cat_var)) {
                      n_row, 
                      replace = TRUE)
   d[[vi]] <- sample(paste0("lev_", veci))
-  d$yN <- d$yN + cat_effect_strength*ifelse((veci %% 2) == 1, 1, -1)
+  d[[vi]][runif(n_row)<=na_rate] <- NA_character_
+  d$yN <- d$yN + cat_effect_strength*ifelse(is.na(d[[vi]]), 0.5, ifelse((veci %% 2) == 1, 1, -1))
 }
 d$yC <- ifelse(d$yN>0, "YES", "NO")
 vars <- setdiff(colnames(d), c("id", "yN", "yC"))
@@ -68,7 +71,7 @@ Do the work (and time it).
 base::date()
 ```
 
-    ## [1] "Fri Jun 22 09:56:07 2018"
+    ## [1] "Fri Jun 22 10:59:41 2018"
 
 ``` r
 system.time(
@@ -77,24 +80,24 @@ system.time(
 )
 ```
 
-    ## [1] "vtreat 1.2.1 start initial treatment design Fri Jun 22 09:56:07 2018"
-    ## [1] " start cross frame work Fri Jun 22 10:00:53 2018"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Fri Jun 22 10:03:23 2018"
+    ## [1] "vtreat 1.2.1 start initial treatment design Fri Jun 22 10:59:41 2018"
+    ## [1] " start cross frame work Fri Jun 22 11:05:25 2018"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Fri Jun 22 11:07:48 2018"
 
     ##    user  system elapsed 
-    ## 169.861  19.807 435.689
+    ## 175.220  19.602 487.105
 
 ``` r
 base::date()
 ```
 
-    ## [1] "Fri Jun 22 10:03:23 2018"
+    ## [1] "Fri Jun 22 11:07:48 2018"
 
 ``` r
 base::date()
 ```
 
-    ## [1] "Fri Jun 22 10:03:23 2018"
+    ## [1] "Fri Jun 22 11:07:48 2018"
 
 ``` r
 system.time(
@@ -103,18 +106,18 @@ system.time(
 )
 ```
 
-    ## [1] "vtreat 1.2.1 start initial treatment design Fri Jun 22 10:03:24 2018"
-    ## [1] " start cross frame work Fri Jun 22 10:07:46 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Jun 22 10:10:31 2018"
+    ## [1] "vtreat 1.2.1 start initial treatment design Fri Jun 22 11:07:48 2018"
+    ## [1] " start cross frame work Fri Jun 22 11:12:10 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Jun 22 11:15:02 2018"
 
     ##    user  system elapsed 
-    ## 170.683  20.870 427.205
+    ## 172.080  21.138 433.745
 
 ``` r
 base::date()
 ```
 
-    ## [1] "Fri Jun 22 10:10:31 2018"
+    ## [1] "Fri Jun 22 11:15:02 2018"
 
 Note a major cost is production of indicator columns (which leads to a large result). Setting `minFraction` to something larger (like `0.1` or `0.2`) can help there.
 
