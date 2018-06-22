@@ -1,0 +1,79 @@
+---
+title: "TimingExample"
+output: github_document
+---
+
+Set up.
+
+```{r setup}
+library("vtreat")
+packageVersion("vtreat")
+packageVersion("data.table") # data.table needed for fast row binding in vtreat 1.2.0 and newer.
+options('vtreat.use_data.table_binding' = TRUE) # vtreat 1.2.0 fails to set this in some cicrumstances
+
+getOption('vtreat.use_data.table_binding', FALSE)
+
+ncores <- parallel::detectCores()
+parallelCluster <- parallel::makeCluster(ncores)
+parallelCluster
+```
+
+Make example.
+
+```{r make_example}
+n_row <- 500000
+n_cat_var <- 15
+n_cat_var_levels <- c(10, 100, 50000) # mix of cat sizes, smaller ones more likely to create indicators
+cat_effect_strength <- 0.1
+n_num_var <- 15 
+num_effect_strength <- 0.1
+
+set.seed(3252)
+d <- data.frame(id = seq_len(n_row),
+                yN = rnorm(n_row))
+for(i in seq_len(n_num_var)) {
+  vi <- paste0("nv", i)
+  d[[vi]] <- rnorm(n_row)
+  d$yN <- d$yN + num_effect_strength*d[[vi]]
+}
+for(i in seq_len(n_cat_var)) {
+  vi <- paste0("cv", i)
+  veci <- sample.int(n_cat_var_levels[1 + (i %% length(n_cat_var_levels))], 
+                     n_row, 
+                     replace = TRUE)
+  d[[vi]] <- sample(paste0("lev_", veci))
+  d$yN <- d$yN + cat_effect_strength*ifelse((veci %% 2) == 1, 1, -1)
+}
+d$yC <- ifelse(d$yN>0, "YES", "NO")
+vars <- setdiff(colnames(d), c("id", "yN", "yC"))
+```
+
+Do the work (and time it).
+
+```{r timec}
+base::date()
+system.time(
+  ctpc <- mkCrossFrameCExperiment(d, vars, "yC", "YES",
+                                  parallelCluster = parallelCluster)
+)
+base::date()
+```
+
+```{r timer}
+base::date()
+system.time(
+  ctpn <- mkCrossFrameNExperiment(d, vars, "yN", 
+                                  parallelCluster = parallelCluster)
+)
+base::date()
+```
+
+Note a major cost is production of indicator columns (which leads to a large result).  Setting `minFraction` to something larger (like `0.1` or `0.2`) can help there.
+
+Clean up.
+
+```{r cleanup}
+parallel::stopCluster(parallelCluster)
+rm(list = "parallelCluster")
+```
+

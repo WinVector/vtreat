@@ -26,7 +26,7 @@ plapply <- function(workList,worker,parallelCluster) {
     return(frame_list[[1]])
   }
   # see if a package can supply a fast method
-  if(isTRUE(getOption('vtreat.use_data.table_binding', FALSE))) {
+  if(isTRUE(getOption('vtreat.use_data.table_binding', TRUE))) {
     if(requireNamespace("data.table", quietly = TRUE)) {
       return(as.data.frame(data.table::rbindlist(frame_list),
                            stringsAsFactor=FALSE))
