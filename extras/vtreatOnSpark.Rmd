@@ -25,7 +25,7 @@ d = read.table(paste(dir,'orange_small_train.data.gz',sep=''),
                header=TRUE, sep='\t', na.strings=c('NA',''), 
                stringsAsFactors=FALSE)
 churn = read.table(paste(dir,'orange_small_train_churn.labels.txt', sep=''),
-                    header=FALSE, sep='\t')
+                   header=FALSE, sep='\t')
 d$churn = churn$V1
 rq_copy_to(db, "kdd2009", d,
            overwrite = TRUE,
@@ -77,9 +77,9 @@ treatment_plans <- lapply(vgroups,
 
 # get unified scoreFrame
 scoreFrame <- lapply(treatment_plans,
-                function(tpi) {
-                  tpi$scoreFrame
-                })
+                     function(tpi) {
+                       tpi$scoreFrame
+                     })
 scoreFrame <- do.call(rbind, scoreFrame)
 
 # try to get Bonferroni- corrected valid derived variables.
@@ -101,9 +101,9 @@ rqplan <- as_rquery_plan(treatment_plans, var_restriction = newvars)
 #   DiagrammeR::grViz(.)
 # sql <- to_sql(ops, db)
 # cat(sql)
-d_train <- materialize_treated(db, rqplan, d_train, 
-                               tmp_name_gen(), 
-                               temporary = TRUE, overwrite = TRUE)
+d_train <- rquery_prepare(db, rqplan, d_train, 
+                          tmp_name_gen(), 
+                          temporary = TRUE, overwrite = TRUE)
 length(column_names(d_train))
 cdata::qlook(db, d_train$table_name)
 ```
