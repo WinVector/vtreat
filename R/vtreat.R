@@ -733,11 +733,13 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
   if(verbose) {
     print(paste(" vtreat::mkCrossFrameCExperiment done", date()))
   }
-  list(treatments=treatments,
-       crossFrame=crossFrame,
-       crossWeights=crossDat$crossWeights,
-       method=crossDat$method,
-       evalSets=crossDat$evalSets)
+  res <- list(treatments=treatments,
+              crossFrame=crossFrame,
+              crossWeights=crossDat$crossWeights,
+              method=crossDat$method,
+              evalSets=crossDat$evalSets)
+  class(res) <- "vtreat_cross_frame_experiment"
+  res
 }
 
 
@@ -872,11 +874,23 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
   if(verbose) {
     print(paste(" vtreat::mkCrossFrameNExperiment done", date()))
   }
-  list(treatments=treatments,
-       crossFrame=crossFrame,
-       crossWeights=crossDat$crossWeights,
-       method=crossDat$method,
-       evalSets=crossDat$evalSets)
+  res <- list(treatments=treatments,
+              crossFrame=crossFrame,
+              crossWeights=crossDat$crossWeights,
+              method=crossDat$method,
+              evalSets=crossDat$evalSets)
+  class(res) <- "vtreat_cross_frame_experiment"
+  res
 }
 
+#' @export
+format.vtreat_cross_frame_experiment <- function(x, ...) {
+  format(x$treatments)
+}
+
+#' @export
+print.vtreat_cross_frame_experiment <- function(x, ...) {
+  print(format(x))
+  invisible(x)
+}
 
