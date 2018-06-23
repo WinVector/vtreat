@@ -26,33 +26,38 @@ flatten_fn_list <- function(d, fnlist) {
 #' Materialize a treated data frame remotely.
 #' 
 #' @param db a db handle.
-#' @param rqplan an query plan
+#' @param rqplan an query plan produced by as_rquery_plan().
 #' @param data_source relop, data source (usually a relop_table_source).
 #' @param result_table_name character, table name to land result in
 #' @param ... force later arguments to bind by name.
 #' @param extracols extra columns to copy.
 #' @param temporary logical, if TRUE try to make result temporary.
 #' @param overwrite logical, if TRUE try to overwrite result.
+#' @param print_rquery logical, if TRUE print the rquery ops.
 #' @param print_sql logical, if TRUE print the SQL.
 #' @return description of treated table.
 #' 
-#' @seealso \code{\link{as_rquery_plan}}
+#' @seealso \code{\link{as_rquery_plan}}, \code{\link{rqdatatable_prepare}}
 #' 
 #' @export
 #' 
-materialize_treated <- function(db, rqplan, data_source, result_table_name,
-                                ...,
-                                extracols = NULL,
-                                temporary = FALSE,
-                                overwrite = TRUE,
-                                print_sql = FALSE) {
+rquery_prepare <- function(db, rqplan, data_source, result_table_name,
+                           ...,
+                           extracols = NULL,
+                           temporary = FALSE,
+                           overwrite = TRUE,
+                           print_rquery = FALSE,
+                           print_sql = FALSE) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
-    stop("vtreat::materialize_treated requires the rquery package.")
+    stop("vtreat::rquery_prepare requires the rquery package.")
   }
-  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::materialize_treated")
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::rquery_prepare")
   for(ni in names(rqplan$tables)) {
     rquery::rq_copy_to(db, ni, rqplan$tables[[ni]], 
                        overwrite = TRUE, temporary = TRUE)
+  }
+  if(!("relop" %in% class(data_source))) {
+    stop("vtreat::rquery_prepare data_source must be an rquery::relop tree")
   }
   ops <- flatten_fn_list(data_source, rqplan$optree_generators)
   selcols <- intersect(rquery::column_names(ops), 
@@ -60,6 +65,9 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
                                 rqplan$newvars,
                                 extracols)))
   ops <- rquery::select_columns(ops, selcols)
+  if(print_rquery) {
+    cat(format(ops))
+  }
   if(print_sql) {
     cat(rquery::to_sql(ops, db))
   }
@@ -72,6 +80,82 @@ materialize_treated <- function(db, rqplan, data_source, result_table_name,
   }
   treated
 }
+
+#' @describeIn rquery_prepare old name for rquery_prepare function
+#' @export
+materialize_treated <- rquery_prepare
+
+
+
+#' Apply a treatment plan using rqdatatable.
+#' 
+#' @param rqplan an query plan produced by as_rquery_plan().
+#' @param data_source a data.frame.
+#' @param ... force later arguments to bind by name.
+#' @param extracols extra columns to copy.
+#' @param partition_column character name of column to partition work by.
+#' @param cl a cluster object, created by package parallel or by package snow. If NULL, use the registered default cluster.
+#' @param print_rquery logical, if TRUE print the rquery ops.
+#' @param env environment to work in.
+#' @return treated data.
+#' 
+#' @seealso \code{\link{as_rquery_plan}}, \code{\link{rquery_prepare}}
+#' 
+#' @export
+#' 
+rqdatatable_prepare <- function(rqplan, data_source,
+                                ...,
+                                partition_column = NULL,
+                                cl = NULL,
+                                extracols = NULL,
+                                print_rquery = FALSE,
+                                env = parent.frame()) {
+  if(!requireNamespace("rquery", quietly = TRUE)) {
+    stop("vtreat::rqdatatable_prepare requires the rquery package.")
+  }
+  if(!requireNamespace("rqdatatable", quietly = TRUE)) {
+    stop("vtreat::rqdatatable_prepare requires the rqdatatable package.")
+  }
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::rqdatatable_prepare")
+  source_name <- substitute(data_source)
+  if(is.name(source_name)) {
+    source_name <- as.character(source_name)
+  } else {
+    source_name <- "vtreat_rqdatatable_source"
+  }
+  if(!is.data.frame(data_source)) {
+    stop("vtreat::rqdatatable_prepare data_source must be a data.frame")
+  }
+  source_hdl <- rquery::local_td(data_source, name = source_name)
+  ops <- flatten_fn_list(source_hdl, rqplan$optree_generators)
+  selcols <- intersect(rquery::column_names(ops), 
+                       unique(c(rqplan$outcomename, 
+                                rqplan$newvars,
+                                extracols,
+                                partition_column)))
+  ops <- rquery::select_columns(ops, selcols)
+  if(print_rquery) {
+    cat(format(ops))
+  }
+  tables <- rqplan$tables
+  tables[[source_name]] <- data_source
+  if(is.null(partition_column)) {
+    treated <- rqdatatable::ex_data_table(ops, 
+                                          tables = tables,
+                                          env = env)
+  } else {
+    treated <- rqdatatable::ex_data_table_parallel(ops, 
+                                                   partition_column = partition_column,
+                                                   cl = cl,
+                                                   tables = tables,
+                                                   env = env)
+  }
+  treated
+}
+
+
+
+
 
 as_rquery <- function(tstep, 
                       ...,
@@ -119,7 +203,7 @@ as_rquery.vtreatment <- function(tstep,
 #'       source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
 #'                                overwrite = TRUE, temporary = TRUE)
 #' 
-#'       rest <- materialize_treated(db, rqplan, source_data, "dTreatedC", 
+#'       rest <- rquery_prepare(db, rqplan, source_data, "dTreatedC", 
 #'                                   extracols = "id",
 #'                                   print_sql = FALSE)
 #'       resd <- DBI::dbReadTable(db, rest$table_name)
@@ -131,7 +215,7 @@ as_rquery.vtreatment <- function(tstep,
 #'    }
 #' }
 #' 
-#' @seealso \code{\link{materialize_treated}}
+#' @seealso \code{\link{rquery_prepare}}
 #' 
 #' @export
 #'

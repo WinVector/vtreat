@@ -42,7 +42,7 @@ if(requireNamespace("rquery", quietly = TRUE)) {
       source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
                                overwrite = TRUE, temporary = TRUE)
 
-      rest <- materialize_treated(db, rqplan, source_data, "dTreatedC", 
+      rest <- rquery_prepare(db, rqplan, source_data, "dTreatedC", 
                                   extracols = "id",
                                   print_sql = FALSE)
       resd <- DBI::dbReadTable(db, rest$table_name)
@@ -56,5 +56,5 @@ if(requireNamespace("rquery", quietly = TRUE)) {
 
 }
 \seealso{
-\code{\link{materialize_treated}}
+\code{\link{rquery_prepare}}
 }
