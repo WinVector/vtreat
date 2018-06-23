@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print treatmentplan. — print.vtreatment • vtreat</title>
+<title>Materialize a treated data frame remotely. — rquery_prepare • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Print treatmentplan. — print.vtreatment" />
+<meta property="og:title" content="Materialize a treated data frame remotely. — rquery_prepare" />
 
-<meta property="og:description" content="Print treatmentplan." />
+<meta property="og:description" content="Materialize a treated data frame remotely." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,36 +136,83 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print treatmentplan.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/vtreat.R'><code>R/vtreat.R</code></a></small>
-    <div class="hidden name"><code>print.vtreatment.Rd</code></div>
+    <h1>Materialize a treated data frame remotely.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/rquery_treatment.R'><code>R/rquery_treatment.R</code></a></small>
+    <div class="hidden name"><code>rquery_prepare.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Print treatmentplan.</p>
+    <p>Materialize a treated data frame remotely.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for vtreatment</span>
-<span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>rquery_prepare</span>(<span class='no'>db</span>, <span class='no'>rqplan</span>, <span class='no'>data_source</span>, <span class='no'>result_table_name</span>, <span class='no'>...</span>,
+  <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>print_rquery</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>print_sql</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>materialize_treated</span>(<span class='no'>db</span>, <span class='no'>rqplan</span>, <span class='no'>data_source</span>, <span class='no'>result_table_name</span>, <span class='no'>...</span>,
+  <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>print_rquery</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>print_sql</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>treatmentplan</p></td>
+      <th>db</th>
+      <td><p>a db handle.</p></td>
+    </tr>
+    <tr>
+      <th>rqplan</th>
+      <td><p>an query plan produced by as_rquery_plan().</p></td>
+    </tr>
+    <tr>
+      <th>data_source</th>
+      <td><p>relop, data source (usually a relop_table_source).</p></td>
+    </tr>
+    <tr>
+      <th>result_table_name</th>
+      <td><p>character, table name to land result in</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional args (to match general signature).</p></td>
+      <td><p>force later arguments to bind by name.</p></td>
+    </tr>
+    <tr>
+      <th>extracols</th>
+      <td><p>extra columns to copy.</p></td>
+    </tr>
+    <tr>
+      <th>temporary</th>
+      <td><p>logical, if TRUE try to make result temporary.</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>logical, if TRUE try to overwrite result.</p></td>
+    </tr>
+    <tr>
+      <th>print_rquery</th>
+      <td><p>logical, if TRUE print the rquery ops.</p></td>
+    </tr>
+    <tr>
+      <th>print_sql</th>
+      <td><p>logical, if TRUE print the SQL.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>description of treated table.</p>
+    
+    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
+
+    <ul>
+<li><p><code>materialize_treated</code>: old name for rquery_prepare function</p></li>
+</ul>
+    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='designTreatmentsC.html'>designTreatmentsC</a></code> <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code> <code><a href='designTreatmentsZ.html'>designTreatmentsZ</a></code> <code><a href='prepare.html'>prepare</a></code></p></div>
+    <div class='dont-index'><p><code><a href='as_rquery_plan.html'>as_rquery_plan</a></code>, <code><a href='rqdatatable_prepare.html'>rqdatatable_prepare</a></code></p></div>
     
 
   </div>
@@ -174,6 +221,10 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#functions">Functions</a></li>
+
       <li><a href="#see-also">See also</a></li>
           </ul>
 

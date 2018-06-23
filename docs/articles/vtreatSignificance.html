@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.1</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
       <h1>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-06-18</h4>
+            <h4 class="date">2018-06-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -160,15 +160,15 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d<span class="op
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.0 inspecting inputs Mon Jun 18 09:12:49 2018"
-## [1] "designing treatments Mon Jun 18 09:12:49 2018"
-## [1] " have initial level statistics Mon Jun 18 09:12:49 2018"
-## [1] "design var catVarNoise Mon Jun 18 09:12:49 2018"
-## [1] "design var catVarPerfect Mon Jun 18 09:12:49 2018"
-## [1] " scoring treatments Mon Jun 18 09:12:49 2018"
-## [1] "have treatment plan Mon Jun 18 09:12:49 2018"
-## [1] "rescoring complex variables Mon Jun 18 09:12:49 2018"
-## [1] "done rescoring complex variables Mon Jun 18 09:12:49 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 09:16:16 2018"
+## [1] "designing treatments Sat Jun 23 09:16:16 2018"
+## [1] " have initial level statistics Sat Jun 23 09:16:16 2018"
+## [1] "design var catVarNoise Sat Jun 23 09:16:16 2018"
+## [1] "design var catVarPerfect Sat Jun 23 09:16:16 2018"
+## [1] " scoring treatments Sat Jun 23 09:16:16 2018"
+## [1] "have treatment plan Sat Jun 23 09:16:16 2018"
+## [1] "rescoring complex variables Sat Jun 23 09:16:16 2018"
+## [1] "done rescoring complex variables Sat Jun 23 09:16:17 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)

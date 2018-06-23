@@ -5,6 +5,7 @@
   * default data.table merging on (may be a performance regression to not set this).
   * rqdatatable treatment path.
   * better formatting.
+  * add extracols argument to prepare().
 
 # vtreat 1.2.0 2018/06/19
 

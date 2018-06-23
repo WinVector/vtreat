@@ -473,6 +473,7 @@ novel_value_summary <- function(dframe, trackedValues) {
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @param codeRestriction optional list of treated variable codes to restrict to
 #' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
+#' @param extracols extra columns to copy.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
@@ -515,6 +516,7 @@ prepare <- function(treatmentplan, dframe,
                     varRestriction= NULL,
                     codeRestriction= NULL,
                     trackedValues= NULL,
+                    extracols= NULL,
                     parallelCluster= NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare")
   .checkArgs1(dframe=dframe)
@@ -587,9 +589,11 @@ prepare <- function(treatmentplan, dframe,
   }
   treated <- .vtreatList(treatmentplan$treatments,dframe,useableVars,scale,doCollar,
                          parallelCluster)
-  # copy outcome over if it is present
-  if(treatmentplan$outcomename %in% colnames(dframe)) {
-    treated[[treatmentplan$outcomename]] <- dframe[[treatmentplan$outcomename]]
+  # copy outcome and extracols over when present
+  for(ci in unique(c(treatmentplan$outcomename, extracols))) {
+    if(ci %in% colnames(dframe)) {
+      treated[[ci]] <- dframe[[ci]]
+    }
   }
   treated
 }

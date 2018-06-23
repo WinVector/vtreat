@@ -5,7 +5,7 @@
 \title{Apply a treatment plan using rqdatatable.}
 \usage{
 rqdatatable_prepare(rqplan, data_source, ..., partition_column = NULL,
-  cl = NULL, extracols = NULL, print_rquery = FALSE,
+  parallelCluster = NULL, extracols = NULL, print_rquery = FALSE,
   env = parent.frame())
 }
 \arguments{
@@ -17,7 +17,7 @@ rqdatatable_prepare(rqplan, data_source, ..., partition_column = NULL,
 
 \item{partition_column}{character name of column to partition work by.}
 
-\item{cl}{a cluster object, created by package parallel or by package snow. If NULL, use the registered default cluster.}
+\item{parallelCluster}{a cluster object, created by package parallel or by package snow. If NULL, use the registered default cluster.}
 
 \item{extracols}{extra columns to copy.}
 

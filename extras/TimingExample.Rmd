@@ -31,6 +31,7 @@ na_rate <- 0.01
 
 set.seed(3252)
 d <- data.frame(id = seq_len(n_row),
+                group = seq_len(n_row) %% 10,
                 yN = rnorm(n_row))
 for(i in seq_len(n_num_var)) {
   vi <- paste0("nv", i)
@@ -72,6 +73,34 @@ base::date()
 ```
 
 Note a major cost is production of indicator columns (which leads to a large result).  Setting `minFraction` to something larger (like `0.1` or `0.2`) can help there.
+
+
+-----
+
+Some timings of `prepare()`.  Note: one uses `prepare()` on new data, for the 
+variable design data you use `ctpc$crossFrame` to reduce nested model bias.
+
+```{r preptimes}
+system.time(r <- prepare(ctpc$treatments, d, 
+                         extracols = "id"))
+
+system.time(r <- prepare(ctpc$treatments, d, 
+                         extracols = "id", 
+                         parallelCluster = parallelCluster))
+
+rqplan <- as_rquery_plan(list(ctpc$treatments))
+
+system.time(r <- rqdatatable_prepare(rqplan, d, 
+                                     extracols = "id"))
+
+system.time(r <- rqdatatable_prepare(rqplan, d, 
+                                     extracols = "id",
+                                     partition_column = "group",
+                                     parallelCluster = parallelCluster))
+```
+
+
+-----
 
 Clean up.
 
