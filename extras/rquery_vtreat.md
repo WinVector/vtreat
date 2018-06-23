@@ -30,15 +30,15 @@ dTrainC$id <- seq_len(nrow(dTrainC))
 treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 ```
 
-    ## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 08:06:56 2018"
-    ## [1] "designing treatments Sat Jun 23 08:06:56 2018"
-    ## [1] " have initial level statistics Sat Jun 23 08:06:56 2018"
-    ## [1] "design var x Sat Jun 23 08:06:56 2018"
-    ## [1] "design var z Sat Jun 23 08:06:56 2018"
-    ## [1] " scoring treatments Sat Jun 23 08:06:56 2018"
-    ## [1] "have treatment plan Sat Jun 23 08:06:56 2018"
-    ## [1] "rescoring complex variables Sat Jun 23 08:06:56 2018"
-    ## [1] "done rescoring complex variables Sat Jun 23 08:06:56 2018"
+    ## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 08:18:12 2018"
+    ## [1] "designing treatments Sat Jun 23 08:18:12 2018"
+    ## [1] " have initial level statistics Sat Jun 23 08:18:12 2018"
+    ## [1] "design var x Sat Jun 23 08:18:12 2018"
+    ## [1] "design var z Sat Jun 23 08:18:12 2018"
+    ## [1] " scoring treatments Sat Jun 23 08:18:12 2018"
+    ## [1] "have treatment plan Sat Jun 23 08:18:12 2018"
+    ## [1] "rescoring complex variables Sat Jun 23 08:18:12 2018"
+    ## [1] "done rescoring complex variables Sat Jun 23 08:18:12 2018"
 
 ``` r
 prepare(treatmentsC, dTrainC) %.>%
@@ -56,8 +56,12 @@ prepare(treatmentsC, dTrainC) %.>%
 
 ``` r
 rqplan <- as_rquery_plan(list(treatmentsC))
-ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
-cat(format(ops))
+```
+
+``` r
+treated <- vtreat::rqdatatable_prepare(rqplan, dTrainC, 
+                                       extracols = "id", 
+                                       print_rquery = TRUE)
 ```
 
     ## table('dTrainC'; 
@@ -66,12 +70,12 @@ cat(format(ops))
     ##   y,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_07971799909843181060_0000000000'; 
+    ##   table('vtreat_tmp_08563881529838063471_0000000000'; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_88650927271245624276_0000000000'; 
+    ##   table('vtreat_tmp_77569347006612746199_0000000000'; 
     ##     x,
     ##     x_catB),
     ##   j= LEFT, by= x) %.>%
@@ -82,22 +86,23 @@ cat(format(ops))
     ##   x_catP := ifelse(is.na(x), 0.166666666666667, ifelse(is.na(x_catP), 0, x_catP)),
     ##   x_catB := ifelse(is.na(x), 9.21044036697607, ifelse(is.na(x_catB), 0, x_catB)),
     ##   z_clean := ifelse(is.na(z), 3.6, z),
-    ##   z_isBAD := ifelse(is.na(z), 1, 0))
+    ##   z_isBAD := ifelse(is.na(z), 1, 0)) %.>%
+    ##  select_columns(.,
+    ##    id, x_catB, x_catP, x_lev_NA, x_lev_x_a, x_lev_x_b, y, z_clean, z_isBAD)
 
 ``` r
-treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
 treated[]  %.>%
   knitr::kable(.)
 ```
 
-| x   |   id| y     |    z|    x\_catP|     x\_catB|  x\_lev\_NA|  x\_lev\_x\_a|  x\_lev\_x\_b|  z\_clean|  z\_isBAD|
-|:----|----:|:------|----:|----------:|-----------:|-----------:|-------------:|-------------:|---------:|---------:|
-| NA  |    5| TRUE  |    5|  0.1666667|   9.2104404|           1|             0|             0|       5.0|         0|
-| a   |    1| FALSE |    1|  0.5000000|  -0.6930972|           0|             1|             0|       1.0|         0|
-| a   |    2| FALSE |    2|  0.5000000|  -0.6930972|           0|             1|             0|       2.0|         0|
-| a   |    3| TRUE  |   NA|  0.5000000|  -0.6930972|           0|             1|             0|       3.6|         1|
-| b   |    4| FALSE |    4|  0.3333333|   0.0000000|           0|             0|             1|       4.0|         0|
-| b   |    6| TRUE  |    6|  0.3333333|   0.0000000|           0|             0|             1|       6.0|         0|
+|   id|     x\_catB|    x\_catP|  x\_lev\_NA|  x\_lev\_x\_a|  x\_lev\_x\_b| y     |  z\_clean|  z\_isBAD|
+|----:|-----------:|----------:|-----------:|-------------:|-------------:|:------|---------:|---------:|
+|    5|   9.2104404|  0.1666667|           1|             0|             0| TRUE  |       5.0|         0|
+|    1|  -0.6930972|  0.5000000|           0|             1|             0| FALSE |       1.0|         0|
+|    2|  -0.6930972|  0.5000000|           0|             1|             0| FALSE |       2.0|         0|
+|    3|  -0.6930972|  0.5000000|           0|             1|             0| TRUE  |       3.6|         1|
+|    4|   0.0000000|  0.3333333|           0|             0|             1| FALSE |       4.0|         0|
+|    6|   0.0000000|  0.3333333|           0|             0|             1| TRUE  |       6.0|         0|
 
 ``` r
 source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
@@ -143,15 +148,15 @@ dTrainR$id <- seq_len(nrow(dTrainR))
 treatmentsN <- designTreatmentsN(dTrainR, c("x", "z"), 'y')
 ```
 
-    ## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 08:06:57 2018"
-    ## [1] "designing treatments Sat Jun 23 08:06:57 2018"
-    ## [1] " have initial level statistics Sat Jun 23 08:06:57 2018"
-    ## [1] "design var x Sat Jun 23 08:06:57 2018"
-    ## [1] "design var z Sat Jun 23 08:06:57 2018"
-    ## [1] " scoring treatments Sat Jun 23 08:06:57 2018"
-    ## [1] "have treatment plan Sat Jun 23 08:06:57 2018"
-    ## [1] "rescoring complex variables Sat Jun 23 08:06:57 2018"
-    ## [1] "done rescoring complex variables Sat Jun 23 08:06:57 2018"
+    ## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 08:18:12 2018"
+    ## [1] "designing treatments Sat Jun 23 08:18:12 2018"
+    ## [1] " have initial level statistics Sat Jun 23 08:18:12 2018"
+    ## [1] "design var x Sat Jun 23 08:18:12 2018"
+    ## [1] "design var z Sat Jun 23 08:18:12 2018"
+    ## [1] " scoring treatments Sat Jun 23 08:18:12 2018"
+    ## [1] "have treatment plan Sat Jun 23 08:18:12 2018"
+    ## [1] "rescoring complex variables Sat Jun 23 08:18:12 2018"
+    ## [1] "done rescoring complex variables Sat Jun 23 08:18:12 2018"
 
 ``` r
 prepare(treatmentsN, dTrainR)  %.>%
@@ -169,8 +174,12 @@ prepare(treatmentsN, dTrainR)  %.>%
 
 ``` r
 rqplan <- as_rquery_plan(list(treatmentsN))
-ops <- flatten_fn_list(rquery::local_td(dTrainR), rqplan$optree_generators)
-cat(format(ops))
+```
+
+``` r
+treated <- vtreat::rqdatatable_prepare(rqplan, dTrainR, 
+                                       extracols = "id", 
+                                       print_rquery = TRUE)
 ```
 
     ## table('dTrainR'; 
@@ -179,17 +188,17 @@ cat(format(ops))
     ##   y,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_30139246368783527598_0000000000'; 
+    ##   table('vtreat_tmp_65616809299039163583_0000000000'; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_33862137289218295747_0000000000'; 
+    ##   table('vtreat_tmp_85795472769670609957_0000000000'; 
     ##     x,
     ##     x_catN),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_43830873332114094699_0000000000'; 
+    ##   table('vtreat_tmp_98266006449678565435_0000000000'; 
     ##     x,
     ##     x_catD),
     ##   j= LEFT, by= x) %.>%
@@ -201,22 +210,23 @@ cat(format(ops))
     ##   x_catN := ifelse(is.na(x), 0.5, ifelse(is.na(x_catN), 0, x_catN)),
     ##   x_catD := ifelse(is.na(x), 0, ifelse(is.na(x_catD), 0, x_catD)),
     ##   z_clean := ifelse(is.na(z), 3.6, z),
-    ##   z_isBAD := ifelse(is.na(z), 1, 0))
+    ##   z_isBAD := ifelse(is.na(z), 1, 0)) %.>%
+    ##  select_columns(.,
+    ##    id, x_catD, x_catN, x_catP, x_lev_NA, x_lev_x_a, x_lev_x_b, y, z_clean, z_isBAD)
 
 ``` r
-treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
 treated[]  %.>%
   knitr::kable(.)
 ```
 
-| x   |   id|    y|    z|    x\_catP|     x\_catN|    x\_catD|  x\_lev\_NA|  x\_lev\_x\_a|  x\_lev\_x\_b|  z\_clean|  z\_isBAD|
-|:----|----:|----:|----:|----------:|-----------:|----------:|-----------:|-------------:|-------------:|---------:|---------:|
-| NA  |    5|    1|    5|  0.1666667|   0.5000000|  0.0000000|           1|             0|             0|       5.0|         0|
-| a   |    1|    0|    1|  0.5000000|  -0.1666667|  0.5773503|           0|             1|             0|       1.0|         0|
-| a   |    2|    0|    2|  0.5000000|  -0.1666667|  0.5773503|           0|             1|             0|       2.0|         0|
-| a   |    3|    1|   NA|  0.5000000|  -0.1666667|  0.5773503|           0|             1|             0|       3.6|         1|
-| b   |    4|    0|    4|  0.3333333|   0.0000000|  0.7071068|           0|             0|             1|       4.0|         0|
-| b   |    6|    1|    6|  0.3333333|   0.0000000|  0.7071068|           0|             0|             1|       6.0|         0|
+|   id|    x\_catD|     x\_catN|    x\_catP|  x\_lev\_NA|  x\_lev\_x\_a|  x\_lev\_x\_b|    y|  z\_clean|  z\_isBAD|
+|----:|----------:|-----------:|----------:|-----------:|-------------:|-------------:|----:|---------:|---------:|
+|    5|  0.0000000|   0.5000000|  0.1666667|           1|             0|             0|    1|       5.0|         0|
+|    1|  0.5773503|  -0.1666667|  0.5000000|           0|             1|             0|    0|       1.0|         0|
+|    2|  0.5773503|  -0.1666667|  0.5000000|           0|             1|             0|    0|       2.0|         0|
+|    3|  0.5773503|  -0.1666667|  0.5000000|           0|             1|             0|    1|       3.6|         1|
+|    4|  0.7071068|   0.0000000|  0.3333333|           0|             0|             1|    0|       4.0|         0|
+|    6|  0.7071068|   0.0000000|  0.3333333|           0|             0|             1|    1|       6.0|         0|
 
 ``` r
 source_data <- rquery::rq_copy_to(db, "dTrainR", dTrainR,
@@ -261,13 +271,13 @@ dTrainZ$id <- seq_len(nrow(dTrainZ))
 treatmentsZ <- designTreatmentsZ(dTrainZ, c("x", "z"))
 ```
 
-    ## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 08:06:57 2018"
-    ## [1] "designing treatments Sat Jun 23 08:06:57 2018"
-    ## [1] " have initial level statistics Sat Jun 23 08:06:57 2018"
-    ## [1] "design var x Sat Jun 23 08:06:57 2018"
-    ## [1] "design var z Sat Jun 23 08:06:57 2018"
-    ## [1] " scoring treatments Sat Jun 23 08:06:57 2018"
-    ## [1] "have treatment plan Sat Jun 23 08:06:57 2018"
+    ## [1] "vtreat 1.2.1 inspecting inputs Sat Jun 23 08:18:13 2018"
+    ## [1] "designing treatments Sat Jun 23 08:18:13 2018"
+    ## [1] " have initial level statistics Sat Jun 23 08:18:13 2018"
+    ## [1] "design var x Sat Jun 23 08:18:13 2018"
+    ## [1] "design var z Sat Jun 23 08:18:13 2018"
+    ## [1] " scoring treatments Sat Jun 23 08:18:13 2018"
+    ## [1] "have treatment plan Sat Jun 23 08:18:13 2018"
 
 ``` r
 prepare(treatmentsZ, dTrainZ)  %.>%
@@ -285,8 +295,12 @@ prepare(treatmentsZ, dTrainZ)  %.>%
 
 ``` r
 rqplan <- as_rquery_plan(list(treatmentsZ))
-ops <- flatten_fn_list(rquery::local_td(dTrainZ), rqplan$optree_generators)
-cat(format(ops))
+```
+
+``` r
+treated <- vtreat::rqdatatable_prepare(rqplan, dTrainZ, 
+                                       extracols = "id", 
+                                       print_rquery = TRUE)
 ```
 
     ## table('dTrainZ'; 
@@ -294,7 +308,7 @@ cat(format(ops))
     ##   z,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table('vtreat_tmp_79047148924082077462_0000000000'; 
+    ##   table('vtreat_tmp_39447327961595303536_0000000000'; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
@@ -304,22 +318,23 @@ cat(format(ops))
     ##   x_lev_x_b := ifelse(is.na(x), 0, ifelse(x == "b", 1, 0)),
     ##   x_catP := ifelse(is.na(x), 0.166666666666667, ifelse(is.na(x_catP), 0, x_catP)),
     ##   z_clean := ifelse(is.na(z), 3.6, z),
-    ##   z_isBAD := ifelse(is.na(z), 1, 0))
+    ##   z_isBAD := ifelse(is.na(z), 1, 0)) %.>%
+    ##  select_columns(.,
+    ##    id, x_catP, x_lev_NA, x_lev_x_a, x_lev_x_b, z_clean, z_isBAD)
 
 ``` r
-treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
 treated[]  %.>%
   knitr::kable(.)
 ```
 
-| x   |   id|    z|    x\_catP|  x\_lev\_NA|  x\_lev\_x\_a|  x\_lev\_x\_b|  z\_clean|  z\_isBAD|
-|:----|----:|----:|----------:|-----------:|-------------:|-------------:|---------:|---------:|
-| NA  |    5|    5|  0.1666667|           1|             0|             0|       5.0|         0|
-| a   |    1|    1|  0.5000000|           0|             1|             0|       1.0|         0|
-| a   |    2|    2|  0.5000000|           0|             1|             0|       2.0|         0|
-| a   |    3|   NA|  0.5000000|           0|             1|             0|       3.6|         1|
-| b   |    4|    4|  0.3333333|           0|             0|             1|       4.0|         0|
-| b   |    6|    6|  0.3333333|           0|             0|             1|       6.0|         0|
+|   id|    x\_catP|  x\_lev\_NA|  x\_lev\_x\_a|  x\_lev\_x\_b|  z\_clean|  z\_isBAD|
+|----:|----------:|-----------:|-------------:|-------------:|---------:|---------:|
+|    5|  0.1666667|           1|             0|             0|       5.0|         0|
+|    1|  0.5000000|           0|             1|             0|       1.0|         0|
+|    2|  0.5000000|           0|             1|             0|       2.0|         0|
+|    3|  0.5000000|           0|             1|             0|       3.6|         1|
+|    4|  0.3333333|           0|             0|             1|       4.0|         0|
+|    6|  0.3333333|           0|             0|             1|       6.0|         0|
 
 ``` r
 source_data <- rquery::rq_copy_to(db, "dTrainZ", dTrainZ,

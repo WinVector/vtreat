@@ -33,12 +33,12 @@ treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 prepare(treatmentsC, dTrainC) %.>%
   knitr::kable(.)
 rqplan <- as_rquery_plan(list(treatmentsC))
-ops <- flatten_fn_list(rquery::local_td(dTrainC), rqplan$optree_generators)
-cat(format(ops))
 ```
 
 ```{r crqdt, eval=eval_rqdt}
-treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
+treated <- vtreat::rqdatatable_prepare(rqplan, dTrainC, 
+                                       extracols = "id", 
+                                       print_rquery = TRUE)
 treated[]  %.>%
   knitr::kable(.)
 ```
@@ -72,12 +72,12 @@ prepare(treatmentsN, dTrainR)  %.>%
   knitr::kable(.)
 
 rqplan <- as_rquery_plan(list(treatmentsN))
-ops <- flatten_fn_list(rquery::local_td(dTrainR), rqplan$optree_generators)
-cat(format(ops))
 ```
 
 ```{r nrqdt, eval=eval_rqdt}
-treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
+treated <- vtreat::rqdatatable_prepare(rqplan, dTrainR, 
+                                       extracols = "id", 
+                                       print_rquery = TRUE)
 treated[]  %.>%
   knitr::kable(.)
 ```
@@ -112,12 +112,12 @@ prepare(treatmentsZ, dTrainZ)  %.>%
   knitr::kable(.)
 
 rqplan <- as_rquery_plan(list(treatmentsZ))
-ops <- flatten_fn_list(rquery::local_td(dTrainZ), rqplan$optree_generators)
-cat(format(ops))
 ```
 
 ```{r zrqdt, eval=eval_rqdt}
-treated <- rqdatatable::ex_data_table(ops, tables = rqplan$tables)
+treated <- vtreat::rqdatatable_prepare(rqplan, dTrainZ, 
+                                       extracols = "id", 
+                                       print_rquery = TRUE)
 treated[]  %.>%
   knitr::kable(.)
 ```
