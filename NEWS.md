@@ -6,6 +6,7 @@
   * rqdatatable treatment path.
   * better formatting.
   * add extracols argument to prepare().
+  * try to fix regexps.
 
 # vtreat 1.2.0 2018/06/19
 
