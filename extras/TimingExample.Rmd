@@ -60,6 +60,20 @@ system.time(
   ctpc <- mkCrossFrameCExperiment(d, vars, "yC", "YES",
                                   parallelCluster = parallelCluster)
 )
+
+base::date()
+
+system.time(
+  tpc <- designTreatmentsC(d, vars, "yC", "YES",
+                           parallelCluster = parallelCluster)
+)
+
+base::date()
+
+system.time(
+  tpc <- designTreatmentsC(d, vars, "yC", "YES")
+)
+
 base::date()
 ```
 
@@ -69,6 +83,20 @@ system.time(
   ctpn <- mkCrossFrameNExperiment(d, vars, "yN", 
                                   parallelCluster = parallelCluster)
 )
+
+base::date()
+
+system.time(
+  tpn <- designTreatmentsN(d, vars, "yN",
+                           parallelCluster = parallelCluster)
+)
+
+base::date()
+
+system.time(
+  tpn <- designTreatmentsN(d, vars, "yN")
+)
+
 base::date()
 ```
 
