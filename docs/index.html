@@ -115,9 +115,7 @@
 
 <p><a href="http://winvector.github.io/vtreat/">vtreat</a> is an <a href="https://cran.r-project.org">R</a> data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.</p>
 <p>For more detail please see here: <a href="https://arxiv.org/abs/1611.09477">arXiv:1611.09477 stat.AP</a> . There is also a series of articles recording the evolution of <code>vtreat</code> including some tutorials <a href="http://www.win-vector.com/blog/tag/vtreat/">here</a>.</p>
-<div class="figure">
-<img src="https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png">
-</div>
+<p><img src="https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png"></p>
 <p>(logo: Julie Mount, source: “The Harvest” by Boris Kustodiev 1914)</p>
 <p>Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are <em>common</em> data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.</p>
 <p>In particular vtreat emphasizes a concept called “y-aware pre-processing” and implements:</p>
@@ -144,13 +142,13 @@
 <a href="https://winvector.github.io/vtreat/articles/vtreatSignificance.html">Principled ways to pick significance based pruning levels</a>.</li>
 </ul>
 <p>Install either from CRAN:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">'vtreat'</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">'vtreat'</span>)</a></code></pre></div>
 <p>Or from GitHub:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('devtools')</span>
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">'WinVector/vtreat'</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install.packages('devtools')</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">'WinVector/vtreat'</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <p>And then:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">'vtreat'</span>)
-<span class="kw">help</span>(<span class="st">'vtreat'</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(<span class="st">'vtreat'</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">help</span>(<span class="st">'vtreat'</span>)</a></code></pre></div>
 <p>Data treatments are “y-aware” (use distribution relations between independent variables and the dependent variable). For binary classification use ‘designTreatmentsC()’ and for numeric regression use ‘designTreatmentsN()’.</p>
 <p>After the design step, ‘prepare()’ should be used as you would use model.matrix. ‘prepare()’ treated variables are all numeric and never take the value NA or +-Inf (so are very safe to use in modeling).</p>
 <p>In application we suggest splitting your data into three sets: one for building vtreat encodings, one for training models using these encodings, and one for test and model evaluation.</p>
@@ -205,122 +203,122 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 </ul>
 <p>Examples of current best practice using ‘vtreat’ (variable coding, train, test split) can be found <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">here</a> and <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">here</a>.</p>
 <p>Trivial example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)
-<span class="kw">packageVersion</span>(<span class="st">"vtreat"</span>)
- <span class="co">#  [1] '1.2.1'</span>
-<span class="kw">citation</span>(<span class="st">'vtreat'</span>)
- <span class="co">#  </span>
- <span class="co">#  To cite package 'vtreat' in publications use:</span>
- <span class="co">#  </span>
- <span class="co">#    John Mount and Nina Zumel (2018). vtreat: A Statistically Sound</span>
- <span class="co">#    'data.frame' Processor/Conditioner.</span>
- <span class="co">#    https://github.com/WinVector/vtreat/,</span>
- <span class="co">#    https://winvector.github.io/vtreat/.</span>
- <span class="co">#  </span>
- <span class="co">#  A BibTeX entry for LaTeX users is</span>
- <span class="co">#  </span>
- <span class="co">#    @Manual{,</span>
- <span class="co">#      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},</span>
- <span class="co">#      author = {John Mount and Nina Zumel},</span>
- <span class="co">#      year = {2018},</span>
- <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span>
- <span class="co">#    }</span>
-<span class="kw">options</span>(<span class="kw">list</span>(<span class="dt">vtreat.use_data.table_binding =</span> <span class="ot">TRUE</span>))
-
-<span class="co"># categorical example</span>
-dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>,<span class="ot">NA</span>),
-   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>,<span class="ot">NA</span>),
-   <span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))
-dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))
-
-<span class="co"># help("designTreatmentsC")</span>
-
-treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,
-                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 1.030137e-01 0.32099590                 2</span>
- <span class="co">#  2        x    x_catB  catB 1.125399e-05 0.99172381                 2</span>
- <span class="co">#  3        z   z_clean clean 2.376018e-01 0.13176020                 0</span>
- <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span>
- <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span>
- <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span>
- <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span>
-
-<span class="co"># help("prepare")</span>
-
-dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
-varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainCTreated),<span class="st">'y'</span>)
-<span class="co"># all input variables should be mean 0</span>
-<span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)
- <span class="co">#         x_catP        x_catB       z_clean       z_isBAD      x_lev_NA </span>
- <span class="co">#   1.585994e-16  0.000000e+00  7.927952e-18 -7.926292e-18  3.965082e-18 </span>
- <span class="co">#      x_lev_x_a     x_lev_x_b </span>
- <span class="co">#  -1.982154e-17  9.917546e-19</span>
-<span class="co"># all non NA slopes should be 1</span>
-<span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})
- <span class="co">#     x_catP    x_catB   z_clean   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b </span>
- <span class="co">#          1         1         1         1         1         1         1</span>
-dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw">print</span>(dTestCTreated)
- <span class="co">#        x_catP     x_catB  z_clean    z_isBAD   x_lev_NA  x_lev_x_a</span>
- <span class="co">#  1 -0.2380952 -0.1897682 1.194595 -0.1714286 -0.1714286 -0.2380952</span>
- <span class="co">#  2  0.1785714 -0.1489924 2.951351 -0.1714286 -0.1714286  0.1785714</span>
- <span class="co">#  3  1.0119048 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714</span>
- <span class="co">#  4  0.1785714  0.4336447 0.000000  0.4285714  0.4285714  0.1785714</span>
- <span class="co">#      x_lev_x_b</span>
- <span class="co">#  1  0.02857143</span>
- <span class="co">#  2 -0.07142857</span>
- <span class="co">#  3  0.02857143</span>
- <span class="co">#  4  0.02857143</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># numeric example</span>
-dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>,<span class="ot">NA</span>),
-   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>,<span class="ot">NA</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))
-dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))
-<span class="co"># help("designTreatmentsN")</span>
-treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>,
-                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 1.498471e-01 0.3434338                 2</span>
- <span class="co">#  2        x    x_catN  catN 3.461538e-02 0.6591190                 2</span>
- <span class="co">#  3        x    x_catD  catD 2.500000e-01 0.2070312                 2</span>
- <span class="co">#  4        z   z_clean clean 2.880952e-01 0.1701892                 0</span>
- <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
- <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>
- <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span>
- <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span>
-dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
-varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)
-<span class="co"># all input variables should be mean 0</span>
-<span class="kw">sapply</span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) 
- <span class="co">#         x_catP        x_catN        x_catD       z_clean       z_isBAD </span>
- <span class="co">#   2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 </span>
- <span class="co">#       x_lev_NA     x_lev_x_a     x_lev_x_b </span>
- <span class="co">#   6.938894e-18  0.000000e+00  7.703720e-34</span>
-<span class="co"># all non NA slopes should be 1</span>
-<span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) 
- <span class="co">#     x_catP    x_catN    x_catD   z_clean   z_isBAD  x_lev_NA x_lev_x_a </span>
- <span class="co">#          1         1         1         1         1         1         1 </span>
- <span class="co">#  x_lev_x_b </span>
- <span class="co">#          1</span>
-dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw">print</span>(dTestNTreated)
- <span class="co">#    x_catP x_catN      x_catD   z_clean    z_isBAD   x_lev_NA x_lev_x_a</span>
- <span class="co">#  1  -0.25  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25</span>
- <span class="co">#  2   0.25   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25</span>
- <span class="co">#  3   0.75   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25</span>
- <span class="co">#  4   0.25   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25</span>
- <span class="co">#        x_lev_x_b</span>
- <span class="co">#  1 -2.266233e-17</span>
- <span class="co">#  2  6.798700e-17</span>
- <span class="co">#  3 -2.266233e-17</span>
- <span class="co">#  4 -2.266233e-17</span>
-
-<span class="co"># for large data sets you can consider designing the treatments on </span>
-<span class="co"># a subset like: d[sample(1:dim(d)[[1]],1000),]</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">packageVersion</span>(<span class="st">"vtreat"</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"> <span class="co">#  [1] '1.2.1'</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw">citation</span>(<span class="st">'vtreat'</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"> <span class="co">#  To cite package 'vtreat' in publications use:</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"> <span class="co">#    John Mount and Nina Zumel (2018). vtreat: A Statistically Sound</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"> <span class="co">#    'data.frame' Processor/Conditioner.</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"> <span class="co">#    https://github.com/WinVector/vtreat/,</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"> <span class="co">#    https://winvector.github.io/vtreat/.</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"> <span class="co">#  A BibTeX entry for LaTeX users is</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"> <span class="co">#    @Manual{,</span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"> <span class="co">#      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"> <span class="co">#      author = {John Mount and Nina Zumel},</span></a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"> <span class="co">#      year = {2018},</span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"> <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"> <span class="co">#    }</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="kw">options</span>(<span class="kw">list</span>(<span class="dt">vtreat.use_data.table_binding =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co"># categorical example</span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24">dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>,<span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb4-25" data-line-number="25">   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>,<span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb4-26" data-line-number="26">   <span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb4-27" data-line-number="27">dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="co"># help("designTreatmentsC")</span></a>
+<a class="sourceLine" id="cb4-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb4-31" data-line-number="31">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-32" data-line-number="32">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-33" data-line-number="33"><span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
+<a class="sourceLine" id="cb4-34" data-line-number="34"> <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb4-35" data-line-number="35"> <span class="co">#  1        x    x_catP  catP 0.059315943 0.45141252                 2</span></a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"> <span class="co">#  2        x    x_catB  catB 0.029824903 0.59334713                 2</span></a>
+<a class="sourceLine" id="cb4-37" data-line-number="37"> <span class="co">#  3        z   z_clean clean 0.237601767 0.13176020                 0</span></a>
+<a class="sourceLine" id="cb4-38" data-line-number="38"> <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb4-39" data-line-number="39"> <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb4-40" data-line-number="40"> <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span></a>
+<a class="sourceLine" id="cb4-41" data-line-number="41"> <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span></a>
+<a class="sourceLine" id="cb4-42" data-line-number="42"></a>
+<a class="sourceLine" id="cb4-43" data-line-number="43"><span class="co"># help("prepare")</span></a>
+<a class="sourceLine" id="cb4-44" data-line-number="44"></a>
+<a class="sourceLine" id="cb4-45" data-line-number="45">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-46" data-line-number="46">varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainCTreated),<span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb4-47" data-line-number="47"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb4-48" data-line-number="48"><span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)</a>
+<a class="sourceLine" id="cb4-49" data-line-number="49"> <span class="co">#         x_catP        x_catB       z_clean       z_isBAD      x_lev_NA </span></a>
+<a class="sourceLine" id="cb4-50" data-line-number="50"> <span class="co">#   1.585994e-16  0.000000e+00  7.927952e-18 -7.926292e-18  3.965082e-18 </span></a>
+<a class="sourceLine" id="cb4-51" data-line-number="51"> <span class="co">#      x_lev_x_a     x_lev_x_b </span></a>
+<a class="sourceLine" id="cb4-52" data-line-number="52"> <span class="co">#  -1.982154e-17  9.917546e-19</span></a>
+<a class="sourceLine" id="cb4-53" data-line-number="53"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb4-54" data-line-number="54"><span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb4-55" data-line-number="55">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a>
+<a class="sourceLine" id="cb4-56" data-line-number="56"> <span class="co">#     x_catP    x_catB   z_clean   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b </span></a>
+<a class="sourceLine" id="cb4-57" data-line-number="57"> <span class="co">#          1         1         1         1         1         1         1</span></a>
+<a class="sourceLine" id="cb4-58" data-line-number="58">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-59" data-line-number="59"><span class="kw">print</span>(dTestCTreated)</a>
+<a class="sourceLine" id="cb4-60" data-line-number="60"> <span class="co">#        x_catP     x_catB  z_clean    z_isBAD   x_lev_NA  x_lev_x_a</span></a>
+<a class="sourceLine" id="cb4-61" data-line-number="61"> <span class="co">#  1 -0.2380952 -0.1897682 1.194595 -0.1714286 -0.1714286 -0.2380952</span></a>
+<a class="sourceLine" id="cb4-62" data-line-number="62"> <span class="co">#  2  0.1785714 -0.1489924 2.951351 -0.1714286 -0.1714286  0.1785714</span></a>
+<a class="sourceLine" id="cb4-63" data-line-number="63"> <span class="co">#  3  1.0119048 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714</span></a>
+<a class="sourceLine" id="cb4-64" data-line-number="64"> <span class="co">#  4  0.1785714  0.4336447 0.000000  0.4285714  0.4285714  0.1785714</span></a>
+<a class="sourceLine" id="cb4-65" data-line-number="65"> <span class="co">#      x_lev_x_b</span></a>
+<a class="sourceLine" id="cb4-66" data-line-number="66"> <span class="co">#  1  0.02857143</span></a>
+<a class="sourceLine" id="cb4-67" data-line-number="67"> <span class="co">#  2 -0.07142857</span></a>
+<a class="sourceLine" id="cb4-68" data-line-number="68"> <span class="co">#  3  0.02857143</span></a>
+<a class="sourceLine" id="cb4-69" data-line-number="69"> <span class="co">#  4  0.02857143</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># numeric example</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>,<span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>,<span class="ot">NA</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># help("designTreatmentsN")</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>,</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 3.700306e-01 0.1095637                 2</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 2.606061e-01 0.1961166                 2</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 6.666667e-02 0.5369633                 2</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"> <span class="co">#  4        z   z_clean clean 2.880952e-01 0.1701892                 0</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"> <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"> <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-19" data-line-number="19">varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="kw">sapply</span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) </a>
+<a class="sourceLine" id="cb5-22" data-line-number="22"> <span class="co">#         x_catP        x_catN        x_catD       z_clean       z_isBAD </span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23"> <span class="co">#   2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 </span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24"> <span class="co">#       x_lev_NA     x_lev_x_a     x_lev_x_b </span></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25"> <span class="co">#   6.938894e-18  0.000000e+00  7.703720e-34</span></a>
+<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb5-27" data-line-number="27"><span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb5-28" data-line-number="28">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a>
+<a class="sourceLine" id="cb5-29" data-line-number="29"> <span class="co">#     x_catP    x_catN    x_catD   z_clean   z_isBAD  x_lev_NA x_lev_x_a </span></a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"> <span class="co">#          1         1         1         1         1         1         1 </span></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31"> <span class="co">#  x_lev_x_b </span></a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"> <span class="co">#          1</span></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="kw">print</span>(dTestNTreated)</a>
+<a class="sourceLine" id="cb5-35" data-line-number="35"> <span class="co">#    x_catP x_catN      x_catD   z_clean    z_isBAD   x_lev_NA x_lev_x_a</span></a>
+<a class="sourceLine" id="cb5-36" data-line-number="36"> <span class="co">#  1  -0.25  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25</span></a>
+<a class="sourceLine" id="cb5-37" data-line-number="37"> <span class="co">#  2   0.25   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25</span></a>
+<a class="sourceLine" id="cb5-38" data-line-number="38"> <span class="co">#  3   0.75   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25</span></a>
+<a class="sourceLine" id="cb5-39" data-line-number="39"> <span class="co">#  4   0.25   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25</span></a>
+<a class="sourceLine" id="cb5-40" data-line-number="40"> <span class="co">#        x_lev_x_b</span></a>
+<a class="sourceLine" id="cb5-41" data-line-number="41"> <span class="co">#  1 -2.266233e-17</span></a>
+<a class="sourceLine" id="cb5-42" data-line-number="42"> <span class="co">#  2  6.798700e-17</span></a>
+<a class="sourceLine" id="cb5-43" data-line-number="43"> <span class="co">#  3 -2.266233e-17</span></a>
+<a class="sourceLine" id="cb5-44" data-line-number="44"> <span class="co">#  4 -2.266233e-17</span></a>
+<a class="sourceLine" id="cb5-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb5-46" data-line-number="46"><span class="co"># for large data sets you can consider designing the treatments on </span></a>
+<a class="sourceLine" id="cb5-47" data-line-number="47"><span class="co"># a subset like: d[sample(1:dim(d)[[1]],1000),]</span></a></code></pre></div>
 <p>Related work:</p>
 <ul>
 <li>

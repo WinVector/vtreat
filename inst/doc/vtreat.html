@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2018-06-23" />
+<meta name="date" content="2018-06-26" />
 
 <title>vtreat package</title>
 
@@ -20,46 +20,256 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 </head>
 
@@ -70,7 +280,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat package</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2018-06-23</em></h4>
+<h4 class="date"><em>2018-06-26</em></h4>
 
 
 
@@ -118,10 +328,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <hr />
 <div id="a-categorical-outcome-example" class="section level2">
 <h2>A Categorical Outcome Example</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(vtreat)
-dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),
-   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))
-<span class="kw">head</span>(dTrainC)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(vtreat)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">head</span>(dTrainC)</a></code></pre></div>
 <pre><code>##      x  z     y
 ## 1    a  1 FALSE
 ## 2    a  2 FALSE
@@ -129,27 +339,27 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 4    b  4 FALSE
 ## 5    b NA  TRUE
 ## 6 &lt;NA&gt;  6  TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))
-<span class="kw">head</span>(dTestC)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">head</span>(dTestC)</a></code></pre></div>
 <pre><code>##      x  z
 ## 1    a 10
 ## 2    b 20
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.1 inspecting inputs Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot;designing treatments Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot; have initial level statistics Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot;design var x Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot;design var z Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot; scoring treatments Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot;have treatment plan Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot;rescoring complex variables Sat Jun 23 09:15:06 2018&quot;
-## [1] &quot;done rescoring complex variables Sat Jun 23 09:15:07 2018&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;vtreat 1.2.1 inspecting inputs Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;designing treatments Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot; have initial level statistics Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;design var x Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;design var z Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot; scoring treatments Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;have treatment plan Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;rescoring complex variables Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;done rescoring complex variables Tue Jun 26 08:14:27 2018&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">print</span>(treatmentsC)</a></code></pre></div>
 <pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
-## 2    x_catB     TRUE 0.12081050 0.3161341       TRUE                 2
+## 1    x_catP     TRUE 0.24340634 0.1547700       TRUE                 2
+## 2    x_catB     TRUE 0.05070201 0.5160763       TRUE                 2
 ## 3   z_clean     TRUE 0.25792985 0.1429977      FALSE                 0
 ## 4   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
 ## 5  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
@@ -163,12 +373,12 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 5        x   lev
 ## 6        x   lev
 ## 7        x   lev</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">print</span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</a></code></pre></div>
 <pre><code>## [1] &quot;vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')&quot;</code></pre>
 <p>Here we demonstrate the optional scaling feature of <code>prepare()</code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it rescales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
 <p><code>scale=FALSE</code> by default.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainCTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw">head</span>(dTrainCTreated)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">dTrainCTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">head</span>(dTrainCTreated)</a></code></pre></div>
 <pre><code>##   x_catP      x_catB     z_clean z_isBAD x_lev_NA  x_lev_x_a x_lev_x_b
 ## 1   -0.2 -0.11976374 -0.38648649    -0.1     -0.1 -0.1666667         0
 ## 2   -0.2 -0.11976374 -0.21081081    -0.1     -0.1 -0.1666667         0
@@ -183,20 +393,20 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 4 FALSE
 ## 5  TRUE
 ## 6  TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainCTreated),<span class="st">'y'</span>)
-<span class="co"># all input variables should be mean 0</span>
-<span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainCTreated),<span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)</a></code></pre></div>
 <pre><code>##        x_catP        x_catB       z_clean       z_isBAD      x_lev_NA 
 ##  1.850372e-17  1.387779e-17  9.251859e-18 -6.938894e-18 -6.938894e-18 
 ##     x_lev_x_a     x_lev_x_b 
 ##  0.000000e+00  0.000000e+00</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># all slopes should be 1 for variables with dTrainCTreated$scoreFrame$sig&lt;1</span>
-<span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),<span class="dt">family=</span>binomial,
-   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># all slopes should be 1 for variables with dTrainCTreated$scoreFrame$sig&lt;1</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),<span class="dt">family=</span>binomial,</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a></code></pre></div>
 <pre><code>##    x_catP    x_catB   z_clean   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
 ##  4.698112 15.815409  5.733441 31.619223 31.619223  4.158883        NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestCTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw">head</span>(dTestCTreated)</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">dTestCTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">head</span>(dTestCTreated)</a></code></pre></div>
 <pre><code>##   x_catP      x_catB  z_clean z_isBAD x_lev_NA  x_lev_x_a x_lev_x_b
 ## 1   -0.2 -0.11976374 1.194595    -0.1     -0.1 -0.1666667         0
 ## 2    0.1 -0.07564865 2.951351    -0.1     -0.1  0.1666667         0
@@ -206,10 +416,10 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 </div>
 <div id="a-numeric-outcome-example" class="section level2">
 <h2>A Numeric Outcome Example</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># numeric example</span>
-dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),
-   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))
-<span class="kw">head</span>(dTrainN)</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># numeric example</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="kw">head</span>(dTrainN)</a></code></pre></div>
 <pre><code>##   x  z y
 ## 1 a  1 0
 ## 2 a  2 0
@@ -217,28 +427,28 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 4 a  4 1
 ## 5 b  5 0
 ## 6 b NA 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))
-<span class="kw">head</span>(dTestN)</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">head</span>(dTestN)</a></code></pre></div>
 <pre><code>##      x  z
 ## 1    a 10
 ## 2    b 20
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.1 inspecting inputs Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot;designing treatments Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot; have initial level statistics Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot;design var x Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot;design var z Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot; scoring treatments Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot;have treatment plan Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot;rescoring complex variables Sat Jun 23 09:15:07 2018&quot;
-## [1] &quot;done rescoring complex variables Sat Jun 23 09:15:07 2018&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;vtreat 1.2.1 inspecting inputs Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;designing treatments Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot; have initial level statistics Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;design var x Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;design var z Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot; scoring treatments Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;have treatment plan Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;rescoring complex variables Tue Jun 26 08:14:27 2018&quot;
+## [1] &quot;done rescoring complex variables Tue Jun 26 08:14:28 2018&quot;</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">print</span>(treatmentsN)</a></code></pre></div>
 <pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.075853018 0.5499714       TRUE                 2
-## 2    x_catN     TRUE 0.220417468 0.2878285       TRUE                 2
-## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
+## 1    x_catP     TRUE 0.260416667 0.2419189       TRUE                 2
+## 2    x_catN     TRUE 0.069728569 0.5671793       TRUE                 2
+## 3    x_catD     TRUE 0.005613741 0.8731603       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
 ## 6  x_lev_NA     TRUE 0.222222222 0.2855909      FALSE                 0
@@ -253,9 +463,9 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 6        x   lev
 ## 7        x   lev
 ## 8        x   lev</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainNTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTrainN,
-                          <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw">head</span>(dTrainNTreated)</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">dTrainNTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTrainN,</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">                          <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw">head</span>(dTrainNTreated)</a></code></pre></div>
 <pre><code>##   x_catP      x_catN     x_catD     z_clean    z_isBAD   x_lev_NA
 ## 1   -0.2 -0.17857143 -0.1785714 -0.41904762 -0.0952381 -0.0952381
 ## 2   -0.2 -0.17857143 -0.1785714 -0.26190476 -0.0952381 -0.0952381
@@ -270,24 +480,24 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 4 -0.1785714 -0.02857143 1
 ## 5  0.2380952  0.07142857 0
 ## 6  0.2380952  0.07142857 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)
-<span class="co"># all input variables should be mean 0</span>
-<span class="kw">sapply</span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) </code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="kw">sapply</span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) </a></code></pre></div>
 <pre><code>##        x_catP        x_catN        x_catD       z_clean       z_isBAD 
 ## -5.551115e-17 -3.965082e-18 -9.515810e-17  4.757324e-17 -3.967986e-18 
 ##      x_lev_NA     x_lev_x_a     x_lev_x_b 
 ## -3.965082e-18  0.000000e+00 -2.974054e-18</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># all slopes should be 1 for variables with treatmentsN$scoreFrame$sig&lt;1</span>
-<span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># all slopes should be 1 for variables with treatmentsN$scoreFrame$sig&lt;1</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb31-3" data-line-number="3">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a></code></pre></div>
 <pre><code>##    x_catP    x_catN    x_catD   z_clean   z_isBAD  x_lev_NA x_lev_x_a 
 ##         1         1         1         1         1         1         1 
 ## x_lev_x_b 
 ##         1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># prepared frame</span>
-dTestNTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTestN,
-                         <span class="dt">pruneSig=</span><span class="kw">c</span>())
-<span class="kw">head</span>(dTestNTreated)</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># prepared frame</span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">dTestNTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTestN,</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">                         <span class="dt">pruneSig=</span><span class="kw">c</span>())</a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="kw">head</span>(dTestNTreated)</a></code></pre></div>
 <pre><code>##      x_catP      x_catN    x_catD   z_clean z_isBAD x_lev_NA x_lev_x_a
 ## 1 0.5714286 -0.17857143 0.5000000 10.000000       0        0         1
 ## 2 0.2857143  0.07142857 0.7071068 20.000000       0        0         0
@@ -298,10 +508,10 @@ dTestNTreated &lt;-<span class="st"> </span><span class="kw">prepare</span>(trea
 ## 2         1
 ## 3         0
 ## 4         0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># scaled prepared frame</span>
-dTestNTreatedS &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTestN,
-                         <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw">head</span>(dTestNTreatedS)</code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># scaled prepared frame</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">dTestNTreatedS &lt;-<span class="st"> </span><span class="kw">prepare</span>(treatmentsN,dTestN,</a>
+<a class="sourceLine" id="cb35-3" data-line-number="3">                         <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb35-4" data-line-number="4"><span class="kw">head</span>(dTestNTreatedS)</a></code></pre></div>
 <pre><code>##   x_catP        x_catN     x_catD   z_clean    z_isBAD   x_lev_NA
 ## 1   -0.2 -1.785714e-01 -0.1785714 0.9952381 -0.0952381 -0.0952381
 ## 2    0.2  7.142857e-02  0.2380952 2.5666667 -0.0952381 -0.0952381
