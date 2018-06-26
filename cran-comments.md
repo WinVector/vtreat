@@ -12,6 +12,14 @@ This release adds up a data.table based implementation of vtreat data transforms
 
 ## R CMD check --as-cran vtreat_1.2.1.tar.gz
 
+  * using option ‘--as-cran’
+  * checking for file ‘vtreat/DESCRIPTION’ ... OK
+  * checking extension type ... Package
+  * this is package ‘vtreat’ version ‘1.2.1’
+  * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
+  Maintainer: ‘John Mount <jmount@win-vector.com>’
+  Status: OK
+
  
 ## Downstream dependencies
 
