@@ -1,5 +1,5 @@
 
-This release adds up a data.table based implementation of vtreat data transforms trough the new rqdatatable package.
+
 
 ## Test environments
 
@@ -8,6 +8,7 @@ This release adds up a data.table based implementation of vtreat data transforms
   * OSX
   * using R version 3.5.0 (2018-04-23)
   * using platform: x86_64-apple-darwin15.6.0 (64-bit)
+
 
 
 ## R CMD check --as-cran vtreat_1.2.1.tar.gz
@@ -19,7 +20,6 @@ This release adds up a data.table based implementation of vtreat data transforms
   * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
   Maintainer: ‘John Mount <jmount@win-vector.com>’
   Status: OK
-
  
 ## Downstream dependencies
 

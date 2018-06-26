@@ -237,8 +237,8 @@
 <a class="sourceLine" id="cb4-32" data-line-number="32">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb4-33" data-line-number="33"><span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
 <a class="sourceLine" id="cb4-34" data-line-number="34"> <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb4-35" data-line-number="35"> <span class="co">#  1        x    x_catP  catP 0.059315943 0.45141252                 2</span></a>
-<a class="sourceLine" id="cb4-36" data-line-number="36"> <span class="co">#  2        x    x_catB  catB 0.029824903 0.59334713                 2</span></a>
+<a class="sourceLine" id="cb4-35" data-line-number="35"> <span class="co">#  1        x    x_catP  catP 0.166956795 0.20643885                 2</span></a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"> <span class="co">#  2        x    x_catB  catB 0.254788311 0.11858143                 2</span></a>
 <a class="sourceLine" id="cb4-37" data-line-number="37"> <span class="co">#  3        z   z_clean clean 0.237601767 0.13176020                 0</span></a>
 <a class="sourceLine" id="cb4-38" data-line-number="38"> <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span></a>
 <a class="sourceLine" id="cb4-39" data-line-number="39"> <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span></a>
@@ -280,15 +280,15 @@
 <a class="sourceLine" id="cb5-6" data-line-number="6">treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>,</a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 3.700306e-01 0.1095637                 2</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 2.606061e-01 0.1961166                 2</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 6.666667e-02 0.5369633                 2</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"> <span class="co">#  4        z   z_clean clean 2.880952e-01 0.1701892                 0</span></a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"> <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span></a>
-<a class="sourceLine" id="cb5-17" data-line-number="17"> <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 4.047085e-01 0.08994062                 2</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 2.822908e-01 0.17539581                 2</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 2.096931e-02 0.73225708                 2</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"> <span class="co">#  4        z   z_clean clean 2.880952e-01 0.17018920                 0</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.13397460                 0</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.13397460                 0</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"> <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.20703125                 0</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"> <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 0.99999998                 0</span></a>
 <a class="sourceLine" id="cb5-18" data-line-number="18">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb5-19" data-line-number="19">varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)</a>
 <a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co"># all input variables should be mean 0</span></a>

@@ -159,18 +159,18 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 08:16:40 2018"
-## [1] "designing treatments Tue Jun 26 08:16:40 2018"
-## [1] " have initial level statistics Tue Jun 26 08:16:40 2018"
-## [1] "design var xBad1 Tue Jun 26 08:16:40 2018"
-## [1] "design var xBad2 Tue Jun 26 08:16:40 2018"
-## [1] "design var xBad3 Tue Jun 26 08:16:40 2018"
-## [1] "design var xGood1 Tue Jun 26 08:16:40 2018"
-## [1] "design var xGood2 Tue Jun 26 08:16:40 2018"
-## [1] " scoring treatments Tue Jun 26 08:16:40 2018"
-## [1] "have treatment plan Tue Jun 26 08:16:40 2018"
-## [1] "rescoring complex variables Tue Jun 26 08:16:40 2018"
-## [1] "done rescoring complex variables Tue Jun 26 08:16:41 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:05:02 2018"
+## [1] "designing treatments Tue Jun 26 16:05:02 2018"
+## [1] " have initial level statistics Tue Jun 26 16:05:02 2018"
+## [1] "design var xBad1 Tue Jun 26 16:05:02 2018"
+## [1] "design var xBad2 Tue Jun 26 16:05:02 2018"
+## [1] "design var xBad3 Tue Jun 26 16:05:02 2018"
+## [1] "design var xGood1 Tue Jun 26 16:05:02 2018"
+## [1] "design var xGood2 Tue Jun 26 16:05:02 2018"
+## [1] " scoring treatments Tue Jun 26 16:05:02 2018"
+## [1] "have treatment plan Tue Jun 26 16:05:03 2018"
+## [1] "rescoring complex variables Tue Jun 26 16:05:03 2018"
+## [1] "done rescoring complex variables Tue Jun 26 16:05:03 2018"</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">)</a>
@@ -240,18 +240,18 @@
 <a class="sourceLine" id="cb12-10" data-line-number="10">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb12-11" data-line-number="11">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb12-12" data-line-number="12">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 08:16:41 2018"
-## [1] "designing treatments Tue Jun 26 08:16:41 2018"
-## [1] " have initial level statistics Tue Jun 26 08:16:41 2018"
-## [1] "design var xBad1 Tue Jun 26 08:16:41 2018"
-## [1] "design var xBad2 Tue Jun 26 08:16:41 2018"
-## [1] "design var xBad3 Tue Jun 26 08:16:41 2018"
-## [1] "design var xGood1 Tue Jun 26 08:16:41 2018"
-## [1] "design var xGood2 Tue Jun 26 08:16:41 2018"
-## [1] " scoring treatments Tue Jun 26 08:16:41 2018"
-## [1] "have treatment plan Tue Jun 26 08:16:41 2018"
-## [1] "rescoring complex variables Tue Jun 26 08:16:41 2018"
-## [1] "done rescoring complex variables Tue Jun 26 08:16:41 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:05:03 2018"
+## [1] "designing treatments Tue Jun 26 16:05:03 2018"
+## [1] " have initial level statistics Tue Jun 26 16:05:03 2018"
+## [1] "design var xBad1 Tue Jun 26 16:05:03 2018"
+## [1] "design var xBad2 Tue Jun 26 16:05:03 2018"
+## [1] "design var xBad3 Tue Jun 26 16:05:03 2018"
+## [1] "design var xGood1 Tue Jun 26 16:05:03 2018"
+## [1] "design var xGood2 Tue Jun 26 16:05:03 2018"
+## [1] " scoring treatments Tue Jun 26 16:05:03 2018"
+## [1] "have treatment plan Tue Jun 26 16:05:03 2018"
+## [1] "rescoring complex variables Tue Jun 26 16:05:03 2018"
+## [1] "done rescoring complex variables Tue Jun 26 16:05:04 2018"</code></pre>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb14-2" data-line-number="2">  <span class="dt">pruneSig=</span>pruneSig)</a>
 <a class="sourceLine" id="cb14-3" data-line-number="3">newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)</a>
@@ -354,9 +354,9 @@
 <a class="sourceLine" id="cb20-5" data-line-number="5">           <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb20-6" data-line-number="6">           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></a>
 <a class="sourceLine" id="cb20-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 start initial treatment design Tue Jun 26 08:16:42 2018"
-## [1] " start cross frame work Tue Jun 26 08:16:42 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Tue Jun 26 08:16:43 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.1 start initial treatment design Tue Jun 26 16:05:04 2018"
+## [1] " start cross frame work Tue Jun 26 16:05:05 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Tue Jun 26 16:05:05 2018"</code></pre>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments</a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</a></code></pre></div>
 <pre><code>##        varName          sig
