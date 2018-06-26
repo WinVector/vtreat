@@ -95,6 +95,7 @@ materialize_treated <- rquery_prepare
 #' @param extracols extra columns to copy.
 #' @param partition_column character name of column to partition work by.
 #' @param parallelCluster a cluster object, created by package parallel or by package snow. If NULL, use the registered default cluster.
+#' @param non_join_mapping logical, if TRUE use non-join based column mapping.
 #' @param print_rquery logical, if TRUE print the rquery ops.
 #' @param env environment to work in.
 #' @return treated data.
@@ -108,6 +109,7 @@ rqdatatable_prepare <- function(rqplan, data_source,
                                 partition_column = NULL,
                                 parallelCluster = NULL,
                                 extracols = NULL,
+                                non_join_mapping = FALSE,
                                 print_rquery = FALSE,
                                 env = parent.frame()) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
@@ -126,8 +128,33 @@ rqdatatable_prepare <- function(rqplan, data_source,
   if(!is.data.frame(data_source)) {
     stop("vtreat::rqdatatable_prepare data_source must be a data.frame")
   }
-  source_hdl <- rquery::local_td(data_source, name = source_name)
-  ops <- flatten_fn_list(source_hdl, rqplan$optree_generators)
+  tables <- rqplan$tables
+  if(non_join_mapping) {
+    # in-place changing, will be visible outside
+    dat <- data_source
+    for(ti in rqplan$tables) {
+      colsi <- colnames(ti)
+      if(length(colsi)!=2) {
+        stop("vtreat::rqdatatable_prepare merge tables must have 2 columns")
+      }
+      keycol <- intersect(colnames(ti), colnames(dat))
+      if(length(keycol)!=1) {
+        stop("vtreat::rqdatatable_prepare merge tables must have 1 column in common with data")
+      }
+      newcol <- setdiff(colnames(ti), keycol)
+      mpi <- ti[[newcol]]
+      names(mpi) <- ti[[keycol]]
+      dat[[newcol]] <- mpi[dat[[keycol]]]
+    }
+    source_hdl <- rquery::local_td(dat, name = source_name)
+    ops <- flatten_fn_list(source_hdl, 
+                           rqplan$optree_generators[length(rqplan$optree_generators)])
+    tables[[source_name]] <- dat
+  } else {
+    source_hdl <- rquery::local_td(data_source, name = source_name)
+    ops <- flatten_fn_list(source_hdl, rqplan$optree_generators)
+    tables[[source_name]] <- data_source
+  }
   selcols <- intersect(rquery::column_names(ops), 
                        unique(c(rqplan$outcomename, 
                                 rqplan$newvars,
@@ -137,8 +164,6 @@ rqdatatable_prepare <- function(rqplan, data_source,
   if(print_rquery) {
     cat(format(ops))
   }
-  tables <- rqplan$tables
-  tables[[source_name]] <- data_source
   if(is.null(partition_column)) {
     treated <- rqdatatable::ex_data_table(ops, 
                                           tables = tables,

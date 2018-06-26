@@ -41,6 +41,12 @@ treated <- vtreat::rqdatatable_prepare(rqplan, dTrainC,
                                        print_rquery = TRUE)
 treated[]  %.>%
   knitr::kable(.)
+
+treatednj <- vtreat::rqdatatable_prepare(rqplan, dTrainC, 
+                                       extracols = "id", 
+                                       non_join_mapping = TRUE)
+treatednj[]  %.>%
+  knitr::kable(.)
 ```
 
 ```{r cdb, eval=eval_db}

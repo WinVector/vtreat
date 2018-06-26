@@ -1,12 +1,12 @@
 
 
-# vtreat 1.2.1 2018/06/24
+# vtreat 1.2.1 2018/06/26
 
   * default data.table merging on (may be a performance regression to not set this).
   * rqdatatable treatment path.
   * better formatting.
   * add extracols argument to prepare().
-  * try to fix regexps.
+  * Improve regexps.
 
 # vtreat 1.2.0 2018/06/19
 
