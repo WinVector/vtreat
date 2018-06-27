@@ -118,6 +118,9 @@ rqdatatable_prepare <- function(rqplan, data_source,
   if(!requireNamespace("rqdatatable", quietly = TRUE)) {
     stop("vtreat::rqdatatable_prepare requires the rqdatatable package.")
   }
+  if(!requireNamespace("data.table", quietly = TRUE)) {
+    stop("vtreat::rqdatatable_prepare requires the data.table package.")
+  }
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::rqdatatable_prepare")
   source_name <- substitute(data_source)
   if(is.name(source_name)) {

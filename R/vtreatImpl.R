@@ -231,9 +231,6 @@ mkVtreatListWorker <- function(scale,doCollar) {
   vcol <- argv$vcol
   hasRange <- argv$hasRange
   levRestriction <- argv$levRestriction
-  if(verbose) {
-    print(paste('design var',v,date()))
-  }
   treatments <- list()
   acceptTreatment <- function(ti) {
     if(!is.null(ti)) {

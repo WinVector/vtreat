@@ -125,6 +125,10 @@ system.time(r <- rqdatatable_prepare(rqplan, d,
                                      extracols = "id",
                                      partition_column = "group",
                                      parallelCluster = parallelCluster))
+
+system.time(r <- rqdatatable_prepare(rqplan, d, 
+                                     extracols = "id",
+                                     non_join_mapping = TRUE))
 ```
 
 
