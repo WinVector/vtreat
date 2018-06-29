@@ -65,7 +65,7 @@ into calibration, training, test sets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.2</span>
       </span>
     </div>
 
@@ -159,7 +159,8 @@ into calibration, training, test sets.</p>
   <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -238,7 +239,11 @@ into calibration, training, test sets.</p>
     </tr>
     <tr>
       <th>parallelCluster</th>
-      <td><p>(optional) a cluster object created by package parallel or package snow</p></td>
+      <td><p>(optional) a cluster object created by package parallel or package snow.</p></td>
+    </tr>
+    <tr>
+      <th>use_parallel</th>
+      <td><p>logical, if TRUE use parallel methods.</p></td>
     </tr>
     </table>
     
@@ -264,9 +269,9 @@ into calibration, training, test sets.</p>
 <span class='no'>d</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span> + <span class='no'>del</span>[<span class='no'>d</span>$<span class='no'>zip2</span>]
 <span class='no'>d</span>$<span class='no'>yc</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span><span class='kw'>&gt;=</span><span class='fu'>mean</span>(<span class='no'>d</span>$<span class='no'>y</span>)
 <span class='no'>cN</span> <span class='kw'>&lt;-</span> <span class='fu'>mkCrossFrameNExperiment</span>(<span class='no'>d</span>,<span class='fu'>c</span>(<span class='st'>'zip'</span>,<span class='st'>'zip2'</span>),<span class='st'>'y'</span>,
-   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.1 start initial treatment design Tue Jun 26 16:04:42 2018"
-#&gt; [1] " start cross frame work Tue Jun 26 16:04:44 2018"
-#&gt; [1] " vtreat::mkCrossFrameNExperiment done Tue Jun 26 16:04:45 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] 0.02114663</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.2013498</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
+   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.2 start initial treatment design Fri Jun 29 07:18:30 2018"
+#&gt; [1] " start cross frame work Fri Jun 29 07:18:31 2018"
+#&gt; [1] " vtreat::mkCrossFrameNExperiment done Fri Jun 29 07:18:31 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] 0.02114663</div><div class='input'><span class='fu'>cor</span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.2013498</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
 <span class='no'>dTrainV</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>crossFrame</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -65,7 +65,7 @@ using mkCrossFrameCExperiment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.2</span>
       </span>
     </div>
 
@@ -160,7 +160,7 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
   <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
   <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>catScaling</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -239,7 +239,11 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
     </tr>
     <tr>
       <th>parallelCluster</th>
-      <td><p>(optional) a cluster object created by package parallel or package snow</p></td>
+      <td><p>(optional) a cluster object created by package parallel or package snow.</p></td>
+    </tr>
+    <tr>
+      <th>use_parallel</th>
+      <td><p>logical, if TRUE use parallel methods (when parallel cluster is set).</p></td>
     </tr>
     </table>
     
@@ -267,13 +271,11 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
    <span class='kw'>y</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
 <span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:04:37 2018"
-#&gt; [1] "designing treatments Tue Jun 26 16:04:37 2018"
-#&gt; [1] " have initial level statistics Tue Jun 26 16:04:37 2018"
-#&gt; [1] "design var x Tue Jun 26 16:04:37 2018"
-#&gt; [1] "design var z Tue Jun 26 16:04:37 2018"
-#&gt; [1] " scoring treatments Tue Jun 26 16:04:37 2018"
-#&gt; [1] "have treatment plan Tue Jun 26 16:04:37 2018"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
+<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.2 inspecting inputs Fri Jun 29 07:18:27 2018"
+#&gt; [1] "designing treatments Fri Jun 29 07:18:27 2018"
+#&gt; [1] " have initial level statistics Fri Jun 29 07:18:27 2018"
+#&gt; [1] " scoring treatments Fri Jun 29 07:18:27 2018"
+#&gt; [1] "have treatment plan Fri Jun 29 07:18:27 2018"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
 <span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

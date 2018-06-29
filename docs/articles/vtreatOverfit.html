@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.2</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
       <h1>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-06-26</h4>
+            <h4 class="date">2018-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
@@ -124,33 +124,32 @@
 <li>Complex bad variables can starve out simple weak good variables.</li>
 </ul>
 <p>This example shows things we don’t want to happen, and then the additional precautions that help prevent them.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">22626</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),<span class="dv">2000</span>,<span class="dt">replace=</span><span class="ot">TRUE</span>)) <span class="co"># independent variable.</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">d<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="kw">nrow</span>(d))<span class="op">&gt;</span><span class="fl">0.5</span>  <span class="co"># the quantity to be predicted, notice: independent of variables.</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">d<span class="op">$</span>rgroup &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">runif</span>(<span class="kw">nrow</span>(d)))  <span class="co"># the random group used for splitting the data set, not a variable.</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">22626</span>)
+d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),<span class="dv">2000</span>,<span class="dt">replace=</span><span class="ot">TRUE</span>)) <span class="co"># independent variable.</span>
+d<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="kw">nrow</span>(d))<span class="op">&gt;</span><span class="fl">0.5</span>  <span class="co"># the quantity to be predicted, notice: independent of variables.</span>
+d<span class="op">$</span>rgroup &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">runif</span>(<span class="kw">nrow</span>(d)))  <span class="co"># the random group used for splitting the data set, not a variable.</span></code></pre></div>
 <div id="bad-practice-using-the-same-data-to-treat-and-to-train" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bad-practice-using-the-same-data-to-treat-and-to-train" class="anchor"></a>Bad Practice: Using the same data to treat and to train</h2>
 <p>Using the same set of data to prepare the variable encoding and train the model can lead to the false belief (derived from the training set) that the model fit well. This is largely due to the treated variable appearing to consume only one degree of freedom, when it in fact consumes many more. In many cases a reasonable setting of <code>pruneSig</code> (say 0.01) will help against a noise variable being considered desirable, but selected variables may still be mis-used by downstream modeling.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&gt;</span><span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">library</span>(<span class="st">'vtreat'</span>)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:05:17 2018"
-## [1] "designing treatments Tue Jun 26 16:05:17 2018"
-## [1] " have initial level statistics Tue Jun 26 16:05:17 2018"
-## [1] "design var x Tue Jun 26 16:05:17 2018"
-## [1] " scoring treatments Tue Jun 26 16:05:17 2018"
-## [1] "have treatment plan Tue Jun 26 16:05:17 2018"
-## [1] "rescoring complex variables Tue Jun 26 16:05:17 2018"
-## [1] "done rescoring complex variables Tue Jun 26 16:05:17 2018"</code></pre>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">m1 &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw">print</span>(<span class="kw">summary</span>(m1))  <span class="co"># notice low residual deviance</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]
+dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&gt;</span><span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]
+<span class="kw">library</span>(<span class="st">'vtreat'</span>)
+treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
+  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
+)</code></pre></div>
+<pre><code>## [1] "vtreat 1.2.2 inspecting inputs Fri Jun 29 07:18:47 2018"
+## [1] "designing treatments Fri Jun 29 07:18:47 2018"
+## [1] " have initial level statistics Fri Jun 29 07:18:47 2018"
+## [1] " scoring treatments Fri Jun 29 07:18:47 2018"
+## [1] "have treatment plan Fri Jun 29 07:18:48 2018"
+## [1] "rescoring complex variables Fri Jun 29 07:18:48 2018"
+## [1] "done rescoring complex variables Fri Jun 29 07:18:48 2018"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
+  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
+)
+m1 &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))
+<span class="kw">print</span>(<span class="kw">summary</span>(m1))  <span class="co"># notice low residual deviance</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ x_catB, family = binomial(link = "logit"), 
@@ -174,35 +173,35 @@
 ## AIC: 1150.2
 ## 
 ## Number of Fisher Scoring iterations: 8</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co"># devtools::install_github("WinVector/WVPlots")</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co"># library('WVPlots')</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">plotRes &lt;-<span class="st"> </span><span class="cf">function</span>(d,predName,yName,title) {</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">  <span class="kw">print</span>(title)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">  tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">truth=</span>d[[yName]],<span class="dt">pred=</span>d[[predName]]<span class="op">&gt;</span><span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">  <span class="kw">print</span>(tab)</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">  diag &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">vapply</span>(<span class="kw">seq_len</span>(<span class="kw">min</span>(<span class="kw">dim</span>(tab))),</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">                     <span class="cf">function</span>(i) tab[i,i],<span class="kw">numeric</span>(<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">  acc &lt;-<span class="st"> </span>diag<span class="op">/</span><span class="kw">sum</span>(tab)</a>
-<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span></a>
-<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span></a>
-<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#  }</span></a>
-<a class="sourceLine" id="cb6-15" data-line-number="15">  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">'accuracy'</span>,acc))</a>
-<a class="sourceLine" id="cb6-16" data-line-number="16">}</a>
-<a class="sourceLine" id="cb6-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co"># evaluate model on training</span></a>
-<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+
+<span class="co"># devtools::install_github("WinVector/WVPlots")</span>
+<span class="co"># library('WVPlots')</span>
+plotRes &lt;-<span class="st"> </span><span class="cf">function</span>(d,predName,yName,title) {
+  <span class="kw">print</span>(title)
+  tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">truth=</span>d[[yName]],<span class="dt">pred=</span>d[[predName]]<span class="op">&gt;</span><span class="fl">0.5</span>)
+  <span class="kw">print</span>(tab)
+  diag &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">vapply</span>(<span class="kw">seq_len</span>(<span class="kw">min</span>(<span class="kw">dim</span>(tab))),
+                     <span class="cf">function</span>(i) tab[i,i],<span class="kw">numeric</span>(<span class="dv">1</span>)))
+  acc &lt;-<span class="st"> </span>diag<span class="op">/</span><span class="kw">sum</span>(tab)
+<span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span>
+<span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span>
+<span class="co">#  }</span>
+  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">'accuracy'</span>,acc))
+}
+
+<span class="co"># evaluate model on training</span>
+<span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</code></pre></div>
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE   711   97
 ##   TRUE    245  585
 ## [1] "accuracy 0.791208791208791"</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># evaluate model on test</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># evaluate model on test</span>
+dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())
+dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw">predict</span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</code></pre></div>
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE
@@ -214,7 +213,7 @@
 <h3 class="hasAnchor">
 <a href="#what-went-wrong" class="anchor"></a>What went wrong?</h3>
 <p>Notice that vtreat did not think there was any usable signal, and did not want us to use the variables: the values in <code>treatments$scoreFrame$sig</code> are all much larger than a nominally acceptable significance level like 0.05. The variables stayed in our model because we did not prune them (<em>ie</em> we set <code>pruneSig=c()</code>). Also notice we set <code>rareCount=0</code>, which allows the use of very rare levels (which help drive the problem).</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves          rsq       sig needsSplit extraModelDegrees
 ## 1  x_catP     TRUE 6.344411e-05 0.7042905       TRUE               819
 ## 2  x_catB     TRUE 2.016246e-05 0.8305800       TRUE               819
@@ -233,25 +232,24 @@
 <h2 class="hasAnchor">
 <a href="#correct-practice-12-use-different-data-to-treat-and-train" class="anchor"></a>Correct Practice 1/2: Use different data to treat and train</h2>
 <p>Below is part of our suggested work pattern: coding/train/test split.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">dCode &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">20</span>,,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">dTrain &lt;-<span class="st"> </span>d[(d<span class="op">$</span>rgroup<span class="op">&gt;</span><span class="dv">20</span>) <span class="op">&amp;</span><span class="st"> </span>(d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">80</span>),,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dCode,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">                                        <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span></a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">                                        <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:05:17 2018"
-## [1] "designing treatments Tue Jun 26 16:05:17 2018"
-## [1] " have initial level statistics Tue Jun 26 16:05:17 2018"
-## [1] "design var x Tue Jun 26 16:05:17 2018"
-## [1] " scoring treatments Tue Jun 26 16:05:18 2018"
-## [1] "have treatment plan Tue Jun 26 16:05:18 2018"
-## [1] "rescoring complex variables Tue Jun 26 16:05:18 2018"
-## [1] "done rescoring complex variables Tue Jun 26 16:05:18 2018"</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">                                 <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3">)</a>
-<a class="sourceLine" id="cb14-4" data-line-number="4">m2 &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
-<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="kw">print</span>(<span class="kw">summary</span>(m2)) <span class="co"># notice high residual deviance</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dCode &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">20</span>,,drop=<span class="ot">FALSE</span>]
+dTrain &lt;-<span class="st"> </span>d[(d<span class="op">$</span>rgroup<span class="op">&gt;</span><span class="dv">20</span>) <span class="op">&amp;</span><span class="st"> </span>(d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">80</span>),,drop=<span class="ot">FALSE</span>]
+treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dCode,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
+                                        <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
+                                        <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
+)</code></pre></div>
+<pre><code>## [1] "vtreat 1.2.2 inspecting inputs Fri Jun 29 07:18:48 2018"
+## [1] "designing treatments Fri Jun 29 07:18:48 2018"
+## [1] " have initial level statistics Fri Jun 29 07:18:48 2018"
+## [1] " scoring treatments Fri Jun 29 07:18:48 2018"
+## [1] "have treatment plan Fri Jun 29 07:18:48 2018"
+## [1] "rescoring complex variables Fri Jun 29 07:18:48 2018"
+## [1] "done rescoring complex variables Fri Jun 29 07:18:48 2018"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
+                                 <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
+)
+m2 &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))
+<span class="kw">print</span>(<span class="kw">summary</span>(m2)) <span class="co"># notice high residual deviance</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ x_catB, family = binomial(link = "logit"), 
@@ -273,30 +271,30 @@
 ## AIC: 1685.5
 ## 
 ## Number of Fisher Scoring iterations: 3</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">dTrain<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on train'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTrain,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on train'</span>)</code></pre></div>
 <pre><code>## [1] "model2 on train"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE   100  504
 ##   TRUE     97  512
 ## [1] "accuracy 0.504534212695796"</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># We do not advise creating dCodeTreated for any purpose other than</span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="co"># diagnostic plotting.  You should not use the treated coding data</span></a>
-<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co"># for anything (as that would undo the benefit of having a separate</span></a>
-<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="co"># coding data subset).</span></a>
-<a class="sourceLine" id="cb18-5" data-line-number="5">dCodeTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dCode,<span class="dt">pruneSig=</span><span class="kw">c</span>())</a>
-<a class="sourceLine" id="cb18-6" data-line-number="6">dCode<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<span class="dt">newdata=</span>dCodeTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="kw">plotRes</span>(dCode,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on coding set'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># We do not advise creating dCodeTreated for any purpose other than</span>
+<span class="co"># diagnostic plotting.  You should not use the treated coding data</span>
+<span class="co"># for anything (as that would undo the benefit of having a separate</span>
+<span class="co"># coding data subset).</span>
+dCodeTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dCode,<span class="dt">pruneSig=</span><span class="kw">c</span>())
+dCode<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<span class="dt">newdata=</span>dCodeTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dCode,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on coding set'</span>)</code></pre></div>
 <pre><code>## [1] "model2 on coding set"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE     0  204
 ##   TRUE    182   39
 ## [1] "accuracy 0.0917647058823529"</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())</a>
-<a class="sourceLine" id="cb20-2" data-line-number="2">dTest<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="kw">plotRes</span>(dTest,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on test set'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())
+dTest<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw">predict</span>(m2,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTest,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on test set'</span>)</code></pre></div>
 <pre><code>## [1] "model2 on test set"
 ##        pred
 ## truth   FALSE TRUE
@@ -311,24 +309,24 @@
 <h2 class="hasAnchor">
 <a href="#correct-practice-22-use-simulated-out-of-sample-methods-cross-methods" class="anchor"></a>Correct Practice 2/2: Use simulated out of sample methods (cross methods)</h2>
 <p>Another effective technique: cross-constructed training frames can also be accessed by using <code>mkCrossFrameCExperiment</code> or <code>mkCrossFrameNExperiment</code>, which we demonstrate here.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb22-2" data-line-number="2">xdat &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb22-3" data-line-number="3">                                  <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span></a>
-<a class="sourceLine" id="cb22-4" data-line-number="4">                                  <span class="dt">rareSig=</span><span class="kw">c</span>())</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 start initial treatment design Tue Jun 26 16:05:18 2018"
-## [1] " start cross frame work Tue Jun 26 16:05:18 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Tue Jun 26 16:05:18 2018"</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">treatments &lt;-<span class="st"> </span>xdat<span class="op">$</span>treatments</a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">&lt;=</span><span class="dv">80</span>,,drop=<span class="ot">FALSE</span>]
+xdat &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
+                                  <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
+                                  <span class="dt">rareSig=</span><span class="kw">c</span>())</code></pre></div>
+<pre><code>## [1] "vtreat 1.2.2 start initial treatment design Fri Jun 29 07:18:48 2018"
+## [1] " start cross frame work Fri Jun 29 07:18:48 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Fri Jun 29 07:18:48 2018"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>xdat<span class="op">$</span>treatments
+<span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves          rsq       sig needsSplit extraModelDegrees
 ## 1  x_catP     TRUE 7.636995e-05 0.6771125       TRUE               819
 ## 2  x_catB     TRUE 2.052927e-05 0.8290694       TRUE               819
 ##   origName code
 ## 1        x catP
 ## 2        x catB</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>xdat<span class="op">$</span>crossFrame</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2">m3 &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
-<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="kw">print</span>(<span class="kw">summary</span>(m3)) <span class="co"># notice high residual deviance</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>xdat<span class="op">$</span>crossFrame
+m3 &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))
+<span class="kw">print</span>(<span class="kw">summary</span>(m3)) <span class="co"># notice high residual deviance</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ x_catB, family = binomial(link = "logit"), 
@@ -352,17 +350,17 @@
 ## AIC: 2270.6
 ## 
 ## Number of Fisher Scoring iterations: 3</code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">dTrainTreated<span class="op">$</span>predM3 &lt;-<span class="st"> </span><span class="kw">predict</span>(m3,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw">plotRes</span>(dTrainTreated,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on train'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated<span class="op">$</span>predM3 &lt;-<span class="st"> </span><span class="kw">predict</span>(m3,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTrainTreated,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on train'</span>)</code></pre></div>
 <pre><code>## [1] "model3 on train"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE   209  599
 ##   TRUE    182  648
 ## [1] "accuracy 0.523199023199023"</code></pre>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())</a>
-<a class="sourceLine" id="cb30-2" data-line-number="2">dTest<span class="op">$</span>predM3 &lt;-<span class="st"> </span><span class="kw">predict</span>(m3,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="kw">plotRes</span>(dTest,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on test set'</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw">c</span>())
+dTest<span class="op">$</span>predM3 &lt;-<span class="st"> </span><span class="kw">predict</span>(m3,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
+<span class="kw">plotRes</span>(dTest,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on test set'</span>)</code></pre></div>
 <pre><code>## [1] "model3 on test set"
 ##        pred
 ## truth   FALSE TRUE

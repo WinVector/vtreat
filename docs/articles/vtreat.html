@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.2</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-06-26</h4>
+            <h4 class="date">2018-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -169,10 +169,10 @@
 <div id="a-categorical-outcome-example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#a-categorical-outcome-example" class="anchor"></a>A Categorical Outcome Example</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(vtreat)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">head</span>(dTrainC)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(vtreat)
+dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),
+   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))
+<span class="kw">head</span>(dTrainC)</code></pre></div>
 <pre><code>##      x  z     y
 ## 1    a  1 FALSE
 ## 2    a  2 FALSE
@@ -180,27 +180,25 @@
 ## 4    b  4 FALSE
 ## 5    b NA  TRUE
 ## 6 &lt;NA&gt;  6  TRUE</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">head</span>(dTestC)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))
+<span class="kw">head</span>(dTestC)</code></pre></div>
 <pre><code>##      x  z
 ## 1    a 10
 ## 2    b 20
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:04:57 2018"
-## [1] "designing treatments Tue Jun 26 16:04:58 2018"
-## [1] " have initial level statistics Tue Jun 26 16:04:58 2018"
-## [1] "design var x Tue Jun 26 16:04:58 2018"
-## [1] "design var z Tue Jun 26 16:04:58 2018"
-## [1] " scoring treatments Tue Jun 26 16:04:58 2018"
-## [1] "have treatment plan Tue Jun 26 16:04:58 2018"
-## [1] "rescoring complex variables Tue Jun 26 16:04:58 2018"
-## [1] "done rescoring complex variables Tue Jun 26 16:04:58 2018"</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">print</span>(treatmentsC)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] "vtreat 1.2.2 inspecting inputs Fri Jun 29 07:18:39 2018"
+## [1] "designing treatments Fri Jun 29 07:18:39 2018"
+## [1] " have initial level statistics Fri Jun 29 07:18:39 2018"
+## [1] " scoring treatments Fri Jun 29 07:18:39 2018"
+## [1] "have treatment plan Fri Jun 29 07:18:39 2018"
+## [1] "rescoring complex variables Fri Jun 29 07:18:39 2018"
+## [1] "done rescoring complex variables Fri Jun 29 07:18:39 2018"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.24340634 0.1547700       TRUE                 2
-## 2    x_catB     TRUE 0.05070201 0.5160763       TRUE                 2
+## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
+## 2    x_catB     TRUE 0.12081050 0.3161341       TRUE                 2
 ## 3   z_clean     TRUE 0.25792985 0.1429977      FALSE                 0
 ## 4   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
 ## 5  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
@@ -214,12 +212,12 @@
 ## 5        x   lev
 ## 6        x   lev
 ## 7        x   lev</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">print</span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] "vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')"</code></pre>
 <p>Here we demonstrate the optional scaling feature of <code><a href="../reference/prepare.html">prepare()</a></code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it rescales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
 <p><code>scale=FALSE</code> by default.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">head</span>(dTrainCTreated)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(dTrainCTreated)</code></pre></div>
 <pre><code>##   x_catP      x_catB     z_clean z_isBAD x_lev_NA  x_lev_x_a x_lev_x_b
 ## 1   -0.2 -0.11976374 -0.38648649    -0.1     -0.1 -0.1666667         0
 ## 2   -0.2 -0.11976374 -0.21081081    -0.1     -0.1 -0.1666667         0
@@ -234,20 +232,20 @@
 ## 4 FALSE
 ## 5  TRUE
 ## 6  TRUE</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainCTreated),<span class="st">'y'</span>)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainCTreated),<span class="st">'y'</span>)
+<span class="co"># all input variables should be mean 0</span>
+<span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)</code></pre></div>
 <pre><code>##        x_catP        x_catB       z_clean       z_isBAD      x_lev_NA 
 ##  1.850372e-17  1.387779e-17  9.251859e-18 -6.938894e-18 -6.938894e-18 
 ##     x_lev_x_a     x_lev_x_b 
 ##  0.000000e+00  0.000000e+00</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># all slopes should be 1 for variables with dTrainCTreated$scoreFrame$sig&lt;1</span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),<span class="dt">family=</span>binomial,</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># all slopes should be 1 for variables with dTrainCTreated$scoreFrame$sig&lt;1</span>
+<span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),<span class="dt">family=</span>binomial,
+   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</code></pre></div>
 <pre><code>##    x_catP    x_catB   z_clean   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
 ##  4.698112 15.815409  5.733441 31.619223 31.619223  4.158883        NA</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">head</span>(dTestCTreated)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(dTestCTreated)</code></pre></div>
 <pre><code>##   x_catP      x_catB  z_clean z_isBAD x_lev_NA  x_lev_x_a x_lev_x_b
 ## 1   -0.2 -0.11976374 1.194595    -0.1     -0.1 -0.1666667         0
 ## 2    0.1 -0.07564865 2.951351    -0.1     -0.1  0.1666667         0
@@ -258,10 +256,10 @@
 <div id="a-numeric-outcome-example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#a-numeric-outcome-example" class="anchor"></a>A Numeric Outcome Example</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># numeric example</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb19-3" data-line-number="3">   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="kw">head</span>(dTrainN)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># numeric example</span>
+dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),
+   <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))
+<span class="kw">head</span>(dTrainN)</code></pre></div>
 <pre><code>##   x  z y
 ## 1 a  1 0
 ## 2 a  2 0
@@ -269,27 +267,25 @@
 ## 4 a  4 1
 ## 5 b  5 0
 ## 6 b NA 1</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">head</span>(dTestN)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))
+<span class="kw">head</span>(dTestN)</code></pre></div>
 <pre><code>##      x  z
 ## 1    a 10
 ## 2    b 20
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.2.1 inspecting inputs Tue Jun 26 16:04:58 2018"
-## [1] "designing treatments Tue Jun 26 16:04:58 2018"
-## [1] " have initial level statistics Tue Jun 26 16:04:58 2018"
-## [1] "design var x Tue Jun 26 16:04:58 2018"
-## [1] "design var z Tue Jun 26 16:04:58 2018"
-## [1] " scoring treatments Tue Jun 26 16:04:58 2018"
-## [1] "have treatment plan Tue Jun 26 16:04:58 2018"
-## [1] "rescoring complex variables Tue Jun 26 16:04:58 2018"
-## [1] "done rescoring complex variables Tue Jun 26 16:04:58 2018"</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">print</span>(treatmentsN)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
+<pre><code>## [1] "vtreat 1.2.2 inspecting inputs Fri Jun 29 07:18:39 2018"
+## [1] "designing treatments Fri Jun 29 07:18:39 2018"
+## [1] " have initial level statistics Fri Jun 29 07:18:39 2018"
+## [1] " scoring treatments Fri Jun 29 07:18:39 2018"
+## [1] "have treatment plan Fri Jun 29 07:18:39 2018"
+## [1] "rescoring complex variables Fri Jun 29 07:18:39 2018"
+## [1] "done rescoring complex variables Fri Jun 29 07:18:39 2018"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.228077807 0.2784461       TRUE                 2
-## 2    x_catN     TRUE 0.021219389 0.7553204       TRUE                 2
+## 1    x_catP     TRUE 0.075853018 0.5499714       TRUE                 2
+## 2    x_catN     TRUE 0.220417468 0.2878285       TRUE                 2
 ## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
@@ -305,9 +301,9 @@
 ## 6        x   lev
 ## 7        x   lev
 ## 8        x   lev</code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">                          <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw">head</span>(dTrainNTreated)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,
+                          <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(dTrainNTreated)</code></pre></div>
 <pre><code>##   x_catP      x_catN     x_catD     z_clean    z_isBAD   x_lev_NA
 ## 1   -0.2 -0.17857143 -0.1785714 -0.41904762 -0.0952381 -0.0952381
 ## 2   -0.2 -0.17857143 -0.1785714 -0.26190476 -0.0952381 -0.0952381
@@ -322,24 +318,24 @@
 ## 4 -0.1785714 -0.02857143 1
 ## 5  0.2380952  0.07142857 0
 ## 6  0.2380952  0.07142857 1</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
-<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="kw">sapply</span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) </a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)
+<span class="co"># all input variables should be mean 0</span>
+<span class="kw">sapply</span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) </code></pre></div>
 <pre><code>##        x_catP        x_catN        x_catD       z_clean       z_isBAD 
 ## -5.551115e-17 -3.965082e-18 -9.515810e-17  4.757324e-17 -3.967986e-18 
 ##      x_lev_NA     x_lev_x_a     x_lev_x_b 
 ## -3.965082e-18  0.000000e+00 -2.974054e-18</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># all slopes should be 1 for variables with treatmentsN$scoreFrame$sig&lt;1</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),</a>
-<a class="sourceLine" id="cb31-3" data-line-number="3">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># all slopes should be 1 for variables with treatmentsN$scoreFrame$sig&lt;1</span>
+<span class="kw">sapply</span>(varsN,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
+   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </code></pre></div>
 <pre><code>##    x_catP    x_catN    x_catD   z_clean   z_isBAD  x_lev_NA x_lev_x_a 
 ##         1         1         1         1         1         1         1 
 ## x_lev_x_b 
 ##         1</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># prepared frame</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">                         <span class="dt">pruneSig=</span><span class="kw">c</span>())</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="kw">head</span>(dTestNTreated)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># prepared frame</span>
+dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,
+                         <span class="dt">pruneSig=</span><span class="kw">c</span>())
+<span class="kw">head</span>(dTestNTreated)</code></pre></div>
 <pre><code>##      x_catP      x_catN    x_catD   z_clean z_isBAD x_lev_NA x_lev_x_a
 ## 1 0.5714286 -0.17857143 0.5000000 10.000000       0        0         1
 ## 2 0.2857143  0.07142857 0.7071068 20.000000       0        0         0
@@ -350,10 +346,10 @@
 ## 2         1
 ## 3         0
 ## 4         0</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># scaled prepared frame</span></a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">dTestNTreatedS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3">                         <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb35-4" data-line-number="4"><span class="kw">head</span>(dTestNTreatedS)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># scaled prepared frame</span>
+dTestNTreatedS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,
+                         <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(dTestNTreatedS)</code></pre></div>
 <pre><code>##   x_catP        x_catN     x_catD   z_clean    z_isBAD   x_lev_NA
 ## 1   -0.2 -1.785714e-01 -0.1785714 0.9952381 -0.0952381 -0.0952381
 ## 2    0.2  7.142857e-02  0.2380952 2.5666667 -0.0952381 -0.0952381
