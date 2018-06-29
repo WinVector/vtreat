@@ -528,8 +528,11 @@ buildEvalSets <- function(nRows,...,
                           scale,doCollar,
                           splitFunction,nSplits,
                           catScaling,
-                          parallelCluster) {
-  verbose <- FALSE
+                          ...,
+                          parallelCluster = NULL,
+                          use_parallel = TRUE,
+                          verbose = FALSE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::.mkCrossFrame")
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a carve-up plan
   evalSets <- buildEvalSets(length(zoY),dframe=dframe,y=zoY,
@@ -558,10 +561,14 @@ buildEvalSets <- function(nRows,...,
                               codeRestriction, customCoders,
                               TRUE,
                               catScaling,
-                              verbose,
-                              parallelCluster)
-    fi <- .vtreatList(ti,dsubiEval,newVarsS,scale,doCollar,
-                      parallelCluster)
+                              verbose = verbose,
+                              parallelCluster = parallelCluster,
+                              use_parallel = use_parallel)
+    fi <- .vtreatList(ti,dsubiEval,newVarsS,
+                      scale = scale,
+                      doCollar = doCollar,
+                      parallelCluster = parallelCluster,
+                      use_parallel = use_parallel)
     # fill in missing columns (a data leak potential, but a necessary step)
     droppedColumns <-  setdiff(newVarsS,c(outcomename,colnames(fi)))
     if(length(droppedColumns)>0) {
@@ -571,7 +578,8 @@ buildEvalSets <- function(nRows,...,
                             pruneSig=NULL,
                             varRestriction=droppedColumns,
                             scale=scale,doCollar=doCollar,
-                            parallelCluster=parallelCluster)
+                            parallelCluster=parallelCluster,
+                            use_parallel = use_parallel)
       }
       for(v in droppedColumns) {
         fi[[v]] <- 0.0

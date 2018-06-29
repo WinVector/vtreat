@@ -6,7 +6,8 @@
 \usage{
 prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
   doCollar = FALSE, varRestriction = NULL, codeRestriction = NULL,
-  trackedValues = NULL, extracols = NULL, parallelCluster = NULL)
+  trackedValues = NULL, extracols = NULL, parallelCluster = NULL,
+  use_parallel = TRUE)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -29,7 +30,9 @@ prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
 
 \item{extracols}{extra columns to copy.}
 
-\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
+\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
+
+\item{use_parallel}{logical, if TRUE use parallel methods.}
 }
 \value{
 treated data frame (all columns numeric- without NA, NaN)

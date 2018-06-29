@@ -95,6 +95,7 @@ materialize_treated <- rquery_prepare
 #' @param extracols extra columns to copy.
 #' @param partition_column character name of column to partition work by.
 #' @param parallelCluster a cluster object, created by package parallel or by package snow. If NULL, use the registered default cluster.
+#' @param use_parallel logical, if TRUE use parallel cluster (when available).
 #' @param non_join_mapping logical, if TRUE use non-join based column mapping.
 #' @param print_rquery logical, if TRUE print the rquery ops.
 #' @param env environment to work in.
@@ -108,6 +109,7 @@ rqdatatable_prepare <- function(rqplan, data_source,
                                 ...,
                                 partition_column = NULL,
                                 parallelCluster = NULL,
+                                use_parallel = use_parallel,
                                 extracols = NULL,
                                 non_join_mapping = FALSE,
                                 print_rquery = FALSE,
@@ -167,7 +169,7 @@ rqdatatable_prepare <- function(rqplan, data_source,
   if(print_rquery) {
     cat(format(ops))
   }
-  if(is.null(partition_column)) {
+  if(is.null(partition_column) || (!use_parallel)) {
     treated <- rqdatatable::ex_data_table(ops, 
                                           tables = tables,
                                           env = env)

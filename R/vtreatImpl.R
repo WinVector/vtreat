@@ -39,8 +39,14 @@ mkVtreatListWorker <- function(scale,doCollar) {
 }
 
 # colNames a subset of treated variable names
-.vtreatList <- function(treatments,dframe,colNames,scale,doCollar,
-                        parallelCluster) {
+.vtreatList <- function(treatments, dframe, colNames, 
+                        scale, 
+                        doCollar,
+                        ...,
+                        parallelCluster = NULL,
+                        use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::.vtreatList")
   resCounts <- vapply(treatments,function(tij) { 
     length(intersect(colNames,tij$newvars))
   },numeric(1))
@@ -50,7 +56,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
                         list(ti=ti,xcolOrig=dframe[[ti$origvar]])
                       })
   procWorker <- mkVtreatListWorker(scale,doCollar)
-  gs <- plapply(toProcessP,procWorker,parallelCluster)
+  gs <- plapply(toProcessP, procWorker,
+                parallelCluster = parallelCluster,
+                use_parallel = use_parallel)
   # pass back first error
   for(gi in gs) {
     if(is.character(gi)) {
@@ -123,7 +131,11 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          weights, 
                          minFraction,
                          rareCount, rareSig,
-                         parallelCluster) {
+                         ...,
+                         parallelCluster = NULL,
+                         use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::.safeLevelsR")
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
@@ -138,7 +150,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <-.mkAOVWorkder(yNumeric,vcol,weights)
-    sigs <- as.numeric(plapply(safeLevs,aovCalc,parallelCluster))
+    sigs <- as.numeric(plapply(safeLevs,aovCalc,
+                               parallelCluster = parallelCluster,
+                               use_parallel = use_parallel))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
   tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
@@ -182,7 +196,11 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          weights,
                          minFraction,
                          rareCount, rareSig,
-                         parallelCluster) {
+                         ...,
+                         parallelCluster = NULL,
+                         use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::.safeLevelsC")
   vcol <- .preProcCat(vcolin,c())
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
@@ -197,7 +215,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     sigCalc <- .mkCSigWorker(zC,zTarget,vcol,weights)
-    sigs <- as.numeric(plapply(safeLevs,sigCalc,parallelCluster))
+    sigs <- as.numeric(plapply(safeLevs,sigCalc,
+                               parallelCluster = parallelCluster,
+                               use_parallel = use_parallel))
     supressedLevs <- safeLevs[sigs>rareSig]
   }
   tracked <- names(counts)[counts/totMass>=minFraction] # levels eligable for indicators
@@ -500,8 +520,12 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 codeRestriction, customCoders,
                                 justWantTreatments,
                                 catScaling,
-                                verbose,
-                                parallelCluster) {
+                                ...,
+                                verbose = FALSE,
+                                parallelCluster = NULL,
+                                use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::.designTreatmentsXS")
   if(verbose) {
     print(paste("designing treatments",date()))
   }
@@ -529,13 +553,15 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                                               weights,
                                                               minFraction,
                                                               rareCount, rareSig,
-                                                              parallelCluster)
+                                                              parallelCluster = parallelCluster,
+                                                              use_parallel = use_parallel)
                              } else {
                                levRestriction <- .safeLevelsR(vcol, zoY,
                                                               weights,
                                                               minFraction,
                                                               rareCount,rareSig,
-                                                              parallelCluster)
+                                                              parallelCluster = parallelCluster,
+                                                              use_parallel = use_parallel)
                              }
                            }
                          }
@@ -559,7 +585,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            codeRestriction, customCoders,
                            catScaling,
                            verbose)
-  treatments <- plapply(workList, worker, parallelCluster)
+  treatments <- plapply(workList, worker,
+                        parallelCluster = parallelCluster,
+                        use_parallel = use_parallel)
   treatments <- unlist(treatments, recursive=FALSE)
   treatments <- Filter(Negate(is.null), treatments)
   # parallelize on levels for cat ind
@@ -569,7 +597,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
       ti <- .mkCatInd_scales(ti,
                              zoY, zC, zTarget,
                              weights, catScaling,
-                             parallelCluster = parallelCluster)
+                             parallelCluster = parallelCluster,
+                             use_parallel = use_parallel)
       treatments[[i]] <- ti;
     }
   }
@@ -596,7 +625,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
                    list(ti=ti,
                         dfcol=dframe[[vorig(ti)]])
                  })
-    sFrames <- plapply(tP, scrW, parallelCluster)
+    sFrames <- plapply(tP, scrW,
+                       parallelCluster = parallelCluster,
+                       use_parallel = use_parallel)
     sFrames <- Filter(Negate(is.null), sFrames)
     sFrame <- .rbindListOfFrames(sFrames)
   }
@@ -615,7 +646,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                             list(nv = nv, dfc = fi[[nv]])
                           })
       sfij <- plapply(newVarsSP, swkr,
-                      parallelCluster = parallelCluster)
+                      parallelCluster = parallelCluster,
+                      use_parallel = use_parallel)
       sfij <-  .rbindListOfFrames(sfij)
       sfij$needsSplit <- FALSE
       sfij$extraModelDegrees <- 0
@@ -653,8 +685,12 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                codeRestriction, customCoders,
                                splitFunction, ncross, forceSplit,
                                catScaling,
-                               verbose,
-                               parallelCluster) {
+                               ..., 
+                               verbose = FALSE,
+                               parallelCluster = NULL,
+                               use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::.designTreatmentsX")
   if(!is.data.frame(dframe)) {
     stop("dframe must be a data frame")
   }
@@ -715,8 +751,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                     codeRestriction, customCoders,
                                     FALSE,
                                     catScaling,
-                                    verbose,
-                                    parallelCluster)
+                                    verbose = verbose,
+                                    parallelCluster = parallelCluster,
+                                    use_parallel = use_parallel)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
   if(forceSplit) {
     treatments$scoreFrame$needsSplit <- TRUE
@@ -747,7 +784,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                 FALSE, FALSE,
                                 splitFunction,ncross,
                                 catScaling,
-                                parallelCluster)
+                                parallelCluster = parallelCluster,
+                                use_parallel = use_parallel)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights
       crossMethod <- crossData$method
@@ -764,7 +802,9 @@ mkVtreatListWorker <- function(scale,doCollar) {
                           function(nv) {
                             list(nv=nv,dfc=crossFrame[[nv]])
                           })
-      sframe <- plapply(newVarsSP,swkr,parallelCluster) 
+      sframe <- plapply(newVarsSP,swkr,
+                        parallelCluster = parallelCluster,
+                        use_parallel = use_parallel) 
       sframe <- Filter(Negate(is.null),sframe)
       sframe <- .rbindListOfFrames(sframe)
       # overlay these results into treatments$scoreFrame

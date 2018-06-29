@@ -5,8 +5,8 @@
 \title{Apply a treatment plan using rqdatatable.}
 \usage{
 rqdatatable_prepare(rqplan, data_source, ..., partition_column = NULL,
-  parallelCluster = NULL, extracols = NULL, non_join_mapping = FALSE,
-  print_rquery = FALSE, env = parent.frame())
+  parallelCluster = NULL, use_parallel = use_parallel, extracols = NULL,
+  non_join_mapping = FALSE, print_rquery = FALSE, env = parent.frame())
 }
 \arguments{
 \item{rqplan}{an query plan produced by as_rquery_plan().}
@@ -18,6 +18,8 @@ rqdatatable_prepare(rqplan, data_source, ..., partition_column = NULL,
 \item{partition_column}{character name of column to partition work by.}
 
 \item{parallelCluster}{a cluster object, created by package parallel or by package snow. If NULL, use the registered default cluster.}
+
+\item{use_parallel}{logical, if TRUE use parallel cluster (when available).}
 
 \item{extracols}{extra columns to copy.}
 

@@ -140,7 +140,8 @@ print.treatmentplan <- function(x, ...) {
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param verbose if TRUE print progress.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
+#' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameCExperiment}}
 #' @examples
@@ -167,7 +168,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                               forceSplit=FALSE,
                               catScaling=FALSE,
                               verbose=TRUE,
-                              parallelCluster=NULL) {
+                              parallelCluster=NULL,
+                              use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsC")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!(outcomename %in% colnames(dframe))) {
@@ -190,8 +192,9 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
                                    customCoders,
                                    splitFunction,ncross,forceSplit,
                                    catScaling,
-                                   verbose,
-                                   parallelCluster)
+                                   verbose = verbose,
+                                   parallelCluster = parallelCluster,
+                                   use_parallel = use_parallel)
   treatments$outcomeTarget <- outcometarget
   treatments$outcomeType <- 'Binary'
   treatments
@@ -234,7 +237,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param verbose if TRUE print progress.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
+#' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameNExperiment}}
 #' @examples
@@ -259,7 +263,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               splitFunction=NULL,ncross=3,
                               forceSplit=FALSE,
                               verbose=TRUE,
-                              parallelCluster=NULL) {
+                              parallelCluster=NULL,
+                              use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsN")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!(outcomename %in% colnames(dframe))) {
@@ -282,8 +287,9 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                      codeRestriction, customCoders,
                      splitFunction,ncross,forceSplit,
                      catScaling,
-                     verbose,
-                     parallelCluster)
+                     verbose = verbose,
+                     parallelCluster = parallelCluster,
+                     use_parallel = use_parallel)
   treatments$outcomeType <- 'Numeric'
   treatments
 }
@@ -314,7 +320,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param verbose if TRUE print progress.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
+#' @param use_parallel logical, if TRUE use parallel methods (if parallel cluster is set).
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} 
 #' @examples
@@ -338,7 +345,8 @@ designTreatmentsZ <- function(dframe,varlist,
                               codeRestriction=NULL,
                               customCoders=NULL,
                               verbose=TRUE,
-                              parallelCluster=NULL) {
+                              parallelCluster=NULL,
+                              use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsZ")
   # build a name disjoint from column names
   outcomename <- setdiff(paste('VTREATTEMPCOL',
@@ -358,8 +366,9 @@ designTreatmentsZ <- function(dframe,varlist,
                      codeRestriction, customCoders, FALSE,
                      NULL,3,
                      catScaling,
-                     verbose,
-                     parallelCluster)
+                     verbose = verbose,
+                     parallelCluster = parallelCluster,
+                     use_parallel = use_parallel)
   treatments$outcomeType <- 'None'
   treatments$meanY <- NA
   treatments
@@ -474,7 +483,8 @@ novel_value_summary <- function(dframe, trackedValues) {
 #' @param codeRestriction optional list of treated variable codes to restrict to
 #' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
 #' @param extracols extra columns to copy.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
+#' @param use_parallel logical, if TRUE use parallel methods.
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
 #' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
@@ -517,7 +527,8 @@ prepare <- function(treatmentplan, dframe,
                     codeRestriction= NULL,
                     trackedValues= NULL,
                     extracols= NULL,
-                    parallelCluster= NULL) {
+                    parallelCluster= NULL,
+                    use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare")
   .checkArgs1(dframe=dframe)
   if(class(treatmentplan)!='treatmentplan') {
@@ -588,7 +599,8 @@ prepare <- function(treatmentplan, dframe,
     }
   }
   treated <- .vtreatList(treatmentplan$treatments,dframe,useableVars,scale,doCollar,
-                         parallelCluster)
+                         parallelCluster = parallelCluster,
+                         use_parallel = use_parallel)
   # copy outcome and extracols over when present
   for(ci in unique(c(treatmentplan$outcomename, extracols))) {
     if(ci %in% colnames(dframe)) {
@@ -629,7 +641,8 @@ prepare <- function(treatmentplan, dframe,
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param verbose if TRUE print progress.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
+#' @param use_parallel logical, if TRUE use parallel methods.
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
 #' @examples
@@ -666,7 +679,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     forceSplit = FALSE,
                                     catScaling=FALSE,
                                     verbose= TRUE,
-                                    parallelCluster=NULL) {
+                                    parallelCluster=NULL,
+                                    use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameCExperiment")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!is.data.frame(dframe)) {
@@ -703,7 +717,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   forceSplit = forceSplit,
                                   catScaling=catScaling,
                                   verbose=FALSE,
-                                  parallelCluster=parallelCluster)
+                                  parallelCluster=parallelCluster,
+                                  use_parallel = use_parallel)
   zC <- dframe[[outcomename]]
   zoY <- ifelse(zC==outcometarget,1,0)
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
@@ -723,7 +738,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                             scale,doCollar,
                             splitFunction,ncross,
                             catScaling,
-                            parallelCluster)
+                            parallelCluster = parallelCluster,
+                            use_parallel = use_parallel)
   crossFrame <- crossDat$crossFrame
   newVarsS <- intersect(newVarsS,colnames(crossFrame))
   goodVars <- newVarsS[vapply(newVarsS,
@@ -773,7 +789,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
 #' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
 #' @param verbose if TRUE print progress.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow
+#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
+#' @param use_parallel logical, if TRUE use parallel methods.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @examples
@@ -808,7 +825,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     splitFunction=NULL,ncross=3,
                                     forceSplit=FALSE,
                                     verbose= TRUE,
-                                    parallelCluster=NULL) {
+                                    parallelCluster=NULL,
+                                    use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameNExperiment")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!is.data.frame(dframe)) {
@@ -845,7 +863,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   splitFunction=splitFunction,ncross=ncross,
                                   forceSplit = forceSplit,
                                   verbose=FALSE,
-                                  parallelCluster=parallelCluster)
+                                  parallelCluster=parallelCluster,
+                                  use_parallel = use_parallel)
   zC <- NULL
   zoY <- dframe[[outcomename]]
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
@@ -864,7 +883,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                             scale,doCollar,
                             splitFunction,ncross,
                             catScaling,
-                            parallelCluster)
+                            parallelCluster = parallelCluster,
+                            use_parallel = use_parallel)
   crossFrame <- crossDat$crossFrame
   newVarsS <- intersect(newVarsS,colnames(crossFrame))
   goodVars <- newVarsS[vapply(newVarsS,

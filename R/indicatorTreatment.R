@@ -99,7 +99,11 @@ as_rquery.vtreat_cat_ind <- function(tstep,
 .mkCatInd_scales <- function(treatment,
                              ynumeric, zC, zTarget,
                              weights, catScaling,
-                             parallelCluster) {
+                             ...,
+                             parallelCluster = NULL,
+                             use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::.mkCatInd_scales")
   newVarNames <- treatment$newvars
   pred <- treatment$pred
   treatment$pred <- NULL
@@ -112,7 +116,8 @@ as_rquery.vtreat_cat_ind <- function(tstep,
     }
     scaleList <- plapply(seq_len(length(newVarNames)),
                          worker,
-                         parallelCluster)
+                         parallelCluster = parallelCluster,
+                         use_parallel = use_parallel)
     treatment$scales <- .rbindListOfFrames(scaleList)
   }
   treatment
@@ -125,7 +130,9 @@ as_rquery.vtreat_cat_ind <- function(tstep,
                       minFraction, levRestriction,
                       weights,
                       catScaling,
-                      parallelCluster) {
+                      ...,
+                      parallelCluster = NULL,
+                      use_parallel = TRUE) {
   treatment <- .mkCatInd_a(origVarName,
                            vcolin,
                            ynumeric, zC, zTarget,
@@ -135,7 +142,8 @@ as_rquery.vtreat_cat_ind <- function(tstep,
   treatment <- .mkCatInd_scales(treatment,
                                 ynumeric, zC, zTarget,
                                 weights, catScaling,
-                                parallelCluster = parallelCluster)
+                                parallelCluster = parallelCluster,
+                                use_parallel = use_parallel)
   treatment
 }
 

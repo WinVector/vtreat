@@ -6,7 +6,8 @@
 \usage{
 designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
   rareCount = 0, collarProb = 0, codeRestriction = NULL,
-  customCoders = NULL, verbose = TRUE, parallelCluster = NULL)
+  customCoders = NULL, verbose = TRUE, parallelCluster = NULL,
+  use_parallel = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -29,7 +30,9 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
 
 \item{verbose}{if TRUE print progress.}
 
-\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
+\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
+
+\item{use_parallel}{logical, if TRUE use parallel methods (if parallel cluster is set).}
 }
 \value{
 treatment plan (for use with prepare)

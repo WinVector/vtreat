@@ -1,12 +1,25 @@
 
 
 # maybe run parallel
-plapply <- function(workList,worker,parallelCluster) {
-  if(is.null(parallelCluster) || 
-     (!requireNamespace("parallel",quietly=TRUE))) {
-    res <- lapply(workList,worker)
+plapply <- function(workList, worker, 
+                    ...,
+                    parallelCluster = NULL,
+                    use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::plapply")
+  use_parallel <- use_parallel &&
+    (length(workList)>1) &&
+    (requireNamespace("parallel", quietly=TRUE))
+  if(use_parallel && is.null(parallelCluster)) {
+    parallelCluster <- parallel::getDefaultCluster()
+    if(is.null(parallelCluster)) {
+      use_parallel <- FALSE
+    }
+  }
+  if(!use_parallel) {
+    res <- lapply(workList, worker)
   } else {
-    res <- parallel::parLapplyLB(parallelCluster,workList,worker)
+    res <- parallel::parLapplyLB(parallelCluster, workList, worker)
   }
   res
 }

@@ -1,4 +1,7 @@
 
+# vtreat 1.2.2 2018/06/28
+
+  * Do not use NULL to signal when parallelism is desired.
 
 # vtreat 1.2.1 2018/06/26
 

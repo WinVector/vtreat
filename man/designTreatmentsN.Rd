@@ -8,7 +8,7 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = NULL,
   collarProb = 0, codeRestriction = NULL, customCoders = NULL,
   splitFunction = NULL, ncross = 3, forceSplit = FALSE, verbose = TRUE,
-  parallelCluster = NULL)
+  parallelCluster = NULL, use_parallel = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -43,7 +43,9 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{verbose}{if TRUE print progress.}
 
-\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow}
+\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
+
+\item{use_parallel}{logical, if TRUE use parallel methods (when parallel cluster is set).}
 }
 \value{
 treatment plan (for use with prepare)
