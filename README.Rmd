@@ -340,6 +340,21 @@ Related work:
   * ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel, Win-Vector blog, 2012.
   * ["Big Learning Made Easy – with Counts!"](https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/), Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.
 
+## Installation
+
+Install with either:
+
+```{r inst1, eval=FALSE}
+install.packages("vtreat")
+```
+
+or
+
+```{r inst2, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("WinVector/vtreat")
+```
+
 
 ## Note
 

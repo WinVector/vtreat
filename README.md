@@ -150,8 +150,8 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.057741424 0.45748159                 2
- #  2        x    x_catB  catB 0.019483838 0.66603146                 2
+ #  1        x    x_catP  catP 0.059315943 0.45141252                 2
+ #  2        x    x_catB  catB 0.029824903 0.59334713                 2
  #  3        z   z_clean clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -197,9 +197,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.558824e-01 0.1184999                 2
- #  2        x    x_catN  catN 3.132648e-02 0.6750039                 2
- #  3        x    x_catD  catD 4.512437e-02 0.6135229                 2
+ #  1        x    x_catP  catP 1.304740e-01 0.3793327                 2
+ #  2        x    x_catN  catN 1.262238e-01 0.3877835                 2
+ #  3        x    x_catD  catD 3.657626e-01 0.1121995                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -243,6 +243,22 @@ Related work:
 -   ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
 -   ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel, Win-Vector blog, 2012.
 -   ["Big Learning Made Easy – with Counts!"](https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/), Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.
+
+Installation
+------------
+
+Install with either:
+
+``` r
+install.packages("vtreat")
+```
+
+or
+
+``` r
+# install.packages("devtools")
+devtools::install_github("WinVector/vtreat")
+```
 
 Note
 ----
