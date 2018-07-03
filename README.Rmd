@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173314.svg)](https://doi.org/10.5281/zenodo.1173314)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 
 [vtreat](http://winvector.github.io/vtreat/) is an [R](https://cran.r-project.org) data.frame
 processor/conditioner that prepares real-world data for
