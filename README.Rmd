@@ -107,28 +107,6 @@ prepared some documentation:
 -   [Principled ways to pick significance based pruning
     levels](https://winvector.github.io/vtreat/articles/vtreatSignificance.html).
 
-
-Install either from CRAN:
-
-```{r eval=FALSE}
-install.packages('vtreat')
-```
-
-Or from GitHub:
-
-```{r eval=FALSE}
-# install.packages('devtools')
-devtools::install_github('WinVector/vtreat', build_vignettes=TRUE)
-```
-
-And then:
-
-```{r eval=FALSE}
-library('vtreat')
-help('vtreat')
-```
-
-
 Data treatments are "y-aware" (use distribution relations between
 independent variables and the dependent variable).  For binary
 classification use 'designTreatmentsC()' and for numeric regression
@@ -282,7 +260,6 @@ Trivial example:
 library("vtreat")
 packageVersion("vtreat")
 citation('vtreat')
-options(list(vtreat.use_data.table_binding = TRUE))
 
 # categorical example
 dTrainC <- data.frame(x=c('a','a','a','b','b',NA,NA),

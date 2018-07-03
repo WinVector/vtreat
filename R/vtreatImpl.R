@@ -95,7 +95,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 # pre-transform categorical column
 # convert it to character, convert NA to "NA"
-.preProcCat <- function(col,levRestriction) {
+.preProcCat <- function(col, levRestriction) {
   origna <- is.na(col)
   # don't use blank as a key and get into defendable level space
   col <- paste('x',as.character(col))
@@ -140,13 +140,13 @@ mkVtreatListWorker <- function(scale,doCollar) {
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
+  safeLevs <- names(counts)[counts>rareCount]
   supressedLevs <- character(0)
   # re-code with rare symbol eligable
   vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
+  safeLevs <- names(counts)
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     aovCalc <-.mkAOVWorkder(yNumeric,vcol,weights)
@@ -205,13 +205,13 @@ mkVtreatListWorker <- function(scale,doCollar) {
   # first: keep only levels with enough weighted counts
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
+  safeLevs <- names(counts)[counts>rareCount]
   supressedLevs <- character(0)
   # re-code with rare symbol eligable
   vcol <- .preProcCat(vcolin,list(safeLevs=safeLevs,supressedLevs=supressedLevs))
   counts <- tapply(weights,vcol,sum)
   totMass <- sum(counts)
-  safeLevs <- names(counts)[(counts>rareCount) & (counts<(totMass-rareCount))]
+  safeLevs <- names(counts)
   if((length(safeLevs)>0)&&(!is.null(rareSig))&&(rareSig<1)) {
     # second: keep only levels that look significantly different than grand mean
     sigCalc <- .mkCSigWorker(zC,zTarget,vcol,weights)
