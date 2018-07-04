@@ -1,7 +1,7 @@
 Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
-Version: 1.2.2
+Version: 1.2.3
 Date: 2018-07-04
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),

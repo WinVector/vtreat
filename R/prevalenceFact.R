@@ -10,7 +10,7 @@
     keys[unhandledNovel] <- names(args$scores)[[1]]   # just to prevent bad lookups
     pred <- as.numeric(args$scores[keys]) 
   }
-  pred[unhandledNovel] <- 0.0 
+  pred[unhandledNovel] <- args$rare_score
   pred
 }
 
@@ -31,7 +31,7 @@ as_rquery.vtreat_cat_p <- function(tstep,
                           coding_levels = names(args$scores),
                           effect_values = args$scores,
                           levRestriction = args$levRestriction,
-                          default_value = 0.0)
+                          default_value = args$rare_score)
 }
 
 
@@ -49,7 +49,8 @@ as_rquery.vtreat_cat_p <- function(tstep,
                     newvars=newVarName,
                     f=.catP,
                     args=list(scores=scores,
-                              levRestriction=levRestriction),
+                              levRestriction=levRestriction,
+                              rare_score = 0.5/den),
                     treatmentName='Prevalence Code',
                     treatmentCode='catP',
                     needsSplit=TRUE,

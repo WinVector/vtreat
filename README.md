@@ -98,7 +98,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.2.2'
+ #  [1] '1.2.3'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -129,8 +129,8 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
- #  2        x    x_catB  catB 1.142159e-05 0.99166241                 2
+ #  1        x    x_catP  catP 1.030137e-01 0.32099590                 2
+ #  2        x    x_catB  catB 1.125399e-05 0.99172381                 2
  #  3        z   z_clean clean 2.376018e-01 0.13176020                 0
  #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
  #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
@@ -157,7 +157,7 @@ print(dTestCTreated)
  #        x_catP     x_catB  z_clean    z_isBAD   x_lev_NA  x_lev_x_a
  #  1 -0.2380952 -0.1897682 1.194595 -0.1714286 -0.1714286 -0.2380952
  #  2  0.1785714 -0.1489924 2.951351 -0.1714286 -0.1714286  0.1785714
- #  3  1.0119048 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714
+ #  3  0.8035714 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714
  #  4  0.1785714  0.4336447 0.000000  0.4285714  0.4285714  0.1785714
  #      x_lev_x_b
  #  1  0.02857143
@@ -176,9 +176,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 1.498471e-01 0.3434338                 2
- #  2        x    x_catN  catN 1.646259e-01 0.3186062                 2
- #  3        x    x_catD  catD 1.620332e-01 0.3228162                 2
+ #  1        x    x_catP  catP 7.272727e-02 0.5183316                 2
+ #  2        x    x_catN  catN 2.843198e-01 0.1735601                 2
+ #  3        x    x_catD  catD 2.549856e-01 0.2018336                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -202,10 +202,10 @@ sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
 print(dTestNTreated)
  #    x_catP x_catN      x_catD   z_clean    z_isBAD   x_lev_NA x_lev_x_a
- #  1  -0.25  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25
- #  2   0.25   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25
- #  3   0.75   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25
- #  4   0.25   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25
+ #  1 -0.250  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25
+ #  2  0.250   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25
+ #  3  0.625   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25
+ #  4  0.250   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25
  #        x_lev_x_b
  #  1 -2.266233e-17
  #  2  6.798700e-17

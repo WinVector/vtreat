@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.3</span>
       </span>
     </div>
 
@@ -208,13 +208,13 @@
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rquery/topics/rq_remove_table'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/DBI/topics/dbDisconnect'>dbDisconnect</a></span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.2.2 inspecting inputs Tue Jul  3 14:20:54 2018"
-#&gt; [1] "designing treatments Tue Jul  3 14:20:54 2018"
-#&gt; [1] " have initial level statistics Tue Jul  3 14:20:54 2018"
-#&gt; [1] " scoring treatments Tue Jul  3 14:20:54 2018"
-#&gt; [1] "have treatment plan Tue Jul  3 14:20:55 2018"
-#&gt; [1] "rescoring complex variables Tue Jul  3 14:20:55 2018"
-#&gt; [1] "done rescoring complex variables Tue Jul  3 14:20:55 2018"
+}</div><div class='output co'>#&gt; [1] "vtreat 1.2.3 inspecting inputs Wed Jul  4 08:32:51 2018"
+#&gt; [1] "designing treatments Wed Jul  4 08:32:51 2018"
+#&gt; [1] " have initial level statistics Wed Jul  4 08:32:51 2018"
+#&gt; [1] " scoring treatments Wed Jul  4 08:32:52 2018"
+#&gt; [1] "have treatment plan Wed Jul  4 08:32:52 2018"
+#&gt; [1] "rescoring complex variables Wed Jul  4 08:32:52 2018"
+#&gt; [1] "done rescoring complex variables Wed Jul  4 08:32:52 2018"
 #&gt;      x_catP     x_catB z_clean z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
 #&gt; 1 0.5000000 -0.6930972     1.0       0        0         1         0 FALSE
 #&gt; 2 0.5000000 -0.6930972     2.0       0        0         1         0 FALSE
@@ -241,7 +241,7 @@
 #&gt;   x_lev_NA := ifelse(is.na(x), 1, 0),
 #&gt;   x_lev_x_a := ifelse(is.na(x), 0, ifelse(x == "a", 1, 0)),
 #&gt;   x_lev_x_b := ifelse(is.na(x), 0, ifelse(x == "b", 1, 0)),
-#&gt;   x_catP := ifelse(is.na(x), 0.166666666666667, ifelse(is.na(x_catP), 0, x_catP)),
+#&gt;   x_catP := ifelse(is.na(x), 0.166666666666667, ifelse(is.na(x_catP), 0.0833333333333333, x_catP)),
 #&gt;   x_catB := ifelse(is.na(x), 9.21044036697607, ifelse(is.na(x_catB), 0, x_catB)),
 #&gt;   z_clean := ifelse(is.na(z), 3.6, z),
 #&gt;   z_isBAD := ifelse(is.na(z), 1, 0))
