@@ -4,7 +4,7 @@
 ## Test environments
 
     * Windows
-    * using R Under development (unstable) (2018-07-01 r74946)
+    * using R Under development (unstable) (2018-07-01 r74950)
     * using platform: x86_64-w64-mingw32 (64-bit)
 
     * OSX
@@ -26,7 +26,7 @@
     Conversion of ‘README.md’ failed:
     pandoc: Could not fetch https://www.r-pkg.org/badges/version/vtreat
     TlsException (HandshakeFailed (Error_Protocol ("expecting server hello, got alert : [(AlertLevel_Fatal,HandshakeFailure)]",True,HandshakeFailure)))
-    It does not occur on Win-check, and I am hoping is just an artifact of my checking environment.
+    It does not occur on Win-check, and I am assume is just an artifact of my checking environment.
 
 ## Downstream dependencies
 
