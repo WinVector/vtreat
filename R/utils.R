@@ -10,13 +10,13 @@ plapply <- function(workList, worker,
   use_parallel <- use_parallel &&
     (length(workList)>1) &&
     (requireNamespace("parallel", quietly=TRUE))
-  if(use_parallel && is.null(parallelCluster)) {
-    parallelCluster <- parallel::getDefaultCluster()
-    if(is.null(parallelCluster)) {
-      use_parallel <- FALSE
+  if(use_parallel && 
+     is.null(parallelCluster)) {
+    if(exists('getDefaultCluster', where=asNamespace('parallel'), mode='function')) {
+      parallelCluster <- parallel::getDefaultCluster()
     }
   }
-  if(!use_parallel) {
+  if((!use_parallel) || is.null(parallelCluster)) {
     res <- lapply(workList, worker)
   } else {
     res <- parallel::parLapplyLB(parallelCluster, workList, worker)
