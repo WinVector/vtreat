@@ -1,5 +1,5 @@
 
-Fix CRAN checks.
+Fix failing CRAN checks.
 
 ## Test environments
 
