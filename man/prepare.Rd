@@ -18,7 +18,7 @@ prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
 
 \item{pruneSig}{suppress variables with significance above this level}
 
-\item{scale}{optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed  (lm for regression problems/glm for classificaiton problems) against outcome.}
+\item{scale}{optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.}
 
 \item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
 

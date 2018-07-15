@@ -47,8 +47,8 @@ dframe is the original dataframe (useful for any group control variables),
 and y is a numeric vector representing outcome (useful for outcome stratification).
 
 Note that buildEvalSets may not always return a partition (such
-as one row dataframes), or if the user split function chooses to make rows eligable for
-applicaton a different number of times.
+as one row dataframes), or if the user split function chooses to make rows eligible for
+application a different number of times.
 }
 \examples{
 

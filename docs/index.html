@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.4</span>
       </span>
     </div>
 
@@ -199,7 +199,7 @@
 <p>Trivial example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)
 <span class="kw">packageVersion</span>(<span class="st">"vtreat"</span>)
- <span class="co">#  [1] '1.2.3'</span>
+ <span class="co">#  [1] '1.2.4'</span>
 <span class="kw">citation</span>(<span class="st">'vtreat'</span>)
  <span class="co">#  </span>
  <span class="co">#  To cite package 'vtreat' in publications use:</span>
@@ -231,7 +231,7 @@ treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/de
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
  <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span>
  <span class="co">#  1        x    x_catP  catP 0.111456141 0.30194137                 2</span>
- <span class="co">#  2        x    x_catB  catB 0.033761011 0.56994212                 2</span>
+ <span class="co">#  2        x    x_catB  catB 0.115273608 0.29380616                 2</span>
  <span class="co">#  3        z   z_clean clean 0.237601767 0.13176020                 0</span>
  <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span>
  <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span>
@@ -274,9 +274,9 @@ treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/design
                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
  <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 2.941176e-01 0.1649303                 2</span>
- <span class="co">#  2        x    x_catN  catN 6.583561e-02 0.5396025                 2</span>
- <span class="co">#  3        x    x_catD  catD 9.777348e-03 0.8158041                 2</span>
+ <span class="co">#  1        x    x_catP  catP 2.105263e-01 0.2528101                 2</span>
+ <span class="co">#  2        x    x_catN  catN 3.205128e-03 0.8940756                 2</span>
+ <span class="co">#  3        x    x_catD  catD 6.666667e-02 0.5369633                 2</span>
  <span class="co">#  4        z   z_clean clean 2.880952e-01 0.1701892                 0</span>
  <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
  <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>

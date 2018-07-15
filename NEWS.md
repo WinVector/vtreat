@@ -1,4 +1,9 @@
 
+# vtreat 1.2.3 2018/07/15
+
+ * Documentation fixes.
+ * Multiclass vignette.
+
 # vtreat 1.2.3 2018/07/11
 
   * Smooth catP novel levels scoring a bit.

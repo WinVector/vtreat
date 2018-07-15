@@ -380,8 +380,8 @@ makekWayCrossValidationGroupedByColumn <- function(groupingColumnName) {
 #' and y is a numeric vector representing outcome (useful for outcome stratification).
 #' 
 #' Note that buildEvalSets may not always return a partition (such
-#' as one row dataframes), or if the user split function chooses to make rows eligable for
-#' applicaton a different number of times.
+#' as one row dataframes), or if the user split function chooses to make rows eligible for
+#' application a different number of times.
 #' 
 #' @param nRows scalar, >=1 number of rows to sample from.
 #' @param ... no additional arguments, declared to forced named binding of later arguments.

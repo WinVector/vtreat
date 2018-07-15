@@ -34,7 +34,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
-\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
+\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restriction).}
 
 \item{customCoders}{map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).}
 
@@ -42,7 +42,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
 
 \item{ncross}{optional scalar >=2 number of cross validation splits use in rescoring complex variables.}
 
-\item{forceSplit}{logical, if TRUE force cross-validated significance calculatons on all variables.}
+\item{forceSplit}{logical, if TRUE force cross-validated significance calculations on all variables.}
 
 \item{catScaling}{optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.}
 
@@ -58,8 +58,8 @@ treatment plan (for use with prepare)
 \description{
 Function to design variable treatments for binary prediction of a
 categorical outcome.  Data frame is assumed to have only atomic columns
-except for dates (which are converted to numeric). Note: re-encoding high cardenality
-categorical varaibles can introduce undesirable nested model bias, for such data consider
+except for dates (which are converted to numeric). Note: re-encoding high cardinality
+categorical variables can introduce undesirable nested model bias, for such data consider
 using \code{\link{mkCrossFrameCExperiment}}.
 }
 \details{

@@ -29,7 +29,7 @@ A random test/train split attempts to preserve the following:
  * Future application data is exchangeable with training data (prior to model construction).
  * Future application data remains exchangeable with test data (even after model construction, as test data is not used in model construction).
 
-Note if there is a concept change (also called issues of non-stationarity) then future data is already not statistically exchangeable with training data (so can't preserve a property you never had).  However even if your future data starts exchangeable with training data there is at least one (often) unmodeled difference between training data and future application data:
+Note if there is a concept change (also called issues of non-stationarity) then future data is already not statistically exchangeable with training data (so can't preserve a property you never had).  However even if your future data starts exchangeable with training data there is at least one (often) un-modeled difference between training data and future application data:
 
 * Future application data tends to be formed after (or in the future of) training data.
 
@@ -43,7 +43,7 @@ With the above discussion under our belt we get back to the problem at hand.  Wh
 
 * **Grouping:** By "grouping" we mean not splitting closely related events into test and train: if a set of rows constitutes a "group," then we want all those rows to go either into test or into train -- as a group. Typical examples are multiple events from a single customer (as you really want your model to predict behavior of new customers) or records close together in time (as latter application records will not be close in time to original training records).
 
-* **Structured back testing:** Structured back testing preserves the order of time ordered events.  In finance it is considered ridiculous to use data from a Monday and a Wednesday to build a model for prices on the intervening Tuesday -- but this is the kind of thing that can happen if the training and evaluatin data are partitioned using a simple random split.
+* **Structured back testing:** Structured back testing preserves the order of time ordered events.  In finance it is considered ridiculous to use data from a Monday and a Wednesday to build a model for prices on the intervening Tuesday -- but this is the kind of thing that can happen if the training and evaluation data are partitioned using a simple random split.
 
 Our goal is for `vtreat` to be a domain agnostic, `y`-aware data conditioner.  So `vtreat` should _y_-stratify its data splits throughout.  Prior to version `0.5.26` `vtreat` used simple random splits.  Now with version `0.5.26` (currently available from [Github](https://github.com/WinVector/vtreat)) `vtreat` defaults to stratified sampling throughout.  Respecting things like locality of record grouping or ordering of time are domain issues and should be handled by the analyst.
 
@@ -82,7 +82,7 @@ As we can see `vtreat::oneWayHoldout` builds three split sets where in each set 
 
 * `kWayStratifiedY`: k-way y-stratified cross-validation. This is the `vtreat` default splitting plan.
 * `makekWayCrossValidationGroupedByColumn`: k-way y-stratified cross-validation that preserves grouping (for example, all rows corresponding to a single customer or patient, etc). This is a complex splitting plan, and only recommended when absolutely needed.
-* `kWayCrossValidation`: k-way unstratified cross-validation
+* `kWayCrossValidation`: k-way un-stratified cross-validation
 * `oneWayHoldout`: jackknife, or leave-one-out cross-validation.  Note one way hold out can leak target expectations, so is not preferred for nested model situations.
 
 The function `buildEvalSets` takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using `designTreatments[N\C]` or `mkCrossFrame[N\C]Experiment`.

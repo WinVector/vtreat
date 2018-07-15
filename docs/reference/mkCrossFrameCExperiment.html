@@ -65,7 +65,7 @@ into calibration, training, test sets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.4</span>
       </span>
     </div>
 
@@ -212,7 +212,7 @@ into calibration, training, test sets.</p>
     </tr>
     <tr>
       <th>codeRestriction</th>
-      <td><p>what types of variables to produce (character array of level codes, NULL means no restiction).</p></td>
+      <td><p>what types of variables to produce (character array of level codes, NULL means no restriction).</p></td>
     </tr>
     <tr>
       <th>customCoders</th>
@@ -236,7 +236,7 @@ into calibration, training, test sets.</p>
     </tr>
     <tr>
       <th>forceSplit</th>
-      <td><p>logical, if TRUE force cross-validated significance calculatons on all variables.</p></td>
+      <td><p>logical, if TRUE force cross-validated significance calculations on all variables.</p></td>
     </tr>
     <tr>
       <th>catScaling</th>
@@ -278,9 +278,9 @@ into calibration, training, test sets.</p>
 <span class='no'>d</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span> + <span class='no'>del</span>[<span class='no'>d</span>$<span class='no'>zip2</span>]
 <span class='no'>d</span>$<span class='no'>yc</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span><span class='kw'>&gt;=</span><span class='fu'>mean</span>(<span class='no'>d</span>$<span class='no'>y</span>)
 <span class='no'>cC</span> <span class='kw'>&lt;-</span> <span class='fu'>mkCrossFrameCExperiment</span>(<span class='no'>d</span>,<span class='fu'>c</span>(<span class='st'>'zip'</span>,<span class='st'>'zip2'</span>),<span class='st'>'yc'</span>,<span class='fl'>TRUE</span>,
-  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.3 start initial treatment design Wed Jul 11 09:12:38 2018"
-#&gt; [1] " start cross frame work Wed Jul 11 09:12:39 2018"
-#&gt; [1] " vtreat::mkCrossFrameCExperiment done Wed Jul 11 09:12:40 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='fu'>as.numeric</span>(<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>yc</span>),<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catB</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] -0.0676328</div><div class='input'><span class='fu'>cor</span>(<span class='fu'>as.numeric</span>(<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>yc</span>),<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catB</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.5039089</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cC</span>$<span class='no'>treatments</span>
+  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.4 start initial treatment design Sun Jul 15 12:22:35 2018"
+#&gt; [1] " start cross frame work Sun Jul 15 12:22:36 2018"
+#&gt; [1] " vtreat::mkCrossFrameCExperiment done Sun Jul 15 12:22:37 2018"</div><div class='input'><span class='fu'>cor</span>(<span class='fu'>as.numeric</span>(<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>yc</span>),<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catB</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] -0.0676328</div><div class='input'><span class='fu'>cor</span>(<span class='fu'>as.numeric</span>(<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>yc</span>),<span class='no'>cC</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catB</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.5039089</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cC</span>$<span class='no'>treatments</span>
 <span class='no'>dTrainV</span> <span class='kw'>&lt;-</span> <span class='no'>cC</span>$<span class='no'>crossFrame</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

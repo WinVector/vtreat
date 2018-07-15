@@ -24,7 +24,7 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
-\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
+\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restriction).}
 
 \item{customCoders}{map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).}
 

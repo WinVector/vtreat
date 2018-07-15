@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2018-07-11" />
+<meta name="date" content="2018-07-15" />
 
 <title>Variable Types</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Variable Types</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2018-07-11</em></h4>
+<h4 class="date"><em>2018-07-15</em></h4>
 
 
 
@@ -96,13 +96,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.3 inspecting inputs Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;designing treatments Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot; have initial level statistics Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot; scoring treatments Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;have treatment plan Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;rescoring complex variables Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;done rescoring complex variables Wed Jul 11 09:12:12 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.4 inspecting inputs Sun Jul 15 12:20:40 2018&quot;
+## [1] &quot;designing treatments Sun Jul 15 12:20:40 2018&quot;
+## [1] &quot; have initial level statistics Sun Jul 15 12:20:40 2018&quot;
+## [1] &quot; scoring treatments Sun Jul 15 12:20:40 2018&quot;
+## [1] &quot;have treatment plan Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;rescoring complex variables Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;done rescoring complex variables Sun Jul 15 12:20:41 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
@@ -125,14 +125,14 @@ vmap &lt;-<span class="st"> </span><span class="kw">as.list</span>(treatmentsC<s
 <pre><code>##   origName       sig
 ## 1        x 0.1547700
 ## 2        z 0.1429977</code></pre>
-<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-rsquared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
+<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
 <p>Essentially a derived variable name is built by concatenating an original variable name and a treatment type (also recorded in the <code>code</code> column for convenience). The codes give the different ‘vtreat’ variable types (or really meanings, as all derived variables are numeric).</p>
 <p>For categorical targets the possible variable types are as follows:</p>
 <ul>
 <li><strong>clean</strong> : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.</li>
 <li><strong>is_Bad</strong> : a companion to the ‘clean’ treatment. ‘is_Bad’ is an indicator that indicates a value replacement has occurred. For many noisy datasets this column can be more informative than the clean column!</li>
 <li><strong>lev</strong> : a 0/1 indicator indicating a particular value of a categorical variable was present. For example <code>x_lev_x.a</code> is 1 when the original <code>x</code> variable had a value of “a”. These indicators are essentially variables representing explicit encoding of levels as dummy variables. In some cases a special level code is used to represent pooled rare values.</li>
-<li><strong>cat_B</strong> : a single variable Bayesian model of the changine in logit-odds in outcome from mean distribution conditioned on the observed value of the original variable. In our example: <code>x_catB = logit(P[y==target|x]) - logit(P[y==target])</code>. This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.</li>
+<li><strong>cat_B</strong> : a single variable Bayesian model of the change in logit-odds in outcome from mean distribution conditioned on the observed value of the original variable. In our example: <code>x_catB = logit(P[y==target|x]) - logit(P[y==target])</code>. This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.</li>
 <li><strong>cat_P</strong> : a “prevalence fact” about a categorical level. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for meta-analysis on the variable.</li>
 </ul>
 </div>
@@ -144,13 +144,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.3 inspecting inputs Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;designing treatments Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot; have initial level statistics Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot; scoring treatments Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;have treatment plan Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;rescoring complex variables Wed Jul 11 09:12:12 2018&quot;
-## [1] &quot;done rescoring complex variables Wed Jul 11 09:12:13 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.4 inspecting inputs Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;designing treatments Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot; have initial level statistics Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot; scoring treatments Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;have treatment plan Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;rescoring complex variables Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;done rescoring complex variables Sun Jul 15 12:20:41 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x    x_catP  catP 0.2857143 0.2745766                 2
@@ -167,11 +167,11 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw">designTreatmentsN</sp
 <li><strong>is_Bad</strong> : a companion to the ‘clean’ treatment. ‘is_Bad’ is an indicator that indicates a value replacement has occurred. For many noisy datasets this column can be more informative than the clean column!</li>
 <li><strong>lev</strong> : a 0/1 indicator indicating a particular value of a categorical variable was present. For example <code>x_lev_x.a</code> is 1 when the original <code>x</code> variable had a value of “a”. These indicators are essentially variables representing explicit encoding of levels as dummy variables. In some cases a special level code is used to represent pooled rare values.</li>
 <li><strong>cat_N</strong> : a single variable regression model of the difference in outcome expectation conditioned on the observed value of the original variable. In our example: <code>x_catN = E[y|x] - E[y]</code>. This encoding is especially useful for categorical variables that have a large number of levels, but be aware it can obscure degrees of freedom if not used properly.</li>
-<li><strong>cat_P</strong> : a “prevalence fact” about a categorical level. Tells us if the original level was rare or common. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.</li>
-<li><strong>cat_D</strong> : a “deviation fact” about a categorical level tells us if ‘y’ is concentrated or diffuse when conditioned on the observed level of the original categorical variable. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.</li>
+<li><strong>cat_P</strong> : a “prevalence fact” about a categorical level. Tells us if the original level was rare or common. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for met-analysis on the variable.</li>
+<li><strong>cat_D</strong> : a “deviation fact” about a categorical level tells us if ‘y’ is concentrated or diffuse when conditioned on the observed level of the original categorical variable. Probably not good for direct use in a model, but possibly useful for meta-analysis on the variable.</li>
 </ul>
 <p>Note: for categorical targets we don’t need <code>cat\_D</code> variables as this information is already encoded in <code>cat\_B</code> variables.</p>
-<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “rsquared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
+<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
 </div>
 <div id="when-there-is-no-supplied-target-to-predict" class="section level2">
 <h2>When there is no supplied target to predict</h2>
@@ -181,11 +181,11 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw">designTreatmentsZ</span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.3 inspecting inputs Wed Jul 11 09:12:13 2018&quot;
-## [1] &quot;designing treatments Wed Jul 11 09:12:13 2018&quot;
-## [1] &quot; have initial level statistics Wed Jul 11 09:12:13 2018&quot;
-## [1] &quot; scoring treatments Wed Jul 11 09:12:13 2018&quot;
-## [1] &quot;have treatment plan Wed Jul 11 09:12:13 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.4 inspecting inputs Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;designing treatments Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot; have initial level statistics Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot; scoring treatments Sun Jul 15 12:20:41 2018&quot;
+## [1] &quot;have treatment plan Sun Jul 15 12:20:41 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -199,7 +199,7 @@ treatmentsZ &lt;-<span class="st"> </span><span class="kw">designTreatmentsZ</sp
 <li><strong>clean</strong> : a numeric variable passed through with all NA/NaN/infinite values replaced with either zero or mean value of the non-NA/NaN/infinite examples of the variable.</li>
 <li><strong>is_Bad</strong> : a companion to the ‘clean’ treatment. ‘is_Bad’ is an indicator that indicates a value replacement has occurred. For many noisy datasets this column can be more informative than the clean column!</li>
 <li><strong>lev</strong> : a 0/1 indicator indicating a particular value of a categorical variable was present. For example <code>x_lev_x.a</code> is 1 when the original <code>x</code> variable had a value of “a”. These indicators are essentially variables representing explicit encoding of levels as dummy variables. In some cases a special level code is used to represent pooled rare values.</li>
-<li><strong>cat_P</strong> : a “prevalence fact” about a categorical level. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for metanalysis on the variable.</li>
+<li><strong>cat_P</strong> : a “prevalence fact” about a categorical level. Tells us if the original level was rare or common. Probably not good for direct use in a model, but possibly useful for meta-analysis on the variable.</li>
 </ul>
 </div>
 <div id="restricting-to-specific-variable-types" class="section level2">

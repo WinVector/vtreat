@@ -110,8 +110,8 @@ print.treatmentplan <- function(x, ...) {
 #' 
 #' Function to design variable treatments for binary prediction of a
 #' categorical outcome.  Data frame is assumed to have only atomic columns
-#' except for dates (which are converted to numeric). Note: re-encoding high cardenality
-#' categorical varaibles can introduce undesirable nested model bias, for such data consider
+#' except for dates (which are converted to numeric). Note: re-encoding high cardinality
+#' categorical variables can introduce undesirable nested model bias, for such data consider
 #' using \code{\link{mkCrossFrameCExperiment}}.
 #' 
 #' The main fields are mostly vectors with names (all with the same names in the same order):
@@ -133,11 +133,11 @@ print.treatmentplan <- function(x, ...) {
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
-#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
-#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculations on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
@@ -209,8 +209,8 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' numeric outcome.  Data frame is assumed to have only atomic columns
 #' except for dates (which are converted to numeric).
 #' Note: each column is processed independently of all others. 
-#' Note: re-encoding high cardenality
-#' categorical varaibles can introduce undesirable nested model bias, for such data consider
+#' Note: re-encoding high cardinality
+#' categorical variables can introduce undesirable nested model bias, for such data consider
 #' using \code{\link{mkCrossFrameNExperiment}}.
 #' 
 #' The main fields are mostly vectors with names (all with the same names in the same order):
@@ -231,11 +231,11 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
-#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar >=2 number of cross validation splits use in rescoring complex variables.
-#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculations on all variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
@@ -317,7 +317,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
-#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
@@ -477,7 +477,7 @@ novel_value_summary <- function(dframe, trackedValues) {
 #' @param dframe Data frame to be treated
 #' @param ... no additional arguments, declared to forced named binding of later arguments
 #' @param pruneSig suppress variables with significance above this level
-#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for varaibles with signficant less than 1) slope 1 when regressed  (lm for regression problems/glm for classificaiton problems) against outcome.
+#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param varRestriction optional list of treated variable names to restrict to
 #' @param codeRestriction optional list of treated variable codes to restrict to
@@ -632,13 +632,13 @@ prepare <- function(treatmentplan, dframe,
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
-#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
-#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculations on all variables.
 #' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
@@ -781,13 +781,13 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
 #' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
-#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restiction).
+#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
 #' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
 #' @param ncross optional scalar>=2 number of cross-validation rounds to design.
-#' @param forceSplit logical, if TRUE force cross-validated significance calculatons on all variables.
+#' @param forceSplit logical, if TRUE force cross-validated significance calculations on all variables.
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.

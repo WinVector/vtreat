@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.2.4</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-07-11</h4>
+            <h4 class="date">2018-07-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -116,7 +116,7 @@
     
     
 <p>Example demonstrating “cross validated training frames” (or “cross frames”) in vtreat.</p>
-<p>Consider the following data frame. The outcome only depends on the “good” variables, not on the (high degree of freedom) “bad” variables. Modeling such a data set runs a high risk of overfit.</p>
+<p>Consider the following data frame. The outcome only depends on the “good” variables, not on the (high degree of freedom) “bad” variables. Modeling such a data set runs a high risk of over-fit.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">22626</span>)
 
 mkData &lt;-<span class="st"> </span><span class="cf">function</span>(n) {
@@ -159,13 +159,13 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.3 inspecting inputs Wed Jul 11 09:12:51 2018"
-## [1] "designing treatments Wed Jul 11 09:12:51 2018"
-## [1] " have initial level statistics Wed Jul 11 09:12:51 2018"
-## [1] " scoring treatments Wed Jul 11 09:12:51 2018"
-## [1] "have treatment plan Wed Jul 11 09:12:51 2018"
-## [1] "rescoring complex variables Wed Jul 11 09:12:51 2018"
-## [1] "done rescoring complex variables Wed Jul 11 09:12:52 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 12:22:48 2018"
+## [1] "designing treatments Sun Jul 15 12:22:48 2018"
+## [1] " have initial level statistics Sun Jul 15 12:22:48 2018"
+## [1] " scoring treatments Sun Jul 15 12:22:48 2018"
+## [1] "have treatment plan Sun Jul 15 12:22:48 2018"
+## [1] "rescoring complex variables Sun Jul 15 12:22:48 2018"
+## [1] "done rescoring complex variables Sun Jul 15 12:22:49 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -235,13 +235,13 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.3 inspecting inputs Wed Jul 11 09:12:52 2018"
-## [1] "designing treatments Wed Jul 11 09:12:52 2018"
-## [1] " have initial level statistics Wed Jul 11 09:12:52 2018"
-## [1] " scoring treatments Wed Jul 11 09:12:52 2018"
-## [1] "have treatment plan Wed Jul 11 09:12:52 2018"
-## [1] "rescoring complex variables Wed Jul 11 09:12:52 2018"
-## [1] "done rescoring complex variables Wed Jul 11 09:12:52 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 12:22:49 2018"
+## [1] "designing treatments Sun Jul 15 12:22:49 2018"
+## [1] " have initial level statistics Sun Jul 15 12:22:49 2018"
+## [1] " scoring treatments Sun Jul 15 12:22:49 2018"
+## [1] "have treatment plan Sun Jul 15 12:22:49 2018"
+## [1] "rescoring complex variables Sun Jul 15 12:22:49 2018"
+## [1] "done rescoring complex variables Sun Jul 15 12:22:49 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)
@@ -290,7 +290,7 @@ dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="
 ##   FALSE   425   49
 ##   TRUE    150   44
 ## [1] "accuracy 0.702095808383233"</code></pre>
-<p>Notice above that we now see training and test accuracies of 70%. We have defeated overfit in two ways: training performance is closer to test performance, and test performance is better. Also we see that the model now properly considers the “bad” variables to be insignificant.</p>
+<p>Notice above that we now see training and test accuracies of 70%. We have defeated over-fit in two ways: training performance is closer to test performance, and test performance is better. Also we see that the model now properly considers the “bad” variables to be insignificant.</p>
 </div>
 <div id="another-right-way-cross-validation" class="section level2">
 <h2 class="hasAnchor">
@@ -327,7 +327,7 @@ dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="
 <li>“On Cross-Validation and Stacking: Building seemingly predictive models on random data” Claudia Perlich and Grzegorz Swirszcz</li>
 <li>“Super Learner” Mark J. van der Laan, Eric C. Polley, and Alan E. Hubbard</li>
 </ul>
-<p>In fact you can think of vtreat as a superlearner.</p>
+<p>In fact you can think of vtreat as a super-learner.</p>
 <p>In super learning cross validation techniques are used to simulate having built sub-model predictions on novel data. The simulated out of sample-applications of these sub models (and not the sub models themselves) are then used as input data for the next stage learner. In future application the actual sub-models are applied and their immediate outputs is used by the super model.</p>
 <p><img src="superX.png" width="600"></p>
 <p>In vtreat the sub-models are single variable treatments and the outer model construction is left to the practitioner (using the cross-frames for simulation and not the treatmentplan). In application the treatment plan is used.</p>
@@ -344,9 +344,9 @@ prep &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="
            <span class="st">'y'</span>,<span class="ot">TRUE</span>,
            <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.3 start initial treatment design Wed Jul 11 09:12:52 2018"
-## [1] " start cross frame work Wed Jul 11 09:12:53 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Wed Jul 11 09:12:53 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 start initial treatment design Sun Jul 15 12:22:49 2018"
+## [1] " start cross frame work Sun Jul 15 12:22:50 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Sun Jul 15 12:22:50 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##        varName          sig
@@ -370,7 +370,7 @@ newvars &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="
 <pre><code>## [1] "xBad1_catB"   "xBad2_catB"   "xBad3_catB"   "xGood1_clean"
 ## [5] "xGood2_clean"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>prep<span class="op">$</span>crossFrame</code></pre></div>
-<p>We ensured the undesirable <code>xBad*_catB</code> variables back in to demonstrate that even if they sneak past a lose <code>pruneSig</code>, the crosframe lets the downstream model deal with them correctly. To ensure more consistent filtering of the complicated variables one can increase the <code>ncross</code> argument in <code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code>/<code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>.</p>
+<p>We ensured the undesirable <code>xBad*_catB</code> variables back in to demonstrate that even if they sneak past a lose <code>pruneSig</code>, the crossframe lets the downstream model deal with them correctly. To ensure more consistent filtering of the complicated variables one can increase the <code>ncross</code> argument in <code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code>/<code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>.</p>
 <p>Now we fit the model to <em>the cross-frame</em> rather than to <code><a href="../reference/prepare.html">prepare(treatments, dTrain)</a></code> (the treated training data).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,<span class="kw">paste</span>(newvars,<span class="dt">collapse=</span><span class="st">' + '</span>),<span class="dt">sep=</span><span class="st">' ~ '</span>),
           <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">'logit'</span>))

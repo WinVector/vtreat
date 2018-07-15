@@ -32,7 +32,7 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
 
-\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restiction).}
+\item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restriction).}
 
 \item{customCoders}{map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).}
 
@@ -44,7 +44,7 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{ncross}{optional scalar>=2 number of cross-validation rounds to design.}
 
-\item{forceSplit}{logical, if TRUE force cross-validated significance calculatons on all variables.}
+\item{forceSplit}{logical, if TRUE force cross-validated significance calculations on all variables.}
 
 \item{verbose}{if TRUE print progress.}
 
