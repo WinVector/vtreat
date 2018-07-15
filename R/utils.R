@@ -1,4 +1,11 @@
 
+# importing all from parallel and then declaring getDefaultCluster() global to
+# suppress spurious CRAN NOTE on parallel::getDefaultCluster for R < 3.5.0
+
+#' @import parallel
+NULL
+
+utils::globalVariables("getDefaultCluster")
 
 # maybe run parallel
 plapply <- function(workList, worker, 
@@ -13,7 +20,7 @@ plapply <- function(workList, worker,
   if(use_parallel && 
      is.null(parallelCluster)) {
     if(exists('getDefaultCluster', where=asNamespace('parallel'), mode='function')) {
-      parallelCluster <- parallel::getDefaultCluster()
+      parallelCluster <- getDefaultCluster()
     }
   }
   if((!use_parallel) || is.null(parallelCluster)) {
