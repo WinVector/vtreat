@@ -4,7 +4,7 @@
 \alias{designTreatmentsZ}
 \title{Design variable treatments with no outcome variable.}
 \usage{
-designTreatmentsZ(dframe, varlist, ..., minFraction = 0.02, weights = c(),
+designTreatmentsZ(dframe, varlist, ..., minFraction = 0, weights = c(),
   rareCount = 0, collarProb = 0, codeRestriction = NULL,
   customCoders = NULL, verbose = TRUE, parallelCluster = NULL,
   use_parallel = TRUE)

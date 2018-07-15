@@ -338,10 +338,10 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @export
 designTreatmentsZ <- function(dframe,varlist,
                               ...,
-                              minFraction=0.02,
+                              minFraction=0.0,
                               weights=c(),
                               rareCount=0,
-                              collarProb=0.00,
+                              collarProb=0.0,
                               codeRestriction=NULL,
                               customCoders=NULL,
                               verbose=TRUE,
@@ -643,8 +643,10 @@ prepare <- function(treatmentplan, dframe,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
 #' @return list with treatments and crossFrame
+#' 
+#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
+#' 
 #' @examples
 #' 
 #' set.seed(23525)

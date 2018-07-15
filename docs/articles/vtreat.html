@@ -55,7 +55,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/MultiClassVtreat.html">Multi Class vtreat</a>
+      <a href="../articles/MultiClassVtreat.html">UNKNOWN TITLE</a>
     </li>
     <li>
       <a href="../articles/SavingTreamentPlans.html">Saving Treatment Plans</a>
@@ -191,13 +191,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 13:45:38 2018"
-## [1] "designing treatments Sun Jul 15 13:45:38 2018"
-## [1] " have initial level statistics Sun Jul 15 13:45:38 2018"
-## [1] " scoring treatments Sun Jul 15 13:45:38 2018"
-## [1] "have treatment plan Sun Jul 15 13:45:38 2018"
-## [1] "rescoring complex variables Sun Jul 15 13:45:38 2018"
-## [1] "done rescoring complex variables Sun Jul 15 13:45:38 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 14:31:38 2018"
+## [1] "designing treatments Sun Jul 15 14:31:38 2018"
+## [1] " have initial level statistics Sun Jul 15 14:31:38 2018"
+## [1] " scoring treatments Sun Jul 15 14:31:39 2018"
+## [1] "have treatment plan Sun Jul 15 14:31:39 2018"
+## [1] "rescoring complex variables Sun Jul 15 14:31:39 2018"
+## [1] "done rescoring complex variables Sun Jul 15 14:31:39 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
 ## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
@@ -278,18 +278,18 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 13:45:38 2018"
-## [1] "designing treatments Sun Jul 15 13:45:38 2018"
-## [1] " have initial level statistics Sun Jul 15 13:45:38 2018"
-## [1] " scoring treatments Sun Jul 15 13:45:38 2018"
-## [1] "have treatment plan Sun Jul 15 13:45:39 2018"
-## [1] "rescoring complex variables Sun Jul 15 13:45:39 2018"
-## [1] "done rescoring complex variables Sun Jul 15 13:45:39 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 14:31:39 2018"
+## [1] "designing treatments Sun Jul 15 14:31:39 2018"
+## [1] " have initial level statistics Sun Jul 15 14:31:39 2018"
+## [1] " scoring treatments Sun Jul 15 14:31:39 2018"
+## [1] "have treatment plan Sun Jul 15 14:31:39 2018"
+## [1] "rescoring complex variables Sun Jul 15 14:31:39 2018"
+## [1] "done rescoring complex variables Sun Jul 15 14:31:39 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.440104167 0.1042469       TRUE                 2
-## 2    x_catN     TRUE 0.010258994 0.8289310       TRUE                 2
-## 3    x_catD     TRUE 0.005613741 0.8731603       TRUE                 2
+## 1    x_catP     TRUE 0.228077807 0.2784461       TRUE                 2
+## 2    x_catN     TRUE 0.021219389 0.7553204       TRUE                 2
+## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
 ## 4   z_clean     TRUE 0.336111111 0.1724763      FALSE                 0
 ## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
 ## 6  x_lev_NA     TRUE 0.222222222 0.2855909      FALSE                 0
