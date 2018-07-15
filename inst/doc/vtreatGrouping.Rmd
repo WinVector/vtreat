@@ -43,18 +43,20 @@ showGroupingBehavior = function(groupcol, title) {
   
   if(have_ggplot && have_rqdatatable) {
     # unify the time indices
-    d %>>%
+    ops_1 <- local_td(d) %.>%
       extend_nse(., 
                  timeIndex := row_number(),
                  partitionby = "Subject",
-                 orderby = "Time") -> dtmp
+                 orderby = "Time")
+    dtmp <- rqdatatable::ex_data_table(ops_1)
     
     # I want the time indices to have the same spacing as the original time points
     # dtmp$timeFrac = with(dtmp, round(100*Time/25)/100) # round to nearest 1/100th
-    dtmp %>>% 
+    ops_2 <- local_td(dtmp) %.>% 
       project_nse(.,
                   approxTime = mean(Time),
-                  groupby = "timeIndex") -> atimef
+                  groupby = "timeIndex")
+    atimef <- rqdatatable::ex_data_table(ops_2)
     dtmp$approxTime = atimef$approxTime[dtmp$timeIndex]
     
     dtmp[[groupcol]] = as.factor(dtmp[[groupcol]])
