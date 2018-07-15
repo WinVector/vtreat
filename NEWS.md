@@ -1,5 +1,5 @@
 
-# vtreat 1.2.3 2018/07/15
+# vtreat 1.2.4 2018/07/15
 
  * Documentation fixes.
  * Multiclass vignette.
