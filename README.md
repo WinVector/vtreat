@@ -129,8 +129,8 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 1.030137e-01 0.32099590                 2
- #  2        x    x_catB  catB 1.125399e-05 0.99172381                 2
+ #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
+ #  2        x    x_catB  catB 1.177202e-05 0.99153548                 2
  #  3        z   z_clean clean 2.376018e-01 0.13176020                 0
  #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
  #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0

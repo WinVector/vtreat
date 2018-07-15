@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Build all treatments for a data frame to predict a categorical outcome. — designTreatmentsC • vtreat</title>
+<title>Function to build multi-outcome vtreat cross frame and treatment plan. — mkCrossFrameMExperiment • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,13 +30,9 @@
 
 
 
-<meta property="og:title" content="Build all treatments for a data frame to predict a categorical outcome. — designTreatmentsC" />
+<meta property="og:title" content="Function to build multi-outcome vtreat cross frame and treatment plan. — mkCrossFrameMExperiment" />
 
-<meta property="og:description" content="Function to design variable treatments for binary prediction of a
-categorical outcome.  Data frame is assumed to have only atomic columns
-except for dates (which are converted to numeric). Note: re-encoding high cardinality
-categorical variables can introduce undesirable nested model bias, for such data consider
-using mkCrossFrameCExperiment." />
+<meta property="og:description" content="Please see vignette(&quot;MultiClassVtreat&quot;, package = &quot;vtreat&quot;) https://winvector.github.io/vtreat/articles/MultiClassVtreat.html." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -143,50 +139,47 @@ using mkCrossFrameCExperiment." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Build all treatments for a data frame to predict a categorical outcome.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/vtreat.R'><code>R/vtreat.R</code></a></small>
-    <div class="hidden name"><code>designTreatmentsC.Rd</code></div>
+    <h1>Function to build multi-outcome vtreat cross frame and treatment plan.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/mult_class.R'><code>R/mult_class.R</code></a></small>
+    <div class="hidden name"><code>mkCrossFrameMExperiment.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to design variable treatments for binary prediction of a
-categorical outcome.  Data frame is assumed to have only atomic columns
-except for dates (which are converted to numeric). Note: re-encoding high cardinality
-categorical variables can introduce undesirable nested model bias, for such data consider
-using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></code>.</p>
+    <p>Please see <code><a href='../articles/MultiClassVtreat.html'>vignette("MultiClassVtreat", package = "vtreat")</a></code> <a href='https://winvector.github.io/vtreat/articles/MultiClassVtreat.html'>https://winvector.github.io/vtreat/articles/MultiClassVtreat.html</a>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>designTreatmentsC</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>outcomename</span>, <span class='no'>outcometarget</span>, <span class='no'>...</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>catScaling</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <pre class="usage"><span class='fu'>mkCrossFrameMExperiment</span>(<span class='no'>d</span>, <span class='no'>vars</span>, <span class='no'>y_name</span>, <span class='no'>...</span>,
+  <span class='kw'>y_dependent_treatments</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"catB"</span>), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>,
+  <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>catScaling</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dframe</th>
-      <td><p>Data frame to learn treatments from (training data), must have at least 1 row.</p></td>
+      <th>d</th>
+      <td><p>data to learn from</p></td>
     </tr>
     <tr>
-      <th>varlist</th>
-      <td><p>Names of columns to treat (effective variables).</p></td>
+      <th>vars</th>
+      <td><p>character, vector of indpendent variable column names.</p></td>
     </tr>
     <tr>
-      <th>outcomename</th>
-      <td><p>Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values.</p></td>
-    </tr>
-    <tr>
-      <th>outcometarget</th>
-      <td><p>Value/level of outcome to be considered "success",  and there must be a cut such that dframe[[outcomename]]==outcometarget at least twice and dframe[[outcomename]]!=outcometarget at least twice.</p></td>
+      <th>y_name</th>
+      <td><p>character, name of outcome column.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>no additional arguments, declared to forced named binding of later arguments</p></td>
+      <td><p>not used, declared to forced named binding of later arguments</p></td>
+    </tr>
+    <tr>
+      <th>y_dependent_treatments</th>
+      <td><p>character what treatment types to build per-outcome level.</p></td>
     </tr>
     <tr>
       <th>weights</th>
@@ -221,12 +214,20 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
       <td><p>map from code names to custom categorical variable encoding functions (please see <a href='https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md'>https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md</a>).</p></td>
     </tr>
     <tr>
+      <th>scale</th>
+      <td><p>optional if TRUE replace numeric variables with regression ("move to outcome-scale").</p></td>
+    </tr>
+    <tr>
+      <th>doCollar</th>
+      <td><p>optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.</p></td>
+    </tr>
+    <tr>
       <th>splitFunction</th>
       <td><p>(optional) see vtreat::buildEvalSets .</p></td>
     </tr>
     <tr>
       <th>ncross</th>
-      <td><p>optional scalar &gt;=2 number of cross validation splits use in rescoring complex variables.</p></td>
+      <td><p>optional scalar&gt;=2 number of cross-validation rounds to design.</p></td>
     </tr>
     <tr>
       <th>forceSplit</th>
@@ -246,40 +247,15 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
     </tr>
     <tr>
       <th>use_parallel</th>
-      <td><p>logical, if TRUE use parallel methods (when parallel cluster is set).</p></td>
+      <td><p>logical, if TRUE use parallel methods.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>treatment plan (for use with prepare)</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The main fields are mostly vectors with names (all with the same names in the same order):</p>
-<p>- vars : (character array without names) names of variables (in same order as names on the other diagnostic vectors)
-- varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
-- #' - sig : an estimate significance of effect</p>
-<p>See the vtreat vignette for a bit more detail and a worked example.</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='prepare.html'>prepare</a></code> <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code> <code><a href='designTreatmentsZ.html'>designTreatmentsZ</a></code> <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></code></p></div>
+    <p>list(cross_frame, treatments_0, treatments_m)</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='no'>dTrainC</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>),
-   <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>),
-   <span class='kw'>y</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
-<span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
-   <span class='kw'>z</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.2.4 inspecting inputs Sun Jul 15 16:50:19 2018"
-#&gt; [1] "designing treatments Sun Jul 15 16:50:19 2018"
-#&gt; [1] " have initial level statistics Sun Jul 15 16:50:19 2018"
-#&gt; [1] " scoring treatments Sun Jul 15 16:50:19 2018"
-#&gt; [1] "have treatment plan Sun Jul 15 16:50:19 2018"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
-<span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -287,13 +263,7 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

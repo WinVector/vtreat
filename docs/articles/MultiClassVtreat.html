@@ -120,175 +120,138 @@
     
 <p>Problem: try to prepare data to model multi-class y as a function of x using <a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>. <code>vtreat</code> does not directly do this, but can be used to do this. In this note we share functions to make this adaption.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
-<p>Pretend the next two functions are defined elsewhere (i.e. already available from a package).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#' Function to build multi-outcome vtreat cross frame and treatment plan.</span>
-<span class="co">#' </span>
-<span class="co">#' @param d data to learn from</span>
-<span class="co">#' @param vars character, vector of indpendent variable column names.</span>
-<span class="co">#' @param y_name character, name of outcome column.</span>
-<span class="co">#' @param ... not used, declared to forced named binding of later arguments</span>
-<span class="co">#' @param weights optional training weights for each row</span>
-<span class="co">#' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.</span>
-<span class="co">#' @param smFactor optional smoothing factor for impact coding models.</span>
-<span class="co">#' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.</span>
-<span class="co">#' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.</span>
-<span class="co">#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.</span>
-<span class="co">#' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).</span>
-<span class="co">#' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).</span>
-<span class="co">#' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").</span>
-<span class="co">#' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.</span>
-<span class="co">#' @param splitFunction (optional) see vtreat::buildEvalSets .</span>
-<span class="co">#' @param ncross optional scalar&gt;=2 number of cross-validation rounds to design.</span>
-<span class="co">#' @param forceSplit logical, if TRUE force cross-validated significance calculations on all variables.</span>
-<span class="co">#' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.</span>
-<span class="co">#' @param verbose if TRUE print progress.</span>
-<span class="co">#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.</span>
-<span class="co">#' @param use_parallel logical, if TRUE use parallel methods.</span>
-<span class="co">#' @param y_dependent_treatments character what treatment types to build per-outcome level.</span>
-<span class="co">#' @return list(cross_frame, treatments_0, treatments_m)</span>
-<span class="co">#'</span>
-mk_mult_cross_frame_c &lt;-<span class="st"> </span><span class="cf">function</span>(d, vars, y_name, 
-                                  ...,
-                                  <span class="dt">y_dependent_treatments =</span> <span class="kw">c</span>(<span class="st">"catB"</span>),
-                                  <span class="dt">weights=</span><span class="kw">c</span>(),
-                                  <span class="dt">minFraction=</span><span class="fl">0.02</span>,<span class="dt">smFactor=</span><span class="fl">0.0</span>,
-                                  <span class="dt">rareCount=</span><span class="dv">0</span>,<span class="dt">rareSig=</span><span class="dv">1</span>,
-                                  <span class="dt">collarProb=</span><span class="fl">0.00</span>,
-                                  <span class="dt">codeRestriction=</span><span class="ot">NULL</span>,
-                                  <span class="dt">customCoders=</span><span class="ot">NULL</span>,
-                                  <span class="dt">scale=</span><span class="ot">FALSE</span>,<span class="dt">doCollar=</span><span class="ot">FALSE</span>,
-                                  <span class="dt">splitFunction=</span><span class="ot">NULL</span>,<span class="dt">ncross=</span><span class="dv">3</span>,
-                                  <span class="dt">forceSplit =</span> <span class="ot">FALSE</span>,
-                                  <span class="dt">catScaling=</span><span class="ot">FALSE</span>,
-                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>,
-                                  <span class="dt">parallelCluster=</span><span class="ot">NULL</span>,
-                                  <span class="dt">use_parallel =</span> <span class="ot">TRUE</span>) {
-  wrapr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/wrapr/topics/stop_if_dot_args">stop_if_dot_args</a></span>(<span class="kw">substitute</span>(<span class="kw">list</span>(...)), <span class="st">"vtreat::mk_mult_cross_frame_c"</span>)
-  <span class="co"># build y-independent variable treatments</span>
-  treatments_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(d, vars, 
-                                    <span class="dt">weights=</span>weights,
-                                    <span class="dt">minFraction=</span>minFraction,
-                                    <span class="dt">rareCount=</span>rareCount,
-                                    <span class="dt">collarProb=</span>collarProb,
-                                    <span class="dt">codeRestriction=</span>codeRestriction,
-                                    <span class="dt">customCoders=</span>customCoders,
-                                    <span class="dt">verbose=</span> verbose,
-                                    <span class="dt">parallelCluster=</span>parallelCluster,
-                                    <span class="dt">use_parallel =</span> use_parallel)
+<p>The two functions needed (<code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> and <code><a href="../reference/prepare_m.html">prepare_m()</a></code>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>. For earlier versions of <code>vtreat</code> you can copy them into your own work.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(mkCrossFrameMExperiment)</code></pre></div>
+<pre><code>function(d, vars, y_name, 
+                                    ...,
+                                    y_dependent_treatments = c("catB"),
+                                    weights=c(),
+                                    minFraction=0.02,smFactor=0.0,
+                                    rareCount=0,rareSig=1,
+                                    collarProb=0.00,
+                                    codeRestriction=NULL,
+                                    customCoders=NULL,
+                                    scale=FALSE,doCollar=FALSE,
+                                    splitFunction=NULL,ncross=3,
+                                    forceSplit = FALSE,
+                                    catScaling=FALSE,
+                                    verbose=FALSE,
+                                    parallelCluster=NULL,
+                                    use_parallel = TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameMExperiment")
+  # build y-independent variable treatments
+  treatments_0 &lt;- designTreatmentsZ(d, vars, 
+                                    weights=weights,
+                                    minFraction=minFraction,
+                                    rareCount=rareCount,
+                                    collarProb=collarProb,
+                                    codeRestriction=codeRestriction,
+                                    customCoders=customCoders,
+                                    verbose= verbose,
+                                    parallelCluster=parallelCluster,
+                                    use_parallel = use_parallel)
   
-  <span class="co"># build one set of y-dependent treatments per possible y outcome</span>
-  cfe_list &lt;-<span class="st"> </span><span class="kw">lapply</span>(
+  # build one set of y-dependent treatments per possible y outcome
+  y_levels &lt;- sort(unique(as.character(d[[y_name]])))
+  cfe_list &lt;- lapply(
     y_levels,
-    <span class="cf">function</span>(y_target) {
-      cfe &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span>(
+    function(y_target) {
+      cfe &lt;- mkCrossFrameCExperiment(
         d, vars, y_name, y_target,
-        <span class="dt">weights=</span>weights,
-        <span class="dt">minFraction=</span>minFraction,
-        <span class="dt">smFactor=</span>smFactor,
-        <span class="dt">rareCount=</span>rareCount,
-        <span class="dt">rareSig=</span>rareSig,
-        <span class="dt">collarProb=</span>collarProb,
-        <span class="dt">codeRestriction=</span>y_dependent_treatments,
-        <span class="dt">customCoders=</span>customCoders,
-        <span class="dt">scale=</span>scale,
-        <span class="dt">doCollar=</span>doCollar,
-        <span class="dt">splitFunction=</span>splitFunction,
-        <span class="dt">ncross=</span>ncross,
-        <span class="dt">forceSplit =</span> forceSplit,
-        <span class="dt">catScaling=</span>catScaling,
-        <span class="dt">verbose=</span> verbose,
-        <span class="dt">parallelCluster=</span>parallelCluster,
-        <span class="dt">use_parallel =</span> use_parallel)
-      cross_frame_i =<span class="st"> </span>cfe<span class="op">$</span>crossFrame
-      cross_frame_i[[y_name]] &lt;-<span class="st"> </span><span class="ot">NULL</span>
-      <span class="kw">colnames</span>(cross_frame_i) &lt;-<span class="st"> </span><span class="kw">paste0</span>(y_target, 
-                                        <span class="st">"_"</span>, 
-                                        <span class="kw">colnames</span>(cross_frame_i))
-      <span class="kw">list</span>(<span class="dt">treatments_i =</span> cfe<span class="op">$</span>treatments,
-           <span class="dt">cross_frame_i =</span> cross_frame_i)
+        weights=weights,
+        minFraction=minFraction,
+        smFactor=smFactor,
+        rareCount=rareCount,
+        rareSig=rareSig,
+        collarProb=collarProb,
+        codeRestriction=y_dependent_treatments,
+        customCoders=customCoders,
+        scale=scale,
+        doCollar=doCollar,
+        splitFunction=splitFunction,
+        ncross=ncross,
+        forceSplit = forceSplit,
+        catScaling=catScaling,
+        verbose= verbose,
+        parallelCluster=parallelCluster,
+        use_parallel = use_parallel)
+      cross_frame_i = cfe$crossFrame
+      cross_frame_i[[y_name]] &lt;- NULL
+      colnames(cross_frame_i) &lt;- paste0(y_target, 
+                                        "_", 
+                                        colnames(cross_frame_i))
+      list(treatments_i = cfe$treatments,
+           cross_frame_i = cross_frame_i)
     })
-  <span class="kw">names</span>(cfe_list) &lt;-<span class="st"> </span>y_levels
+  names(cfe_list) &lt;- y_levels
   
-  <span class="co"># build an overall cross-frame for training</span>
-  dy &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">y =</span> <span class="kw">as.character</span>(d[[y_name]]),
-                   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-  cross_frame &lt;-<span class="st"> </span><span class="kw">do.call</span>(
+  # build an overall cross-frame for training
+  dy &lt;- data.frame(y = as.character(d[[y_name]]),
+                   stringsAsFactors = FALSE)
+  cross_frame &lt;- do.call(
     cbind,
-    <span class="kw">c</span>(<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments_<span class="dv">0</span>, d),
-      <span class="kw">lapply</span>(cfe_list, <span class="cf">function</span>(cfei) cfei<span class="op">$</span>cross_frame_i),
+    c(prepare(treatments_0, d),
+      lapply(cfe_list, function(cfei) cfei$cross_frame_i),
       dy,
-      <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>))
+      stringsAsFactors = FALSE))
   
-  <span class="co"># build a prepare function for new data</span>
-  treatments_m &lt;-<span class="st"> </span><span class="kw">lapply</span>(cfe_list, <span class="cf">function</span>(cfei) cfei<span class="op">$</span>treatments_i)
-  <span class="co"># return components</span>
-  <span class="kw">list</span>(<span class="dt">cross_frame =</span> cross_frame,
-       <span class="dt">treatments_0 =</span> treatments_<span class="dv">0</span>,
-       <span class="dt">treatments_m =</span> treatments_m)
+  # build a prepare function for new data
+  treatments_m &lt;- lapply(cfe_list, function(cfei) cfei$treatments_i)
+  # return components
+  list(cross_frame = cross_frame,
+       treatments_0 = treatments_0,
+       treatments_m = treatments_m)
 }
-
-<span class="co">#' Function to apply mk_mult_cross_frame_c treatemnts.</span>
-<span class="co">#' </span>
-<span class="co">#' @param new_d new data to process.</span>
-<span class="co">#' @param treatments_0 element from mk_mult_cross_frame_c return.</span>
-<span class="co">#' @param treatments_m element from mk_mult_cross_frame_c return.</span>
-<span class="co">#' @param ... not used, declared to forced named binding of later arguments</span>
-<span class="co">#' @param pruneSig suppress variables with significance above this level</span>
-<span class="co">#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.</span>
-<span class="co">#' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.</span>
-<span class="co">#' @param varRestriction optional list of treated variable names to restrict to</span>
-<span class="co">#' @param codeRestriction optional list of treated variable codes to restrict to</span>
-<span class="co">#' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})</span>
-<span class="co">#' @param extracols extra columns to copy.</span>
-<span class="co">#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.</span>
-<span class="co">#' @param use_parallel logical, if TRUE use parallel methods.</span>
-<span class="co">#' @return prepared data frame.</span>
-<span class="co">#'</span>
-prepare_m &lt;-<span class="st"> </span><span class="cf">function</span>(new_d, treatments_<span class="dv">0</span>, treatments_m,
+&lt;bytecode: 0x7f9bbe955d18&gt;
+&lt;environment: namespace:vtreat&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(prepare_m)</code></pre></div>
+<pre><code>function(new_d, treatments_0, treatments_m,
                       ...,
-                      <span class="dt">pruneSig=</span> <span class="ot">NULL</span>,
-                      <span class="dt">scale=</span> <span class="ot">FALSE</span>,
-                      <span class="dt">doCollar=</span> <span class="ot">FALSE</span>,
-                      <span class="dt">varRestriction=</span> <span class="ot">NULL</span>,
-                      <span class="dt">codeRestriction=</span> <span class="ot">NULL</span>,
-                      <span class="dt">trackedValues=</span> <span class="ot">NULL</span>,
-                      <span class="dt">extracols=</span> <span class="ot">NULL</span>,
-                      <span class="dt">parallelCluster=</span> <span class="ot">NULL</span>,
-                      <span class="dt">use_parallel=</span> <span class="ot">TRUE</span>) {
-  wrapr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/wrapr/topics/stop_if_dot_args">stop_if_dot_args</a></span>(<span class="kw">substitute</span>(<span class="kw">list</span>(...)), <span class="st">"vtreat::prepare_m"</span>)
-  y_name &lt;-<span class="st"> </span>treatments_m[[<span class="dv">1</span>]]<span class="op">$</span>outcomename
-  treated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatments_<span class="dv">0</span>, new_d,
-                     <span class="dt">pruneSig=</span> pruneSig,
-                     <span class="dt">scale=</span> scale,
-                     <span class="dt">doCollar=</span> doCollar,
-                     <span class="dt">varRestriction=</span> varRestriction,
-                     <span class="dt">codeRestriction=</span> codeRestriction,
-                     <span class="dt">trackedValues=</span> trackedValues,
-                     <span class="dt">extracols=</span> extracols,
-                     <span class="dt">parallelCluster=</span> parallelCluster,
-                     <span class="dt">use_parallel=</span> use_parallel)
-  <span class="cf">for</span>(ti <span class="cf">in</span> treatments_m) {
-    treated_i &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(ti, new_d,
-                         <span class="dt">pruneSig=</span> pruneSig,
-                         <span class="dt">scale=</span> scale,
-                         <span class="dt">doCollar=</span> doCollar,
-                         <span class="dt">varRestriction=</span> varRestriction,
-                         <span class="dt">codeRestriction=</span> codeRestriction,
-                         <span class="dt">trackedValues=</span> trackedValues,
-                         <span class="dt">parallelCluster=</span> parallelCluster,
-                         <span class="dt">use_parallel=</span> use_parallel)
-    treated_i[[y_name]] &lt;-<span class="st"> </span><span class="ot">NULL</span>
-    <span class="kw">colnames</span>(treated_i) &lt;-<span class="st"> </span><span class="kw">paste0</span>(ti<span class="op">$</span>outcomeTarget, 
-                                  <span class="st">"_"</span>, 
-                                  <span class="kw">colnames</span>(treated_i))
-    treated &lt;-<span class="st"> </span><span class="kw">cbind</span>(treated, treated_i,
-                     <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+                      pruneSig= NULL,
+                      scale= FALSE,
+                      doCollar= FALSE,
+                      varRestriction= NULL,
+                      codeRestriction= NULL,
+                      trackedValues= NULL,
+                      extracols= NULL,
+                      parallelCluster= NULL,
+                      use_parallel= TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare_m")
+  y_name &lt;- treatments_m[[1]]$outcomename
+  treated &lt;- prepare(treatments_0, new_d,
+                     pruneSig= pruneSig,
+                     scale= scale,
+                     doCollar= doCollar,
+                     varRestriction= varRestriction,
+                     codeRestriction= codeRestriction,
+                     trackedValues= trackedValues,
+                     extracols= extracols,
+                     parallelCluster= parallelCluster,
+                     use_parallel= use_parallel)
+  for(ti in treatments_m) {
+    treated_i &lt;- prepare(ti, new_d,
+                         pruneSig= pruneSig,
+                         scale= scale,
+                         doCollar= doCollar,
+                         varRestriction= varRestriction,
+                         codeRestriction= codeRestriction,
+                         trackedValues= trackedValues,
+                         parallelCluster= parallelCluster,
+                         use_parallel= use_parallel)
+    treated_i[[y_name]] &lt;- NULL
+    colnames(treated_i) &lt;- paste0(ti$outcomeTarget, 
+                                  "_", 
+                                  colnames(treated_i))
+    treated &lt;- cbind(treated, treated_i,
+                     stringsAsFactors = FALSE)
   }
-  <span class="cf">if</span>(y_name <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(new_d)) {
-    treated[[y_name]] &lt;-<span class="st"> </span>new_d[[y_name]]
+  if(y_name %in% colnames(new_d)) {
+    treated[[y_name]] &lt;- new_d[[y_name]]
   }
   treated
-}</code></pre></div>
+}
+&lt;bytecode: 0x7f9bbf3c0c28&gt;
+&lt;environment: namespace:vtreat&gt;</code></pre>
 <p>Our specific example: try to model multi-class y as a function of x1 and x2</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create example data</span>
 <span class="kw">set.seed</span>(<span class="dv">326346</span>)
@@ -342,14 +305,14 @@ knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentati
 </tr>
 </tbody>
 </table>
-<p>We define the problem controls and use <code>mk_mult_cross_frame_c()</code> to build both a cross-frame and a treatment plan.</p>
+<p>We define the problem controls and use <code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> to build both a cross-frame and a treatment plan.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define problem</span>
 vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>)
 y_name &lt;-<span class="st"> "y"</span>
 y_levels &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(d[[y_name]]))
 
 <span class="co"># build the multi-class cross frame and treatments</span>
-cfe_m &lt;-<span class="st"> </span><span class="kw">mk_mult_cross_frame_c</span>(d, vars, y_name)</code></pre></div>
+cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment</a></span>(d, vars, y_name)</code></pre></div>
 <p>The cross-frame is the entity safest for training on (unless you have made separate data split for the treatment design step). It uses cross-validation to reduce nested model bias. Some notes on this issue are available <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">here</a>, and <a href="https://github.com/WinVector/vtreat/blob/master/extras/vtreat.pdf">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># look at the data we would train models on</span>
 <span class="kw">str</span>(cfe_m<span class="op">$</span>cross_frame)</code></pre></div>
@@ -363,13 +326,13 @@ cfe_m &lt;-<span class="st"> </span><span class="kw">mk_mult_cross_frame_c</span
 ##  $ Large2_x2_catB: num  0.738 0.855 -0.478 -0.44 -0.44 ...
 ##  $ NoInfo_x2_catB: num  0.015 0.015 0.0804 -0.0968 -0.1434 ...
 ##  $ y             : chr  "Large2" "NoInfo" "Large1" "Large1" ...</code></pre>
-<p><code>prepare_m()</code> is a function that can apply the designed treatments to new data. Here we are simulating new data by re-using our design data.</p>
+<p><code><a href="../reference/prepare_m.html">prepare_m()</a></code> is a function that can apply the designed treatments to new data. Here we are simulating new data by re-using our design data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># pretend original data is new data to be treated</span>
 <span class="co"># NA out top row to show processing</span>
 <span class="cf">for</span>(vi <span class="cf">in</span> vars) {
   d[[vi]][[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="ot">NA</span>
 }
-<span class="kw">str</span>(<span class="kw">prepare_m</span>(d, 
+<span class="kw">str</span>(<span class="kw"><a href="../reference/prepare_m.html">prepare_m</a></span>(d, 
                cfe_m<span class="op">$</span>treatments_<span class="dv">0</span>, cfe_m<span class="op">$</span>treatments_m))</code></pre></div>
 <pre><code>## 'data.frame':    1000 obs. of  9 variables:
 ##  $ x1_clean      : num  0.0219 0.022 2.0184 0.8178 0.5867 ...
