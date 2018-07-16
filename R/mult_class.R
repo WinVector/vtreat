@@ -152,20 +152,23 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
   # build a prepare function for new data
   treatments_m <- lapply(cfe_list, function(cfei) cfei$treatments_i)
   # return components
-  list(cross_frame = cross_frame,
-       treat_m = list(
-         y_l_names = y_l_names,
-         treatments_0 = treatments_0,
-         treatments_m = treatments_m),
-       score_frame = rbind(sframe_0, score_frame))
+  treat_m <- list(
+    y_l_names = y_l_names,
+    treatments_0 = treatments_0,
+    treatments_m = treatments_m)
+  class(treat_m) <- "multinomial_plan"
+  plan <- list(cross_frame = cross_frame,
+               treat_m = treat_m,
+               score_frame = rbind(sframe_0, score_frame))
+  plan
 }
 
 #' Function to apply mkCrossFrameMExperiment treatemnts.
 #' 
 #' Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
 #' 
-#' @param new_d new data to process.
-#' @param treat_m element from mkCrossFrameMExperiment return.
+#' @param treatmentplan multinomial_plan from mkCrossFrameMExperiment.
+#' @param dframe new data to process.
 #' @param ... not used, declared to forced named binding of later arguments
 #' @param pruneSig suppress variables with significance above this level
 #' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.
@@ -180,7 +183,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
 #' 
 #' @export
 #'
-prepare_m <- function(new_d, treat_m,
+prepare.multinomial_plan <- function(treatmentplan, dframe,
                       ...,
                       pruneSig= NULL,
                       scale= FALSE,
@@ -192,11 +195,11 @@ prepare_m <- function(new_d, treat_m,
                       parallelCluster= NULL,
                       use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare_m")
-  treatments_0 <- treat_m$treatments_0
-  treatments_m <- treat_m$treatments_m
-  y_l_names <- treat_m$y_l_names
+  treatments_0 <- treatmentplan$treatments_0
+  treatments_m <- treatmentplan$treatments_m
+  y_l_names <- treatmentplan$y_l_names
   y_name <- treatments_m[[1]]$outcomename
-  treated <- prepare(treatments_0, new_d,
+  treated <- prepare(treatments_0, dframe,
                      pruneSig= pruneSig,
                      scale= scale,
                      doCollar= doCollar,
@@ -207,7 +210,7 @@ prepare_m <- function(new_d, treat_m,
                      parallelCluster= parallelCluster,
                      use_parallel= use_parallel)
   for(ti in treatments_m) {
-    treated_i <- prepare(ti, new_d,
+    treated_i <- prepare(ti, dframe,
                          pruneSig= pruneSig,
                          scale= scale,
                          doCollar= doCollar,
@@ -223,8 +226,8 @@ prepare_m <- function(new_d, treat_m,
     treated <- cbind(treated, treated_i,
                      stringsAsFactors = FALSE)
   }
-  if(y_name %in% colnames(new_d)) {
-    treated[[y_name]] <- new_d[[y_name]]
+  if(y_name %in% colnames(dframe)) {
+    treated[[y_name]] <- dframe[[y_name]]
   }
   treated
 }

@@ -119,13 +119,13 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d<span class="op
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">designTreatmentsC</span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.2.4 inspecting inputs Mon Jul 16 15:37:41 2018&quot;
-## [1] &quot;designing treatments Mon Jul 16 15:37:41 2018&quot;
-## [1] &quot; have initial level statistics Mon Jul 16 15:37:41 2018&quot;
-## [1] &quot; scoring treatments Mon Jul 16 15:37:41 2018&quot;
-## [1] &quot;have treatment plan Mon Jul 16 15:37:41 2018&quot;
-## [1] &quot;rescoring complex variables Mon Jul 16 15:37:41 2018&quot;
-## [1] &quot;done rescoring complex variables Mon Jul 16 15:37:41 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.2.4 inspecting inputs Mon Jul 16 16:47:13 2018&quot;
+## [1] &quot;designing treatments Mon Jul 16 16:47:13 2018&quot;
+## [1] &quot; have initial level statistics Mon Jul 16 16:47:13 2018&quot;
+## [1] &quot; scoring treatments Mon Jul 16 16:47:13 2018&quot;
+## [1] &quot;have treatment plan Mon Jul 16 16:47:13 2018&quot;
+## [1] &quot;rescoring complex variables Mon Jul 16 16:47:13 2018&quot;
+## [1] &quot;done rescoring complex variables Mon Jul 16 16:47:13 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)

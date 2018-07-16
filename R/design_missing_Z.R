@@ -1,0 +1,147 @@
+
+
+.xform_cat <- function(col, arg) {
+  known_values <- arg$known_values
+  invalid_mark <- arg$invalid_mark
+  col <- as.character(col)
+  bads <- is.na(col) | (!(col %in% known_values))
+  col[bads] <- invalid_mark
+  col
+}
+
+.xform_num <- function(col, arg) {
+  replacement <- arg$replacement
+  col <- as.numeric(col)
+  bads <- is.na(col) | is.nan(col) | is.infinite(col)
+  col[bads] <- replacement
+  col
+}
+
+.ind_na <- function(col, arg) {
+  col <- as.numeric(col)
+  bads <- is.na(col) | is.nan(col) | is.infinite(col)
+  v <- rep(0, length(col))
+  v[bads] <- 1
+  v
+}
+
+
+
+#' Design a simple treatment plan to indicate missingingness and perform simple imputation.
+#' 
+#' @param dframe data.frame to drive design.
+#' @param ... not used, forces later arguments to bind by name.
+#' @param varlist character, names of coluns to process.
+#' @param invalid_mark character, name to use for NA levels and novel levels.
+#' @return simple treatment plan.
+#' 
+#' @examples 
+#' 
+#' d <- wrapr::build_frame(
+#'   "x1", "x2", "x3" |
+#'   1   , 4   , "A"  |
+#'   NA  , 5   , "B"  |
+#'   3   , 6   , NA   )
+#' 
+#' plan <- design_missingness_treatment(d)
+#' prepare(plan, d)
+#' 
+#' prepare(plan, data.frame(x1=NA, x2=NA, x3="E"))
+#' 
+#' @export
+#' 
+design_missingness_treatment <- function(dframe, 
+                                         ..., 
+                                         varlist = colnames(dframe),
+                                         invalid_mark = "_invalid_") {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::design_missingness_treatment")
+  force(invalid_mark)
+  ops <- list()
+  for(ci in varlist) {
+    vi <- dframe[[ci]]
+    if(is.null(vi)) {
+      stop(paste("vtreat::design_missingness_treatment: column", ci, "not found"))
+    }
+    if(is.numeric(vi)) {
+      mean_v <- 0.0
+      bads <- is.na(vi) | is.nan(vi) | is.infinite(vi)
+      if(any(!bads)) {
+        mean_v <- mean(vi[!bads])
+      }
+      ops <- c(ops, 
+               list(
+                 list(
+                   col = ci,
+                   nm = ci, 
+                   f = .xform_num, 
+                   args = list(replacement = mean_v))))
+      if(any(bads)) {
+        ops <- c(ops,
+                 list(
+                   list(
+                     col = ci,
+                     nm = paste0(ci, "_isBAD"), 
+                     f = .ind_na, 
+                     args = list())))
+      }
+    } else {
+      ops <- c(ops, 
+               list(
+                 list(
+                   col = ci,
+                   nm = ci, 
+                   f = .xform_cat, 
+                   args = list(known_values = sort(unique(vi)),
+                               invalid_mark = invalid_mark))))
+      
+    }
+  }
+  class(ops) <- "simple_plan"
+  ops
+}
+
+#' Prepare a simple treatment.
+#' 
+#' @param treatmentplan A simple treatment plan.
+#' @param dframe data.frame to be treated.
+#' @param ... not used, present for S3 signature consistency.
+#' 
+#' @examples 
+#' 
+#' d <- wrapr::build_frame(
+#'   "x1", "x2", "x3" |
+#'   1   , 4   , "A"  |
+#'   NA  , 5   , "B"  |
+#'   3   , 6   , NA   )
+#' 
+#' plan <- design_missingness_treatment(d)
+#' prepare(plan, d)
+#' 
+#' prepare(plan, data.frame(x1=NA, x2=NA, x3="E"))
+#' 
+#' @export
+#' 
+prepare.simple_plan <- function(treatmentplan, dframe,
+                                ...) {
+  wrapr::stop_if_dot_args(substitute(list(...)), 
+                          "vtreat:::prepare.simple_plan")
+  res <- NULL
+  for(pi in treatmentplan) {
+    ci <- pi$col
+    vi <- dframe[[ci]]
+    if(is.null(vi)) {
+      stop(paste("vtreat::prepare.simple_plan: column", ci, " must be in data.frame"))
+    }
+    vi <- pi$f(vi, pi$args)
+    if(is.null(res)) {
+      res <- data.frame(x = vi, stringsAsFactors = FALSE)
+      colnames(res) <- pi$nm
+    } else {
+      res[[pi$nm]] <- vi
+    }
+  }
+  res
+}
+
+
