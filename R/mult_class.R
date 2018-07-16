@@ -47,6 +47,11 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
                                     parallelCluster=NULL,
                                     use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameMExperiment")
+  y_levels <- sort(unique(as.character(d[[y_name]])))
+  y_l_names <- vtreat_make_names(y_levels)
+  if(length(y_levels)<2) {
+    stop("vtreat::mkCrossFrameMExperiment outcome must have 2 or more levels")
+  }
   # build y-independent variable treatments
   treatments_0 <- designTreatmentsZ(d, vars, 
                                     weights=weights,
@@ -58,10 +63,40 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
                                     verbose= verbose,
                                     parallelCluster=parallelCluster,
                                     use_parallel = use_parallel)
-  
+  # score them
+  tf_0 <- prepare(treatments_0, d,
+                  extracols = y_name,
+                  parallelCluster = parallelCluster,
+                  use_parallel = use_parallel)
+  sf_0 <- treatments_0$scoreFrame[order(treatments_0$scoreFrame$varName), , drop = FALSE]
+  sframe_0 <- lapply(
+    y_levels,
+    function(y_target) {
+      zCS <- tf_0[[y_name]]==y_target
+      zoYS <- ifelse(zCS,1,0)
+      z_vars <- setdiff(colnames(tf_0), y_name)
+      swkr <- .mkScoreColWorker(zoYS, zCS, TRUE, weights)
+      newVarsSP <- lapply(z_vars,
+                          function(nv) {
+                            list(nv=nv,dfc=tf_0[[nv]])
+                          })
+      sframe_0 <- plapply(newVarsSP,swkr,
+                          parallelCluster = parallelCluster,
+                          use_parallel = use_parallel) 
+      sframe_0 <- do.call(rbind, sframe_0)
+      sframe_0 <- sframe_0[order(sframe_0$varName), , drop = FALSE]
+      sframe_0$outcome_level <- y_target
+      sframe_0$needsSplit <- sf_0$needsSplit
+      sframe_0$extraModelDegrees <- sf_0$extraModelDegrees
+      sframe_0$origName <- sf_0$origName
+      sframe_0$code <- sf_0$code
+      rownames(sframe_0) <- NULL
+      sframe_0
+    })
+  sframe_0 <- do.call(rbind, sframe_0)
+  rownames(sframe_0) <- NULL
+  rm(list = c("tf_0"))
   # build one set of y-dependent treatments per possible y outcome
-  y_levels <- sort(unique(as.character(d[[y_name]])))
-  y_l_names <- vtreat_make_names(y_levels)
   names(y_l_names) <- y_levels
   cfe_list <- lapply(
     y_levels,
@@ -90,8 +125,14 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
       colnames(cross_frame_i) <- paste0(y_l_names[[y_target]], 
                                         "_", 
                                         colnames(cross_frame_i))
+      score_frame_i <- cfe$treatments$scoreFrame
+      score_frame_i$outcome_level <- y_target
+      score_frame_i$varName <- paste0(y_l_names[[y_target]], 
+                                      "_", 
+                                      score_frame_i$varName)
       list(treatments_i = cfe$treatments,
-           cross_frame_i = cross_frame_i)
+           cross_frame_i = cross_frame_i,
+           score_frame_i = score_frame_i)
     })
   names(cfe_list) <- y_levels
   
@@ -104,7 +145,10 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
       lapply(cfe_list, function(cfei) cfei$cross_frame_i),
       dy,
       stringsAsFactors = FALSE))
-  
+  score_frame <- do.call(
+    rbind, 
+    lapply(cfe_list, function(cfei) cfei$score_frame_i))
+  rownames(score_frame) <- NULL
   # build a prepare function for new data
   treatments_m <- lapply(cfe_list, function(cfei) cfei$treatments_i)
   # return components
@@ -112,7 +156,8 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
        treat_m = list(
          y_l_names = y_l_names,
          treatments_0 = treatments_0,
-         treatments_m = treatments_m))
+         treatments_m = treatments_m),
+       score_frame = rbind(sframe_0, score_frame))
 }
 
 #' Function to apply mkCrossFrameMExperiment treatemnts.
