@@ -150,10 +150,10 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>prepare_m</span>(<span class='no'>new_d</span>, <span class='no'>treatments_0</span>, <span class='no'>treatments_m</span>, <span class='no'>...</span>, <span class='kw'>pruneSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>varRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>trackedValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>prepare_m</span>(<span class='no'>new_d</span>, <span class='no'>treat_m</span>, <span class='no'>...</span>, <span class='kw'>pruneSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>varRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>trackedValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,11 +163,7 @@
       <td><p>new data to process.</p></td>
     </tr>
     <tr>
-      <th>treatments_0</th>
-      <td><p>element from mkCrossFrameMExperiment return.</p></td>
-    </tr>
-    <tr>
-      <th>treatments_m</th>
+      <th>treat_m</th>
       <td><p>element from mkCrossFrameMExperiment return.</p></td>
     </tr>
     <tr>

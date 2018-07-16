@@ -120,7 +120,7 @@
     
 <p>Problem: try to prepare data to model multi-class y as a function of x using <a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>. <code>vtreat</code> does not directly do this, but can be used to do this. In this note we share functions to make this adaption.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
-<p>The two functions needed (<code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> and <code><a href="../reference/prepare_m.html">prepare_m()</a></code>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>. For earlier versions of <code>vtreat</code> you can copy them into your own work.</p>
+<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and <a href="https://winvector.github.io/vtreat/reference/prepare_m.html"><code><a href="../reference/prepare_m.html">prepare_m()</a></code></a>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>. For earlier versions of <code>vtreat</code> you can copy them into your own work.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(mkCrossFrameMExperiment)</code></pre></div>
 <pre><code>function(d, vars, y_name, 
                                     ...,
@@ -153,6 +153,8 @@
   
   # build one set of y-dependent treatments per possible y outcome
   y_levels &lt;- sort(unique(as.character(d[[y_name]])))
+  y_l_names &lt;- vtreat_make_names(y_levels)
+  names(y_l_names) &lt;- y_levels
   cfe_list &lt;- lapply(
     y_levels,
     function(y_target) {
@@ -177,7 +179,7 @@
         use_parallel = use_parallel)
       cross_frame_i = cfe$crossFrame
       cross_frame_i[[y_name]] &lt;- NULL
-      colnames(cross_frame_i) &lt;- paste0(y_target, 
+      colnames(cross_frame_i) &lt;- paste0(y_l_names[[y_target]], 
                                         "_", 
                                         colnames(cross_frame_i))
       list(treatments_i = cfe$treatments,
@@ -199,13 +201,15 @@
   treatments_m &lt;- lapply(cfe_list, function(cfei) cfei$treatments_i)
   # return components
   list(cross_frame = cross_frame,
-       treatments_0 = treatments_0,
-       treatments_m = treatments_m)
+       treat_m = list(
+         y_l_names = y_l_names,
+         treatments_0 = treatments_0,
+         treatments_m = treatments_m))
 }
-&lt;bytecode: 0x7f9bbe955d18&gt;
+&lt;bytecode: 0x7f9bcf9b7270&gt;
 &lt;environment: namespace:vtreat&gt;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(prepare_m)</code></pre></div>
-<pre><code>function(new_d, treatments_0, treatments_m,
+<pre><code>function(new_d, treat_m,
                       ...,
                       pruneSig= NULL,
                       scale= FALSE,
@@ -217,6 +221,9 @@
                       parallelCluster= NULL,
                       use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare_m")
+  treatments_0 &lt;- treat_m$treatments_0
+  treatments_m &lt;- treat_m$treatments_m
+  y_l_names &lt;- treat_m$y_l_names
   y_name &lt;- treatments_m[[1]]$outcomename
   treated &lt;- prepare(treatments_0, new_d,
                      pruneSig= pruneSig,
@@ -239,7 +246,7 @@
                          parallelCluster= parallelCluster,
                          use_parallel= use_parallel)
     treated_i[[y_name]] &lt;- NULL
-    colnames(treated_i) &lt;- paste0(ti$outcomeTarget, 
+    colnames(treated_i) &lt;- paste0(y_l_names[[ti$outcomeTarget]], 
                                   "_", 
                                   colnames(treated_i))
     treated &lt;- cbind(treated, treated_i,
@@ -250,7 +257,7 @@
   }
   treated
 }
-&lt;bytecode: 0x7f9bbf3c0c28&gt;
+&lt;bytecode: 0x7f9bd11feb70&gt;
 &lt;environment: namespace:vtreat&gt;</code></pre>
 <p>Our specific example: try to model multi-class y as a function of x1 and x2</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create example data</span>
@@ -332,8 +339,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <span class="cf">for</span>(vi <span class="cf">in</span> vars) {
   d[[vi]][[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="ot">NA</span>
 }
-<span class="kw">str</span>(<span class="kw"><a href="../reference/prepare_m.html">prepare_m</a></span>(d, 
-               cfe_m<span class="op">$</span>treatments_<span class="dv">0</span>, cfe_m<span class="op">$</span>treatments_m))</code></pre></div>
+<span class="kw">str</span>(<span class="kw"><a href="../reference/prepare_m.html">prepare_m</a></span>(d, cfe_m<span class="op">$</span>treat_m))</code></pre></div>
 <pre><code>## 'data.frame':    1000 obs. of  9 variables:
 ##  $ x1_clean      : num  0.0219 0.022 2.0184 0.8178 0.5867 ...
 ##  $ x2_catP       : num  0.0005 0.325 0.362 0.313 0.313 0.313 0.313 0.313 0.325 0.362 ...

@@ -4,17 +4,15 @@
 \alias{prepare_m}
 \title{Function to apply mkCrossFrameMExperiment treatemnts.}
 \usage{
-prepare_m(new_d, treatments_0, treatments_m, ..., pruneSig = NULL,
-  scale = FALSE, doCollar = FALSE, varRestriction = NULL,
-  codeRestriction = NULL, trackedValues = NULL, extracols = NULL,
-  parallelCluster = NULL, use_parallel = TRUE)
+prepare_m(new_d, treat_m, ..., pruneSig = NULL, scale = FALSE,
+  doCollar = FALSE, varRestriction = NULL, codeRestriction = NULL,
+  trackedValues = NULL, extracols = NULL, parallelCluster = NULL,
+  use_parallel = TRUE)
 }
 \arguments{
 \item{new_d}{new data to process.}
 
-\item{treatments_0}{element from mkCrossFrameMExperiment return.}
-
-\item{treatments_m}{element from mkCrossFrameMExperiment return.}
+\item{treat_m}{element from mkCrossFrameMExperiment return.}
 
 \item{...}{not used, declared to forced named binding of later arguments}
 

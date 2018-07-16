@@ -61,6 +61,8 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
   
   # build one set of y-dependent treatments per possible y outcome
   y_levels <- sort(unique(as.character(d[[y_name]])))
+  y_l_names <- vtreat_make_names(y_levels)
+  names(y_l_names) <- y_levels
   cfe_list <- lapply(
     y_levels,
     function(y_target) {
@@ -85,7 +87,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
         use_parallel = use_parallel)
       cross_frame_i = cfe$crossFrame
       cross_frame_i[[y_name]] <- NULL
-      colnames(cross_frame_i) <- paste0(y_target, 
+      colnames(cross_frame_i) <- paste0(y_l_names[[y_target]], 
                                         "_", 
                                         colnames(cross_frame_i))
       list(treatments_i = cfe$treatments,
@@ -107,8 +109,10 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
   treatments_m <- lapply(cfe_list, function(cfei) cfei$treatments_i)
   # return components
   list(cross_frame = cross_frame,
-       treatments_0 = treatments_0,
-       treatments_m = treatments_m)
+       treat_m = list(
+         y_l_names = y_l_names,
+         treatments_0 = treatments_0,
+         treatments_m = treatments_m))
 }
 
 #' Function to apply mkCrossFrameMExperiment treatemnts.
@@ -116,8 +120,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
 #' Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
 #' 
 #' @param new_d new data to process.
-#' @param treatments_0 element from mkCrossFrameMExperiment return.
-#' @param treatments_m element from mkCrossFrameMExperiment return.
+#' @param treat_m element from mkCrossFrameMExperiment return.
 #' @param ... not used, declared to forced named binding of later arguments
 #' @param pruneSig suppress variables with significance above this level
 #' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.
@@ -132,7 +135,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
 #' 
 #' @export
 #'
-prepare_m <- function(new_d, treatments_0, treatments_m,
+prepare_m <- function(new_d, treat_m,
                       ...,
                       pruneSig= NULL,
                       scale= FALSE,
@@ -144,6 +147,9 @@ prepare_m <- function(new_d, treatments_0, treatments_m,
                       parallelCluster= NULL,
                       use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare_m")
+  treatments_0 <- treat_m$treatments_0
+  treatments_m <- treat_m$treatments_m
+  y_l_names <- treat_m$y_l_names
   y_name <- treatments_m[[1]]$outcomename
   treated <- prepare(treatments_0, new_d,
                      pruneSig= pruneSig,
@@ -166,7 +172,7 @@ prepare_m <- function(new_d, treatments_0, treatments_m,
                          parallelCluster= parallelCluster,
                          use_parallel= use_parallel)
     treated_i[[y_name]] <- NULL
-    colnames(treated_i) <- paste0(ti$outcomeTarget, 
+    colnames(treated_i) <- paste0(y_l_names[[ti$outcomeTarget]], 
                                   "_", 
                                   colnames(treated_i))
     treated <- cbind(treated, treated_i,
