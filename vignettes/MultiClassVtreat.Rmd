@@ -16,13 +16,8 @@ library("vtreat")
 ```
 
 The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and [`prepare_m()`](https://winvector.github.io/vtreat/reference/prepare_m.html)) are (as of version `1.2.4`) part of `vtreat`.
-For earlier versions of `vtreat` you can copy them into your own work.
 
-```{r fns, comment=""}
-print(mkCrossFrameMExperiment)
-
-print(prepare_m)
-```
+For earlier versions of `vtreat` you can copy them into your own work from [here](https://github.com/WinVector/vtreat/blob/master/R/mult_class.R).
 
 Our specific example: try to model multi-class y as a function of x1 and x2
 

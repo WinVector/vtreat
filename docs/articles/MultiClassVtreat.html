@@ -109,7 +109,7 @@
       <h1>Multi Class vtreat</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2018-07-15</h4>
+            <h4 class="date">2018-07-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/MultiClassVtreat.Rmd"><code>vignettes/MultiClassVtreat.Rmd</code></a></small>
       <div class="hidden name"><code>MultiClassVtreat.Rmd</code></div>
@@ -120,145 +120,8 @@
     
 <p>Problem: try to prepare data to model multi-class y as a function of x using <a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>. <code>vtreat</code> does not directly do this, but can be used to do this. In this note we share functions to make this adaption.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
-<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and <a href="https://winvector.github.io/vtreat/reference/prepare_m.html"><code><a href="../reference/prepare_m.html">prepare_m()</a></code></a>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>. For earlier versions of <code>vtreat</code> you can copy them into your own work.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(mkCrossFrameMExperiment)</code></pre></div>
-<pre><code>function(d, vars, y_name, 
-                                    ...,
-                                    y_dependent_treatments = c("catB"),
-                                    weights=c(),
-                                    minFraction=0.02,smFactor=0.0,
-                                    rareCount=0,rareSig=1,
-                                    collarProb=0.00,
-                                    codeRestriction=NULL,
-                                    customCoders=NULL,
-                                    scale=FALSE,doCollar=FALSE,
-                                    splitFunction=NULL,ncross=3,
-                                    forceSplit = FALSE,
-                                    catScaling=FALSE,
-                                    verbose=FALSE,
-                                    parallelCluster=NULL,
-                                    use_parallel = TRUE) {
-  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameMExperiment")
-  # build y-independent variable treatments
-  treatments_0 &lt;- designTreatmentsZ(d, vars, 
-                                    weights=weights,
-                                    minFraction=minFraction,
-                                    rareCount=rareCount,
-                                    collarProb=collarProb,
-                                    codeRestriction=codeRestriction,
-                                    customCoders=customCoders,
-                                    verbose= verbose,
-                                    parallelCluster=parallelCluster,
-                                    use_parallel = use_parallel)
-  
-  # build one set of y-dependent treatments per possible y outcome
-  y_levels &lt;- sort(unique(as.character(d[[y_name]])))
-  y_l_names &lt;- vtreat_make_names(y_levels)
-  names(y_l_names) &lt;- y_levels
-  cfe_list &lt;- lapply(
-    y_levels,
-    function(y_target) {
-      cfe &lt;- mkCrossFrameCExperiment(
-        d, vars, y_name, y_target,
-        weights=weights,
-        minFraction=minFraction,
-        smFactor=smFactor,
-        rareCount=rareCount,
-        rareSig=rareSig,
-        collarProb=collarProb,
-        codeRestriction=y_dependent_treatments,
-        customCoders=customCoders,
-        scale=scale,
-        doCollar=doCollar,
-        splitFunction=splitFunction,
-        ncross=ncross,
-        forceSplit = forceSplit,
-        catScaling=catScaling,
-        verbose= verbose,
-        parallelCluster=parallelCluster,
-        use_parallel = use_parallel)
-      cross_frame_i = cfe$crossFrame
-      cross_frame_i[[y_name]] &lt;- NULL
-      colnames(cross_frame_i) &lt;- paste0(y_l_names[[y_target]], 
-                                        "_", 
-                                        colnames(cross_frame_i))
-      list(treatments_i = cfe$treatments,
-           cross_frame_i = cross_frame_i)
-    })
-  names(cfe_list) &lt;- y_levels
-  
-  # build an overall cross-frame for training
-  dy &lt;- data.frame(y = as.character(d[[y_name]]),
-                   stringsAsFactors = FALSE)
-  cross_frame &lt;- do.call(
-    cbind,
-    c(prepare(treatments_0, d),
-      lapply(cfe_list, function(cfei) cfei$cross_frame_i),
-      dy,
-      stringsAsFactors = FALSE))
-  
-  # build a prepare function for new data
-  treatments_m &lt;- lapply(cfe_list, function(cfei) cfei$treatments_i)
-  # return components
-  list(cross_frame = cross_frame,
-       treat_m = list(
-         y_l_names = y_l_names,
-         treatments_0 = treatments_0,
-         treatments_m = treatments_m))
-}
-&lt;bytecode: 0x7f9bcf9b7270&gt;
-&lt;environment: namespace:vtreat&gt;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(prepare_m)</code></pre></div>
-<pre><code>function(new_d, treat_m,
-                      ...,
-                      pruneSig= NULL,
-                      scale= FALSE,
-                      doCollar= FALSE,
-                      varRestriction= NULL,
-                      codeRestriction= NULL,
-                      trackedValues= NULL,
-                      extracols= NULL,
-                      parallelCluster= NULL,
-                      use_parallel= TRUE) {
-  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare_m")
-  treatments_0 &lt;- treat_m$treatments_0
-  treatments_m &lt;- treat_m$treatments_m
-  y_l_names &lt;- treat_m$y_l_names
-  y_name &lt;- treatments_m[[1]]$outcomename
-  treated &lt;- prepare(treatments_0, new_d,
-                     pruneSig= pruneSig,
-                     scale= scale,
-                     doCollar= doCollar,
-                     varRestriction= varRestriction,
-                     codeRestriction= codeRestriction,
-                     trackedValues= trackedValues,
-                     extracols= extracols,
-                     parallelCluster= parallelCluster,
-                     use_parallel= use_parallel)
-  for(ti in treatments_m) {
-    treated_i &lt;- prepare(ti, new_d,
-                         pruneSig= pruneSig,
-                         scale= scale,
-                         doCollar= doCollar,
-                         varRestriction= varRestriction,
-                         codeRestriction= codeRestriction,
-                         trackedValues= trackedValues,
-                         parallelCluster= parallelCluster,
-                         use_parallel= use_parallel)
-    treated_i[[y_name]] &lt;- NULL
-    colnames(treated_i) &lt;- paste0(y_l_names[[ti$outcomeTarget]], 
-                                  "_", 
-                                  colnames(treated_i))
-    treated &lt;- cbind(treated, treated_i,
-                     stringsAsFactors = FALSE)
-  }
-  if(y_name %in% colnames(new_d)) {
-    treated[[y_name]] &lt;- new_d[[y_name]]
-  }
-  treated
-}
-&lt;bytecode: 0x7f9bd11feb70&gt;
-&lt;environment: namespace:vtreat&gt;</code></pre>
+<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and <a href="https://winvector.github.io/vtreat/reference/prepare_m.html"><code><a href="../reference/prepare_m.html">prepare_m()</a></code></a>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>.</p>
+<p>For earlier versions of <code>vtreat</code> you can copy them into your own work from <a href="https://github.com/WinVector/vtreat/blob/master/R/mult_class.R">here</a>.</p>
 <p>Our specific example: try to model multi-class y as a function of x1 and x2</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create example data</span>
 <span class="kw">set.seed</span>(<span class="dv">326346</span>)
