@@ -515,23 +515,24 @@ buildEvalSets <- function(nRows,...,
 
 # make a "cross frame" that is a frame where each treated row was treated only 
 # by a treatment plan not involving the given row
-.mkCrossFrame <- function(dframe,
-                          referenceTreatments,
-                          varlist,newVarsS,outcomename,zoY,
-                          zC,zTarget,
-                          weights,
-                          minFraction,smFactor,
-                          rareCount,rareSig,
-                          collarProb,
-                          codeRestriction,
-                          customCoders,
-                          scale,doCollar,
-                          splitFunction,nSplits,
-                          catScaling,
-                          ...,
-                          parallelCluster = NULL,
-                          use_parallel = TRUE,
-                          verbose = FALSE) {
+.mkCrossFrame <- function(
+  ...,
+  dframe,
+  referenceTreatments,
+  varlist, newVarsS, outcomename, zoY,
+  zC, zTarget,
+  weights,
+  minFraction, smFactor,
+  rareCount, rareSig,
+  collarProb,
+  codeRestriction,
+  customCoders,
+  scale, doCollar,
+  splitFunction, nSplits,
+  catScaling,
+  parallelCluster = NULL,
+  use_parallel = TRUE,
+  verbose = FALSE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::.mkCrossFrame")
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a carve-up plan

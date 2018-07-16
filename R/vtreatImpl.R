@@ -798,20 +798,31 @@ mkVtreatListWorker <- function(scale,doCollar) {
       if(verbose) {
         print(paste("rescoring complex variables",date()))
       }
-      crossData <- .mkCrossFrame(dframe,treatments,
-                                 splitVars,newVarsS,outcomename,zoY,
-                                zC,zTarget,
-                                weights,
-                                minFraction,smFactor,
-                                rareCount,rareSig,
-                                collarProb,
-                                codeRestriction,
-                                customCoders,
-                                FALSE, FALSE,
-                                splitFunction,ncross,
-                                catScaling,
-                                parallelCluster = parallelCluster,
-                                use_parallel = use_parallel)
+      crossData <- .mkCrossFrame(
+        dframe = dframe,
+        referenceTreatments = treatments,
+        varlist = splitVars,
+        newVarsS = newVarsS,
+        outcomename = outcomename,
+        zoY = zoY,
+        zC = zC,
+        zTarget = zTarget,
+        weights = weights,
+        minFraction = minFraction,
+        smFactor = smFactor,
+        rareCount = rareCount,
+        rareSig = rareSig,
+        collarProb = collarProb,
+        codeRestriction = codeRestriction,
+        customCoders = customCoders,
+        scale = FALSE, 
+        doCollar = FALSE,
+        splitFunction = splitFunction,
+        nSplits = ncross,
+        catScaling = catScaling,
+        parallelCluster = parallelCluster,
+        use_parallel = use_parallel,
+        verbose = FALSE)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights
       crossMethod <- crossData$method

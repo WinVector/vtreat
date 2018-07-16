@@ -130,7 +130,7 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq        sig extraModelDegrees
  #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
- #  2        x    x_catB  catB 1.177202e-05 0.99153548                 2
+ #  2        x    x_catB  catB 1.142159e-05 0.99166241                 2
  #  3        z   z_clean clean 2.376018e-01 0.13176020                 0
  #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
  #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
@@ -176,9 +176,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 7.352941e-02 0.5159425                 2
- #  2        x    x_catN  catN 1.458257e-03 0.9284687                 2
- #  3        x    x_catD  catD 1.816349e-01 0.2923907                 2
+ #  1        x    x_catP  catP 2.105263e-01 0.2528101                 2
+ #  2        x    x_catN  catN 4.310345e-03 0.8772535                 2
+ #  3        x    x_catD  catD 2.302479e-01 0.2288609                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0

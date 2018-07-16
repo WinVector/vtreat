@@ -213,7 +213,228 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 ##  $ Large2_x2_catB: num  0 0.827 -0.546 -0.515 -0.515 ...
 ##  $ NoInfo_x2_catB: num  0 0.0744 0.0294 -0.1149 -0.1149 ...
 ##  $ y             : chr  "Large2" "NoInfo" "Large1" "Large1" ...</code></pre>
-<p>Obvious issues include: computing variable significances, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
+<p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
+<p>We to have a start on variable importance.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(cfe_m<span class="op">$</span>score_frame)</code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">varName</th>
+<th align="left">varMoves</th>
+<th align="right">rsq</th>
+<th align="right">sig</th>
+<th align="left">outcome_level</th>
+<th align="left">needsSplit</th>
+<th align="right">extraModelDegrees</th>
+<th align="left">origName</th>
+<th align="left">code</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">x1_clean</td>
+<td align="left">TRUE</td>
+<td align="right">0.5637189</td>
+<td align="right">0.0000000</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x1</td>
+<td align="left">clean</td>
+</tr>
+<tr class="even">
+<td align="left">x2_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0035298</td>
+<td align="right">0.0287344</td>
+<td align="left">Large1</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catP</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_lev_x_a</td>
+<td align="left">TRUE</td>
+<td align="right">0.0636457</td>
+<td align="right">0.0000000</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x2_lev_x_b</td>
+<td align="left">TRUE</td>
+<td align="right">0.0172594</td>
+<td align="right">0.0000013</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_lev_x_c</td>
+<td align="left">TRUE</td>
+<td align="right">0.0124961</td>
+<td align="right">0.0000387</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x1_clean</td>
+<td align="left">TRUE</td>
+<td align="right">0.5621028</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x1</td>
+<td align="left">clean</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0082667</td>
+<td align="right">0.0020257</td>
+<td align="left">Large2</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catP</td>
+</tr>
+<tr class="even">
+<td align="left">x2_lev_x_a</td>
+<td align="left">TRUE</td>
+<td align="right">0.0717018</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_lev_x_b</td>
+<td align="left">TRUE</td>
+<td align="right">0.0163417</td>
+<td align="right">0.0000143</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x2_lev_x_c</td>
+<td align="left">TRUE</td>
+<td align="right">0.0223694</td>
+<td align="right">0.0000004</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x1_clean</td>
+<td align="left">TRUE</td>
+<td align="right">0.0127639</td>
+<td align="right">0.0000602</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x1</td>
+<td align="left">clean</td>
+</tr>
+<tr class="even">
+<td align="left">x2_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0002601</td>
+<td align="right">0.5668496</td>
+<td align="left">NoInfo</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catP</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_lev_x_a</td>
+<td align="left">TRUE</td>
+<td align="right">0.0004739</td>
+<td align="right">0.4394474</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x2_lev_x_b</td>
+<td align="left">TRUE</td>
+<td align="right">0.0010108</td>
+<td align="right">0.2588675</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_lev_x_c</td>
+<td align="left">TRUE</td>
+<td align="right">0.0000863</td>
+<td align="right">0.7414693</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">Large1_x2_catB</td>
+<td align="left">TRUE</td>
+<td align="right">0.0604250</td>
+<td align="right">0.0000000</td>
+<td align="left">Large1</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catB</td>
+</tr>
+<tr class="odd">
+<td align="left">Large2_x2_catB</td>
+<td align="left">TRUE</td>
+<td align="right">0.0606098</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catB</td>
+</tr>
+<tr class="even">
+<td align="left">NoInfo_x2_catB</td>
+<td align="left">TRUE</td>
+<td align="right">0.0001461</td>
+<td align="right">0.6677701</td>
+<td align="left">NoInfo</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catB</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>rsq, cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, max)</code></pre></div>
+<pre><code>##         x1         x2 
+## 0.56371889 0.07170178</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, min)</code></pre></div>
+<pre><code>##            x1            x2 
+## 3.759634e-168  1.585749e-20</code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
