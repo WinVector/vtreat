@@ -162,13 +162,13 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Mon Jul 16 10:50:15 2018"
-## [1] "designing treatments Mon Jul 16 10:50:15 2018"
-## [1] " have initial level statistics Mon Jul 16 10:50:15 2018"
-## [1] " scoring treatments Mon Jul 16 10:50:15 2018"
-## [1] "have treatment plan Mon Jul 16 10:50:16 2018"
-## [1] "rescoring complex variables Mon Jul 16 10:50:16 2018"
-## [1] "done rescoring complex variables Mon Jul 16 10:50:16 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Mon Jul 16 13:54:56 2018"
+## [1] "designing treatments Mon Jul 16 13:54:56 2018"
+## [1] " have initial level statistics Mon Jul 16 13:54:56 2018"
+## [1] " scoring treatments Mon Jul 16 13:54:56 2018"
+## [1] "have treatment plan Mon Jul 16 13:54:57 2018"
+## [1] "rescoring complex variables Mon Jul 16 13:54:57 2018"
+## [1] "done rescoring complex variables Mon Jul 16 13:54:57 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )
@@ -238,13 +238,13 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Mon Jul 16 10:50:16 2018"
-## [1] "designing treatments Mon Jul 16 10:50:16 2018"
-## [1] " have initial level statistics Mon Jul 16 10:50:16 2018"
-## [1] " scoring treatments Mon Jul 16 10:50:16 2018"
-## [1] "have treatment plan Mon Jul 16 10:50:16 2018"
-## [1] "rescoring complex variables Mon Jul 16 10:50:16 2018"
-## [1] "done rescoring complex variables Mon Jul 16 10:50:16 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 inspecting inputs Mon Jul 16 13:54:57 2018"
+## [1] "designing treatments Mon Jul 16 13:54:57 2018"
+## [1] " have initial level statistics Mon Jul 16 13:54:57 2018"
+## [1] " scoring treatments Mon Jul 16 13:54:57 2018"
+## [1] "have treatment plan Mon Jul 16 13:54:57 2018"
+## [1] "rescoring complex variables Mon Jul 16 13:54:57 2018"
+## [1] "done rescoring complex variables Mon Jul 16 13:54:57 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span>pruneSig)
 newvars &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainTreated),<span class="st">'y'</span>)
@@ -347,9 +347,9 @@ prep &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="
            <span class="st">'y'</span>,<span class="ot">TRUE</span>,
            <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.2.4 start initial treatment design Mon Jul 16 10:50:16 2018"
-## [1] " start cross frame work Mon Jul 16 10:50:17 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Mon Jul 16 10:50:17 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.2.4 start initial treatment design Mon Jul 16 13:54:57 2018"
+## [1] " start cross frame work Mon Jul 16 13:54:58 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Mon Jul 16 13:54:58 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
 <pre><code>##        varName          sig

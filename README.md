@@ -176,9 +176,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 2.941176e-01 0.1649303                 2
- #  2        x    x_catN  catN 6.583561e-02 0.5396025                 2
- #  3        x    x_catD  catD 9.777348e-03 0.8158041                 2
+ #  1        x    x_catP  catP 7.352941e-02 0.5159425                 2
+ #  2        x    x_catN  catN 1.458257e-03 0.9284687                 2
+ #  3        x    x_catD  catD 1.816349e-01 0.2923907                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
