@@ -511,19 +511,27 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 
 # build all treatments for a data frame to predict a given outcome
-.designTreatmentsXS <- function(dframe, varlist, outcomename, zoY,
-                                zC,zTarget,
-                                weights,
-                                minFraction, smFactor,
-                                rareCount,rareSig,
-                                collarProb,
-                                codeRestriction, customCoders,
-                                justWantTreatments,
-                                catScaling,
-                                ...,
-                                verbose = FALSE,
-                                parallelCluster = NULL,
-                                use_parallel = TRUE) {
+.designTreatmentsXS <- function(
+  ...,
+  dframe, 
+  varlist, 
+  outcomename, 
+  zoY,
+  zC,
+  zTarget,
+  weights,
+  minFraction, 
+  smFactor,
+  rareCount,
+  rareSig,
+  collarProb,
+  codeRestriction, 
+  customCoders,
+  justWantTreatments,
+  catScaling,
+  verbose = FALSE,
+  parallelCluster = NULL,
+  use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::.designTreatmentsXS")
   if(verbose) {
@@ -676,19 +684,29 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 
 # build all treatments for a data frame to predict a given outcome
-.designTreatmentsX <- function(dframe,varlist,outcomename,zoY,
-                               zC,zTarget,
-                               weights,
-                               minFraction,smFactor,
-                               rareCount,rareSig,
-                               collarProb,
-                               codeRestriction, customCoders,
-                               splitFunction, ncross, forceSplit,
-                               catScaling,
-                               ..., 
-                               verbose = FALSE,
-                               parallelCluster = NULL,
-                               use_parallel = TRUE) {
+.designTreatmentsX <- function(
+  ...,
+  dframe,
+  varlist,
+  outcomename,
+  zoY,
+  zC,
+  zTarget,
+  weights,
+  minFraction,
+  smFactor,
+  rareCount,
+  rareSig,
+  collarProb,
+  codeRestriction, 
+  customCoders,
+  splitFunction, 
+  ncross, 
+  forceSplit,
+  catScaling,
+  verbose = FALSE,
+  parallelCluster = NULL,
+  use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::.designTreatmentsX")
   if(!is.data.frame(dframe)) {
@@ -742,18 +760,26 @@ mkVtreatListWorker <- function(scale,doCollar) {
   if(rareCount<0) {
     stop("rarecount must not be negative")
   }
-  treatments <- .designTreatmentsXS(dframe,varlist,outcomename,zoY,
-                                    zC,zTarget,
-                                    weights,
-                                    minFraction,smFactor,
-                                    rareCount,rareSig,
-                                    collarProb,
-                                    codeRestriction, customCoders,
-                                    FALSE,
-                                    catScaling,
-                                    verbose = verbose,
-                                    parallelCluster = parallelCluster,
-                                    use_parallel = use_parallel)
+  treatments <- .designTreatmentsXS(
+    dframe = dframe,
+    varlist = varlist,
+    outcomename = outcomename,
+    zoY = zoY,
+    zC = zC,
+    zTarget = zTarget,
+    weights = weights,
+    minFraction = minFraction,
+    smFactor = smFactor,
+    rareCount = rareCount,
+    rareSig = rareSig,
+    collarProb = collarProb,
+    codeRestriction = codeRestriction, 
+    customCoders = customCoders,
+    justWantTreatments = FALSE,
+    catScaling = catScaling,
+    verbose = verbose,
+    parallelCluster = parallelCluster,
+    use_parallel = use_parallel)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
   if(forceSplit) {
     treatments$scoreFrame$needsSplit <- TRUE

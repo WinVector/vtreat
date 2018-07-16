@@ -182,19 +182,28 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
   if(min(zoY)>=max(zoY)) {
     stop("dframe[[outcomename]]==outcometarget must vary")
   }
-  treatments <- .designTreatmentsX(dframe,varlist,outcomename,zoY,
-                                   dframe[[outcomename]],outcometarget,
-                                   weights,
-                                   minFraction,smFactor,
-                                   rareCount,rareSig,
-                                   collarProb,
-                                   codeRestriction,
-                                   customCoders,
-                                   splitFunction,ncross,forceSplit,
-                                   catScaling,
-                                   verbose = verbose,
-                                   parallelCluster = parallelCluster,
-                                   use_parallel = use_parallel)
+  treatments <- .designTreatmentsX(
+    dframe = dframe,
+    varlist = varlist,
+    outcomename = outcomename,
+    zoY = zoY,
+    zC = dframe[[outcomename]],
+    zTarget = outcometarget,
+    weights = weights,
+    minFraction = minFraction,
+    smFactor = smFactor,
+    rareCount = rareCount,
+    rareSig = rareSig,
+    collarProb = collarProb,
+    codeRestriction = codeRestriction,
+    customCoders = customCoders,
+    splitFunction = splitFunction,
+    ncross = ncross,
+    forceSplit = forceSplit,
+    catScaling = catScaling,
+    verbose = verbose,
+    parallelCluster = parallelCluster,
+    use_parallel = use_parallel)
   treatments$outcomeTarget <- outcometarget
   treatments$outcomeType <- 'Binary'
   treatments
@@ -278,18 +287,28 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
     stop("dframe[[outcomename]] must vary")
   }
   catScaling=FALSE
-  treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
-                     c(),c(),
-                     weights,
-                     minFraction,smFactor,
-                     rareCount,rareSig,
-                     collarProb,
-                     codeRestriction, customCoders,
-                     splitFunction,ncross,forceSplit,
-                     catScaling,
-                     verbose = verbose,
-                     parallelCluster = parallelCluster,
-                     use_parallel = use_parallel)
+  treatments <- .designTreatmentsX(
+    dframe = dframe,
+    varlist = varlist,
+    outcomename = outcomename,
+    zoY = ycol,
+    zC = c(),
+    zTarget = c(),
+    weights = weights,
+    minFraction = minFraction,
+    smFactor = smFactor,
+    rareCount = rareCount,
+    rareSig = rareSig,
+    collarProb = collarProb,
+    codeRestriction = codeRestriction, 
+    customCoders = customCoders,
+    splitFunction = splitFunction,
+    ncross = ncross,
+    forceSplit = forceSplit,
+    catScaling = catScaling,
+    verbose = verbose,
+    parallelCluster = parallelCluster,
+    use_parallel = use_parallel)
   treatments$outcomeType <- 'Numeric'
   treatments
 }
@@ -357,18 +376,28 @@ designTreatmentsZ <- function(dframe,varlist,
   dframe[[outcomename]] <- 0
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   ycol <- dframe[[outcomename]]
-  treatments <- .designTreatmentsX(dframe,varlist,outcomename,ycol,
-                     c(),c(),
-                     weights,
-                     minFraction,smFactor=0,
-                     rareCount,rareSig=1,
-                     collarProb,
-                     codeRestriction, customCoders, FALSE,
-                     NULL,3,
-                     catScaling,
-                     verbose = verbose,
-                     parallelCluster = parallelCluster,
-                     use_parallel = use_parallel)
+  treatments <- .designTreatmentsX(
+    dframe = dframe,
+    varlist = varlist,
+    outcomename = outcomename,
+    zoY = ycol,
+    zC = c(),
+    zTarget = c(),
+    weights = weights,
+    minFraction = minFraction,
+    smFactor = 0,
+    rareCount = rareCount,
+    rareSig = 1,
+    collarProb = collarProb,
+    codeRestriction = codeRestriction, 
+    customCoders = customCoders, 
+    splitFunction = NULL,
+    ncross = 3,
+    forceSplit = FALSE,
+    catScaling = catScaling,
+    verbose = verbose,
+    parallelCluster = parallelCluster,
+    use_parallel = use_parallel)
   treatments$outcomeType <- 'None'
   treatments$meanY <- NA
   treatments
