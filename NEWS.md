@@ -4,6 +4,7 @@
  * Change designTreatmentsZ() defaults.
  * Documentation fixes.
  * Multiclass vignette.
+ * Fix CRAN Note on pre 3.5.0 R parallel usage.
 
 # vtreat 1.2.3 2018/07/11
 
