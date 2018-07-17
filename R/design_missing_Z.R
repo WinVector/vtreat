@@ -65,7 +65,8 @@ design_missingness_treatment <- function(dframe,
     if(is.null(vi)) {
       stop(paste("vtreat::design_missingness_treatment: column", ci, "not found"))
     }
-    if(is.numeric(vi)) {
+    if(is.logical(vi) || (is.numeric(vi) && (!is.factor(vi)))) {
+      vi <- as.numeric(vi)
       mean_v <- 0.0
       bads <- is.na(vi) | is.nan(vi) | is.infinite(vi)
       if(any(!bads)) {
@@ -88,6 +89,7 @@ design_missingness_treatment <- function(dframe,
                      args = list())))
       }
     } else {
+      vi <- as.character(vi)
       ops <- c(ops, 
                list(
                  list(
