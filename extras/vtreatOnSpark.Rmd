@@ -63,7 +63,7 @@ d_variable_design <- d %.>%
 ```{r design_var_treatments}
 cl = parallel::makeCluster(4)
 print(length(vars))
-# treat variables in small groups to manage memory
+# design treatments in small groups to manage memory
 vgroups <- split(vars, ceiling(seq_len(length(vars))/10))
 treatment_plans <- lapply(vgroups,
                           function(vi) {
