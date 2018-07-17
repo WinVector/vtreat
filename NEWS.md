@@ -1,10 +1,11 @@
 
-# vtreat 1.2.4 2018/07/16
+# vtreat 1.3.0 2018/07/16
 
  * Fix z-split annotation issue.
  * Change designTreatmentsZ() defaults.
  * Documentation fixes.
- * Multiclass vignette.
+ * Multiclass treatmetns vignette.
+ * Simple treatments.
  * Fix CRAN Note on pre 3.5.0 R parallel usage.
 
 # vtreat 1.2.3 2018/07/11

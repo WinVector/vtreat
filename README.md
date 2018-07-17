@@ -98,7 +98,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.2.4'
+ #  [1] '1.3.0'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -129,8 +129,8 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.057741424 0.45748159                 2
- #  2        x    x_catB  catB 0.019483838 0.66603146                 2
+ #  1        x    x_catP  catP 0.130498074 0.26400089                 2
+ #  2        x    x_catB  catB 0.030345745 0.59013918                 2
  #  3        z   z_clean clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -176,9 +176,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.558824e-01 0.1184999                 2
- #  2        x    x_catN  catN 2.663337e-02 0.6993947                 2
- #  3        x    x_catD  catD 4.226472e-02 0.6252538                 2
+ #  1        x    x_catP  catP 3.137255e-01 0.1487686                 2
+ #  2        x    x_catN  catN 2.536663e-02 0.7063823                 2
+ #  3        x    x_catD  catD 1.620332e-01 0.3228162                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0

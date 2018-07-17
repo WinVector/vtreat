@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Display treatment plan. — format.vtreatment • vtreat</title>
+<title>Function to apply mkCrossFrameMExperiment treatemnts. — prepare.multinomial_plan • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Display treatment plan. — format.vtreatment" />
+<meta property="og:title" content="Function to apply mkCrossFrameMExperiment treatemnts. — prepare.multinomial_plan" />
 
-<meta property="og:description" content="Display treatment plan." />
+<meta property="og:description" content="Please see vignette(&quot;MultiClassVtreat&quot;, package = &quot;vtreat&quot;) https://winvector.github.io/vtreat/articles/MultiClassVtreat.html." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -139,32 +139,83 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Display treatment plan.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/vtreat.R'><code>R/vtreat.R</code></a></small>
-    <div class="hidden name"><code>format.vtreatment.Rd</code></div>
+    <h1>Function to apply mkCrossFrameMExperiment treatemnts.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/mult_class.R'><code>R/mult_class.R</code></a></small>
+    <div class="hidden name"><code>prepare.multinomial_plan.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Display treatment plan.</p>
+    <p>Please see <code><a href='../articles/MultiClassVtreat.html'>vignette("MultiClassVtreat", package = "vtreat")</a></code> <a href='https://winvector.github.io/vtreat/articles/MultiClassVtreat.html'>https://winvector.github.io/vtreat/articles/MultiClassVtreat.html</a>.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for vtreatment</span>
-<span class='fu'>format</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for multinomial_plan</span>
+<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentplan</span>, <span class='no'>dframe</span>, <span class='no'>...</span>,
+  <span class='kw'>pruneSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>varRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>trackedValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>treatment plan</p></td>
+      <th>treatmentplan</th>
+      <td><p>multinomial_plan from mkCrossFrameMExperiment.</p></td>
+    </tr>
+    <tr>
+      <th>dframe</th>
+      <td><p>new data to process.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional args (to match general signature).</p></td>
+      <td><p>not used, declared to forced named binding of later arguments</p></td>
+    </tr>
+    <tr>
+      <th>pruneSig</th>
+      <td><p>suppress variables with significance above this level</p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.</p></td>
+    </tr>
+    <tr>
+      <th>doCollar</th>
+      <td><p>optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.</p></td>
+    </tr>
+    <tr>
+      <th>varRestriction</th>
+      <td><p>optional list of treated variable names to restrict to</p></td>
+    </tr>
+    <tr>
+      <th>codeRestriction</th>
+      <td><p>optional list of treated variable codes to restrict to</p></td>
+    </tr>
+    <tr>
+      <th>trackedValues</th>
+      <td><p>optional named list mapping variables to know values, allows warnings upon novel level appearances (see <code><a href='track_values.html'>track_values</a></code>)</p></td>
+    </tr>
+    <tr>
+      <th>extracols</th>
+      <td><p>extra columns to copy.</p></td>
+    </tr>
+    <tr>
+      <th>parallelCluster</th>
+      <td><p>(optional) a cluster object created by package parallel or package snow.</p></td>
+    </tr>
+    <tr>
+      <th>use_parallel</th>
+      <td><p>logical, if TRUE use parallel methods.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>prepared data frame.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='mkCrossFrameMExperiment.html'>mkCrossFrameMExperiment</a></code></p></div>
     
 
   </div>
@@ -172,7 +223,11 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>

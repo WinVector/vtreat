@@ -48,6 +48,8 @@
 #' 
 #' prepare(plan, data.frame(x1=NA, x2=NA, x3="E"))
 #' 
+#' @seealso \code{\link{prepare.simple_plan}}
+#' 
 #' @export
 #' 
 design_missingness_treatment <- function(dframe, 
@@ -120,6 +122,8 @@ design_missingness_treatment <- function(dframe,
 #' 
 #' prepare(plan, data.frame(x1=NA, x2=NA, x3="E"))
 #' 
+#' @seealso \code{\link{design_missingness_treatment}}
+#' 
 #' @export
 #' 
 prepare.simple_plan <- function(treatmentplan, dframe,
@@ -143,5 +147,25 @@ prepare.simple_plan <- function(treatmentplan, dframe,
   }
   res
 }
+
+#' @export
+format.simple_plan <- function(x, ...) { 
+  "Simple Treatment Plan"
+}
+
+#' @export
+as.character.simple_plan <- function (x, ...) {
+  format(x, ...)
+}
+
+#'
+#' Print treatmentplan.
+#' @param x treatmentplan
+#' @param ... additional args (to match general signature).
+#' @export
+print.simple_plan <- function(x, ...) { 
+  print(format(x), ...) 
+}
+
 
 

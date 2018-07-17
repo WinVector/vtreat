@@ -40,3 +40,6 @@ prepared data frame.
 \description{
 Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
 }
+\seealso{
+\code{\link{mkCrossFrameMExperiment}}
+}

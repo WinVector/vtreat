@@ -15,11 +15,9 @@ Problem: try to prepare data to model multi-class y as a function of x using [`v
 library("vtreat")
 ```
 
-The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and [`prepare_m()`](https://winvector.github.io/vtreat/reference/prepare_m.html)) are (as of version `1.2.4`) part of `vtreat`.
+The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and [`prepare()`](https://winvector.github.io/vtreat/reference/prepare.html)) are (as of version `1.2.4`) part of `vtreat`.
 
-For earlier versions of `vtreat` you can copy them into your own work from [here](https://github.com/WinVector/vtreat/blob/master/R/mult_class.R).
-
-Our specific example: try to model multi-class y as a function of x1 and x2
+Our specific example: try to model multi-class `y` as a function of `x1` and `x2`.
 
 ```{r mkex}
 # create example data
@@ -77,6 +75,12 @@ We to have a start on variable importance.
 
 ```{r varimp}
 knitr::kable(cfe_m$score_frame)
+
+```
+
+One can relate these per-target and per-treatment performances back to original columns b aggregating.
+
+```{r varagg}
 
 tapply(cfe_m$score_frame$rsq, cfe_m$score_frame$origName, max)
 

@@ -33,7 +33,7 @@ mkCrossFrameMExperiment(d, vars, y_name, ...,
 
 \item{rareSig}{optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.}
 
-\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
+\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.multinomial_plan}}.}
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restriction).}
 
@@ -62,4 +62,7 @@ list(cross_frame, treatments_0, treatments_m)
 }
 \description{
 Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
+}
+\seealso{
+\code{\link{prepare.multinomial_plan}}
 }

@@ -39,5 +39,5 @@ tryCatch(
 
 }
 \seealso{
-\code{\link{prepare}}, \code{\link{novel_value_summary}}
+\code{\link{prepare.treatmentplan}}, \code{\link{novel_value_summary}}
 }

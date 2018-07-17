@@ -31,5 +31,5 @@ novel_value_summary(d, trackedValues)
 
 }
 \seealso{
-\code{\link{prepare}}, \code{\link{track_values}}
+\code{\link{prepare.treatmentplan}}, \code{\link{track_values}}
 }

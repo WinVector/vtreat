@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Display treatment plan. — format.vtreatment • vtreat</title>
+<title>Design a simple treatment plan to indicate missingingness and perform simple imputation. — design_missingness_treatment • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Display treatment plan. — format.vtreatment" />
+<meta property="og:title" content="Design a simple treatment plan to indicate missingingness and perform simple imputation. — design_missingness_treatment" />
 
-<meta property="og:description" content="Display treatment plan." />
+<meta property="og:description" content="Design a simple treatment plan to indicate missingingness and perform simple imputation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -139,40 +139,78 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Display treatment plan.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/vtreat.R'><code>R/vtreat.R</code></a></small>
-    <div class="hidden name"><code>format.vtreatment.Rd</code></div>
+    <h1>Design a simple treatment plan to indicate missingingness and perform simple imputation.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/design_missing_Z.R'><code>R/design_missing_Z.R</code></a></small>
+    <div class="hidden name"><code>design_missingness_treatment.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Display treatment plan.</p>
+    <p>Design a simple treatment plan to indicate missingingness and perform simple imputation.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for vtreatment</span>
-<span class='fu'>format</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>design_missingness_treatment</span>(<span class='no'>dframe</span>, <span class='no'>...</span>, <span class='kw'>varlist</span> <span class='kw'>=</span> <span class='fu'>colnames</span>(<span class='no'>dframe</span>),
+  <span class='kw'>invalid_mark</span> <span class='kw'>=</span> <span class='st'>"_invalid_"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>treatment plan</p></td>
+      <th>dframe</th>
+      <td><p>data.frame to drive design.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional args (to match general signature).</p></td>
+      <td><p>not used, forces later arguments to bind by name.</p></td>
+    </tr>
+    <tr>
+      <th>varlist</th>
+      <td><p>character, names of coluns to process.</p></td>
+    </tr>
+    <tr>
+      <th>invalid_mark</th>
+      <td><p>character, name to use for NA levels and novel levels.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>simple treatment plan.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='prepare.simple_plan.html'>prepare.simple_plan</a></code></p></div>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>wrapr</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/wrapr/topics/build_frame'>build_frame</a></span>(
+  <span class='st'>"x1"</span>, <span class='st'>"x2"</span>, <span class='st'>"x3"</span> <span class='kw'>|</span>
+  <span class='fl'>1</span>   , <span class='fl'>4</span>   , <span class='st'>"A"</span>  <span class='kw'>|</span>
+  <span class='fl'>NA</span>  , <span class='fl'>5</span>   , <span class='st'>"B"</span>  <span class='kw'>|</span>
+  <span class='fl'>3</span>   , <span class='fl'>6</span>   , <span class='fl'>NA</span>   )
+
+<span class='no'>plan</span> <span class='kw'>&lt;-</span> <span class='fu'>design_missingness_treatment</span>(<span class='no'>d</span>)
+<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>plan</span>, <span class='no'>d</span>)</div><div class='output co'>#&gt;   x1 x1_isBAD x2        x3
+#&gt; 1  1        0  4         A
+#&gt; 2  2        1  5         B
+#&gt; 3  3        0  6 _invalid_</div><div class='input'>
+<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>plan</span>, <span class='fu'>data.frame</span>(<span class='kw'>x1</span><span class='kw'>=</span><span class='fl'>NA</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='fl'>NA</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"E"</span>))</div><div class='output co'>#&gt;   x1 x1_isBAD x2        x3
+#&gt; 1  2        1  5 _invalid_</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

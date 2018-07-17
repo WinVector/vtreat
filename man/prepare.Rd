@@ -4,10 +4,7 @@
 \alias{prepare}
 \title{Apply treatments and restrict to useful variables.}
 \usage{
-prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
-  doCollar = FALSE, varRestriction = NULL, codeRestriction = NULL,
-  trackedValues = NULL, extracols = NULL, parallelCluster = NULL,
-  use_parallel = TRUE)
+prepare(treatmentplan, dframe, ...)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}
@@ -15,68 +12,10 @@ prepare(treatmentplan, dframe, ..., pruneSig = NULL, scale = FALSE,
 \item{dframe}{Data frame to be treated}
 
 \item{...}{no additional arguments, declared to forced named binding of later arguments}
-
-\item{pruneSig}{suppress variables with significance above this level}
-
-\item{scale}{optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.}
-
-\item{doCollar}{optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.}
-
-\item{varRestriction}{optional list of treated variable names to restrict to}
-
-\item{codeRestriction}{optional list of treated variable codes to restrict to}
-
-\item{trackedValues}{optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})}
-
-\item{extracols}{extra columns to copy.}
-
-\item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
-
-\item{use_parallel}{logical, if TRUE use parallel methods.}
-}
-\value{
-treated data frame (all columns numeric- without NA, NaN)
 }
 \description{
-Use a treatment plan to prepare a data frame for analysis.  The
-resulting frame will have new effective variables that are numeric
-and free of NaN/NA.  If the outcome column is present it will be copied over.
-The intent is that these frames are compatible with more machine learning
-techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
-Note: each column is processed independently of all others.  Also copies over outcome if present.
-Note: treatmentplan's are not meant for long-term storage, a warning is issued if the version of
-vtreat that produced the plan differs from the version running \code{prepare()}.
-}
-\examples{
-
-dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),
-                      z= c(1,2,3,4,5,6,7),
-                      y= c(0,0,0,1,0,1,1))
-dTestN <- data.frame(x= c('a','b','c',NA),
-                     z= c(10,20,30,NA))
-treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN), 'y')
-dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig= 0.2)
-dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig= 0.2)
-
-dTrainC <- data.frame(x= c('a','a','a','b','b','b'),
-                      z= c(1,2,3,4,5,6),
-                      y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-dTestC <- data.frame(x= c('a','b','c',NA),
-                     z= c(10,20,30,NA))
-treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC, dTrainC, varRestriction= c('z_clean'))
-dTestCTreated <- prepare(treatmentsC, dTestC, varRestriction= c('z_clean'))
-
-dTrainZ <- data.frame(x= c('a','a','a','b','b','b'),
-                      z= c(1,2,3,4,5,6))
-dTestZ <- data.frame(x= c('a','b','c',NA),
-                     z= c(10,20,30,NA))
-treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
-dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
-dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
-
-
+Apply treatments and restrict to useful variables.
 }
 \seealso{
-\code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
+\code{\link{prepare.treatmentplan}}, \code{\link{prepare.simple_plan}}, \code{\link{prepare.multinomial_plan}}
 }

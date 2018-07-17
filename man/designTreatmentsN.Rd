@@ -29,7 +29,7 @@ designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
 
 \item{rareSig}{optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.}
 
-\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.}
+\item{collarProb}{what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.treatmentplan}}.}
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restriction).}
 
@@ -80,5 +80,5 @@ dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=0.99)
 
 }
 \seealso{
-\code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameNExperiment}}
+\code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsZ}}, \code{\link{mkCrossFrameNExperiment}}
 }

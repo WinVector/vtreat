@@ -75,7 +75,6 @@ treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
 dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
 dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
 
-
 }
 \seealso{
 \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}

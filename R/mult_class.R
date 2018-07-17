@@ -13,7 +13,7 @@
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.multinomial_plan}}.
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
@@ -27,6 +27,8 @@
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @param y_dependent_treatments character what treatment types to build per-outcome level.
 #' @return list(cross_frame, treatments_0, treatments_m)
+#' 
+#' @seealso \code{\link{prepare.multinomial_plan}}
 #' 
 #' @export
 #'
@@ -181,6 +183,8 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @return prepared data frame.
 #' 
+#' @seealso \code{\link{mkCrossFrameMExperiment}}
+#' 
 #' @export
 #'
 prepare.multinomial_plan <- function(treatmentplan, dframe,
@@ -232,4 +236,23 @@ prepare.multinomial_plan <- function(treatmentplan, dframe,
   treated
 }
 
+
+#' @export
+format.multinomial_plan <- function(x, ...) { 
+  "Multi Class Plan"
+}
+
+#' @export
+as.character.multinomial_plan <- function (x, ...) {
+  format(x, ...)
+}
+
+#'
+#' Print treatmentplan.
+#' @param x treatmentplan
+#' @param ... additional args (to match general signature).
+#' @export
+print.multinomial_plan <- function(x, ...) { 
+  print(format(x), ...) 
+}
 

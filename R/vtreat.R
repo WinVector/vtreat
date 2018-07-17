@@ -69,7 +69,7 @@ as.character.vtreatment <- function (x, ...) {
 #' Print treatmentplan.
 #' @param x treatmentplan
 #' @param ... additional args (to match general signature).
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{prepare}}
+#' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{designTreatmentsZ}}, \code{\link{prepare.treatmentplan}}
 #' @export
 print.vtreatment <- function(x, ...) { 
   print(format(x), ...) 
@@ -93,7 +93,7 @@ as.character.treatmentplan <- function (x, ...) {
 #' Print treatmentplan.
 #' @param x treatmentplan
 #' @param ... additional args (to match general signature).
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{prepare}}
+#' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{designTreatmentsZ}}, \code{\link{prepare.treatmentplan}}
 #' @export
 print.treatmentplan <- function(x, ...) { 
   print(format(x), ...) 
@@ -132,7 +132,7 @@ print.treatmentplan <- function(x, ...) {
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.treatmentplan}}.
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
@@ -143,7 +143,7 @@ print.treatmentplan <- function(x, ...) {
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameCExperiment}}
+#' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsN}}, \code{\link{designTreatmentsZ}}, \code{\link{mkCrossFrameCExperiment}}
 #' @examples
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
@@ -239,7 +239,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.treatmentplan}}.
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param splitFunction (optional) see vtreat::buildEvalSets .
@@ -249,7 +249,7 @@ designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsZ}} \code{\link{mkCrossFrameNExperiment}}
+#' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsZ}}, \code{\link{mkCrossFrameNExperiment}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
@@ -335,14 +335,14 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.treatmentplan}}.
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (if parallel cluster is set).
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{prepare}} \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} 
+#' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}} 
 #' @examples
 #' 
 #' dTrainZ <- data.frame(x=c('a','a','a','a','b','b',NA,'e','e'),
@@ -413,7 +413,7 @@ designTreatmentsZ <- function(dframe,varlist,
 #' @param varlist Names of columns to treat (effective variables).
 #' @return named list of values seen.
 #' 
-#' @seealso \code{\link{prepare}}, \code{\link{novel_value_summary}}
+#' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{novel_value_summary}}
 #' 
 #' @examples
 #' 
@@ -452,7 +452,7 @@ track_values <- function(dframe, varlist) {
 #' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
 #' @return frame of novel occurrences
 #' 
-#' @seealso \code{\link{prepare}}, \code{\link{track_values}}
+#' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{track_values}}
 #' 
 #' @examples
 #' 
@@ -493,71 +493,15 @@ novel_value_summary <- function(dframe, trackedValues) {
 
 #' Apply treatments and restrict to useful variables.
 #' 
-#' Use a treatment plan to prepare a data frame for analysis.  The
-#' resulting frame will have new effective variables that are numeric
-#' and free of NaN/NA.  If the outcome column is present it will be copied over.
-#' The intent is that these frames are compatible with more machine learning
-#' techniques, and avoid a lot of corner cases (NA,NaN, novel levels, too many levels).
-#' Note: each column is processed independently of all others.  Also copies over outcome if present.
-#' Note: treatmentplan's are not meant for long-term storage, a warning is issued if the version of
-#' vtreat that produced the plan differs from the version running \code{prepare()}.
-#' 
 #' @param treatmentplan Plan built by designTreantmentsC() or designTreatmentsN()
 #' @param dframe Data frame to be treated
 #' @param ... no additional arguments, declared to forced named binding of later arguments
-#' @param pruneSig suppress variables with significance above this level
-#' @param scale optional if TRUE replace numeric variables with single variable model regressions ("move to outcome-scale").  These have mean zero and (for variables with significant less than 1) slope 1 when regressed  (lm for regression problems/glm for classification problems) against outcome.
-#' @param doCollar optional if TRUE collar numeric variables by cutting off after a tail-probability specified by collarProb during treatment design.
-#' @param varRestriction optional list of treated variable names to restrict to
-#' @param codeRestriction optional list of treated variable codes to restrict to
-#' @param trackedValues optional named list mapping variables to know values, allows warnings upon novel level appearances (see \code{\link{track_values}})
-#' @param extracols extra columns to copy.
-#' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
-#' @param use_parallel logical, if TRUE use parallel methods.
-#' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
-#' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
-#' @examples
-#' 
-#' dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),
-#'                       z= c(1,2,3,4,5,6,7),
-#'                       y= c(0,0,0,1,0,1,1))
-#' dTestN <- data.frame(x= c('a','b','c',NA),
-#'                      z= c(10,20,30,NA))
-#' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN), 'y')
-#' dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig= 0.2)
-#' dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig= 0.2)
-#' 
-#' dTrainC <- data.frame(x= c('a','a','a','b','b','b'),
-#'                       z= c(1,2,3,4,5,6),
-#'                       y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-#' dTestC <- data.frame(x= c('a','b','c',NA),
-#'                      z= c(10,20,30,NA))
-#' treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-#' dTrainCTreated <- prepare(treatmentsC, dTrainC, varRestriction= c('z_clean'))
-#' dTestCTreated <- prepare(treatmentsC, dTestC, varRestriction= c('z_clean'))
-#'
-#' dTrainZ <- data.frame(x= c('a','a','a','b','b','b'),
-#'                       z= c(1,2,3,4,5,6))
-#' dTestZ <- data.frame(x= c('a','b','c',NA),
-#'                      z= c(10,20,30,NA))
-#' treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
-#' dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
-#' dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
-#' 
+#' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{prepare.simple_plan}}, \code{\link{prepare.multinomial_plan}}
 #' 
 #' @export
 prepare <- function(treatmentplan, dframe,
-                    ...,
-                    pruneSig= NULL,
-                    scale= FALSE,
-                    doCollar= FALSE,
-                    varRestriction= NULL,
-                    codeRestriction= NULL,
-                    trackedValues= NULL,
-                    extracols= NULL,
-                    parallelCluster= NULL,
-                    use_parallel= TRUE) {
+                    ...) {
   UseMethod("prepare")
 }
 
@@ -614,7 +558,6 @@ prepare <- function(treatmentplan, dframe,
 #' treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
 #' dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
 #' dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
-#' 
 #' 
 #' @export
 prepare.treatmentplan <- function(treatmentplan, dframe,
@@ -730,7 +673,7 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.treatmentplan}}.
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
@@ -744,7 +687,7 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @return list with treatments and crossFrame
 #' 
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
+#' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{prepare.treatmentplan}}
 #' 
 #' @examples
 #' 
@@ -892,7 +835,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param smFactor optional smoothing factor for impact coding models.
 #' @param rareCount optional integer, allow levels with this count or below to be pooled into a shared rare-level.  Defaults to 0 or off.
 #' @param rareSig optional numeric, suppress levels from pooling at this significance value greater.  Defaults to NULL or off.
-#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare}}.
+#' @param collarProb what fraction of the data (pseudo-probability) to collar data at if doCollar is set during \code{\link{prepare.treatmentplan}}.
 #' @param codeRestriction what types of variables to produce (character array of level codes, NULL means no restriction).
 #' @param customCoders map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).
 #' @param scale optional if TRUE replace numeric variables with regression ("move to outcome-scale").
@@ -904,7 +847,7 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @return treatment plan (for use with prepare)
-#' @seealso \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{prepare}}
+#' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{prepare.treatmentplan}}
 #' @examples
 #' 
 #' set.seed(23525)
