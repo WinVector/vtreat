@@ -132,7 +132,6 @@ prepare.simple_plan <- function(treatmentplan, dframe,
                                 ...) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::prepare.simple_plan")
-  res <- NULL
   for(pi in treatmentplan) {
     ci <- pi$col
     vi <- dframe[[ci]]
@@ -140,14 +139,9 @@ prepare.simple_plan <- function(treatmentplan, dframe,
       stop(paste("vtreat::prepare.simple_plan: column", ci, " must be in data.frame"))
     }
     vi <- pi$f(vi, pi$args)
-    if(is.null(res)) {
-      res <- data.frame(x = vi, stringsAsFactors = FALSE)
-      colnames(res) <- pi$nm
-    } else {
-      res[[pi$nm]] <- vi
-    }
+    dframe[[pi$nm]] <- vi
   }
-  res
+  dframe
 }
 
 #' @export
