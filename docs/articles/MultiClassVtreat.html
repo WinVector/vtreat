@@ -120,7 +120,7 @@
     
 <p>Problem: try to prepare data to model multi-class y as a function of x using <a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>. <code>vtreat</code> does not directly do this, but can be used to do this. In this note we share functions to make this adaption.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
-<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and <a href="https://winvector.github.io/vtreat/reference/prepare.html"><code><a href="../reference/prepare.html">prepare()</a></code></a>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>.</p>
+<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html"><code><a href="../reference/prepare.multinomial_plan.html">prepare.multinomial_plan()</a></code></a>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>.</p>
 <p>Our specific example: try to model multi-class <code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create example data</span>
 <span class="kw">set.seed</span>(<span class="dv">326346</span>)

@@ -122,7 +122,7 @@ design_missingness_treatment <- function(dframe,
 #' 
 #' prepare(plan, data.frame(x1=NA, x2=NA, x3="E"))
 #' 
-#' @seealso \code{\link{design_missingness_treatment}}
+#' @seealso \code{\link{design_missingness_treatment}}, \code{\link{prepare}}
 #' 
 #' @export
 #' 

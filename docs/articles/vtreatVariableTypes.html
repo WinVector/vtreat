@@ -141,18 +141,18 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.0 inspecting inputs Mon Jul 16 17:29:57 2018"
-## [1] "designing treatments Mon Jul 16 17:29:57 2018"
-## [1] " have initial level statistics Mon Jul 16 17:29:57 2018"
-## [1] " scoring treatments Mon Jul 16 17:29:57 2018"
-## [1] "have treatment plan Mon Jul 16 17:29:57 2018"
-## [1] "rescoring complex variables Mon Jul 16 17:29:57 2018"
-## [1] "done rescoring complex variables Mon Jul 16 17:29:57 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.0 inspecting inputs Mon Jul 16 17:37:46 2018"
+## [1] "designing treatments Mon Jul 16 17:37:46 2018"
+## [1] " have initial level statistics Mon Jul 16 17:37:46 2018"
+## [1] " scoring treatments Mon Jul 16 17:37:46 2018"
+## [1] "have treatment plan Mon Jul 16 17:37:46 2018"
+## [1] "rescoring complex variables Mon Jul 16 17:37:46 2018"
+## [1] "done rescoring complex variables Mon Jul 16 17:37:46 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.11457614 0.3289524                 2
-## 2        x    x_catB  catB 0.12081050 0.3161341                 2
+## 1        x    x_catP  catP 0.24340634 0.1547700                 2
+## 2        x    x_catB  catB 0.05070201 0.5160763                 2
 ## 3        z   z_clean clean 0.25792985 0.1429977                 0
 ## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
 ## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
@@ -168,7 +168,7 @@ vmap &lt;-<span class="st"> </span><span class="kw">as.list</span>(treatmentsC<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Map significances back to original variables</span>
 <span class="kw">aggregate</span>(sig<span class="op">~</span>origName,<span class="dt">data=</span>treatmentsC<span class="op">$</span>scoreFrame,<span class="dt">FUN=</span>min)</code></pre></div>
 <pre><code>##   origName       sig
-## 1        x 0.2076623
+## 1        x 0.1547700
 ## 2        z 0.1429977</code></pre>
 <p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
 <p>Essentially a derived variable name is built by concatenating an original variable name and a treatment type (also recorded in the <code>code</code> column for convenience). The codes give the different ‘vtreat’ variable types (or really meanings, as all derived variables are numeric).</p>
@@ -195,13 +195,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw">as.numeric</span>(<span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.0 inspecting inputs Mon Jul 16 17:29:58 2018"
-## [1] "designing treatments Mon Jul 16 17:29:58 2018"
-## [1] " have initial level statistics Mon Jul 16 17:29:58 2018"
-## [1] " scoring treatments Mon Jul 16 17:29:58 2018"
-## [1] "have treatment plan Mon Jul 16 17:29:58 2018"
-## [1] "rescoring complex variables Mon Jul 16 17:29:58 2018"
-## [1] "done rescoring complex variables Mon Jul 16 17:29:58 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.0 inspecting inputs Mon Jul 16 17:37:46 2018"
+## [1] "designing treatments Mon Jul 16 17:37:46 2018"
+## [1] " have initial level statistics Mon Jul 16 17:37:46 2018"
+## [1] " scoring treatments Mon Jul 16 17:37:46 2018"
+## [1] "have treatment plan Mon Jul 16 17:37:46 2018"
+## [1] "rescoring complex variables Mon Jul 16 17:37:46 2018"
+## [1] "done rescoring complex variables Mon Jul 16 17:37:46 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
 ## 1        x    x_catP  catP 4.385965e-01 0.1518345                 2
@@ -239,11 +239,11 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw">colnames</span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.0 inspecting inputs Mon Jul 16 17:29:58 2018"
-## [1] "designing treatments Mon Jul 16 17:29:58 2018"
-## [1] " have initial level statistics Mon Jul 16 17:29:58 2018"
-## [1] " scoring treatments Mon Jul 16 17:29:58 2018"
-## [1] "have treatment plan Mon Jul 16 17:29:58 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.0 inspecting inputs Mon Jul 16 17:37:46 2018"
+## [1] "designing treatments Mon Jul 16 17:37:46 2018"
+## [1] " have initial level statistics Mon Jul 16 17:37:46 2018"
+## [1] " scoring treatments Mon Jul 16 17:37:46 2018"
+## [1] "have treatment plan Mon Jul 16 17:37:46 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw">c</span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -281,13 +281,13 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 
 <span class="co"># no catP or catD variables</span>
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
-<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1131222 0.5145190                 2
-## 2        z   z_clean clean 0.3045045 0.2562868                 0
-## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
-## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
-## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
+## 1        x    x_catN  catN 1.110223e-16 1.0000000                 2
+## 2        z   z_clean clean 3.045045e-01 0.2562868                 0
+## 3        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
+## 4        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
+## 5        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
 <p>Conversely, even if you have created a treatment plan for a particular type of variable, you may subsequently decide not to use it. For example, perhaps you only want to use indicator variables and not the <code>catN</code> variable for modeling. You can use <code>codeRestriction</code> in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTreated =<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, 
                    <span class="dt">codeRestriction =</span> <span class="kw">c</span>(<span class="st">'lev'</span>,<span class="st">'clean'</span>, <span class="st">'isBAD'</span>))
@@ -328,7 +328,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1052632 0.5304117                 2
+## 1        x    x_catN  catN 0.1131222 0.5145190                 2
 ## 2        z   z_clean clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0

@@ -530,7 +530,7 @@ prepare <- function(treatmentplan, dframe,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
-#' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}
+#' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}, \code{\link{prepare}}
 #' @examples
 #' 
 #' dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),

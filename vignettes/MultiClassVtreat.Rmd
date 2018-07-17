@@ -15,7 +15,7 @@ Problem: try to prepare data to model multi-class y as a function of x using [`v
 library("vtreat")
 ```
 
-The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and [`prepare()`](https://winvector.github.io/vtreat/reference/prepare.html)) are (as of version `1.2.4`) part of `vtreat`.
+The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and the `S3` method [`prepare.multinomial_plan()`](https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html)) are (as of version `1.2.4`) part of `vtreat`.
 
 Our specific example: try to model multi-class `y` as a function of `x1` and `x2`.
 

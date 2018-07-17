@@ -183,8 +183,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @return prepared data frame.
 #' 
-#' @seealso \code{\link{mkCrossFrameMExperiment}}
-#' 
+#' @seealso \code{\link{mkCrossFrameMExperiment}}, \code{\link{prepare}}
 #' @export
 #'
 prepare.multinomial_plan <- function(treatmentplan, dframe,

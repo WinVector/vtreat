@@ -41,5 +41,5 @@ prepared data frame.
 Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
 }
 \seealso{
-\code{\link{mkCrossFrameMExperiment}}
+\code{\link{mkCrossFrameMExperiment}}, \code{\link{prepare}}
 }
