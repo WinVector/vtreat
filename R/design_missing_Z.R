@@ -31,7 +31,7 @@
 #' 
 #' @param dframe data.frame to drive design.
 #' @param ... not used, forces later arguments to bind by name.
-#' @param varlist character, names of coluns to process.
+#' @param varlist character, names of columns to process.
 #' @param invalid_mark character, name to use for NA levels and novel levels.
 #' @return simple treatment plan.
 #' 
@@ -132,6 +132,7 @@ prepare.simple_plan <- function(treatmentplan, dframe,
                                 ...) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::prepare.simple_plan")
+  res <- dframe
   for(pi in treatmentplan) {
     ci <- pi$col
     vi <- dframe[[ci]]
@@ -139,9 +140,9 @@ prepare.simple_plan <- function(treatmentplan, dframe,
       stop(paste("vtreat::prepare.simple_plan: column", ci, " must be in data.frame"))
     }
     vi <- pi$f(vi, pi$args)
-    dframe[[pi$nm]] <- vi
+    res[[pi$nm]] <- vi
   }
-  dframe
+  res
 }
 
 #' @export

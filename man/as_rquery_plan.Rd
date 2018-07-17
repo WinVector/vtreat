@@ -2,7 +2,7 @@
 % Please edit documentation in R/rquery_treatment.R
 \name{as_rquery_plan}
 \alias{as_rquery_plan}
-\title{Convert vtreatment plans into a sequence of rquery read operations.}
+\title{Convert vtreatment plans into a sequence of rquery operations.}
 \usage{
 as_rquery_plan(treatmentplans, ..., var_restriction = NULL)
 }
@@ -17,7 +17,7 @@ as_rquery_plan(treatmentplans, ..., var_restriction = NULL)
 list(optree_generator (ordered list of functions), temp_tables (named list of tables))
 }
 \description{
-Convert vtreatment plans into a sequence of rquery read operations.
+Convert vtreatment plans into a sequence of rquery operations.
 }
 \examples{
 

@@ -12,7 +12,7 @@ design_missingness_treatment(dframe, ..., varlist = colnames(dframe),
 
 \item{...}{not used, forces later arguments to bind by name.}
 
-\item{varlist}{character, names of coluns to process.}
+\item{varlist}{character, names of columns to process.}
 
 \item{invalid_mark}{character, name to use for NA levels and novel levels.}
 }
