@@ -6,20 +6,20 @@ library("vtreat")
 packageVersion("vtreat")
 ```
 
-    ## [1] '1.2.1'
+    ## [1] '1.3.0'
 
 ``` r
 library("rquery")
 packageVersion("rquery")
 ```
 
-    ## [1] '0.5.1'
+    ## [1] '0.6.0'
 
 ``` r
 packageVersion("cdata")
 ```
 
-    ## [1] '0.7.1'
+    ## [1] '0.7.3'
 
 ``` r
 packageVersion("sparklyr")
@@ -69,480 +69,8 @@ cat(format(d))
     ##   sample_col := random())
 
 ``` r
-cat(to_sql(d, db))
-```
+#cat(to_sql(d, db))
 
-    ## SELECT
-    ##  `Var1`,
-    ##  `Var2`,
-    ##  `Var3`,
-    ##  `Var4`,
-    ##  `Var5`,
-    ##  `Var6`,
-    ##  `Var7`,
-    ##  `Var8`,
-    ##  `Var9`,
-    ##  `Var10`,
-    ##  `Var11`,
-    ##  `Var12`,
-    ##  `Var13`,
-    ##  `Var14`,
-    ##  `Var15`,
-    ##  `Var16`,
-    ##  `Var17`,
-    ##  `Var18`,
-    ##  `Var19`,
-    ##  `Var20`,
-    ##  `Var21`,
-    ##  `Var22`,
-    ##  `Var23`,
-    ##  `Var24`,
-    ##  `Var25`,
-    ##  `Var26`,
-    ##  `Var27`,
-    ##  `Var28`,
-    ##  `Var29`,
-    ##  `Var30`,
-    ##  `Var31`,
-    ##  `Var32`,
-    ##  `Var33`,
-    ##  `Var34`,
-    ##  `Var35`,
-    ##  `Var36`,
-    ##  `Var37`,
-    ##  `Var38`,
-    ##  `Var39`,
-    ##  `Var40`,
-    ##  `Var41`,
-    ##  `Var42`,
-    ##  `Var43`,
-    ##  `Var44`,
-    ##  `Var45`,
-    ##  `Var46`,
-    ##  `Var47`,
-    ##  `Var48`,
-    ##  `Var49`,
-    ##  `Var50`,
-    ##  `Var51`,
-    ##  `Var52`,
-    ##  `Var53`,
-    ##  `Var54`,
-    ##  `Var55`,
-    ##  `Var56`,
-    ##  `Var57`,
-    ##  `Var58`,
-    ##  `Var59`,
-    ##  `Var60`,
-    ##  `Var61`,
-    ##  `Var62`,
-    ##  `Var63`,
-    ##  `Var64`,
-    ##  `Var65`,
-    ##  `Var66`,
-    ##  `Var67`,
-    ##  `Var68`,
-    ##  `Var69`,
-    ##  `Var70`,
-    ##  `Var71`,
-    ##  `Var72`,
-    ##  `Var73`,
-    ##  `Var74`,
-    ##  `Var75`,
-    ##  `Var76`,
-    ##  `Var77`,
-    ##  `Var78`,
-    ##  `Var79`,
-    ##  `Var80`,
-    ##  `Var81`,
-    ##  `Var82`,
-    ##  `Var83`,
-    ##  `Var84`,
-    ##  `Var85`,
-    ##  `Var86`,
-    ##  `Var87`,
-    ##  `Var88`,
-    ##  `Var89`,
-    ##  `Var90`,
-    ##  `Var91`,
-    ##  `Var92`,
-    ##  `Var93`,
-    ##  `Var94`,
-    ##  `Var95`,
-    ##  `Var96`,
-    ##  `Var97`,
-    ##  `Var98`,
-    ##  `Var99`,
-    ##  `Var100`,
-    ##  `Var101`,
-    ##  `Var102`,
-    ##  `Var103`,
-    ##  `Var104`,
-    ##  `Var105`,
-    ##  `Var106`,
-    ##  `Var107`,
-    ##  `Var108`,
-    ##  `Var109`,
-    ##  `Var110`,
-    ##  `Var111`,
-    ##  `Var112`,
-    ##  `Var113`,
-    ##  `Var114`,
-    ##  `Var115`,
-    ##  `Var116`,
-    ##  `Var117`,
-    ##  `Var118`,
-    ##  `Var119`,
-    ##  `Var120`,
-    ##  `Var121`,
-    ##  `Var122`,
-    ##  `Var123`,
-    ##  `Var124`,
-    ##  `Var125`,
-    ##  `Var126`,
-    ##  `Var127`,
-    ##  `Var128`,
-    ##  `Var129`,
-    ##  `Var130`,
-    ##  `Var131`,
-    ##  `Var132`,
-    ##  `Var133`,
-    ##  `Var134`,
-    ##  `Var135`,
-    ##  `Var136`,
-    ##  `Var137`,
-    ##  `Var138`,
-    ##  `Var139`,
-    ##  `Var140`,
-    ##  `Var141`,
-    ##  `Var142`,
-    ##  `Var143`,
-    ##  `Var144`,
-    ##  `Var145`,
-    ##  `Var146`,
-    ##  `Var147`,
-    ##  `Var148`,
-    ##  `Var149`,
-    ##  `Var150`,
-    ##  `Var151`,
-    ##  `Var152`,
-    ##  `Var153`,
-    ##  `Var154`,
-    ##  `Var155`,
-    ##  `Var156`,
-    ##  `Var157`,
-    ##  `Var158`,
-    ##  `Var159`,
-    ##  `Var160`,
-    ##  `Var161`,
-    ##  `Var162`,
-    ##  `Var163`,
-    ##  `Var164`,
-    ##  `Var165`,
-    ##  `Var166`,
-    ##  `Var167`,
-    ##  `Var168`,
-    ##  `Var169`,
-    ##  `Var170`,
-    ##  `Var171`,
-    ##  `Var172`,
-    ##  `Var173`,
-    ##  `Var174`,
-    ##  `Var175`,
-    ##  `Var176`,
-    ##  `Var177`,
-    ##  `Var178`,
-    ##  `Var179`,
-    ##  `Var180`,
-    ##  `Var181`,
-    ##  `Var182`,
-    ##  `Var183`,
-    ##  `Var184`,
-    ##  `Var185`,
-    ##  `Var186`,
-    ##  `Var187`,
-    ##  `Var188`,
-    ##  `Var189`,
-    ##  `Var190`,
-    ##  `Var191`,
-    ##  `Var192`,
-    ##  `Var193`,
-    ##  `Var194`,
-    ##  `Var195`,
-    ##  `Var196`,
-    ##  `Var197`,
-    ##  `Var198`,
-    ##  `Var199`,
-    ##  `Var200`,
-    ##  `Var201`,
-    ##  `Var202`,
-    ##  `Var203`,
-    ##  `Var204`,
-    ##  `Var205`,
-    ##  `Var206`,
-    ##  `Var207`,
-    ##  `Var208`,
-    ##  `Var209`,
-    ##  `Var210`,
-    ##  `Var211`,
-    ##  `Var212`,
-    ##  `Var213`,
-    ##  `Var214`,
-    ##  `Var215`,
-    ##  `Var216`,
-    ##  `Var217`,
-    ##  `Var218`,
-    ##  `Var219`,
-    ##  `Var220`,
-    ##  `Var221`,
-    ##  `Var222`,
-    ##  `Var223`,
-    ##  `Var224`,
-    ##  `Var225`,
-    ##  `Var226`,
-    ##  `Var227`,
-    ##  `Var228`,
-    ##  `Var229`,
-    ##  `Var230`,
-    ##  `churn`,
-    ##  rand ( )  AS `sample_col`
-    ## FROM (
-    ##  SELECT
-    ##   `Var1`,
-    ##   `Var2`,
-    ##   `Var3`,
-    ##   `Var4`,
-    ##   `Var5`,
-    ##   `Var6`,
-    ##   `Var7`,
-    ##   `Var8`,
-    ##   `Var9`,
-    ##   `Var10`,
-    ##   `Var11`,
-    ##   `Var12`,
-    ##   `Var13`,
-    ##   `Var14`,
-    ##   `Var15`,
-    ##   `Var16`,
-    ##   `Var17`,
-    ##   `Var18`,
-    ##   `Var19`,
-    ##   `Var20`,
-    ##   `Var21`,
-    ##   `Var22`,
-    ##   `Var23`,
-    ##   `Var24`,
-    ##   `Var25`,
-    ##   `Var26`,
-    ##   `Var27`,
-    ##   `Var28`,
-    ##   `Var29`,
-    ##   `Var30`,
-    ##   `Var31`,
-    ##   `Var32`,
-    ##   `Var33`,
-    ##   `Var34`,
-    ##   `Var35`,
-    ##   `Var36`,
-    ##   `Var37`,
-    ##   `Var38`,
-    ##   `Var39`,
-    ##   `Var40`,
-    ##   `Var41`,
-    ##   `Var42`,
-    ##   `Var43`,
-    ##   `Var44`,
-    ##   `Var45`,
-    ##   `Var46`,
-    ##   `Var47`,
-    ##   `Var48`,
-    ##   `Var49`,
-    ##   `Var50`,
-    ##   `Var51`,
-    ##   `Var52`,
-    ##   `Var53`,
-    ##   `Var54`,
-    ##   `Var55`,
-    ##   `Var56`,
-    ##   `Var57`,
-    ##   `Var58`,
-    ##   `Var59`,
-    ##   `Var60`,
-    ##   `Var61`,
-    ##   `Var62`,
-    ##   `Var63`,
-    ##   `Var64`,
-    ##   `Var65`,
-    ##   `Var66`,
-    ##   `Var67`,
-    ##   `Var68`,
-    ##   `Var69`,
-    ##   `Var70`,
-    ##   `Var71`,
-    ##   `Var72`,
-    ##   `Var73`,
-    ##   `Var74`,
-    ##   `Var75`,
-    ##   `Var76`,
-    ##   `Var77`,
-    ##   `Var78`,
-    ##   `Var79`,
-    ##   `Var80`,
-    ##   `Var81`,
-    ##   `Var82`,
-    ##   `Var83`,
-    ##   `Var84`,
-    ##   `Var85`,
-    ##   `Var86`,
-    ##   `Var87`,
-    ##   `Var88`,
-    ##   `Var89`,
-    ##   `Var90`,
-    ##   `Var91`,
-    ##   `Var92`,
-    ##   `Var93`,
-    ##   `Var94`,
-    ##   `Var95`,
-    ##   `Var96`,
-    ##   `Var97`,
-    ##   `Var98`,
-    ##   `Var99`,
-    ##   `Var100`,
-    ##   `Var101`,
-    ##   `Var102`,
-    ##   `Var103`,
-    ##   `Var104`,
-    ##   `Var105`,
-    ##   `Var106`,
-    ##   `Var107`,
-    ##   `Var108`,
-    ##   `Var109`,
-    ##   `Var110`,
-    ##   `Var111`,
-    ##   `Var112`,
-    ##   `Var113`,
-    ##   `Var114`,
-    ##   `Var115`,
-    ##   `Var116`,
-    ##   `Var117`,
-    ##   `Var118`,
-    ##   `Var119`,
-    ##   `Var120`,
-    ##   `Var121`,
-    ##   `Var122`,
-    ##   `Var123`,
-    ##   `Var124`,
-    ##   `Var125`,
-    ##   `Var126`,
-    ##   `Var127`,
-    ##   `Var128`,
-    ##   `Var129`,
-    ##   `Var130`,
-    ##   `Var131`,
-    ##   `Var132`,
-    ##   `Var133`,
-    ##   `Var134`,
-    ##   `Var135`,
-    ##   `Var136`,
-    ##   `Var137`,
-    ##   `Var138`,
-    ##   `Var139`,
-    ##   `Var140`,
-    ##   `Var141`,
-    ##   `Var142`,
-    ##   `Var143`,
-    ##   `Var144`,
-    ##   `Var145`,
-    ##   `Var146`,
-    ##   `Var147`,
-    ##   `Var148`,
-    ##   `Var149`,
-    ##   `Var150`,
-    ##   `Var151`,
-    ##   `Var152`,
-    ##   `Var153`,
-    ##   `Var154`,
-    ##   `Var155`,
-    ##   `Var156`,
-    ##   `Var157`,
-    ##   `Var158`,
-    ##   `Var159`,
-    ##   `Var160`,
-    ##   `Var161`,
-    ##   `Var162`,
-    ##   `Var163`,
-    ##   `Var164`,
-    ##   `Var165`,
-    ##   `Var166`,
-    ##   `Var167`,
-    ##   `Var168`,
-    ##   `Var169`,
-    ##   `Var170`,
-    ##   `Var171`,
-    ##   `Var172`,
-    ##   `Var173`,
-    ##   `Var174`,
-    ##   `Var175`,
-    ##   `Var176`,
-    ##   `Var177`,
-    ##   `Var178`,
-    ##   `Var179`,
-    ##   `Var180`,
-    ##   `Var181`,
-    ##   `Var182`,
-    ##   `Var183`,
-    ##   `Var184`,
-    ##   `Var185`,
-    ##   `Var186`,
-    ##   `Var187`,
-    ##   `Var188`,
-    ##   `Var189`,
-    ##   `Var190`,
-    ##   `Var191`,
-    ##   `Var192`,
-    ##   `Var193`,
-    ##   `Var194`,
-    ##   `Var195`,
-    ##   `Var196`,
-    ##   `Var197`,
-    ##   `Var198`,
-    ##   `Var199`,
-    ##   `Var200`,
-    ##   `Var201`,
-    ##   `Var202`,
-    ##   `Var203`,
-    ##   `Var204`,
-    ##   `Var205`,
-    ##   `Var206`,
-    ##   `Var207`,
-    ##   `Var208`,
-    ##   `Var209`,
-    ##   `Var210`,
-    ##   `Var211`,
-    ##   `Var212`,
-    ##   `Var213`,
-    ##   `Var214`,
-    ##   `Var215`,
-    ##   `Var216`,
-    ##   `Var217`,
-    ##   `Var218`,
-    ##   `Var219`,
-    ##   `Var220`,
-    ##   `Var221`,
-    ##   `Var222`,
-    ##   `Var223`,
-    ##   `Var224`,
-    ##   `Var225`,
-    ##   `Var226`,
-    ##   `Var227`,
-    ##   `Var228`,
-    ##   `Var229`,
-    ##   `Var230`,
-    ##   `churn`
-    ##  FROM
-    ##   `kdd2009`
-    ##  ) tsql_59895061063051043977_0000000000
-
-``` r
 d <- materialize(db, d, table_name = tmp_name_gen())
 
 y_name <- "churn"
@@ -569,7 +97,7 @@ print(length(vars))
     ## [1] 230
 
 ``` r
-# treat variables in small groups to manage memory
+# design treatments in small groups to manage memory
 vgroups <- split(vars, ceiling(seq_len(length(vars))/10))
 treatment_plans <- lapply(vgroups,
                           function(vi) {
@@ -617,148 +145,149 @@ length(column_names(d_train))
     ## [1] 138
 
 ``` r
-cdata::qlook(db, d_train$table_name)
+# cdata::qlook(db, d_train$table_name)
+rquery::rlook(db, d_train$table_name)
 ```
 
-    ## table `kddvtreat_22701108987347141580_0000000004` spark_connection spark_shell_connection DBIConnection 
-    ##  nrow: 25001 
+    ## table `kddvtreat_45169246770176629050_0000000004` spark_connection spark_shell_connection DBIConnection 
+    ##  nrow: 24979 
     ##  NOTE: "obs" below is count of sample, not number of rows of data.
     ## 'data.frame':    10 obs. of  138 variables:
-    ##  $ churn                                 : int  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-    ##  $ Var112_clean                          : num  88 0 64 16 56 32 0 0 0 16
-    ##  $ Var112_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var113_clean                          : num  -709072 -87345 126870 -2135 168554 ...
-    ##  $ Var119_isBAD                          : int  0 0 0 0 0 0 0 1 0 0
-    ##  $ Var123_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var125_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var126_clean                          : num  -18 -30 4 -0.727 -22 ...
-    ##  $ Var126_isBAD                          : int  0 0 0 1 0 1 0 0 0 0
-    ##  $ Var13_clean                           : num  632 52 400 348 720 ...
-    ##  $ Var13_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var132_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var133_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var134_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var140_clean                          : num  205 990 110 0 805 ...
-    ##  $ Var140_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var143_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var144_clean                          : num  18 9 9 9 9 ...
-    ##  $ Var144_isBAD                          : int  0 0 0 0 0 0 0 1 0 0
-    ##  $ Var153_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var160_clean                          : num  76 2 30 0 4 32 12 0 8 0
-    ##  $ Var160_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var163_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var173_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var181_isBAD                          : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var189_clean                          : num  222 228 324 240 270 ...
-    ##  $ Var192_catB                           : num  0.336 0.242 -0.472 -0.293 -1.206 ...
-    ##  $ Var192_catP                           : num  0.00545 0.00754 0.00734 0.0062 0.0064 ...
-    ##  $ Var193_catB                           : num  -0.49 -0.49 -0.49 -0.49 0.138 ...
-    ##  $ Var193_catP                           : num  0.145 0.145 0.145 0.145 0.719 ...
-    ##  $ Var193_lev_x_2Knk1KF                  : int  1 1 1 1 0 0 0 0 0 0
-    ##  $ Var193_lev_x_RO12                     : int  0 0 0 0 1 1 1 1 1 0
-    ##  $ Var195_catP                           : num  0.959 0.959 0.959 0.959 0.959 ...
-    ##  $ Var195_lev_x_taul                     : int  1 1 1 1 1 1 1 1 1 1
-    ##  $ Var198_catP                           : num  0.0006 0.0005 0.00025 0.00005 0.000849 ...
-    ##  $ Var198_lev_x_fhk21Ss                  : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var199_catP                           : num  0.01049 0.0048 0.00505 0.01449 0.00065 ...
-    ##  $ Var200_catP                           : num  0.00005 0 0 0.00005 0.50797 ...
-    ##  $ Var200_lev_x_NA                       : int  0 0 0 0 1 0 0 0 0 0
-    ##  $ Var202_catB                           : num  -6.69 2.52 0 -8.07 -8.77 ...
-    ##  $ Var202_catP                           : num  5.00e-05 9.99e-05 0.00 2.00e-04 4.00e-04 ...
-    ##  $ Var204_catB                           : num  0.1803 0.0477 0.2065 0.0317 -0.3352 ...
-    ##  $ Var205_catB                           : num  -0.1462 -0.0213 -0.0213 -0.1462 0.6958 ...
-    ##  $ Var205_catP                           : num  0.6369 0.2327 0.2327 0.6369 0.0927 ...
-    ##  $ Var205_lev_x_sJzTlal                  : int  0 0 0 0 1 0 1 1 0 0
-    ##  $ Var205_lev_x_VpdQ                     : int  1 0 0 1 0 0 0 0 1 1
-    ##  $ Var206_catB                           : num  -0.51216 -0.00624 -0.71673 -0.00624 0.03559 ...
-    ##  $ Var206_catP                           : num  0.0229 0.0359 0.0597 0.0359 0.0788 ...
-    ##  $ Var206_lev_x_hAFG                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var206_lev_x_haYg                     : int  0 0 1 0 0 0 0 0 0 0
-    ##  $ Var206_lev_x_IYzP                     : int  0 0 0 0 0 0 1 0 1 1
-    ##  $ Var206_lev_x_NA                       : int  0 0 0 0 0 0 0 1 0 0
-    ##  $ Var206_lev_x_y6dw                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var206_lev_x_zm5i                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var207_catB                           : num  0.114 0.114 0.114 0.114 0.114 ...
-    ##  $ Var207_catP                           : num  0.7 0.7 0.7 0.7 0.7 ...
-    ##  $ Var207_lev_x_7M47J5GA0pTYIFxg5uy      : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var207_lev_x_DHn_WUyBhW_whjA88g9bvA64_: int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var207_lev_x_me75fM6ugJ               : int  1 1 1 1 1 1 1 1 0 1
-    ##  $ Var21_isBAD                           : int  0 0 0 0 0 0 0 1 0 0
-    ##  $ Var210_catB                           : num  -0.035 -0.035 -0.035 -0.035 -0.035 ...
-    ##  $ Var210_catP                           : num  0.95 0.95 0.95 0.95 0.95 ...
-    ##  $ Var210_lev_x_g5HH                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var210_lev_x_uKAI                     : int  1 1 1 1 1 1 0 1 1 1
-    ##  $ Var211_lev_x_L84s                     : int  0 1 1 1 0 1 0 1 0 0
-    ##  $ Var211_lev_x_Mtgm                     : int  1 0 0 0 1 0 1 0 1 1
-    ##  $ Var212_catB                           : num  -0.473 -0.572 -0.473 -0.572 0.212 ...
-    ##  $ Var212_catP                           : num  0.1302 0.0138 0.1302 0.0138 0.5846 ...
-    ##  $ Var212_lev_x_CrNX                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var212_lev_x_NhsEn4L                  : int  0 0 0 0 1 1 0 1 0 0
-    ##  $ Var212_lev_x_XfqtO3UdzaXh_            : int  1 0 1 0 0 0 1 0 0 0
-    ##  $ Var214_catP                           : num  0.00005 0 0 0.00005 0.50797 ...
-    ##  $ Var214_lev_x_NA                       : int  0 0 0 0 1 0 0 0 0 0
-    ##  $ Var216_catB                           : num  -0.53 -0.421 -0.378 -0.421 -8.767 ...
-    ##  $ Var216_lev_x_XTbPUYD                  : int  1 0 0 0 0 0 0 0 0 0
-    ##  $ Var217_catB                           : num  0 2.52 0 -6.69 -8.77 ...
-    ##  $ Var217_catP                           : num  0.00 9.99e-05 0.00 5.00e-05 4.00e-04 ...
-    ##  $ Var218_catB                           : num  -0.243 0.129 -0.243 -0.243 0.129 ...
-    ##  $ Var218_catP                           : num  0.512 0.474 0.512 0.512 0.474 ...
-    ##  $ Var218_lev_x_cJvF                     : int  1 0 1 1 0 0 0 0 1 0
-    ##  $ Var218_lev_x_UYBR                     : int  0 1 0 0 1 1 1 1 0 1
-    ##  $ Var22_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var220_catP                           : num  0.0006 0.0005 0.00025 0.00005 0.000849 ...
-    ##  $ Var220_lev_x_4UxGlow                  : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var221_catB                           : num  0.0934 0.0934 0.0934 0.0934 0.0934 ...
-    ##  $ Var221_catP                           : num  0.739 0.739 0.739 0.739 0.739 ...
-    ##  $ Var221_lev_x_d0EEeJi                  : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var221_lev_x_oslk                     : int  1 1 1 1 1 1 1 1 0 1
-    ##  $ Var221_lev_x_QKW8DRm                  : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var221_lev_x_zCkv                     : int  0 0 0 0 0 0 0 0 1 0
-    ##  $ Var222_catP                           : num  0.0006 0.0005 0.00025 0.00005 0.000849 ...
-    ##  $ Var222_lev_x_catzS2D                  : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var225_catB                           : num  -0.39 -0.39 -0.39 -0.39 0.193 ...
-    ##  $ Var225_catP                           : num  0.221 0.221 0.221 0.221 0.523 ...
-    ##  $ Var225_lev_x_ELof                     : int  1 1 1 1 0 0 0 0 0 0
-    ##  $ Var225_lev_x_NA                       : int  0 0 0 0 1 0 0 0 0 0
-    ##  $ Var226_catB                           : num  0.137 -0.129 -0.221 -0.12 -0.128 ...
-    ##  $ Var226_catP                           : num  0.0273 0.0288 0.024 0.0971 0.0516 ...
-    ##  $ Var226_lev_x_7P5s                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var226_lev_x_FSa2                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var227_catB                           : num  0.111 0.111 0.111 0.111 0.111 ...
-    ##  $ Var227_catP                           : num  0.702 0.702 0.702 0.702 0.702 ...
-    ##  $ Var227_lev_x_RAYp                     : int  1 1 1 1 1 1 1 1 0 1
-    ##  $ Var227_lev_x_ZI9m                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var228_catB                           : num  -0.418 -0.418 -0.418 -0.418 0.167 ...
-    ##  $ Var228_catP                           : num  0.0877 0.0877 0.0877 0.0877 0.6543 ...
-    ##  $ Var228_lev_x_55YFVY9                  : int  1 1 1 1 0 0 0 0 0 0
-    ##  $ Var228_lev_x_F2FyR07IdsN7I            : int  0 0 0 0 1 1 1 1 0 0
-    ##  $ Var228_lev_x_ib5G6X1eUxUn6            : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var228_lev_x_R4y5gQQWY8OodqDV         : int  0 0 0 0 0 0 0 0 0 1
-    ##  $ Var228_lev_x_TCU50_Yjmm6GIBZ0lL_      : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var229_catB                           : num  0.577 0.577 0.577 0.577 0.577 ...
-    ##  $ Var229_catP                           : num  0.000799 0.000799 0.000799 0.000799 0.000799 ...
-    ##  $ Var229_lev_x_am7c                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var229_lev_x_mj86                     : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var229_lev_x_NA                       : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var25_clean                           : num  288 0 0 0 24 120 96 0 40 24
-    ##  $ Var25_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var28_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var35_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var38_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var44_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var6_clean                            : num  2240 98 770 259 1162 ...
-    ##  $ Var6_isBAD                            : int  0 0 0 0 0 0 0 1 0 0
-    ##  $ Var65_clean                           : num  9 9 9 9 9 9 9 9 9 9
-    ##  $ Var65_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var7_clean                            : num  7 7 7 0 7 7 7 7 0 7
-    ##  $ Var7_isBAD                            : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var72_clean                           : num  3 3 3 4.18 3 ...
-    ##  $ Var73_clean                           : num  118 104 106 132 90 100 86 100 140 108
-    ##  $ Var74_clean                           : num  7 63 35 0 224 140 35 168 0 0
-    ##  $ Var74_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var76_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var78_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var81_clean                           : num  36041 288493 146004 1692 94249 ...
-    ##  $ Var81_isBAD                           : int  0 0 0 0 0 0 0 1 0 0
-    ##  $ Var83_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
-    ##  $ Var85_isBAD                           : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ churn                           : int  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+    ##  $ Var112_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var113_clean                    : num  -38397 44967 126870 42538 166512 ...
+    ##  $ Var119_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var123_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var125_clean                    : num  189765 4302 48645 470214 36117 ...
+    ##  $ Var125_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var126_clean                    : num  -26 -28 4 -0.496 4 ...
+    ##  $ Var126_isBAD                    : int  0 0 0 1 0 0 0 0 1 0
+    ##  $ Var13_clean                     : num  2968 528 400 3316 1612 ...
+    ##  $ Var13_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var132_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var133_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var134_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var140_clean                    : num  11845 1000 110 7765 90 ...
+    ##  $ Var140_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var143_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var144_clean                    : num  36 18 9 27 18 0 0 36 18 9
+    ##  $ Var144_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var153_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var160_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var163_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var173_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var181_isBAD                    : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var189_clean                    : num  354 366 324 270 438 ...
+    ##  $ Var192_catP                     : num  3.99e-03 9.99e-05 6.49e-03 3.79e-03 6.34e-03 ...
+    ##  $ Var193_catB                     : num  -0.695 -0.695 -0.695 0.151 0.151 ...
+    ##  $ Var193_catP                     : num  0.145 0.145 0.145 0.724 0.724 ...
+    ##  $ Var193_lev_x_2Knk1KF            : int  1 1 1 0 0 0 0 1 1 1
+    ##  $ Var193_lev_x_RO12               : int  0 0 0 1 1 1 1 0 0 0
+    ##  $ Var194_catP                     : num  0.251 0.251 0.745 0.745 0.251 ...
+    ##  $ Var194_lev_x_NA                 : int  0 0 1 1 0 0 1 1 0 0
+    ##  $ Var194_lev_x_SEuy               : int  1 1 0 0 1 1 0 0 1 1
+    ##  $ Var197_catP                     : num  0.08968 0.00514 0.00619 0.0391 0.08703 ...
+    ##  $ Var198_catP                     : num  0.001049 0.000849 0.0003 0.001348 0.001248 ...
+    ##  $ Var198_lev_x_fhk21Ss            : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var199_catP                     : num  0.01168 0.0003 0.00589 0.01054 0.00225 ...
+    ##  $ Var200_catB                     : num  0 0 0 0.218 -6.62 ...
+    ##  $ Var200_catP                     : num  2.50e-05 2.50e-05 2.50e-05 5.07e-01 4.99e-05 ...
+    ##  $ Var200_lev_x_NA                 : int  0 0 0 1 0 0 0 0 0 0
+    ##  $ Var201_catB                     : num  -0.188 -0.188 0.058 0.058 -0.188 ...
+    ##  $ Var201_catP                     : num  0.255 0.255 0.745 0.745 0.255 ...
+    ##  $ Var201_lev_x_NA                 : int  0 0 1 1 0 0 1 1 0 0
+    ##  $ Var201_lev_x_smXZ               : int  1 1 0 0 1 1 0 0 1 1
+    ##  $ Var202_catP                     : num  0.00035 0.000999 0.000025 0.0002 0.001548 ...
+    ##  $ Var204_lev_x_RcM7               : int  0 0 0 0 1 0 0 0 0 0
+    ##  $ Var205_catB                     : num  -0.1078 -0.0103 -0.0103 -0.1078 -0.1078 ...
+    ##  $ Var205_catP                     : num  0.639 0.231 0.231 0.639 0.639 ...
+    ##  $ Var205_lev_x_sJzTlal            : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var205_lev_x_VpdQ               : int  1 0 0 1 1 1 1 0 0 1
+    ##  $ Var206_catB                     : num  0.0859 -0.7054 -0.7054 -0.2303 -0.5616 ...
+    ##  $ Var206_catP                     : num  0.0139 0.0559 0.0559 0.0799 0.0317 ...
+    ##  $ Var206_lev_x_haYg               : int  0 1 1 0 0 0 0 1 0 0
+    ##  $ Var206_lev_x_IYzP               : int  0 0 0 0 0 1 1 0 0 0
+    ##  $ Var206_lev_x_NA                 : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var206_lev_x_y6dw               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var206_lev_x_zm5i               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var207_catB                     : num  0.122 0.122 0.122 0.122 0.122 ...
+    ##  $ Var207_catP                     : num  0.706 0.706 0.706 0.706 0.706 ...
+    ##  $ Var207_lev_x_7M47J5GA0pTYIFxg5uy: int  0 0 0 0 0 0 1 0 0 0
+    ##  $ Var207_lev_x_me75fM6ugJ         : int  1 1 1 1 1 0 0 0 1 1
+    ##  $ Var21_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var210_catB                     : num  -0.0362 -0.0362 -0.0362 -0.0362 -0.0362 ...
+    ##  $ Var210_catP                     : num  0.951 0.951 0.951 0.951 0.951 ...
+    ##  $ Var210_lev_x_g5HH               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var210_lev_x_uKAI               : int  1 1 1 1 1 1 1 1 1 1
+    ##  $ Var211_lev_x_L84s               : int  1 1 1 1 1 0 1 1 1 1
+    ##  $ Var211_lev_x_Mtgm               : int  0 0 0 0 0 1 0 0 0 0
+    ##  $ Var212_catB                     : num  0.219 -0.432 -0.432 0.219 -0.432 ...
+    ##  $ Var212_catP                     : num  0.588 0.13 0.13 0.588 0.13 ...
+    ##  $ Var212_lev_x_CrNX               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var212_lev_x_NhsEn4L            : int  1 0 0 1 0 0 0 0 0 0
+    ##  $ Var212_lev_x_XfqtO3UdzaXh_      : int  0 1 1 0 1 0 0 0 1 0
+    ##  $ Var214_catB                     : num  0 0 0 0.218 -6.62 ...
+    ##  $ Var214_catP                     : num  2.50e-05 2.50e-05 2.50e-05 5.07e-01 4.99e-05 ...
+    ##  $ Var214_lev_x_NA                 : int  0 0 0 1 0 0 0 0 0 0
+    ##  $ Var216_catB                     : num  -0.444 -0.138 -0.138 -0.193 -0.138 ...
+    ##  $ Var216_lev_x_XTbPUYD            : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var217_catP                     : num  0.00035 0.000949 0.000025 0.00015 0.004144 ...
+    ##  $ Var218_catB                     : num  0.102 0.102 -0.178 0.102 0.102 ...
+    ##  $ Var218_catP                     : num  0.477 0.477 0.51 0.477 0.477 ...
+    ##  $ Var218_lev_x_cJvF               : int  0 0 1 0 0 1 0 1 1 1
+    ##  $ Var218_lev_x_UYBR               : int  1 1 0 1 1 0 1 0 0 0
+    ##  $ Var22_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var220_catP                     : num  0.001049 0.000849 0.0003 0.001348 0.001248 ...
+    ##  $ Var220_lev_x_4UxGlow            : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var221_catB                     : num  0.0952 0.0952 0.0952 0.0952 0.0952 ...
+    ##  $ Var221_catP                     : num  0.742 0.742 0.742 0.742 0.742 ...
+    ##  $ Var221_lev_x_d0EEeJi            : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var221_lev_x_oslk               : int  1 1 1 1 1 0 0 0 1 1
+    ##  $ Var221_lev_x_zCkv               : int  0 0 0 0 0 1 1 1 0 0
+    ##  $ Var222_catP                     : num  0.001049 0.000849 0.0003 0.001348 0.001248 ...
+    ##  $ Var222_lev_x_catzS2D            : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var225_catB                     : num  -0.193 -0.193 -0.377 0.204 -0.193 ...
+    ##  $ Var225_catP                     : num  0.207 0.207 0.224 0.521 0.207 ...
+    ##  $ Var225_lev_x_ELof               : int  0 0 1 0 0 0 1 1 0 0
+    ##  $ Var225_lev_x_kG3k               : int  1 1 0 0 1 0 0 0 1 1
+    ##  $ Var225_lev_x_NA                 : int  0 0 0 1 0 0 0 0 0 0
+    ##  $ Var226_catB                     : num  0.197 -0.594 -0.15 0.197 -0.594 ...
+    ##  $ Var226_lev_x_7P5s               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var226_lev_x_FSa2               : int  1 0 0 1 0 0 0 0 0 0
+    ##  $ Var226_lev_x_szEZ               : int  0 1 0 0 1 0 0 0 0 0
+    ##  $ Var227_catB                     : num  0.12 0.12 0.12 0.12 0.12 ...
+    ##  $ Var227_catP                     : num  0.707 0.707 0.707 0.707 0.707 ...
+    ##  $ Var227_lev_x_RAYp               : int  1 1 1 1 1 0 0 0 1 1
+    ##  $ Var227_lev_x_ZI9m               : int  0 0 0 0 0 0 1 0 0 0
+    ##  $ Var228_catB                     : num  -0.705 -0.705 -0.705 0.179 0.179 ...
+    ##  $ Var228_catP                     : num  0.088 0.088 0.088 0.659 0.659 ...
+    ##  $ Var228_lev_x_55YFVY9            : int  1 1 1 0 0 0 0 0 0 0
+    ##  $ Var228_lev_x_F2FyR07IdsN7I      : int  0 0 0 1 1 0 0 0 0 0
+    ##  $ Var228_lev_x_ib5G6X1eUxUn6      : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var228_lev_x_iyHGyLCEkQ         : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var229_catB                     : num  -0.243 -0.243 -0.243 -0.243 -0.243 ...
+    ##  $ Var229_catP                     : num  0.000899 0.000899 0.000899 0.000899 0.000899 ...
+    ##  $ Var229_lev_x_am7c               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var229_lev_x_mj86               : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var229_lev_x_NA                 : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var25_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var28_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var35_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var38_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var44_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var6_clean                      : num  1589 56 770 693 658 ...
+    ##  $ Var6_isBAD                      : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var65_clean                     : num  9 9 9 27 9 9 9 36 27 27
+    ##  $ Var65_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var7_clean                      : num  7 7 7 7 7 0 7 28 14 21
+    ##  $ Var7_isBAD                      : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var72_clean                     : num  3 4.2 3 3 4.2 ...
+    ##  $ Var73_clean                     : num  126 126 106 90 92 140 112 132 160 156
+    ##  $ Var74_clean                     : num  490 28 35 175 0 0 7 70 21 56
+    ##  $ Var74_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var76_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var78_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var81_clean                     : num  115048 1076211 146004 213526 202337 ...
+    ##  $ Var81_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var83_isBAD                     : int  0 0 0 0 0 0 0 0 0 0
+    ##  $ Var85_isBAD                     : int  0 0 0 0 0 0 0 0 0 0

@@ -40,7 +40,7 @@ d <- db_td(db, "kdd2009") %.>%
   extend_nse(., sample_col = random())
 
 cat(format(d))
-cat(to_sql(d, db))
+#cat(to_sql(d, db))
 
 d <- materialize(db, d, table_name = tmp_name_gen())
 
@@ -105,7 +105,8 @@ d_train <- rquery_prepare(db, rqplan, d_train,
                           tmp_name_gen(), 
                           temporary = TRUE, overwrite = TRUE)
 length(column_names(d_train))
-cdata::qlook(db, d_train$table_name)
+# cdata::qlook(db, d_train$table_name)
+rquery::rlook(db, d_train$table_name)
 ```
 
 
