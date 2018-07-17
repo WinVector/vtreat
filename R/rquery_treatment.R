@@ -203,7 +203,7 @@ as_rquery.vtreatment <- function(tstep,
   NULL
 }
 
-#' Convert vtreatment plans into a sequence of rquery read operations.
+#' Convert vtreatment plans into a sequence of rquery operations.
 #' 
 #' @param treatmentplans vtreat treatment plan or list of vtreat treatment plan sharing same outcome and outcome type.
 #' @param ... not used, force any later arguments to bind to names.
