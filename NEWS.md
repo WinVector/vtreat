@@ -1,5 +1,5 @@
 
-# vtreat 1.3.0 2018/07/16
+# vtreat 1.3.0 2018/07/17
 
  * Fix z-split annotation issue.
  * Change designTreatmentsZ() defaults.
