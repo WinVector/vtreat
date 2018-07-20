@@ -1,4 +1,8 @@
 
+# vtreat 1.3.1 2018/07/20
+
+ * Some doc fixes.
+
 # vtreat 1.3.0 2018/07/20
 
  * Fix z-split annotation issue.

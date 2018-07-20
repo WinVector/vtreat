@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.1</span>
       </span>
     </div>
 
@@ -126,57 +126,67 @@
 <span class="kw">set.seed</span>(<span class="dv">326346</span>)
 sym_bonuses &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">3</span>)
 <span class="kw">names</span>(sym_bonuses) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)
+sym_bonuses3 &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">3</span>)
+<span class="kw">names</span>(sym_bonuses3) &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">seq_len</span>(<span class="kw">length</span>(sym_bonuses3)))
 n_row &lt;-<span class="st"> </span><span class="dv">1000</span>
 d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x1 =</span> <span class="kw">rnorm</span>(n_row),
                 <span class="dt">x2 =</span> <span class="kw">sample</span>(<span class="kw">names</span>(sym_bonuses), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
+                <span class="dt">x3 =</span> <span class="kw">sample</span>(<span class="kw">names</span>(sym_bonuses3), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
                 <span class="dt">y =</span> <span class="st">"NoInfo"</span>,
                 <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-d<span class="op">$</span>y[d<span class="op">$</span>x1 <span class="op">&gt;</span><span class="st"> </span>sym_bonuses[d<span class="op">$</span>x2] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n_row)] &lt;-<span class="st"> "Large1"</span>
-d<span class="op">$</span>y[sym_bonuses[d<span class="op">$</span>x2] <span class="op">&gt;</span><span class="st"> </span>d<span class="op">$</span>x1 <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n_row)] &lt;-<span class="st"> "Large2"</span>
+d<span class="op">$</span>y[sym_bonuses[d<span class="op">$</span>x2] <span class="op">&gt;</span><span class="st"> </span><span class="kw">pmax</span>(d<span class="op">$</span>x1, sym_bonuses3[d<span class="op">$</span>x3], <span class="kw">runif</span>(n_row))] &lt;-<span class="st"> "Large1"</span>
+d<span class="op">$</span>y[sym_bonuses3[d<span class="op">$</span>x3] <span class="op">&gt;</span><span class="st"> </span><span class="kw">pmax</span>(sym_bonuses[d<span class="op">$</span>x2], d<span class="op">$</span>x1, <span class="kw">runif</span>(n_row))] &lt;-<span class="st"> "Large2"</span>
 
 knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(<span class="kw">head</span>(d))</code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x1</th>
 <th align="left">x2</th>
+<th align="left">x3</th>
 <th align="left">y</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">-1.5144859</td>
-<td align="left">a</td>
+<td align="right">0.8178292</td>
+<td align="left">b</td>
+<td align="left">3</td>
 <td align="left">Large2</td>
 </tr>
 <tr class="even">
-<td align="right">0.0219667</td>
+<td align="right">0.5867139</td>
+<td align="left">b</td>
+<td align="left">3</td>
+<td align="left">Large2</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.6711920</td>
 <td align="left">a</td>
+<td align="left">3</td>
+<td align="left">Large2</td>
+</tr>
+<tr class="even">
+<td align="right">0.1033166</td>
+<td align="left">c</td>
+<td align="left">2</td>
 <td align="left">NoInfo</td>
 </tr>
 <tr class="odd">
-<td align="right">2.0183914</td>
+<td align="right">-0.3182176</td>
+<td align="left">b</td>
+<td align="left">1</td>
+<td align="left">NoInfo</td>
+</tr>
+<tr class="even">
+<td align="right">-0.5914308</td>
 <td align="left">c</td>
-<td align="left">Large1</td>
-</tr>
-<tr class="even">
-<td align="right">0.8178292</td>
-<td align="left">b</td>
-<td align="left">Large1</td>
-</tr>
-<tr class="odd">
-<td align="right">0.5867139</td>
-<td align="left">b</td>
-<td align="left">Large1</td>
-</tr>
-<tr class="even">
-<td align="right">-0.6711920</td>
-<td align="left">b</td>
+<td align="left">2</td>
 <td align="left">NoInfo</td>
 </tr>
 </tbody>
 </table>
 <p>We define the problem controls and use <code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> to build both a cross-frame and a treatment plan.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define problem</span>
-vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>)
+vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>)
 y_name &lt;-<span class="st"> "y"</span>
 y_levels &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(d[[y_name]]))
 
@@ -185,33 +195,47 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <p>The cross-frame is the entity safest for training on (unless you have made separate data split for the treatment design step). It uses cross-validation to reduce nested model bias. Some notes on this issue are available <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">here</a>, and <a href="https://github.com/WinVector/vtreat/blob/master/extras/vtreat.pdf">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># look at the data we would train models on</span>
 <span class="kw">str</span>(cfe_m<span class="op">$</span>cross_frame)</code></pre></div>
-<pre><code>## 'data.frame':    1000 obs. of  9 variables:
-##  $ x1_clean      : num  -1.514 0.022 2.018 0.818 0.587 ...
-##  $ x2_catP       : num  0.325 0.325 0.362 0.313 0.313 0.313 0.313 0.313 0.325 0.362 ...
-##  $ x2_lev_x_a    : num  1 1 0 0 0 0 0 0 1 0 ...
-##  $ x2_lev_x_b    : num  0 0 0 1 1 1 1 1 0 0 ...
-##  $ x2_lev_x_c    : num  0 0 1 0 0 0 0 0 0 1 ...
-##  $ Large1_x2_catB: num  -0.855 -1.062 0.4 0.504 0.424 ...
-##  $ Large2_x2_catB: num  0.738 0.855 -0.478 -0.44 -0.44 ...
-##  $ NoInfo_x2_catB: num  0.015 0.015 0.0804 -0.0968 -0.1434 ...
-##  $ y             : chr  "Large2" "NoInfo" "Large1" "Large1" ...</code></pre>
-<p><code>prepare_m()</code> is a function that can apply the designed treatments to new data. Here we are simulating new data by re-using our design data.</p>
+<pre><code>## 'data.frame':    1000 obs. of  16 variables:
+##  $ x1_clean             : num  0.818 0.587 -0.671 0.103 -0.318 ...
+##  $ x2_catP              : num  0.313 0.313 0.325 0.362 0.313 0.362 0.362 0.325 0.313 0.325 ...
+##  $ x3_catP              : num  0.333 0.333 0.333 0.347 0.32 0.347 0.333 0.347 0.333 0.347 ...
+##  $ x2_lev_x_a           : num  0 0 1 0 0 0 0 1 0 1 ...
+##  $ x2_lev_x_b           : num  1 1 0 0 1 0 0 0 1 0 ...
+##  $ x2_lev_x_c           : num  0 0 0 1 0 1 1 0 0 0 ...
+##  $ x3_lev_x_1           : num  0 0 0 0 1 0 0 0 0 0 ...
+##  $ x3_lev_x_2           : num  0 0 0 1 0 1 0 1 0 1 ...
+##  $ x3_lev_x_3           : num  1 1 1 0 0 0 1 0 1 0 ...
+##  $ Large1.Large1_x2_catB: num  -11.23 -11.2 1.25 -11.41 -11.27 ...
+##  $ Large1.Large1_x3_catB: num  -11.356 -11.239 -11.239 0.379 0.431 ...
+##  $ Large2.Large2_x2_catB: num  0.0862 0.1446 -0.0243 -0.1268 0.0862 ...
+##  $ Large2.Large2_x3_catB: num  4.98 6.09 4.69 -3.11 -13.86 ...
+##  $ NoInfo.NoInfo_x2_catB: num  -0.0537 0.1084 -0.2827 0.2859 0.1084 ...
+##  $ NoInfo.NoInfo_x3_catB: num  -4.82 -5.24 -4.83 2.13 2.53 ...
+##  $ y                    : chr  "Large2" "Large2" "Large2" "NoInfo" ...</code></pre>
+<p><code><a href="../reference/prepare.html">prepare()</a></code> can apply the designed treatments to new data. Here we are simulating new data by re-using our design data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># pretend original data is new data to be treated</span>
 <span class="co"># NA out top row to show processing</span>
 <span class="cf">for</span>(vi <span class="cf">in</span> vars) {
   d[[vi]][[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="ot">NA</span>
 }
 <span class="kw">str</span>(<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(cfe_m<span class="op">$</span>treat_m, d))</code></pre></div>
-<pre><code>## 'data.frame':    1000 obs. of  9 variables:
-##  $ x1_clean      : num  0.0219 0.022 2.0184 0.8178 0.5867 ...
-##  $ x2_catP       : num  0.0005 0.325 0.362 0.313 0.313 0.313 0.313 0.313 0.325 0.362 ...
-##  $ x2_lev_x_a    : num  0 1 0 0 0 0 0 0 1 0 ...
-##  $ x2_lev_x_b    : num  0 0 0 1 1 1 1 1 0 0 ...
-##  $ x2_lev_x_c    : num  0 0 1 0 0 0 0 0 0 1 ...
-##  $ Large1_x2_catB: num  0 -0.974 0.345 0.452 0.452 ...
-##  $ Large2_x2_catB: num  0 0.827 -0.546 -0.515 -0.515 ...
-##  $ NoInfo_x2_catB: num  0 0.0744 0.0294 -0.1149 -0.1149 ...
-##  $ y             : chr  "Large2" "NoInfo" "Large1" "Large1" ...</code></pre>
+<pre><code>## 'data.frame':    1000 obs. of  16 variables:
+##  $ x1_clean      : num  0.0205 0.5867 -0.6712 0.1033 -0.3182 ...
+##  $ x2_catP       : num  0.0005 0.313 0.325 0.362 0.313 0.362 0.362 0.325 0.313 0.325 ...
+##  $ x3_catP       : num  0.0005 0.333 0.333 0.347 0.32 0.347 0.333 0.347 0.333 0.347 ...
+##  $ x2_lev_x_a    : num  0 0 1 0 0 0 0 1 0 1 ...
+##  $ x2_lev_x_b    : num  0 1 0 0 1 0 0 0 1 0 ...
+##  $ x2_lev_x_c    : num  0 0 0 1 0 1 1 0 0 0 ...
+##  $ x3_lev_x_1    : num  0 0 0 0 1 0 0 0 0 0 ...
+##  $ x3_lev_x_2    : num  0 0 0 1 0 1 0 1 0 1 ...
+##  $ x3_lev_x_3    : num  0 1 1 0 0 0 1 0 1 0 ...
+##  $ Large1_x2_catB: num  0 -11.6 1.2 -11.8 -11.6 ...
+##  $ Large1_x3_catB: num  0 -11.702 -11.702 0.411 0.436 ...
+##  $ Large2_x2_catB: num  0 0.133 -0.0215 -0.0999 0.133 ...
+##  $ Large2_x3_catB: num  0 5.1 5.1 -3.54 -14.29 ...
+##  $ NoInfo_x2_catB: num  0 0.0206 -0.2829 0.2536 0.0206 ...
+##  $ NoInfo_x3_catB: num  0 -4.95 -4.95 2.11 2.34 ...
+##  $ y             : chr  "Large2" "Large2" "Large2" "NoInfo" ...</code></pre>
 <p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
 <p>We to have a start on variable importance.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(cfe_m<span class="op">$</span>score_frame)</code></pre></div>
@@ -231,8 +255,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="odd">
 <td align="left">x1_clean</td>
 <td align="left">TRUE</td>
-<td align="right">0.5637189</td>
-<td align="right">0.0000000</td>
+<td align="right">0.0558908</td>
+<td align="right">0.0000382</td>
 <td align="left">Large1</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -242,8 +266,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="even">
 <td align="left">x2_catP</td>
 <td align="left">TRUE</td>
-<td align="right">0.0035298</td>
-<td align="right">0.0287344</td>
+<td align="right">0.0275238</td>
+<td align="right">0.0038536</td>
 <td align="left">Large1</td>
 <td align="left">TRUE</td>
 <td align="right">2</td>
@@ -253,7 +277,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="odd">
 <td align="left">x2_lev_x_a</td>
 <td align="left">TRUE</td>
-<td align="right">0.0636457</td>
+<td align="right">0.2680953</td>
 <td align="right">0.0000000</td>
 <td align="left">Large1</td>
 <td align="left">FALSE</td>
@@ -264,8 +288,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="even">
 <td align="left">x2_lev_x_b</td>
 <td align="left">TRUE</td>
-<td align="right">0.0172594</td>
-<td align="right">0.0000013</td>
+<td align="right">0.0885021</td>
+<td align="right">0.0000002</td>
 <td align="left">Large1</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -275,41 +299,85 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="odd">
 <td align="left">x2_lev_x_c</td>
 <td align="left">TRUE</td>
-<td align="right">0.0124961</td>
+<td align="right">0.1060407</td>
+<td align="right">0.0000000</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x3_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0000346</td>
+<td align="right">0.9183445</td>
+<td align="left">Large1</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x3</td>
+<td align="left">catP</td>
+</tr>
+<tr class="odd">
+<td align="left">x3_lev_x_1</td>
+<td align="left">TRUE</td>
+<td align="right">0.0141504</td>
+<td align="right">0.0382554</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x3_lev_x_2</td>
+<td align="left">TRUE</td>
+<td align="right">0.0140364</td>
+<td align="right">0.0390420</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x3_lev_x_3</td>
+<td align="left">TRUE</td>
+<td align="right">0.0955004</td>
+<td align="right">0.0000001</td>
+<td align="left">Large1</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x1_clean</td>
+<td align="left">TRUE</td>
+<td align="right">0.0015382</td>
+<td align="right">0.1615618</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x1</td>
+<td align="left">clean</td>
+</tr>
+<tr class="odd">
+<td align="left">x2_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0013055</td>
+<td align="right">0.1971725</td>
+<td align="left">Large2</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x2</td>
+<td align="left">catP</td>
+</tr>
+<tr class="even">
+<td align="left">x2_lev_x_a</td>
+<td align="left">TRUE</td>
 <td align="right">0.0000387</td>
-<td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
-</tr>
-<tr class="even">
-<td align="left">x1_clean</td>
-<td align="left">TRUE</td>
-<td align="right">0.5621028</td>
-<td align="right">0.0000000</td>
-<td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x1</td>
-<td align="left">clean</td>
-</tr>
-<tr class="odd">
-<td align="left">x2_catP</td>
-<td align="left">TRUE</td>
-<td align="right">0.0082667</td>
-<td align="right">0.0020257</td>
-<td align="left">Large2</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catP</td>
-</tr>
-<tr class="even">
-<td align="left">x2_lev_x_a</td>
-<td align="left">TRUE</td>
-<td align="right">0.0717018</td>
-<td align="right">0.0000000</td>
+<td align="right">0.8242956</td>
 <td align="left">Large2</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -319,8 +387,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="odd">
 <td align="left">x2_lev_x_b</td>
 <td align="left">TRUE</td>
-<td align="right">0.0163417</td>
-<td align="right">0.0000143</td>
+<td align="right">0.0014571</td>
+<td align="right">0.1730603</td>
 <td align="left">Large2</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -330,8 +398,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="even">
 <td align="left">x2_lev_x_c</td>
 <td align="left">TRUE</td>
-<td align="right">0.0223694</td>
-<td align="right">0.0000004</td>
+<td align="right">0.0009604</td>
+<td align="right">0.2686774</td>
 <td align="left">Large2</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -339,10 +407,54 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <td align="left">lev</td>
 </tr>
 <tr class="odd">
+<td align="left">x3_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0007725</td>
+<td align="right">0.3211959</td>
+<td align="left">Large2</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x3</td>
+<td align="left">catP</td>
+</tr>
+<tr class="even">
+<td align="left">x3_lev_x_1</td>
+<td align="left">TRUE</td>
+<td align="right">0.2602002</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x3_lev_x_2</td>
+<td align="left">TRUE</td>
+<td align="right">0.2483708</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x3_lev_x_3</td>
+<td align="left">TRUE</td>
+<td align="right">0.9197595</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
 <td align="left">x1_clean</td>
 <td align="left">TRUE</td>
-<td align="right">0.0127639</td>
-<td align="right">0.0000602</td>
+<td align="right">0.0064771</td>
+<td align="right">0.0034947</td>
 <td align="left">NoInfo</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -352,8 +464,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="even">
 <td align="left">x2_catP</td>
 <td align="left">TRUE</td>
-<td align="right">0.0002601</td>
-<td align="right">0.5668496</td>
+<td align="right">0.0040540</td>
+<td align="right">0.0208595</td>
 <td align="left">NoInfo</td>
 <td align="left">TRUE</td>
 <td align="right">2</td>
@@ -363,8 +475,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="odd">
 <td align="left">x2_lev_x_a</td>
 <td align="left">TRUE</td>
-<td align="right">0.0004739</td>
-<td align="right">0.4394474</td>
+<td align="right">0.0071709</td>
+<td align="right">0.0021196</td>
 <td align="left">NoInfo</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -374,8 +486,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="even">
 <td align="left">x2_lev_x_b</td>
 <td align="left">TRUE</td>
-<td align="right">0.0010108</td>
-<td align="right">0.2588675</td>
+<td align="right">0.0000340</td>
+<td align="right">0.8323647</td>
 <td align="left">NoInfo</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
@@ -385,18 +497,62 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <tr class="odd">
 <td align="left">x2_lev_x_c</td>
 <td align="left">TRUE</td>
-<td align="right">0.0000863</td>
-<td align="right">0.7414693</td>
+<td align="right">0.0060493</td>
+<td align="right">0.0047665</td>
 <td align="left">NoInfo</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="left">x2</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x3_catP</td>
+<td align="left">TRUE</td>
+<td align="right">0.0006576</td>
+<td align="right">0.3520950</td>
+<td align="left">NoInfo</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x3</td>
+<td align="left">catP</td>
+</tr>
+<tr class="odd">
+<td align="left">x3_lev_x_1</td>
+<td align="left">TRUE</td>
+<td align="right">0.1838759</td>
+<td align="right">0.0000000</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="even">
+<td align="left">x3_lev_x_2</td>
+<td align="left">TRUE</td>
+<td align="right">0.1857824</td>
+<td align="right">0.0000000</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
+<td align="left">lev</td>
+</tr>
+<tr class="odd">
+<td align="left">x3_lev_x_3</td>
+<td align="left">TRUE</td>
+<td align="right">0.7372570</td>
+<td align="right">0.0000000</td>
+<td align="left">NoInfo</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="left">x3</td>
 <td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">Large1_x2_catB</td>
 <td align="left">TRUE</td>
-<td align="right">0.0604250</td>
+<td align="right">0.2675964</td>
 <td align="right">0.0000000</td>
 <td align="left">Large1</td>
 <td align="left">TRUE</td>
@@ -405,36 +561,69 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <td align="left">catB</td>
 </tr>
 <tr class="odd">
+<td align="left">Large1_x3_catB</td>
+<td align="left">TRUE</td>
+<td align="right">0.0946910</td>
+<td align="right">0.0000001</td>
+<td align="left">Large1</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x3</td>
+<td align="left">catB</td>
+</tr>
+<tr class="even">
 <td align="left">Large2_x2_catB</td>
 <td align="left">TRUE</td>
-<td align="right">0.0606098</td>
-<td align="right">0.0000000</td>
+<td align="right">0.0000291</td>
+<td align="right">0.8472707</td>
 <td align="left">Large2</td>
 <td align="left">TRUE</td>
 <td align="right">2</td>
 <td align="left">x2</td>
 <td align="left">catB</td>
 </tr>
+<tr class="odd">
+<td align="left">Large2_x3_catB</td>
+<td align="left">TRUE</td>
+<td align="right">0.9239860</td>
+<td align="right">0.0000000</td>
+<td align="left">Large2</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x3</td>
+<td align="left">catB</td>
+</tr>
 <tr class="even">
 <td align="left">NoInfo_x2_catB</td>
 <td align="left">TRUE</td>
-<td align="right">0.0001461</td>
-<td align="right">0.6677701</td>
+<td align="right">0.0068238</td>
+<td align="right">0.0027207</td>
 <td align="left">NoInfo</td>
 <td align="left">TRUE</td>
 <td align="right">2</td>
 <td align="left">x2</td>
+<td align="left">catB</td>
+</tr>
+<tr class="odd">
+<td align="left">NoInfo_x3_catB</td>
+<td align="left">TRUE</td>
+<td align="right">0.7326682</td>
+<td align="right">0.0000000</td>
+<td align="left">NoInfo</td>
+<td align="left">TRUE</td>
+<td align="right">2</td>
+<td align="left">x3</td>
 <td align="left">catB</td>
 </tr>
 </tbody>
 </table>
 <p>One can relate these per-target and per-treatment performances back to original columns b aggregating.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>rsq, cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, max)</code></pre></div>
-<pre><code>##         x1         x2 
-## 0.56371889 0.07170178</code></pre>
+<pre><code>##         x1         x2         x3 
+## 0.05589076 0.26809534 0.92398602</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, min)</code></pre></div>
-<pre><code>##            x1            x2 
-## 3.759634e-168  1.585749e-20</code></pre>
+<pre><code>##            x1            x2            x3 
+##  3.819834e-05  1.892838e-19 5.746904e-258</code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

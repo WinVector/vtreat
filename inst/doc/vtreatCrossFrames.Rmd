@@ -179,7 +179,10 @@ prep <- vtreat::mkCrossFrameCExperiment(dTrain,
            rareCount=0 # Note: usually want rareCount>0, setting to zero to illustrate problems
 )
 treatments <- prep$treatments
-print(treatments$scoreFrame[,c('varName','sig')])
+
+knitr::kable(treatments$scoreFrame[,c('varName','sig')])
+colnames(prep$crossFrame)
+
 # vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can
 # prune on our own.
 print(pruneSig)
@@ -206,6 +209,7 @@ dTrain$predM1 <- predict(m1,newdata=dTrainTreated,type='response')
 plotRes(dTrain,'predM1','y','model1 on train')
 dTestTreated <- vtreat::prepare(treatments,dTest,
                                 pruneSig=c(),varRestriction=newvars)
+knitr::kable(head(dTestTreated))
 dTest$predM1 <- predict(m1,newdata=dTestTreated,type='response')
 plotRes(dTest,'predM1','y','model1 on test')
 ```

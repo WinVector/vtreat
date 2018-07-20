@@ -24,13 +24,16 @@ Our specific example: try to model multi-class `y` as a function of `x1` and `x2
 set.seed(326346)
 sym_bonuses <- rnorm(3)
 names(sym_bonuses) <- c("a", "b", "c")
+sym_bonuses3 <- rnorm(3)
+names(sym_bonuses3) <- as.character(seq_len(length(sym_bonuses3)))
 n_row <- 1000
 d <- data.frame(x1 = rnorm(n_row),
                 x2 = sample(names(sym_bonuses), n_row, replace = TRUE),
+                x3 = sample(names(sym_bonuses3), n_row, replace = TRUE),
                 y = "NoInfo",
                 stringsAsFactors = FALSE)
-d$y[d$x1 > sym_bonuses[d$x2] + runif(n_row)] <- "Large1"
-d$y[sym_bonuses[d$x2] > d$x1 + runif(n_row)] <- "Large2"
+d$y[sym_bonuses[d$x2] > pmax(d$x1, sym_bonuses3[d$x3], runif(n_row))] <- "Large1"
+d$y[sym_bonuses3[d$x3] > pmax(sym_bonuses[d$x2], d$x1, runif(n_row))] <- "Large2"
 
 knitr::kable(head(d))
 ```
@@ -40,7 +43,7 @@ a treatment plan.
 
 ```{r tdef}
 # define problem
-vars <- c("x1", "x2")
+vars <- c("x1", "x2", "x3")
 y_name <- "y"
 y_levels <- sort(unique(d[[y_name]]))
 
@@ -57,7 +60,7 @@ are available [here](https://winvector.github.io/vtreat/articles/vtreatCrossFram
 str(cfe_m$cross_frame)
 ```
 
-`prepare_m()` is a function that can apply the designed treatments to new data.  Here we are simulating new 
+`prepare()` can apply the designed treatments to new data.  Here we are simulating new 
 data by re-using our design data.
 
 ```{r treatment_plan}
@@ -75,7 +78,6 @@ We to have a start on variable importance.
 
 ```{r varimp}
 knitr::kable(cfe_m$score_frame)
-
 ```
 
 One can relate these per-target and per-treatment performances back to original columns b aggregating.
