@@ -141,13 +141,13 @@ dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span clas
 treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
   <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.1 inspecting inputs Fri Jul 20 14:59:25 2018"
-## [1] "designing treatments Fri Jul 20 14:59:25 2018"
-## [1] " have initial level statistics Fri Jul 20 14:59:25 2018"
-## [1] " scoring treatments Fri Jul 20 14:59:25 2018"
-## [1] "have treatment plan Fri Jul 20 14:59:25 2018"
-## [1] "rescoring complex variables Fri Jul 20 14:59:25 2018"
-## [1] "done rescoring complex variables Fri Jul 20 14:59:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.1 inspecting inputs Fri Jul 20 15:18:33 2018"
+## [1] "designing treatments Fri Jul 20 15:18:33 2018"
+## [1] " have initial level statistics Fri Jul 20 15:18:33 2018"
+## [1] " scoring treatments Fri Jul 20 15:18:33 2018"
+## [1] "have treatment plan Fri Jul 20 15:18:33 2018"
+## [1] "rescoring complex variables Fri Jul 20 15:18:33 2018"
+## [1] "done rescoring complex variables Fri Jul 20 15:18:34 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
   <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )
@@ -241,13 +241,13 @@ treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span c
                                         <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="dt">rareSig=</span><span class="kw">c</span>() <span class="co"># Note set this to something like 0.3</span>
 )</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.1 inspecting inputs Fri Jul 20 14:59:25 2018"
-## [1] "designing treatments Fri Jul 20 14:59:25 2018"
-## [1] " have initial level statistics Fri Jul 20 14:59:25 2018"
-## [1] " scoring treatments Fri Jul 20 14:59:25 2018"
-## [1] "have treatment plan Fri Jul 20 14:59:25 2018"
-## [1] "rescoring complex variables Fri Jul 20 14:59:25 2018"
-## [1] "done rescoring complex variables Fri Jul 20 14:59:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.1 inspecting inputs Fri Jul 20 15:18:34 2018"
+## [1] "designing treatments Fri Jul 20 15:18:34 2018"
+## [1] " have initial level statistics Fri Jul 20 15:18:34 2018"
+## [1] " scoring treatments Fri Jul 20 15:18:34 2018"
+## [1] "have treatment plan Fri Jul 20 15:18:34 2018"
+## [1] "rescoring complex variables Fri Jul 20 15:18:34 2018"
+## [1] "done rescoring complex variables Fri Jul 20 15:18:34 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
                                  <span class="dt">pruneSig=</span><span class="kw">c</span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -316,9 +316,9 @@ dTest<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="
 xdat &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                   <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                   <span class="dt">rareSig=</span><span class="kw">c</span>())</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.1 start initial treatment design Fri Jul 20 14:59:26 2018"
-## [1] " start cross frame work Fri Jul 20 14:59:26 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Fri Jul 20 14:59:26 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.1 start initial treatment design Fri Jul 20 15:18:34 2018"
+## [1] " start cross frame work Fri Jul 20 15:18:34 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Fri Jul 20 15:18:34 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>xdat<span class="op">$</span>treatments
 <span class="kw">print</span>(treatments<span class="op">$</span>scoreFrame)</code></pre></div>
 <pre><code>##   varName varMoves          rsq       sig needsSplit extraModelDegrees

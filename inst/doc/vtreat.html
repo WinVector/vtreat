@@ -137,13 +137,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw">designTreatmentsC</span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.3.1 inspecting inputs Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;designing treatments Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot; have initial level statistics Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot; scoring treatments Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;have treatment plan Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;rescoring complex variables Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;done rescoring complex variables Fri Jul 20 14:58:22 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.3.1 inspecting inputs Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot;designing treatments Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot; have initial level statistics Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot; scoring treatments Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot;have treatment plan Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot;rescoring complex variables Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot;done rescoring complex variables Fri Jul 20 15:16:32 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
 ## 1    x_catP     TRUE 0.24340634 0.1547700       TRUE                 2
@@ -223,13 +223,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw">designTreatmentsN</span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.3.1 inspecting inputs Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;designing treatments Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot; have initial level statistics Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot; scoring treatments Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;have treatment plan Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;rescoring complex variables Fri Jul 20 14:58:22 2018&quot;
-## [1] &quot;done rescoring complex variables Fri Jul 20 14:58:22 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.3.1 inspecting inputs Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot;designing treatments Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot; have initial level statistics Fri Jul 20 15:16:32 2018&quot;
+## [1] &quot; scoring treatments Fri Jul 20 15:16:33 2018&quot;
+## [1] &quot;have treatment plan Fri Jul 20 15:16:33 2018&quot;
+## [1] &quot;rescoring complex variables Fri Jul 20 15:16:33 2018&quot;
+## [1] &quot;done rescoring complex variables Fri Jul 20 15:16:33 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
 ## 1    x_catP     TRUE 0.379002625 0.1410898       TRUE                 2

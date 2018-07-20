@@ -136,17 +136,17 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
            cross_frame_i = cross_frame_i,
            score_frame_i = score_frame_i)
     })
-  names(cfe_list) <- NULL # if we don't nuke names cbind adds the names to columns
+  names(cfe_list) <- NULL # make sure no names
   
   # build an overall cross-frame for training
   dy <- data.frame(y = as.character(d[[y_name]]),
                    stringsAsFactors = FALSE)
+  cbind_args <- c(list(prepare(treatments_0, d)),
+                  lapply(cfe_list, function(cfei) cfei$cross_frame_i),
+                  list(dy),
+                  stringsAsFactors = FALSE)
   cross_frame <- do.call(
-    cbind,
-    c(prepare(treatments_0, d),
-      lapply(cfe_list, function(cfei) cfei$cross_frame_i),
-      dy,
-      stringsAsFactors = FALSE))
+    cbind, cbind_args) 
   score_frame <- do.call(
     rbind, 
     lapply(cfe_list, function(cfei) cfei$score_frame_i))
