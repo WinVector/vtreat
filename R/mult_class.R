@@ -136,7 +136,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
            cross_frame_i = cross_frame_i,
            score_frame_i = score_frame_i)
     })
-  names(cfe_list) <- y_levels
+  names(cfe_list) <- NULL # if we don't nuke names cbind adds the names to columns
   
   # build an overall cross-frame for training
   dy <- data.frame(y = as.character(d[[y_name]]),
