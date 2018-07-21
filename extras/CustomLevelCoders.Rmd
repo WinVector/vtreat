@@ -147,9 +147,9 @@ vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolN')
 treatplanN = designTreatmentsN(radonMN, 
                                varlist = c('county'),
                                outcomename = 'activity',
-                              codeRestriction = vartypes_I_want,
-                              customCoders = customCoders, 
-                              verbose=FALSE)
+                               codeRestriction = vartypes_I_want,
+                               customCoders = customCoders, 
+                               verbose=FALSE)
 
 scoreFrame = treatplanN$scoreFrame
 scoreFrame %>% select(varName, sig, origName, code)
