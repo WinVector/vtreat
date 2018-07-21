@@ -4,12 +4,12 @@
 \alias{mkCrossFrameMExperiment}
 \title{Function to build multi-outcome vtreat cross frame and treatment plan.}
 \usage{
-mkCrossFrameMExperiment(d, vars, y_name, ...,
-  y_dependent_treatments = c("catB"), weights = c(), minFraction = 0.02,
-  smFactor = 0, rareCount = 0, rareSig = 1, collarProb = 0,
-  codeRestriction = NULL, customCoders = NULL, scale = FALSE,
-  doCollar = FALSE, splitFunction = NULL, ncross = 3,
-  forceSplit = FALSE, catScaling = FALSE, verbose = FALSE,
+mkCrossFrameMExperiment(d, vars, y_name, ..., weights = c(),
+  minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
+  collarProb = 0, codeRestriction = NULL, customCoders = NULL,
+  scale = FALSE, doCollar = FALSE, splitFunction = NULL, ncross = 3,
+  forceSplit = FALSE, catScaling = FALSE,
+  y_dependent_treatments = c("catB"), verbose = FALSE,
   parallelCluster = NULL, use_parallel = TRUE)
 }
 \arguments{
@@ -20,8 +20,6 @@ mkCrossFrameMExperiment(d, vars, y_name, ...,
 \item{y_name}{character, name of outcome column.}
 
 \item{...}{not used, declared to forced named binding of later arguments}
-
-\item{y_dependent_treatments}{character what treatment types to build per-outcome level.}
 
 \item{weights}{optional training weights for each row}
 
@@ -50,6 +48,8 @@ mkCrossFrameMExperiment(d, vars, y_name, ...,
 \item{forceSplit}{logical, if TRUE force cross-validated significance calculations on all variables.}
 
 \item{catScaling}{optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.}
+
+\item{y_dependent_treatments}{character what treatment types to build per-outcome level.}
 
 \item{verbose}{if TRUE print progress.}
 
