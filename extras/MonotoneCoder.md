@@ -1,7 +1,7 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2017-10-22
+2018-07-21
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
@@ -35,7 +35,7 @@ ggplot(data=d, aes(x=x)) +
           subtitle = "dashed curve: ideal (pre-noise) values")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/regression-1.png)
+![](MonotoneCoder_files/figure-markdown_github/regression-1.png)
 
 ``` r
 customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing,
@@ -94,7 +94,7 @@ ggplot(data=d, aes(x=x)) +
           subtitle = "solid path: isotone fit")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/regression-2.png)
+![](MonotoneCoder_files/figure-markdown_github/regression-2.png)
 
 The above formulation is kind of exciting. You get one degree of freedom per data-row (a very large number), but a simple constraint system (that the produced predictions must follow the x-order constraints) is enough to produce reasonable fits. This reminiscent of the [maximum entropy formulation of logistic regression](http://www.win-vector.com/dfiles/LogisticRegressionMaxEnt.pdf), and is evidence one is working with a sort of dual-formulation of a smaller primal problem.
 
@@ -329,17 +329,17 @@ dTest %.>%
 ```
 
     ## # A tibble: 2 x 3
-    ##   yObserved     minAdj    maxAdj
-    ##       <lgl>      <dbl>     <dbl>
-    ## 1     FALSE 0.02325581 0.9767442
-    ## 2      TRUE 0.02325581 0.9767442
+    ##   yObserved minAdj maxAdj
+    ##   <lgl>      <dbl>  <dbl>
+    ## 1 FALSE     0.0233  0.977
+    ## 2 TRUE      0.0233  0.977
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/adjscoreyobs-1.png)
+![](MonotoneCoder_files/figure-markdown_github/adjscoreyobs-1.png)
 
 ### Link Score versus observed outcomes
 
@@ -356,17 +356,17 @@ dTest %.>%
 ```
 
     ## # A tibble: 2 x 3
-    ##   yObserved     minAdj    maxAdj
-    ##       <lgl>      <dbl>     <dbl>
-    ## 1     FALSE 0.08597325 0.9886465
-    ## 2      TRUE 0.13227667 0.9890721
+    ##   yObserved minAdj maxAdj
+    ##   <lgl>      <dbl>  <dbl>
+    ## 1 FALSE     0.0860  0.989
+    ## 2 TRUE      0.132   0.989
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
                            "link prediction against observations")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/linkscoreyobs-1.png)
+![](MonotoneCoder_files/figure-markdown_github/linkscoreyobs-1.png)
 
 ### Adjusted Score versus Ideal (Unobserved) Concept
 
@@ -383,17 +383,17 @@ dTest %.>%
 ```
 
     ## # A tibble: 2 x 3
-    ##   yIdeal     minAdj    maxAdj
-    ##    <lgl>      <dbl>     <dbl>
-    ## 1  FALSE 0.02325581 0.5211316
-    ## 2   TRUE 0.61111111 0.9767442
+    ##   yIdeal minAdj maxAdj
+    ##   <lgl>   <dbl>  <dbl>
+    ## 1 FALSE  0.0233  0.521
+    ## 2 TRUE   0.611   0.977
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/adjscoreyideal-1.png)
+![](MonotoneCoder_files/figure-markdown_github/adjscoreyideal-1.png)
 
 ### Link Score versus Ideal (Unobserved) Concept
 
@@ -410,17 +410,17 @@ dTest %.>%
 ```
 
     ## # A tibble: 2 x 3
-    ##   yIdeal     minAdj    maxAdj
-    ##    <lgl>      <dbl>     <dbl>
-    ## 1  FALSE 0.08597325 0.4011796
-    ## 2   TRUE 0.41764783 0.9890721
+    ##   yIdeal minAdj maxAdj
+    ##   <lgl>   <dbl>  <dbl>
+    ## 1 FALSE  0.0860  0.401
+    ## 2 TRUE   0.418   0.989
 
 ``` r
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
                            "link prediction against ideal (unobserved) concept")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github-ascii_identifiers/linkscoreyideal-1.png)
+![](MonotoneCoder_files/figure-markdown_github/linkscoreyideal-1.png)
 
 Conclusion
 ----------
