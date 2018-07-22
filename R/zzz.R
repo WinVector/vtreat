@@ -1,6 +1,6 @@
 
 
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   vtreat_default_options <- list(
     vtreat.use_data.table_binding = TRUE
   )
