@@ -105,8 +105,13 @@ d_train <- rquery_prepare(db, rqplan, d_train,
                           tmp_name_gen(), 
                           temporary = TRUE, overwrite = TRUE)
 length(column_names(d_train))
+
 # cdata::qlook(db, d_train$table_name)
-rquery::rlook(db, d_train$table_name)
+# rquery::rlook(db, d_train$table_name)
+d_train %.>% 
+  orderby(., limit = 10) %.>% 
+  execute(db, .) %.>% 
+  str(., list.len = 10000)
 ```
 
 
