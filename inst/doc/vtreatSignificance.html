@@ -12,7 +12,7 @@
 
 <meta name="author" content="John Mount, Nina Zumel" />
 
-<meta name="date" content="2018-07-21" />
+<meta name="date" content="2018-07-31" />
 
 <title>vtreat significance</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat significance</h1>
 <h4 class="author"><em>John Mount, Nina Zumel</em></h4>
-<h4 class="date"><em>2018-07-21</em></h4>
+<h4 class="date"><em>2018-07-31</em></h4>
 
 
 
@@ -119,13 +119,13 @@ d &lt;-<span class="st"> </span>d[<span class="kw">order</span>(d<span class="op
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">designTreatmentsC</span>(d,<span class="kw">c</span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.3.1 inspecting inputs Sat Jul 21 11:33:43 2018&quot;
-## [1] &quot;designing treatments Sat Jul 21 11:33:43 2018&quot;
-## [1] &quot; have initial level statistics Sat Jul 21 11:33:43 2018&quot;
-## [1] &quot; scoring treatments Sat Jul 21 11:33:43 2018&quot;
-## [1] &quot;have treatment plan Sat Jul 21 11:33:43 2018&quot;
-## [1] &quot;rescoring complex variables Sat Jul 21 11:33:43 2018&quot;
-## [1] &quot;done rescoring complex variables Sat Jul 21 11:33:43 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.3.1 inspecting inputs Tue Jul 31 07:29:32 2018&quot;
+## [1] &quot;designing treatments Tue Jul 31 07:29:32 2018&quot;
+## [1] &quot; have initial level statistics Tue Jul 31 07:29:32 2018&quot;
+## [1] &quot; scoring treatments Tue Jul 31 07:29:32 2018&quot;
+## [1] &quot;have treatment plan Tue Jul 31 07:29:32 2018&quot;
+## [1] &quot;rescoring complex variables Tue Jul 31 07:29:32 2018&quot;
+## [1] &quot;done rescoring complex variables Tue Jul 31 07:29:32 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
   d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)

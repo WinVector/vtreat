@@ -7,8 +7,8 @@
 designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = NULL,
   collarProb = 0, codeRestriction = NULL, customCoders = NULL,
-  splitFunction = NULL, ncross = 3, forceSplit = FALSE, verbose = TRUE,
-  parallelCluster = NULL, use_parallel = TRUE)
+  splitFunction = NULL, ncross = 3, forceSplit = FALSE,
+  verbose = TRUE, parallelCluster = NULL, use_parallel = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}

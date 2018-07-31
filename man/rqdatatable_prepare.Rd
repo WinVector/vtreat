@@ -5,8 +5,9 @@
 \title{Apply a treatment plan using rqdatatable.}
 \usage{
 rqdatatable_prepare(rqplan, data_source, ..., partition_column = NULL,
-  parallelCluster = NULL, use_parallel = use_parallel, extracols = NULL,
-  non_join_mapping = FALSE, print_rquery = FALSE, env = parent.frame())
+  parallelCluster = NULL, use_parallel = use_parallel,
+  extracols = NULL, non_join_mapping = FALSE, print_rquery = FALSE,
+  env = parent.frame())
 }
 \arguments{
 \item{rqplan}{an query plan produced by as_rquery_plan().}

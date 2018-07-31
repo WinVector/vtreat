@@ -7,8 +7,8 @@
 mkCrossFrameMExperiment(d, vars, y_name, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
   collarProb = 0, codeRestriction = NULL, customCoders = NULL,
-  scale = FALSE, doCollar = FALSE, splitFunction = NULL, ncross = 3,
-  forceSplit = FALSE, catScaling = FALSE,
+  scale = FALSE, doCollar = FALSE, splitFunction = NULL,
+  ncross = 3, forceSplit = FALSE, catScaling = FALSE,
   y_dependent_treatments = c("catB"), verbose = FALSE,
   parallelCluster = NULL, use_parallel = TRUE)
 }
