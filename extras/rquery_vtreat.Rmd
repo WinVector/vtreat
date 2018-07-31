@@ -92,6 +92,14 @@ treated[]  %.>%
 source_data <- rquery::rq_copy_to(db, "dTrainR", dTrainR,
                                   overwrite = TRUE, temporary = TRUE)
 
+# ops <- flatten_fn_list(source_data, rqplan$optree_generators)
+# cat(format(ops))
+# ops %.>%
+#   rquery::op_diagram(.) %.>% 
+#   DiagrammeR::grViz(.)
+# sql <- rquery::to_sql(ops, db)
+# cat(sql)
+
 rest <- rquery_prepare(db, rqplan, source_data, "dTreatedN",
                        extracols = "id",
                        print_sql = FALSE)
