@@ -357,18 +357,18 @@ rquery_code_categorical <- function(colname, resname,
     tnum <- tnum + 1
   }
   new_novel_value <- as.numeric(effect_values[.preProcCat(new_novel_level, levRestriction)])
-  if(is.na(new_novel_value)) {
+  if(is.na(new_novel_value) || is.nan(new_novel_value) || is.infinite(new_novel_value)) {
     new_novel_value <- default_value
   }
   na_value <- as.numeric(effect_values[.preProcCat(NA_character_, levRestriction)])
-  if(is.na(na_value)) {
+  if(is.na(na_value) || is.nan(na_value) || is.infinite(na_value)) {
     na_value <- default_value
   }
   ctab <- data.frame(levels = coding_levels,
                      stringsAsFactors = FALSE)
   codes <- .preProcCat(ctab$levels, levRestriction)
   ctab$effect <- as.numeric(effect_values[codes])
-  ctab$effect[is.na(ctab$effect)] <- default_value
+  ctab$effect[is.na(ctab$effect) | is.nan(ctab$effect) | is.infinite(ctab$effect)] <- default_value
   if(length(ctab$levels)!=length(unique(ctab$levels))) {
     # should not happen, but let's catch it here so later joins are gauranteed to not blow-up
     stop(paste("vtreat:::rquery_code_categorical encoding levels were not unique, var:",

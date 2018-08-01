@@ -1,7 +1,7 @@
 rquery vtreat
 ================
 John Mount, Win-Vector LLC
-2018-07-31
+2018-08-01
 
 [`vtreat`](https://github.com/WinVector/vtreat) transforms can be hosted on [`rquery`](https://github.com/WinVector/rquery). This allows transforms at scale.
 
@@ -30,13 +30,13 @@ dTrainC$id <- seq_len(nrow(dTrainC))
 treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 ```
 
-    ## [1] "vtreat 1.3.1 inspecting inputs Tue Jul 31 10:19:43 2018"
-    ## [1] "designing treatments Tue Jul 31 10:19:43 2018"
-    ## [1] " have initial level statistics Tue Jul 31 10:19:43 2018"
-    ## [1] " scoring treatments Tue Jul 31 10:19:43 2018"
-    ## [1] "have treatment plan Tue Jul 31 10:19:43 2018"
-    ## [1] "rescoring complex variables Tue Jul 31 10:19:43 2018"
-    ## [1] "done rescoring complex variables Tue Jul 31 10:19:43 2018"
+    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 15:18:21 2018"
+    ## [1] "designing treatments Wed Aug  1 15:18:21 2018"
+    ## [1] " have initial level statistics Wed Aug  1 15:18:21 2018"
+    ## [1] " scoring treatments Wed Aug  1 15:18:21 2018"
+    ## [1] "have treatment plan Wed Aug  1 15:18:22 2018"
+    ## [1] "rescoring complex variables Wed Aug  1 15:18:22 2018"
+    ## [1] "done rescoring complex variables Wed Aug  1 15:18:22 2018"
 
 ``` r
 prepare(treatmentsC, dTrainC) %.>%
@@ -68,12 +68,12 @@ treated <- vtreat::rqdatatable_prepare(rqplan, dTrainC,
     ##   y,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table(vtreat_tmp_94515245192605271584_0000000000; 
+    ##   table(vtreat_tmp_36374825556788811375_0000000000; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table(vtreat_tmp_39401617470349331790_0000000000; 
+    ##   table(vtreat_tmp_75330107582171816657_0000000000; 
     ##     x,
     ##     x_catB),
     ##   j= LEFT, by= x) %.>%
@@ -163,13 +163,13 @@ dTrainR$id <- seq_len(nrow(dTrainR))
 treatmentsN <- designTreatmentsN(dTrainR, c("x", "z"), 'y')
 ```
 
-    ## [1] "vtreat 1.3.1 inspecting inputs Tue Jul 31 10:19:44 2018"
-    ## [1] "designing treatments Tue Jul 31 10:19:44 2018"
-    ## [1] " have initial level statistics Tue Jul 31 10:19:44 2018"
-    ## [1] " scoring treatments Tue Jul 31 10:19:44 2018"
-    ## [1] "have treatment plan Tue Jul 31 10:19:44 2018"
-    ## [1] "rescoring complex variables Tue Jul 31 10:19:44 2018"
-    ## [1] "done rescoring complex variables Tue Jul 31 10:19:44 2018"
+    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 15:18:22 2018"
+    ## [1] "designing treatments Wed Aug  1 15:18:22 2018"
+    ## [1] " have initial level statistics Wed Aug  1 15:18:22 2018"
+    ## [1] " scoring treatments Wed Aug  1 15:18:22 2018"
+    ## [1] "have treatment plan Wed Aug  1 15:18:22 2018"
+    ## [1] "rescoring complex variables Wed Aug  1 15:18:22 2018"
+    ## [1] "done rescoring complex variables Wed Aug  1 15:18:22 2018"
 
 ``` r
 prepare(treatmentsN, dTrainR)  %.>%
@@ -201,17 +201,17 @@ treated <- vtreat::rqdatatable_prepare(rqplan, dTrainR,
     ##   y,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table(vtreat_tmp_05604798465806846035_0000000000; 
+    ##   table(vtreat_tmp_06015484701469579790_0000000000; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table(vtreat_tmp_94588984509807487088_0000000000; 
+    ##   table(vtreat_tmp_97337180093972103661_0000000000; 
     ##     x,
     ##     x_catN),
     ##   j= LEFT, by= x) %.>%
     ##  natural_join(.,
-    ##   table(vtreat_tmp_00160174196212147801_0000000000; 
+    ##   table(vtreat_tmp_22448430592407168350_0000000000; 
     ##     x,
     ##     x_catD),
     ##   j= LEFT, by= x) %.>%
@@ -292,11 +292,11 @@ dTrainZ$id <- seq_len(nrow(dTrainZ))
 treatmentsZ <- designTreatmentsZ(dTrainZ, c("x", "z"))
 ```
 
-    ## [1] "vtreat 1.3.1 inspecting inputs Tue Jul 31 10:19:44 2018"
-    ## [1] "designing treatments Tue Jul 31 10:19:44 2018"
-    ## [1] " have initial level statistics Tue Jul 31 10:19:44 2018"
-    ## [1] " scoring treatments Tue Jul 31 10:19:44 2018"
-    ## [1] "have treatment plan Tue Jul 31 10:19:44 2018"
+    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 15:18:22 2018"
+    ## [1] "designing treatments Wed Aug  1 15:18:22 2018"
+    ## [1] " have initial level statistics Wed Aug  1 15:18:22 2018"
+    ## [1] " scoring treatments Wed Aug  1 15:18:22 2018"
+    ## [1] "have treatment plan Wed Aug  1 15:18:22 2018"
 
 ``` r
 prepare(treatmentsZ, dTrainZ)  %.>%
@@ -327,7 +327,7 @@ treated <- vtreat::rqdatatable_prepare(rqplan, dTrainZ,
     ##   z,
     ##   id) %.>%
     ##  natural_join(.,
-    ##   table(vtreat_tmp_17839001086033890611_0000000000; 
+    ##   table(vtreat_tmp_51516317481573410029_0000000000; 
     ##     x,
     ##     x_catP),
     ##   j= LEFT, by= x) %.>%
