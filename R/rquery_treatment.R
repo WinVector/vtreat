@@ -86,6 +86,7 @@ zap_bad_numeric_rqplan_vars_q <- function(rqplan,
 #' @param extracols extra columns to copy.
 #' @param temporary logical, if TRUE try to make result temporary.
 #' @param overwrite logical, if TRUE try to overwrite result.
+#' @param attempt_nan_inf_mapping logical, if TRUE attempt to map NaN and Infnity to NA/NULL (goot on PostgreSQL, not on Spark).
 #' @param col_sample sample of data to determine column types.
 #' @param return_ops logical, if TRUE return operator tree instead of materializing.
 #' @return description of treated table.
@@ -99,6 +100,7 @@ rquery_prepare <- function(db, rqplan, data_source, result_table_name,
                            extracols = NULL,
                            temporary = FALSE,
                            overwrite = TRUE,
+                           attempt_nan_inf_mapping = FALSE,
                            col_sample = NULL,
                            return_ops = FALSE) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
@@ -112,7 +114,9 @@ rquery_prepare <- function(db, rqplan, data_source, result_table_name,
   if(!("relop" %in% class(data_source))) {
     stop("vtreat::rquery_prepare data_source must be an rquery::relop tree")
   }
-  # data_source <- zap_bad_numeric_rqplan_vars_q(rqplan, data_source, col_sample)
+  if(attempt_nan_inf_mapping) {
+    data_source <- zap_bad_numeric_rqplan_vars_q(rqplan, data_source, col_sample)
+  }
   ops <- flatten_fn_list(data_source, rqplan$optree_generators)
   selcols <- intersect(rquery::column_names(ops), 
                        unique(c(rqplan$outcomename, 

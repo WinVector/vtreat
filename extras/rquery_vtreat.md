@@ -30,13 +30,13 @@ dTrainC$id <- seq_len(nrow(dTrainC))
 treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE)
 ```
 
-    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 17:56:07 2018"
-    ## [1] "designing treatments Wed Aug  1 17:56:07 2018"
-    ## [1] " have initial level statistics Wed Aug  1 17:56:07 2018"
-    ## [1] " scoring treatments Wed Aug  1 17:56:07 2018"
-    ## [1] "have treatment plan Wed Aug  1 17:56:07 2018"
-    ## [1] "rescoring complex variables Wed Aug  1 17:56:07 2018"
-    ## [1] "done rescoring complex variables Wed Aug  1 17:56:07 2018"
+    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 18:44:44 2018"
+    ## [1] "designing treatments Wed Aug  1 18:44:44 2018"
+    ## [1] " have initial level statistics Wed Aug  1 18:44:44 2018"
+    ## [1] " scoring treatments Wed Aug  1 18:44:44 2018"
+    ## [1] "have treatment plan Wed Aug  1 18:44:44 2018"
+    ## [1] "rescoring complex variables Wed Aug  1 18:44:44 2018"
+    ## [1] "done rescoring complex variables Wed Aug  1 18:44:44 2018"
 
 ``` r
 prepare(treatmentsC, dTrainC) %.>%
@@ -99,13 +99,13 @@ dTrainR$id <- seq_len(nrow(dTrainR))
 treatmentsN <- designTreatmentsN(dTrainR, c("x", "z"), 'y')
 ```
 
-    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 17:56:07 2018"
-    ## [1] "designing treatments Wed Aug  1 17:56:07 2018"
-    ## [1] " have initial level statistics Wed Aug  1 17:56:07 2018"
-    ## [1] " scoring treatments Wed Aug  1 17:56:07 2018"
-    ## [1] "have treatment plan Wed Aug  1 17:56:07 2018"
-    ## [1] "rescoring complex variables Wed Aug  1 17:56:07 2018"
-    ## [1] "done rescoring complex variables Wed Aug  1 17:56:08 2018"
+    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 18:44:45 2018"
+    ## [1] "designing treatments Wed Aug  1 18:44:45 2018"
+    ## [1] " have initial level statistics Wed Aug  1 18:44:45 2018"
+    ## [1] " scoring treatments Wed Aug  1 18:44:45 2018"
+    ## [1] "have treatment plan Wed Aug  1 18:44:45 2018"
+    ## [1] "rescoring complex variables Wed Aug  1 18:44:45 2018"
+    ## [1] "done rescoring complex variables Wed Aug  1 18:44:45 2018"
 
 ``` r
 prepare(treatmentsN, dTrainR)  %.>%
@@ -178,11 +178,11 @@ dTrainZ$id <- seq_len(nrow(dTrainZ))
 treatmentsZ <- designTreatmentsZ(dTrainZ, c("x", "z"))
 ```
 
-    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 17:56:08 2018"
-    ## [1] "designing treatments Wed Aug  1 17:56:08 2018"
-    ## [1] " have initial level statistics Wed Aug  1 17:56:08 2018"
-    ## [1] " scoring treatments Wed Aug  1 17:56:08 2018"
-    ## [1] "have treatment plan Wed Aug  1 17:56:08 2018"
+    ## [1] "vtreat 1.3.1 inspecting inputs Wed Aug  1 18:44:45 2018"
+    ## [1] "designing treatments Wed Aug  1 18:44:45 2018"
+    ## [1] " have initial level statistics Wed Aug  1 18:44:45 2018"
+    ## [1] " scoring treatments Wed Aug  1 18:44:45 2018"
+    ## [1] "have treatment plan Wed Aug  1 18:44:45 2018"
 
 ``` r
 prepare(treatmentsZ, dTrainZ)  %.>%

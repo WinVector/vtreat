@@ -19,14 +19,15 @@ options(db_opts)
 ```
 
 ```{r data, include = FALSE}
-dir = '~/Documents/work/PracticalDataScienceWithR/zmPDSwR/KDD2009/' 
+dir <- '~/Documents/work/PracticalDataScienceWithR/zmPDSwR/KDD2009/' 
 
-d = read.table(paste(dir,'orange_small_train.data.gz',sep=''),
+d <- read.table(paste(dir,'orange_small_train.data.gz',sep=''),
                header=TRUE, sep='\t', na.strings=c('NA',''), 
                stringsAsFactors=FALSE)
-churn = read.table(paste(dir,'orange_small_train_churn.labels.txt', sep=''),
+churn <- read.table(paste(dir,'orange_small_train_churn.labels.txt', sep=''),
                    header=FALSE, sep='\t')
-d$churn = churn$V1
+d$churn <- churn$V1
+
 for(ci in colnames(d)) {
   if(is.integer(d[[ci]])) {
     d[[ci]] <- as.numeric(d[[ci]])
@@ -93,6 +94,7 @@ theshold <- 1/(1 + approximate_df)
 newvars <- scoreFrame$varName[ (scoreFrame$varMoves) &
                                  (scoreFrame$sig < theshold) & 
                                  (scoreFrame$rsq >= 1.0e-3) ]
+newvars <- unique(newvars)
 print(length(newvars))
 ```
 
