@@ -27,6 +27,11 @@ d = read.table(paste(dir,'orange_small_train.data.gz',sep=''),
 churn = read.table(paste(dir,'orange_small_train_churn.labels.txt', sep=''),
                    header=FALSE, sep='\t')
 d$churn = churn$V1
+for(ci in colnames(d)) {
+  if(is.integer(d[[ci]])) {
+    d[[ci]] <- as.numeric(d[[ci]])
+  }
+}
 rq_copy_to(db, "kdd2009", d,
            overwrite = TRUE,
            temporary = TRUE)
@@ -93,17 +98,27 @@ print(length(newvars))
 
 
 ```{r treatdata}
+col_sample <- execute(db, d_train, limit = 1L)
 rqplan <- as_rquery_plan(treatment_plans, var_restriction = newvars)
-# ops <- flatten_fn_list(d_train, rqplan$optree_generators)
-# cat(format(ops))
-# ops %.>%
-#   op_diagram(.) %.>% 
-#   DiagrammeR::grViz(.)
-# sql <- to_sql(ops, db)
-# cat(sql)
+
+if(FALSE) {
+  ops <- rquery_prepare(db, rqplan, d_train, 
+                        "dtrain_prepped", 
+                        col_sample = col_sample,
+                        return_ops = TRUE)
+  cat(format(ops))
+  ops %.>%
+    rquery::op_diagram(.) %.>%
+    DiagrammeR::grViz(.)
+  # sql <- rquery::to_sql(ops, db)
+  # cat(sql)
+}
+
 d_train <- rquery_prepare(db, rqplan, d_train, 
                           tmp_name_gen(), 
-                          temporary = TRUE, overwrite = TRUE)
+                          col_sample = col_sample,
+                          temporary = TRUE, 
+                          overwrite = TRUE)
 length(column_names(d_train))
 
 # cdata::qlook(db, d_train$table_name)

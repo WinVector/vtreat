@@ -72,18 +72,15 @@ test_that("test_rquery.R: Works As Expected", {
                                           overwrite = TRUE, temporary = TRUE)
       
       rest_c <- rquery_prepare(db, rqplan_c, source_data_c, "dTreatedC",
-                               extracols = "id",
-                               print_sql = FALSE)
+                               extracols = "id")
       resd_c <- DBI::dbReadTable(db, rest_c$table_name)
       
       rest_n <- rquery_prepare(db, rqplan_n, source_data_r, "dTreatedN",
-                               extracols = "id",
-                               print_sql = FALSE)
+                               extracols = "id")
       resd_n <- DBI::dbReadTable(db, rest_n$table_name)
       
       rest_z <- rquery_prepare(db, rqplan_z, source_data_z, "dTreatedZ",
-                               extracols = "id",
-                               print_sql = FALSE)
+                               extracols = "id")
       resd_z <- DBI::dbReadTable(db, rest_z$table_name)
       
       rquery::rq_remove_table(db, source_data_c$table_name)

@@ -20,3 +20,4 @@ Flatten a list of functions onto d.
 \seealso{
 \code{\link{as_rquery_plan}}
 }
+\keyword{internal}

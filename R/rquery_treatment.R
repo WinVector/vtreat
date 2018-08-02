@@ -14,6 +14,8 @@ NULL
 #' 
 #' @seealso \code{\link{as_rquery_plan}}
 #' 
+#' @keywords internal
+#' 
 #' @export
 #' 
 flatten_fn_list <- function(d, fnlist) {
@@ -22,6 +24,57 @@ flatten_fn_list <- function(d, fnlist) {
   }
   d
 }
+
+
+#' Build a query mapping NaN, Infinity and -Infinity to NULL.
+#' 
+#' Using PostgreSQL type design where math is altered to pick up 
+#' these values by equality: 
+#' \url{https://www.postgresql.org/docs/9.0/static/datatype-numeric.html}.
+#' 
+#' @param rqplan an query plan produced by as_rquery_plan().
+#' @param data_source relop, data source (usually a relop_table_source).
+#' @param col_sample sample of data to determine column types.
+#' @return sql_node conversion
+#' 
+#' @keywords internal
+#' 
+#' @noRd
+zap_bad_numeric_rqplan_vars_q <- function(rqplan, 
+                                          data_source, 
+                                          col_sample) {
+  numvars <- lapply(
+    rqplan$treatmentplans,
+    function(tp) {
+      tp$scoreFrame$origName[tp$scoreFrame$code %in% c("clean", "isBAD")]
+    })
+  numvars <- unique(unlist(numvars))
+  numvars <- intersect(rquery::column_names(data_source), numvars)
+  if(length(col_sample)>0) {
+    check <- intersect(numvars, colnames(col_sample)) 
+    drop <- vapply(check,
+                   function(ci) {
+                     (!is.numeric(col_sample[[ci]])) || (is.integer(col_sample[[ci]]))
+                   }, logical(1))
+    drop <- check[drop]
+    numvars <- setdiff(numvars, drop)
+  }
+  if(length(numvars)<=0) {
+    return(data_source)
+  }
+  exprs <- lapply(
+    numvars,
+    function(vi) {
+      list("(CASE WHEN",
+           "(", as.name(vi), "=", list("NaN"), ") OR",
+           "(", as.name(vi), "=", list("Infinity"), ") OR ",
+           "(", as.name(vi), "= -", list("Infinity"), ")",
+           "THEN NULL ELSE", as.name(vi), "END)")
+    })
+  names(exprs) <- numvars
+  rquery::sql_node(data_source, exprs, orig_columns = TRUE)
+}
+
 
 #' Materialize a treated data frame remotely.
 #' 
@@ -33,8 +86,8 @@ flatten_fn_list <- function(d, fnlist) {
 #' @param extracols extra columns to copy.
 #' @param temporary logical, if TRUE try to make result temporary.
 #' @param overwrite logical, if TRUE try to overwrite result.
-#' @param print_rquery logical, if TRUE print the rquery ops.
-#' @param print_sql logical, if TRUE print the SQL.
+#' @param col_sample sample of data to determine column types.
+#' @param return_ops logical, if TRUE return operator tree instead of materializing.
 #' @return description of treated table.
 #' 
 #' @seealso \code{\link{as_rquery_plan}}, \code{\link{rqdatatable_prepare}}
@@ -46,8 +99,8 @@ rquery_prepare <- function(db, rqplan, data_source, result_table_name,
                            extracols = NULL,
                            temporary = FALSE,
                            overwrite = TRUE,
-                           print_rquery = FALSE,
-                           print_sql = FALSE) {
+                           col_sample = NULL,
+                           return_ops = FALSE) {
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::rquery_prepare requires the rquery package.")
   }
@@ -59,17 +112,15 @@ rquery_prepare <- function(db, rqplan, data_source, result_table_name,
   if(!("relop" %in% class(data_source))) {
     stop("vtreat::rquery_prepare data_source must be an rquery::relop tree")
   }
+  # data_source <- zap_bad_numeric_rqplan_vars_q(rqplan, data_source, col_sample)
   ops <- flatten_fn_list(data_source, rqplan$optree_generators)
   selcols <- intersect(rquery::column_names(ops), 
                        unique(c(rqplan$outcomename, 
                                 rqplan$newvars,
                                 extracols)))
   ops <- rquery::select_columns(ops, selcols)
-  if(print_rquery) {
-    cat(format(ops))
-  }
-  if(print_sql) {
-    cat(rquery::to_sql(ops, db))
+  if(return_ops) {
+    return(ops)
   }
   treated <- rquery::materialize(db, ops, 
                                  table_name = result_table_name,
@@ -87,7 +138,12 @@ materialize_treated <- rquery_prepare
 
 
 
+
+
 #' Apply a treatment plan using rqdatatable.
+#' 
+#' Note: does not treat map NaN or +-Infinity.  
+#' This function is only for timings and demonstration, not for production use.
 #' 
 #' @param rqplan an query plan produced by as_rquery_plan().
 #' @param data_source a data.frame.
@@ -100,6 +156,8 @@ materialize_treated <- rquery_prepare
 #' @param print_rquery logical, if TRUE print the rquery ops.
 #' @param env environment to work in.
 #' @return treated data.
+#' 
+#' @keywords internal
 #' 
 #' @seealso \code{\link{as_rquery_plan}}, \code{\link{rquery_prepare}}
 #' 
@@ -203,6 +261,10 @@ as_rquery.vtreatment <- function(tstep,
   NULL
 }
 
+
+
+
+
 #' Convert vtreatment plans into a sequence of rquery operations.
 #' 
 #' @param treatmentplans vtreat treatment plan or list of vtreat treatment plan sharing same outcome and outcome type.
@@ -234,8 +296,7 @@ as_rquery.vtreatment <- function(tstep,
 #'                                overwrite = TRUE, temporary = TRUE)
 #' 
 #'       rest <- rquery_prepare(db, rqplan, source_data, "dTreatedC", 
-#'                                   extracols = "id",
-#'                                   print_sql = FALSE)
+#'                                   extracols = "id")
 #'       resd <- DBI::dbReadTable(db, rest$table_name)
 #'       print(resd)
 #' 

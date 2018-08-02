@@ -35,27 +35,14 @@ prepare(treatmentsC, dTrainC) %.>%
 rqplan <- as_rquery_plan(list(treatmentsC))
 ```
 
-```{r crqdt, eval=eval_rqdt}
-treated <- vtreat::rqdatatable_prepare(rqplan, dTrainC, 
-                                       extracols = "id", 
-                                       print_rquery = TRUE)
-treated[]  %.>%
-  knitr::kable(.)
 
-treatednj <- vtreat::rqdatatable_prepare(rqplan, dTrainC, 
-                                       extracols = "id", 
-                                       non_join_mapping = TRUE)
-treatednj[]  %.>%
-  knitr::kable(.)
-```
 
 ```{r cdb, eval=eval_db}
 source_data <- rquery::rq_copy_to(db, "dTrainC", dTrainC,
                                   overwrite = TRUE, temporary = TRUE)
 
 rest <- rquery_prepare(db, rqplan, source_data, "dTreatedC",
-                       extracols = "id",
-                       print_sql = FALSE)
+                       extracols = "id")
 resd <- DBI::dbReadTable(db, rest$table_name)
 resd  %.>%
   knitr::kable(.)
@@ -80,29 +67,25 @@ prepare(treatmentsN, dTrainR)  %.>%
 rqplan <- as_rquery_plan(list(treatmentsN))
 ```
 
-```{r nrqdt, eval=eval_rqdt}
-treated <- vtreat::rqdatatable_prepare(rqplan, dTrainR, 
-                                       extracols = "id", 
-                                       print_rquery = TRUE)
-treated[]  %.>%
-  knitr::kable(.)
-```
+
 
 ```{r ndb, eval=eval_db}
 source_data <- rquery::rq_copy_to(db, "dTrainR", dTrainR,
                                   overwrite = TRUE, temporary = TRUE)
 
-# ops <- flatten_fn_list(source_data, rqplan$optree_generators)
-# cat(format(ops))
-# ops %.>%
-#   rquery::op_diagram(.) %.>% 
-#   DiagrammeR::grViz(.)
-# sql <- rquery::to_sql(ops, db)
-# cat(sql)
+if(FALSE) {
+  ops <- rquery_prepare(db, rqplan, source_data, "dTreatedN",
+                       extracols = "id", return_ops = TRUE)
+  cat(format(ops))
+  ops %.>%
+    rquery::op_diagram(.) %.>%
+    DiagrammeR::grViz(.)
+  # sql <- rquery::to_sql(ops, db)
+  # cat(sql)
+}
 
 rest <- rquery_prepare(db, rqplan, source_data, "dTreatedN",
-                       extracols = "id",
-                       print_sql = FALSE)
+                       extracols = "id")
 resd <- DBI::dbReadTable(db, rest$table_name)
 resd %.>%
   knitr::kable(.)
@@ -128,21 +111,14 @@ prepare(treatmentsZ, dTrainZ)  %.>%
 rqplan <- as_rquery_plan(list(treatmentsZ))
 ```
 
-```{r zrqdt, eval=eval_rqdt}
-treated <- vtreat::rqdatatable_prepare(rqplan, dTrainZ, 
-                                       extracols = "id", 
-                                       print_rquery = TRUE)
-treated[]  %.>%
-  knitr::kable(.)
-```
+
 
 ```{r zdb, eval=eval_db}
 source_data <- rquery::rq_copy_to(db, "dTrainZ", dTrainZ,
                                   overwrite = TRUE, temporary = TRUE)
 
 rest <- rquery_prepare(db, rqplan, source_data, "dTreatedZ",
-                       extracols = "id",
-                       print_sql = FALSE)
+                       extracols = "id")
 resd <- DBI::dbReadTable(db, rest$table_name)
 resd  %.>%
   knitr::kable(.)

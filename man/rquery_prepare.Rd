@@ -7,11 +7,11 @@
 \usage{
 rquery_prepare(db, rqplan, data_source, result_table_name, ...,
   extracols = NULL, temporary = FALSE, overwrite = TRUE,
-  print_rquery = FALSE, print_sql = FALSE)
+  col_sample = NULL, return_ops = FALSE)
 
 materialize_treated(db, rqplan, data_source, result_table_name, ...,
   extracols = NULL, temporary = FALSE, overwrite = TRUE,
-  print_rquery = FALSE, print_sql = FALSE)
+  col_sample = NULL, return_ops = FALSE)
 }
 \arguments{
 \item{db}{a db handle.}
@@ -30,9 +30,9 @@ materialize_treated(db, rqplan, data_source, result_table_name, ...,
 
 \item{overwrite}{logical, if TRUE try to overwrite result.}
 
-\item{print_rquery}{logical, if TRUE print the rquery ops.}
+\item{col_sample}{sample of data to determine column types.}
 
-\item{print_sql}{logical, if TRUE print the SQL.}
+\item{return_ops}{logical, if TRUE return operator tree instead of materializing.}
 }
 \value{
 description of treated table.

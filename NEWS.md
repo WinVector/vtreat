@@ -3,6 +3,7 @@
 
  * Fix variable naming in multi class case.
  * Some doc fixes.
+ * Start on NaN and Infinity on databases.
  * More tests.
 
 # vtreat 1.3.0 2018/07/20

@@ -43,8 +43,7 @@ if(requireNamespace("rquery", quietly = TRUE)) {
                                overwrite = TRUE, temporary = TRUE)
 
       rest <- rquery_prepare(db, rqplan, source_data, "dTreatedC", 
-                                  extracols = "id",
-                                  print_sql = FALSE)
+                                  extracols = "id")
       resd <- DBI::dbReadTable(db, rest$table_name)
       print(resd)
 

@@ -34,8 +34,10 @@ rqdatatable_prepare(rqplan, data_source, ..., partition_column = NULL,
 treated data.
 }
 \description{
-Apply a treatment plan using rqdatatable.
+Note: does not treat map NaN or +-Infinity.  
+This function is only for timings and demonstration, not for production use.
 }
 \seealso{
 \code{\link{as_rquery_plan}}, \code{\link{rquery_prepare}}
 }
+\keyword{internal}
