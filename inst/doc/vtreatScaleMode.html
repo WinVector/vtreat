@@ -12,7 +12,7 @@
 
 <meta name="author" content="Win-Vector LLC" />
 
-<meta name="date" content="2018-08-01" />
+<meta name="date" content="2018-08-05" />
 
 <title>vtreat scale mode</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">vtreat scale mode</h1>
 <h4 class="author"><em>Win-Vector LLC</em></h4>
-<h4 class="date"><em>2018-08-01</em></h4>
+<h4 class="date"><em>2018-08-05</em></h4>
 
 
 
@@ -213,9 +213,9 @@ dTrainN<span class="op">$</span>y &lt;-<span class="st"> </span><span class="dv"
 cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
                                          <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,
                                          <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.3.1 start initial treatment design Wed Aug  1 18:49:26 2018&quot;
-## [1] &quot; start cross frame work Wed Aug  1 18:49:26 2018&quot;
-## [1] &quot; vtreat::mkCrossFrameNExperiment done Wed Aug  1 18:49:26 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.3.1 start initial treatment design Sun Aug  5 12:25:39 2018&quot;
+## [1] &quot; start cross frame work Sun Aug  5 12:25:39 2018&quot;
+## [1] &quot; vtreat::mkCrossFrameNExperiment done Sun Aug  5 12:25:39 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dM1 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEraw<span class="op">$</span>crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
 pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">prcomp</span>(dM1,
                        <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
@@ -232,9 +232,9 @@ pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="
 cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw">mkCrossFrameNExperiment</span>(dTrainN,
                                             <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
                                             <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] &quot;vtreat 1.3.1 start initial treatment design Wed Aug  1 18:49:26 2018&quot;
-## [1] &quot; start cross frame work Wed Aug  1 18:49:26 2018&quot;
-## [1] &quot; vtreat::mkCrossFrameNExperiment done Wed Aug  1 18:49:26 2018&quot;</code></pre>
+<pre><code>## [1] &quot;vtreat 1.3.1 start initial treatment design Sun Aug  5 12:25:39 2018&quot;
+## [1] &quot; start cross frame work Sun Aug  5 12:25:39 2018&quot;
+## [1] &quot; vtreat::mkCrossFrameNExperiment done Sun Aug  5 12:25:39 2018&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dM2 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cEscaled<span class="op">$</span>crossFrame[,<span class="kw">c</span>(<span class="st">'x1_clean'</span>,<span class="st">'x2_clean'</span>,<span class="st">'x3_clean'</span>)])
 pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">prcomp</span>(dM2,
                           <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
