@@ -1,5 +1,5 @@
 
-# vtreat 1.3.1 2018/09/08
+# vtreat 1.3.1 2018/09/10
 
  * Fix variable naming in multi class case.
  * Some doc fixes.
