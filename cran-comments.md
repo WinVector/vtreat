@@ -7,6 +7,8 @@
     * using platform: x86_64-apple-darwin15.6.0 (64-bit)
 
     * Windows
+    * using R Under development (unstable) (2018-09-09 r75268)
+    * using platform: x86_64-w64-mingw32 (64-bit)
 
 ## Test Results
 
