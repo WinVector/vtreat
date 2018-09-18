@@ -1,4 +1,8 @@
 
+# vtreat 1.3.2 2018/09/18
+
+ * force parent.frame
+
 # vtreat 1.3.1 2018/09/10
 
  * Fix variable naming in multi class case.

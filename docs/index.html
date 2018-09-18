@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vtreat</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.2</span>
       </span>
     </div>
 
@@ -202,7 +202,7 @@
 <p>Trivial example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)
 <span class="kw">packageVersion</span>(<span class="st">"vtreat"</span>)
- <span class="co">#  [1] '1.3.1'</span>
+ <span class="co">#  [1] '1.3.2'</span>
 <span class="kw">citation</span>(<span class="st">'vtreat'</span>)
  <span class="co">#  </span>
  <span class="co">#  To cite package 'vtreat' in publications use:</span>
@@ -232,14 +232,14 @@ dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 1.559780e-01 0.22202097                 2</span>
- <span class="co">#  2        x    x_catB  catB 1.177202e-05 0.99153548                 2</span>
- <span class="co">#  3        z   z_clean clean 2.376018e-01 0.13176020                 0</span>
- <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span>
- <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span>
- <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span>
- <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span>
+ <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span>
+ <span class="co">#  1        x    x_catP  catP 0.057741424 0.45748159                 2</span>
+ <span class="co">#  2        x    x_catB  catB 0.019483838 0.66603146                 2</span>
+ <span class="co">#  3        z   z_clean clean 0.237601767 0.13176020                 0</span>
+ <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span>
+ <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span>
+ <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span>
+ <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span>
 
 <span class="co"># help("prepare")</span>
 
@@ -277,9 +277,9 @@ treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/design
                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
  <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 3.137255e-01 0.1487686                 2</span>
- <span class="co">#  2        x    x_catN  catN 2.093023e-01 0.2543735                 2</span>
- <span class="co">#  3        x    x_catD  catD 1.370969e-02 0.7824576                 2</span>
+ <span class="co">#  1        x    x_catP  catP 1.498471e-01 0.3434338                 2</span>
+ <span class="co">#  2        x    x_catN  catN 1.646259e-01 0.3186062                 2</span>
+ <span class="co">#  3        x    x_catD  catD 1.620332e-01 0.3228162                 2</span>
  <span class="co">#  4        z   z_clean clean 2.880952e-01 0.1701892                 0</span>
  <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
  <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>

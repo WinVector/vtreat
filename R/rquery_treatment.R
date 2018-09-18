@@ -176,6 +176,7 @@ rqdatatable_prepare <- function(rqplan, data_source,
                                 non_join_mapping = FALSE,
                                 print_rquery = FALSE,
                                 env = parent.frame()) {
+  force(env)
   if(!requireNamespace("rquery", quietly = TRUE)) {
     stop("vtreat::rqdatatable_prepare requires the rquery package.")
   }
