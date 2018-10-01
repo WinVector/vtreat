@@ -109,7 +109,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-09-18</h4>
+            <h4 class="date">2018-10-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -191,13 +191,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.2 inspecting inputs Tue Sep 18 13:11:16 2018"
-## [1] "designing treatments Tue Sep 18 13:11:16 2018"
-## [1] " have initial level statistics Tue Sep 18 13:11:16 2018"
-## [1] " scoring treatments Tue Sep 18 13:11:16 2018"
-## [1] "have treatment plan Tue Sep 18 13:11:16 2018"
-## [1] "rescoring complex variables Tue Sep 18 13:11:16 2018"
-## [1] "done rescoring complex variables Tue Sep 18 13:11:16 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.2 inspecting inputs Mon Oct  1 09:59:54 2018"
+## [1] "designing treatments Mon Oct  1 09:59:54 2018"
+## [1] " have initial level statistics Mon Oct  1 09:59:54 2018"
+## [1] " scoring treatments Mon Oct  1 09:59:54 2018"
+## [1] "have treatment plan Mon Oct  1 09:59:54 2018"
+## [1] "rescoring complex variables Mon Oct  1 09:59:54 2018"
+## [1] "done rescoring complex variables Mon Oct  1 09:59:54 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
 <pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
 ## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
@@ -278,13 +278,13 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.2 inspecting inputs Tue Sep 18 13:11:16 2018"
-## [1] "designing treatments Tue Sep 18 13:11:16 2018"
-## [1] " have initial level statistics Tue Sep 18 13:11:16 2018"
-## [1] " scoring treatments Tue Sep 18 13:11:16 2018"
-## [1] "have treatment plan Tue Sep 18 13:11:16 2018"
-## [1] "rescoring complex variables Tue Sep 18 13:11:16 2018"
-## [1] "done rescoring complex variables Tue Sep 18 13:11:16 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.2 inspecting inputs Mon Oct  1 09:59:54 2018"
+## [1] "designing treatments Mon Oct  1 09:59:54 2018"
+## [1] " have initial level statistics Mon Oct  1 09:59:54 2018"
+## [1] " scoring treatments Mon Oct  1 09:59:54 2018"
+## [1] "have treatment plan Mon Oct  1 09:59:55 2018"
+## [1] "rescoring complex variables Mon Oct  1 09:59:55 2018"
+## [1] "done rescoring complex variables Mon Oct  1 09:59:55 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
 <pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
 ## 1    x_catP     TRUE 0.312925227 0.1916628       TRUE                 2

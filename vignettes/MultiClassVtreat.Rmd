@@ -8,16 +8,17 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
+ 
+[`vtreat`](https://github.com/WinVector/vtreat) can now effectively prepare data for multi-class classification or multinomial modeling.
 
-Problem: try to prepare data to model multi-class y as a function of x using [`vtreat`](https://github.com/WinVector/vtreat). `vtreat` does not directly do this, but can be used to do this.  In this note we share functions to make this adaption.
+The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and the `S3` method [`prepare.multinomial_plan()`](https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html)) are now part of `vtreat`.
 
 ```{r libs}
 library("vtreat")
 ```
 
-The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and the `S3` method [`prepare.multinomial_plan()`](https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html)) are (as of version `1.2.4`) part of `vtreat`.
 
-Our specific example: try to model multi-class `y` as a function of `x1` and `x2`.
+Let's work a specific example: trying to model multi-class `y` as a function of `x1` and `x2`.
 
 ```{r mkex}
 # create example data
@@ -27,13 +28,16 @@ names(sym_bonuses) <- c("a", "b", "c")
 sym_bonuses3 <- rnorm(3)
 names(sym_bonuses3) <- as.character(seq_len(length(sym_bonuses3)))
 n_row <- 1000
-d <- data.frame(x1 = rnorm(n_row),
-                x2 = sample(names(sym_bonuses), n_row, replace = TRUE),
-                x3 = sample(names(sym_bonuses3), n_row, replace = TRUE),
-                y = "NoInfo",
-                stringsAsFactors = FALSE)
-d$y[sym_bonuses[d$x2] > pmax(d$x1, sym_bonuses3[d$x3], runif(n_row))] <- "Large1"
-d$y[sym_bonuses3[d$x3] > pmax(sym_bonuses[d$x2], d$x1, runif(n_row))] <- "Large2"
+d <- data.frame(
+  x1 = rnorm(n_row),
+  x2 = sample(names(sym_bonuses), n_row, replace = TRUE),
+  x3 = sample(names(sym_bonuses3), n_row, replace = TRUE),
+  y = "NoInfo",
+  stringsAsFactors = FALSE)
+d$y[sym_bonuses[d$x2] > 
+      pmax(d$x1, sym_bonuses3[d$x3], runif(n_row))] <- "Large1"
+d$y[sym_bonuses3[d$x3] > 
+      pmax(sym_bonuses[d$x2], d$x1, runif(n_row))] <- "Large2"
 
 knitr::kable(head(d))
 ```
@@ -74,19 +78,26 @@ str(prepare(cfe_m$treat_m, d))
 
 Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns.  These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).
 
-We to have a start on variable importance.
+We also have per-outcome variable importance.
 
 ```{r varimp}
-knitr::kable(cfe_m$score_frame)
+knitr::kable(
+  cfe_m$score_frame[, 
+                    c("varName", "rsq", "sig", "outcome_level"), 
+                    drop = FALSE])
 ```
 
-One can relate these per-target and per-treatment performances back to original columns b aggregating.
+One can relate these per-target and per-treatment performances back to original columns by aggregating.
 
 ```{r varagg}
 
-tapply(cfe_m$score_frame$rsq, cfe_m$score_frame$origName, max)
+tapply(cfe_m$score_frame$rsq, 
+       cfe_m$score_frame$origName, 
+       max)
 
-tapply(cfe_m$score_frame$sig, cfe_m$score_frame$origName, min)
+tapply(cfe_m$score_frame$sig, 
+       cfe_m$score_frame$origName, 
+       min)
 ```
 
 

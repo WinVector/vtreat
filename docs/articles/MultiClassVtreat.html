@@ -109,7 +109,7 @@
       <h1>Multi Class vtreat</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2018-09-18</h4>
+            <h4 class="date">2018-10-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/MultiClassVtreat.Rmd"><code>vignettes/MultiClassVtreat.Rmd</code></a></small>
       <div class="hidden name"><code>MultiClassVtreat.Rmd</code></div>
@@ -118,10 +118,10 @@
 
     
     
-<p>Problem: try to prepare data to model multi-class y as a function of x using <a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>. <code>vtreat</code> does not directly do this, but can be used to do this. In this note we share functions to make this adaption.</p>
+<p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a> can now effectively prepare data for multi-class classification or multinomial modeling.</p>
+<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html"><code><a href="../reference/prepare.multinomial_plan.html">prepare.multinomial_plan()</a></code></a>) are now part of <code>vtreat</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
-<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html"><code><a href="../reference/prepare.multinomial_plan.html">prepare.multinomial_plan()</a></code></a>) are (as of version <code>1.2.4</code>) part of <code>vtreat</code>.</p>
-<p>Our specific example: try to model multi-class <code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
+<p>Let’s work a specific example: trying to model multi-class <code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create example data</span>
 <span class="kw">set.seed</span>(<span class="dv">326346</span>)
 sym_bonuses &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">3</span>)
@@ -129,13 +129,16 @@ sym_bonuses &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span cl
 sym_bonuses3 &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">3</span>)
 <span class="kw">names</span>(sym_bonuses3) &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">seq_len</span>(<span class="kw">length</span>(sym_bonuses3)))
 n_row &lt;-<span class="st"> </span><span class="dv">1000</span>
-d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x1 =</span> <span class="kw">rnorm</span>(n_row),
-                <span class="dt">x2 =</span> <span class="kw">sample</span>(<span class="kw">names</span>(sym_bonuses), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
-                <span class="dt">x3 =</span> <span class="kw">sample</span>(<span class="kw">names</span>(sym_bonuses3), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
-                <span class="dt">y =</span> <span class="st">"NoInfo"</span>,
-                <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-d<span class="op">$</span>y[sym_bonuses[d<span class="op">$</span>x2] <span class="op">&gt;</span><span class="st"> </span><span class="kw">pmax</span>(d<span class="op">$</span>x1, sym_bonuses3[d<span class="op">$</span>x3], <span class="kw">runif</span>(n_row))] &lt;-<span class="st"> "Large1"</span>
-d<span class="op">$</span>y[sym_bonuses3[d<span class="op">$</span>x3] <span class="op">&gt;</span><span class="st"> </span><span class="kw">pmax</span>(sym_bonuses[d<span class="op">$</span>x2], d<span class="op">$</span>x1, <span class="kw">runif</span>(n_row))] &lt;-<span class="st"> "Large2"</span>
+d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">x1 =</span> <span class="kw">rnorm</span>(n_row),
+  <span class="dt">x2 =</span> <span class="kw">sample</span>(<span class="kw">names</span>(sym_bonuses), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
+  <span class="dt">x3 =</span> <span class="kw">sample</span>(<span class="kw">names</span>(sym_bonuses3), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
+  <span class="dt">y =</span> <span class="st">"NoInfo"</span>,
+  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+d<span class="op">$</span>y[sym_bonuses[d<span class="op">$</span>x2] <span class="op">&gt;</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">pmax</span>(d<span class="op">$</span>x1, sym_bonuses3[d<span class="op">$</span>x3], <span class="kw">runif</span>(n_row))] &lt;-<span class="st"> "Large1"</span>
+d<span class="op">$</span>y[sym_bonuses3[d<span class="op">$</span>x3] <span class="op">&gt;</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">pmax</span>(sym_bonuses[d<span class="op">$</span>x2], d<span class="op">$</span>x1, <span class="kw">runif</span>(n_row))] &lt;-<span class="st"> "Large2"</span>
 
 knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(<span class="kw">head</span>(d))</code></pre></div>
 <table class="table">
@@ -237,391 +240,228 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 ##  $ NoInfo_x3_catB: num  0 -4.95 -4.95 2.11 2.34 ...
 ##  $ y             : chr  "Large2" "Large2" "Large2" "NoInfo" ...</code></pre>
 <p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
-<p>We to have a start on variable importance.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(cfe_m<span class="op">$</span>score_frame)</code></pre></div>
+<p>We also have per-outcome variable importance.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(
+  cfe_m<span class="op">$</span>score_frame[, 
+                    <span class="kw">c</span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span>), 
+                    <span class="dt">drop =</span> <span class="ot">FALSE</span>])</code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
-<th align="left">varMoves</th>
 <th align="right">rsq</th>
 <th align="right">sig</th>
 <th align="left">outcome_level</th>
-<th align="left">needsSplit</th>
-<th align="right">extraModelDegrees</th>
-<th align="left">origName</th>
-<th align="left">code</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">x1_clean</td>
-<td align="left">TRUE</td>
 <td align="right">0.0558908</td>
 <td align="right">0.0000382</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x1</td>
-<td align="left">clean</td>
 </tr>
 <tr class="even">
 <td align="left">x2_catP</td>
-<td align="left">TRUE</td>
 <td align="right">0.0275238</td>
 <td align="right">0.0038536</td>
 <td align="left">Large1</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catP</td>
 </tr>
 <tr class="odd">
 <td align="left">x2_lev_x_a</td>
-<td align="left">TRUE</td>
 <td align="right">0.2680953</td>
 <td align="right">0.0000000</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x2_lev_x_b</td>
-<td align="left">TRUE</td>
 <td align="right">0.0885021</td>
 <td align="right">0.0000002</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x2_lev_x_c</td>
-<td align="left">TRUE</td>
 <td align="right">0.1060407</td>
 <td align="right">0.0000000</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x3_catP</td>
-<td align="left">TRUE</td>
 <td align="right">0.0000346</td>
 <td align="right">0.9183445</td>
 <td align="left">Large1</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x3</td>
-<td align="left">catP</td>
 </tr>
 <tr class="odd">
 <td align="left">x3_lev_x_1</td>
-<td align="left">TRUE</td>
 <td align="right">0.0141504</td>
 <td align="right">0.0382554</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x3_lev_x_2</td>
-<td align="left">TRUE</td>
 <td align="right">0.0140364</td>
 <td align="right">0.0390420</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x3_lev_x_3</td>
-<td align="left">TRUE</td>
 <td align="right">0.0955004</td>
 <td align="right">0.0000001</td>
 <td align="left">Large1</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x1_clean</td>
-<td align="left">TRUE</td>
 <td align="right">0.0015382</td>
 <td align="right">0.1615618</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x1</td>
-<td align="left">clean</td>
 </tr>
 <tr class="odd">
 <td align="left">x2_catP</td>
-<td align="left">TRUE</td>
 <td align="right">0.0013055</td>
 <td align="right">0.1971725</td>
 <td align="left">Large2</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catP</td>
 </tr>
 <tr class="even">
 <td align="left">x2_lev_x_a</td>
-<td align="left">TRUE</td>
 <td align="right">0.0000387</td>
 <td align="right">0.8242956</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x2_lev_x_b</td>
-<td align="left">TRUE</td>
 <td align="right">0.0014571</td>
 <td align="right">0.1730603</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x2_lev_x_c</td>
-<td align="left">TRUE</td>
 <td align="right">0.0009604</td>
 <td align="right">0.2686774</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x3_catP</td>
-<td align="left">TRUE</td>
 <td align="right">0.0007725</td>
 <td align="right">0.3211959</td>
 <td align="left">Large2</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x3</td>
-<td align="left">catP</td>
 </tr>
 <tr class="even">
 <td align="left">x3_lev_x_1</td>
-<td align="left">TRUE</td>
 <td align="right">0.2602002</td>
 <td align="right">0.0000000</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x3_lev_x_2</td>
-<td align="left">TRUE</td>
 <td align="right">0.2483708</td>
 <td align="right">0.0000000</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x3_lev_x_3</td>
-<td align="left">TRUE</td>
 <td align="right">0.9197595</td>
 <td align="right">0.0000000</td>
 <td align="left">Large2</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x1_clean</td>
-<td align="left">TRUE</td>
 <td align="right">0.0064771</td>
 <td align="right">0.0034947</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x1</td>
-<td align="left">clean</td>
 </tr>
 <tr class="even">
 <td align="left">x2_catP</td>
-<td align="left">TRUE</td>
 <td align="right">0.0040540</td>
 <td align="right">0.0208595</td>
 <td align="left">NoInfo</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catP</td>
 </tr>
 <tr class="odd">
 <td align="left">x2_lev_x_a</td>
-<td align="left">TRUE</td>
 <td align="right">0.0071709</td>
 <td align="right">0.0021196</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x2_lev_x_b</td>
-<td align="left">TRUE</td>
 <td align="right">0.0000340</td>
 <td align="right">0.8323647</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x2_lev_x_c</td>
-<td align="left">TRUE</td>
 <td align="right">0.0060493</td>
 <td align="right">0.0047665</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x2</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x3_catP</td>
-<td align="left">TRUE</td>
 <td align="right">0.0006576</td>
 <td align="right">0.3520950</td>
 <td align="left">NoInfo</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x3</td>
-<td align="left">catP</td>
 </tr>
 <tr class="odd">
 <td align="left">x3_lev_x_1</td>
-<td align="left">TRUE</td>
 <td align="right">0.1838759</td>
 <td align="right">0.0000000</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">x3_lev_x_2</td>
-<td align="left">TRUE</td>
 <td align="right">0.1857824</td>
 <td align="right">0.0000000</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="odd">
 <td align="left">x3_lev_x_3</td>
-<td align="left">TRUE</td>
 <td align="right">0.7372570</td>
 <td align="right">0.0000000</td>
 <td align="left">NoInfo</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="left">x3</td>
-<td align="left">lev</td>
 </tr>
 <tr class="even">
 <td align="left">Large1_x2_catB</td>
-<td align="left">TRUE</td>
 <td align="right">0.2675964</td>
 <td align="right">0.0000000</td>
 <td align="left">Large1</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catB</td>
 </tr>
 <tr class="odd">
 <td align="left">Large1_x3_catB</td>
-<td align="left">TRUE</td>
 <td align="right">0.0946910</td>
 <td align="right">0.0000001</td>
 <td align="left">Large1</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x3</td>
-<td align="left">catB</td>
 </tr>
 <tr class="even">
 <td align="left">Large2_x2_catB</td>
-<td align="left">TRUE</td>
 <td align="right">0.0000291</td>
 <td align="right">0.8472707</td>
 <td align="left">Large2</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catB</td>
 </tr>
 <tr class="odd">
 <td align="left">Large2_x3_catB</td>
-<td align="left">TRUE</td>
 <td align="right">0.9239860</td>
 <td align="right">0.0000000</td>
 <td align="left">Large2</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x3</td>
-<td align="left">catB</td>
 </tr>
 <tr class="even">
 <td align="left">NoInfo_x2_catB</td>
-<td align="left">TRUE</td>
 <td align="right">0.0068238</td>
 <td align="right">0.0027207</td>
 <td align="left">NoInfo</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x2</td>
-<td align="left">catB</td>
 </tr>
 <tr class="odd">
 <td align="left">NoInfo_x3_catB</td>
-<td align="left">TRUE</td>
 <td align="right">0.7326682</td>
 <td align="right">0.0000000</td>
 <td align="left">NoInfo</td>
-<td align="left">TRUE</td>
-<td align="right">2</td>
-<td align="left">x3</td>
-<td align="left">catB</td>
 </tr>
 </tbody>
 </table>
-<p>One can relate these per-target and per-treatment performances back to original columns b aggregating.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>rsq, cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, max)</code></pre></div>
+<p>One can relate these per-target and per-treatment performances back to original columns by aggregating.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>rsq, 
+       cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, 
+       max)</code></pre></div>
 <pre><code>##         x1         x2         x3 
 ## 0.05589076 0.26809534 0.92398602</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, min)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, 
+       cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, 
+       min)</code></pre></div>
 <pre><code>##            x1            x2            x3 
 ##  3.819834e-05  1.892838e-19 5.746904e-258</code></pre>
   </div>
