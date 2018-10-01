@@ -13,12 +13,11 @@ vignette: >
 
 The two functions needed ([`mkCrossFrameMExperiment()`](https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html) and the `S3` method [`prepare.multinomial_plan()`](https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html)) are now part of `vtreat`.
 
+Let's work a specific example: trying to model multi-class `y` as a function of `x1` and `x2`.
+
 ```{r libs}
 library("vtreat")
 ```
-
-
-Let's work a specific example: trying to model multi-class `y` as a function of `x1` and `x2`.
 
 ```{r mkex}
 # create example data
