@@ -336,11 +336,3 @@ devtools::install_github("WinVector/vtreat")
 ## Note
 
 Note: `vtreat` is meant only for "tame names", that is: variables and column names that are also valid *simple* (without quotes) `R` variables names.
-
-Also, `vtreat` now has package options that are not set until the package is attached.   These are 
-
- * `vtreat.use_data.table_binding = TRUE`
-
-Test of these options also defaults to the values above, so behavior should be the same regardless if
-`vteat` is attached or not.  These options determine if `vtreat` will delegate row binding to `data.table`.
-

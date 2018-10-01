@@ -120,8 +120,8 @@
     
 <p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a> can now effectively prepare data for multi-class classification or multinomial modeling.</p>
 <p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html"><code><a href="../reference/prepare.multinomial_plan.html">prepare.multinomial_plan()</a></code></a>) are now part of <code>vtreat</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
 <p>Let’s work a specific example: trying to model multi-class <code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"vtreat"</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create example data</span>
 <span class="kw">set.seed</span>(<span class="dv">326346</span>)
 sym_bonuses &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">3</span>)
@@ -191,7 +191,6 @@ knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentati
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define problem</span>
 vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>)
 y_name &lt;-<span class="st"> "y"</span>
-y_levels &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(d[[y_name]]))
 
 <span class="co"># build the multi-class cross frame and treatments</span>
 cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment</a></span>(d, vars, y_name)</code></pre></div>
@@ -239,8 +238,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 ##  $ NoInfo_x2_catB: num  0 0.0206 -0.2829 0.2536 0.0206 ...
 ##  $ NoInfo_x3_catB: num  0 -4.95 -4.95 2.11 2.34 ...
 ##  $ y             : chr  "Large2" "Large2" "Large2" "NoInfo" ...</code></pre>
-<p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
-<p>We also have per-outcome variable importance.</p>
+<p>We can easily estimate per-outcome variable importance and per-variable variable importance.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(
   cfe_m<span class="op">$</span>score_frame[, 
                     <span class="kw">c</span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span>), 
@@ -464,6 +462,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
        min)</code></pre></div>
 <pre><code>##            x1            x2            x3 
 ##  3.819834e-05  1.892838e-19 5.746904e-258</code></pre>
+<p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

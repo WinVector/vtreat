@@ -98,7 +98,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.3.1'
+ #  [1] '1.3.2'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -129,8 +129,8 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.130498074 0.26400089                 2
- #  2        x    x_catB  catB 0.030345745 0.59013918                 2
+ #  1        x    x_catP  catP 0.060049677 0.44862725                 2
+ #  2        x    x_catB  catB 0.127625394 0.26932340                 2
  #  3        z   z_clean clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -176,9 +176,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.558824e-01 0.1184999                 2
- #  2        x    x_catN  catN 2.131202e-02 0.7301398                 2
- #  3        x    x_catD  catD 4.512437e-02 0.6135229                 2
+ #  1        x    x_catP  catP 2.941176e-01 0.1649303                 2
+ #  2        x    x_catN  catN 6.583561e-02 0.5396025                 2
+ #  3        x    x_catD  catD 9.777348e-03 0.8158041                 2
  #  4        z   z_clean clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -243,9 +243,3 @@ Note
 ----
 
 Note: `vtreat` is meant only for "tame names", that is: variables and column names that are also valid *simple* (without quotes) `R` variables names.
-
-Also, `vtreat` now has package options that are not set until the package is attached. These are
-
--   `vtreat.use_data.table_binding = TRUE`
-
-Test of these options also defaults to the values above, so behavior should be the same regardless if `vteat` is attached or not. These options determine if `vtreat` will delegate row binding to `data.table`.
