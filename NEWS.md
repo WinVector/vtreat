@@ -2,6 +2,7 @@
 # vtreat 1.3.2 2018/10/01
 
  * force parent.frame
+ * Doc fixes
 
 # vtreat 1.3.1 2018/09/10
 
