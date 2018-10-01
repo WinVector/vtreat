@@ -238,7 +238,8 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 ##  $ NoInfo_x2_catB: num  0 0.0206 -0.2829 0.2536 0.0206 ...
 ##  $ NoInfo_x3_catB: num  0 -4.95 -4.95 2.11 2.34 ...
 ##  $ y             : chr  "Large2" "Large2" "Large2" "NoInfo" ...</code></pre>
-<p>We can easily estimate per-outcome variable importance and per-variable variable importance.</p>
+<p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
+<p>We also have per-outcome variable importance.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(
   cfe_m<span class="op">$</span>score_frame[, 
                     <span class="kw">c</span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span>), 
@@ -462,7 +463,6 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
        min)</code></pre></div>
 <pre><code>##            x1            x2            x3 
 ##  3.819834e-05  1.892838e-19 5.746904e-258</code></pre>
-<p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
