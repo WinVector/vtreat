@@ -74,9 +74,8 @@ for(vi in vars) {
 str(prepare(cfe_m$treat_m, d))
 ```
 
-Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns.  These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).
 
-We also have per-outcome variable importance.
+We can easily estimate per-outcome variable importance and per-variable variable importance.
 
 ```{r varimp}
 knitr::kable(
@@ -97,6 +96,8 @@ tapply(cfe_m$score_frame$sig,
        cfe_m$score_frame$origName, 
        min)
 ```
+
+Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns.  These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).
 
 
 
