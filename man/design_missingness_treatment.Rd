@@ -5,7 +5,7 @@
 \title{Design a simple treatment plan to indicate missingingness and perform simple imputation.}
 \usage{
 design_missingness_treatment(dframe, ..., varlist = colnames(dframe),
-  invalid_mark = "_invalid_")
+  invalid_mark = "_invalid_", drop_constant_columns = FALSE)
 }
 \arguments{
 \item{dframe}{data.frame to drive design.}
@@ -15,6 +15,8 @@ design_missingness_treatment(dframe, ..., varlist = colnames(dframe),
 \item{varlist}{character, names of columns to process.}
 
 \item{invalid_mark}{character, name to use for NA levels and novel levels.}
+
+\item{drop_constant_columns}{logical, if TRUE drop columns that do not vary from the treatment plan.}
 }
 \value{
 simple treatment plan.

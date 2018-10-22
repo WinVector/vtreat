@@ -25,6 +25,9 @@
   v
 }
 
+.xform_zap <- function(col, arg) {
+ NULL
+}
 
 
 #' Design a simple treatment plan to indicate missingingness and perform simple imputation.
@@ -33,6 +36,7 @@
 #' @param ... not used, forces later arguments to bind by name.
 #' @param varlist character, names of columns to process.
 #' @param invalid_mark character, name to use for NA levels and novel levels.
+#' @param drop_constant_columns logical, if TRUE drop columns that do not vary from the treatment plan.
 #' @return simple treatment plan.
 #' 
 #' @examples 
@@ -55,7 +59,8 @@
 design_missingness_treatment <- function(dframe, 
                                          ..., 
                                          varlist = colnames(dframe),
-                                         invalid_mark = "_invalid_") {
+                                         invalid_mark = "_invalid_",
+                                         drop_constant_columns = FALSE) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::design_missingness_treatment")
   force(invalid_mark)
@@ -64,6 +69,18 @@ design_missingness_treatment <- function(dframe,
     vi <- dframe[[ci]]
     if(is.null(vi)) {
       stop(paste("vtreat::design_missingness_treatment: column", ci, "not found"))
+    }
+    if(drop_constant_columns) {
+      if(!.has.range(vi)) {
+        ops <- c(ops, 
+                 list(
+                   list(
+                     col = ci,
+                     nm = ci,
+                     f = .xform_zap, 
+                     args = list())))
+        next
+      }
     }
     if(is.logical(vi) || (is.numeric(vi) && (!is.factor(vi)))) {
       vi <- as.numeric(vi)

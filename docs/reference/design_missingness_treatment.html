@@ -151,7 +151,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>design_missingness_treatment</span>(<span class='no'>dframe</span>, <span class='no'>...</span>, <span class='kw'>varlist</span> <span class='kw'>=</span> <span class='fu'>colnames</span>(<span class='no'>dframe</span>),
-  <span class='kw'>invalid_mark</span> <span class='kw'>=</span> <span class='st'>"_invalid_"</span>)</pre>
+  <span class='kw'>invalid_mark</span> <span class='kw'>=</span> <span class='st'>"_invalid_"</span>, <span class='kw'>drop_constant_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +171,10 @@
     <tr>
       <th>invalid_mark</th>
       <td><p>character, name to use for NA levels and novel levels.</p></td>
+    </tr>
+    <tr>
+      <th>drop_constant_columns</th>
+      <td><p>logical, if TRUE drop columns that do not vary from the treatment plan.</p></td>
     </tr>
     </table>
     

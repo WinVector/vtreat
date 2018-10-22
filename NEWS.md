@@ -1,7 +1,8 @@
 
-# vtreat 1.3.2 2018/10/01
+# vtreat 1.3.2 2018/10/21
 
  * force parent.frame
+ * add a drop columns option to design_missingness_treatment()
  * Doc fixes
 
 # vtreat 1.3.1 2018/09/10
