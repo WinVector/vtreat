@@ -109,7 +109,7 @@
       <h1>vtreat Rare Levels</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2018-10-21</h4>
+            <h4 class="date">2018-11-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatRareLevels.Rmd"><code>vignettes/vtreatRareLevels.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatRareLevels.Rmd</code></div>
@@ -219,13 +219,13 @@ testSetTreated<span class="op">$</span>generatedAsRareCode &lt;-<span class="st"
 <span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## 0.00025 0.01000 0.01700 0.02599 0.03050 0.08800</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>code_catP)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span>()</code></pre></div>
 <p><img src="vtreatRareLevels_files/figure-html/unnamed-chunk-6-1.png" width="576"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP[testSetTreated<span class="op">$</span>code_lev_rare<span class="op">==</span><span class="dv">1</span>])</code></pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000250 0.001000 0.002000 0.001763 0.002500 0.002500</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated<span class="op">$</span>code_lev_rare))) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated<span class="op">$</span>code_lev_rare))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
 <p><img src="vtreatRareLevels_files/figure-html/unnamed-chunk-6-2.png" width="576"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP[testSetTreated<span class="op">$</span>newCode])</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -233,8 +233,8 @@ testSetTreated<span class="op">$</span>generatedAsRareCode &lt;-<span class="st"
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(testSetTreated<span class="op">$</span>code_catP[testSetTreated<span class="op">$</span>generatedAsRareCode])</code></pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000250 0.000500 0.001000 0.001348 0.002500 0.003000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated<span class="op">$</span>generatedAsRareCode))) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_density">geom_density</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data=</span>testSetTreated,<span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>code_catP,<span class="dt">color=</span><span class="kw">as.factor</span>(testSetTreated<span class="op">$</span>generatedAsRareCode))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position=</span><span class="st">"bottom"</span>)</code></pre></div>
 <p><img src="vtreatRareLevels_files/figure-html/unnamed-chunk-6-3.png" width="576"></p>
   </div>
 
