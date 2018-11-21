@@ -73,7 +73,7 @@ tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
 
 model <- cv.glmnet(as.matrix(tfs), 
                    cp$crossFrame[[outcome_name]],
-                   alpha = 1,
+                   alpha = 0.5,
                    family = "gaussian", 
                    standardize = FALSE)
 
