@@ -117,3 +117,38 @@ WVPlots::ScatterHist(dTest, "prediction", "y", "fit on test",
                      contour = TRUE)
 ```
 
+Of course, using `wrapr`'s sequencing controls on a non-trivial data processing pipeline starts duplicating functionality already present in [`rquery`](https://github.com/WinVector/rquery)/[`rqdatatable`](https://github.com/WinVector/rqdatatable/).  Let's work with `rqdatatable` instead.
+
+What we want is to wrap partially evaluated functions as `rquery` pipeline nodes.  That can be accomplished easilly.
+
+```{r rq}
+library("rqdatatable")
+
+
+ops <- mk_td("d", colnames(dTrain)) %.>%
+  rq_partial(., 'prepare',
+             fn_package = "vtreat",
+             arg_name = "dframe", 
+             args = list(treatmentplan = cp$treatments,
+                         varRestriction = newvars),
+             columns_produced = newvars)  %.>%
+  select_columns(., newvars) %.>%
+  rq_partial(., 'scale',
+             arg_name = "x", 
+             args = list(center = centering,
+                         scale = scaling),
+             columns_produced = newvars,
+             check_result_details = FALSE) %.>%
+  rq_partial(.,
+             "predict.cv.glmnet",
+             fn_package = "glmnet",
+             arg_name = "newx",
+             args = list(object = model,
+                         s = "lambda.1se"),
+             columns_produced = "1",
+             check_result_details = FALSE)
+
+dTest %.>% ops ->s2
+```
+
+
