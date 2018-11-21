@@ -1,4 +1,8 @@
 
+# vtreat 1.3.3 2018/11/21
+
+ * bump dependencies
+
 # vtreat 1.3.2 2018/11/05
 
  * force parent.frame
