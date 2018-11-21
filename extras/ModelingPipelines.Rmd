@@ -74,7 +74,8 @@ tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
 model <- cv.glmnet(as.matrix(tfs), 
                    cp$crossFrame[[outcome_name]],
                    alpha = 1,
-                   family = "gaussian", standardize = FALSE)
+                   family = "gaussian", 
+                   standardize = FALSE)
 
 pipeline <- pipe_list(
   wrap_fname_S3('prepare',
