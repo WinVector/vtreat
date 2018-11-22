@@ -81,10 +81,6 @@ model <- cv.glmnet(as.matrix(tfs),
                    family = "gaussian", 
                    standardize = FALSE)
 
-# need this function for later
-get_column <- function(d, cname) {
-  as.numeric(d[, cname, drop=TRUE])
-}
 
 pipeline <-
   new("PartialNamedFn",
@@ -110,9 +106,9 @@ pipeline <-
       arg_name = "newx",
       args = list(object = model,
                   s = "lambda.1se"))  %.>%
-  new("PartialFunction",
-      fn = get_column,
-      arg_name = "d",
+  new("SrcFunction", 
+      expr_src = ".[, cname, drop = TRUE]",
+      arg_name = ".",
       args = list(cname = "1"))
 
 cat(format(pipeline))
@@ -141,6 +137,10 @@ What we want is to wrap partially evaluated functions as `rquery` pipeline nodes
 ```{r rq}
 library("rqdatatable")
 
+# need this function for later
+get_column <- function(d, cname) {
+  as.numeric(d[, cname, drop=TRUE])
+}
 
 ops <- mk_td("d", colnames(dTrain)) %.>%
   rq_partial(., 'prepare',

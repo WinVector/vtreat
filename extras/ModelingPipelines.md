@@ -73,9 +73,9 @@ This can be done as follows.
 cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 13:39:32 2018"
-    ## [1] " start cross frame work Thu Nov 22 13:39:38 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 13:39:45 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 14:18:39 2018"
+    ## [1] " start cross frame work Thu Nov 22 14:18:46 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 14:18:53 2018"
 
 ``` r
 # get the list of new variables
@@ -112,10 +112,6 @@ model <- cv.glmnet(as.matrix(tfs),
                    family = "gaussian", 
                    standardize = FALSE)
 
-# need this function for later
-get_column <- function(d, cname) {
-  as.numeric(d[, cname, drop=TRUE])
-}
 
 pipeline <-
   new("PartialNamedFn",
@@ -141,9 +137,9 @@ pipeline <-
       arg_name = "newx",
       args = list(object = model,
                   s = "lambda.1se"))  %.>%
-  new("PartialFunction",
-      fn = get_column,
-      arg_name = "d",
+  new("SrcFunction", 
+      expr_src = ".[, cname, drop = TRUE]",
+      arg_name = ".",
       args = list(cname = "1"))
 
 cat(format(pipeline))
@@ -154,7 +150,7 @@ cat(format(pipeline))
     ##    base::subset(x=., select),
     ##    base::scale(x=., center, scale),
     ##    glmnet::predict.cv.glmnet(newx=., object, s),
-    ##    PartialFunction(d=., cname))
+    ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
 
 ``` r
 dTrain$prediction <- dTrain %.>% pipeline
@@ -196,6 +192,11 @@ library("rqdatatable")
     ## Loading required package: rquery
 
 ``` r
+# need this function for later
+get_column <- function(d, cname) {
+  as.numeric(d[, cname, drop=TRUE])
+}
+
 ops <- mk_td("d", colnames(dTrain)) %.>%
   rq_partial(., 'prepare',
              fn_package = "vtreat",
