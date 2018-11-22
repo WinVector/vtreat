@@ -35,12 +35,12 @@ mk_data <- function(nrows, n_var_cols, n_noise_cols) {
     d[[vari]][d[[vari]]>abs(2*rnorm(nrows))] <- NA
     d[[vari]] <- rlnorm(1, meanlog=10, sdlog = 10)*d[[vari]]
   }
-   for(i in seq_len(n_noise_cols)) {
+  for(i in seq_len(n_noise_cols)) {
     vari = paste0("noise_", sprintf("%03g", i))
     d[[vari]] <- rnorm(nrows)
     d[[vari]][d[[vari]]>abs(2*rnorm(nrows))] <- NA
     d[[vari]] <- rlnorm(1, meanlog=10, sdlog = 10)*d[[vari]]
-   }
+  }
   d
 }
 
@@ -73,9 +73,9 @@ This can be done as follows.
 cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 14:18:39 2018"
-    ## [1] " start cross frame work Thu Nov 22 14:18:46 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 14:18:53 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 15:51:59 2018"
+    ## [1] " start cross frame work Thu Nov 22 15:52:08 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 15:52:18 2018"
 
 ``` r
 # get the list of new variables
@@ -192,36 +192,38 @@ library("rqdatatable")
     ## Loading required package: rquery
 
 ``` r
-# need this function for later
-get_column <- function(d, cname) {
-  as.numeric(d[, cname, drop=TRUE])
-}
-
 ops <- mk_td("d", colnames(dTrain)) %.>%
-  rq_partial(., 'prepare',
-             fn_package = "vtreat",
-             arg_name = "dframe", 
-             args = list(treatmentplan = cp$treatments,
-                         varRestriction = newvars),
+  rq_partial(., 
+             step = new("PartialNamedFn",
+                        fn_name = 'prepare',
+                        fn_package = "vtreat",
+                        arg_name = "dframe", 
+                        args = list(treatmentplan = cp$treatments,
+                                    varRestriction = newvars)),
              columns_produced = newvars)  %.>%
   select_columns(., newvars) %.>%
-  rq_partial(., 'scale',
-             arg_name = "x", 
-             args = list(center = centering,
-                         scale = scaling),
+  rq_partial(.,
+             step = new("PartialNamedFn",
+                        fn_name ='scale',
+                        fn_package = "base",
+                        arg_name = "x",
+                        args = list(center = centering,
+                                    scale = scaling)),
              check_result_details = FALSE) %.>%
   rq_partial(.,
-             "predict.cv.glmnet",
-             fn_package = "glmnet",
-             arg_name = "newx",
-             args = list(object = model,
-                         s = "lambda.1se"),
+             step = new("PartialNamedFn",
+                        fn_name ="predict.cv.glmnet",
+                        fn_package = "glmnet",
+                        arg_name = "newx",
+                        args = list(object = model,
+                                    s = "lambda.1se")),
              check_result_details = FALSE)  %.>%
-  rq_partialf(.,
-              get_column,
-              arg_name = "d",
-              args = list(cname = "1"),
-              check_result_details = FALSE) 
+  rq_partial(.,
+             step = new("SrcFunction", 
+                        expr_src = ".[, cname, drop = TRUE]",
+                        arg_name = ".",
+                        args = list(cname = "1")),
+             check_result_details = FALSE) 
 
 cat(format(ops))
 ```
@@ -248,12 +250,12 @@ cat(format(ops))
     ##   noise_008,
     ##   noise_009,
     ##   ...) %.>%
-    ##  non_sql_node(., vtreat::prepare) %.>%
+    ##  non_sql_node(., vtreat::prepare(dframe=., treatmentplan, varRestriction)) %.>%
     ##  select_columns(.,
     ##    var_001_clean, var_001_isBAD, var_002_clean, var_002_isBAD, var_003_clean, var_003_isBAD, var_004_clean, var_004_isBAD, var_005_clean, var_005_isBAD, var_006_clean, var_006_isBAD, var_007_clean, var_007_isBAD, var_008_clean, var_008_isBAD, var_009_clean, var_009_isBAD, var_010_clean, var_010_isBAD, noise_156_isBAD) %.>%
-    ##  non_sql_node(., base::scale) %.>%
-    ##  non_sql_node(., glmnet::predict.cv.glmnet) %.>%
-    ##  non_sql_node(., function)
+    ##  non_sql_node(., base::scale(x=., center, scale)) %.>%
+    ##  non_sql_node(., glmnet::predict.cv.glmnet(newx=., object, s)) %.>%
+    ##  non_sql_node(., SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
 
 ``` r
 dTest %.>% ops %.>% head
@@ -268,6 +270,10 @@ head(dTest$prediction)
 
     ## [1]  0.328805547  0.017182136 -1.023561866 -0.005864751 -0.856758474
     ## [6]  0.493458036
+
+What is different is which system is holding the pipeline unevaluated.
+Earlier it was the `wrapr::UnaryFn` conventions, and now it is the
+`rquery::relop` conventions.
 
 In the above example we are somewhat fighting `rquery` as `rquery` is
 intended to work only on `data.frame`s and `data.table`s, and in this

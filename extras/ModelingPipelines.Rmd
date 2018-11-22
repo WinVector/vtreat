@@ -21,12 +21,12 @@ mk_data <- function(nrows, n_var_cols, n_noise_cols) {
     d[[vari]][d[[vari]]>abs(2*rnorm(nrows))] <- NA
     d[[vari]] <- rlnorm(1, meanlog=10, sdlog = 10)*d[[vari]]
   }
-   for(i in seq_len(n_noise_cols)) {
+  for(i in seq_len(n_noise_cols)) {
     vari = paste0("noise_", sprintf("%03g", i))
     d[[vari]] <- rnorm(nrows)
     d[[vari]][d[[vari]]>abs(2*rnorm(nrows))] <- NA
     d[[vari]] <- rlnorm(1, meanlog=10, sdlog = 10)*d[[vari]]
-   }
+  }
   d
 }
 
@@ -41,9 +41,9 @@ vars <- setdiff(colnames(dTrain), outcome_name)
 
 Suppose our analysis plan is the following:
 
- * Fix missing values with `vtreat`.
- * Scale and center the data.
- * Model `y` as a function of the other columns using `glmnet`.
+* Fix missing values with `vtreat`.
+* Scale and center the data.
+* Model `y` as a function of the other columns using `glmnet`.
 
 Now both `vtreat` and `glmnet` can scale, but we are going to keep the scaling
 as a separate step to show how composite data preparation pipelines work.
@@ -137,36 +137,39 @@ What we want is to wrap partially evaluated functions as `rquery` pipeline nodes
 ```{r rq}
 library("rqdatatable")
 
-# need this function for later
-get_column <- function(d, cname) {
-  as.numeric(d[, cname, drop=TRUE])
-}
 
 ops <- mk_td("d", colnames(dTrain)) %.>%
-  rq_partial(., 'prepare',
-             fn_package = "vtreat",
-             arg_name = "dframe", 
-             args = list(treatmentplan = cp$treatments,
-                         varRestriction = newvars),
+  rq_partial(., 
+             step = new("PartialNamedFn",
+                        fn_name = 'prepare',
+                        fn_package = "vtreat",
+                        arg_name = "dframe", 
+                        args = list(treatmentplan = cp$treatments,
+                                    varRestriction = newvars)),
              columns_produced = newvars)  %.>%
   select_columns(., newvars) %.>%
-  rq_partial(., 'scale',
-             arg_name = "x", 
-             args = list(center = centering,
-                         scale = scaling),
+  rq_partial(.,
+             step = new("PartialNamedFn",
+                        fn_name ='scale',
+                        fn_package = "base",
+                        arg_name = "x",
+                        args = list(center = centering,
+                                    scale = scaling)),
              check_result_details = FALSE) %.>%
   rq_partial(.,
-             "predict.cv.glmnet",
-             fn_package = "glmnet",
-             arg_name = "newx",
-             args = list(object = model,
-                         s = "lambda.1se"),
+             step = new("PartialNamedFn",
+                        fn_name ="predict.cv.glmnet",
+                        fn_package = "glmnet",
+                        arg_name = "newx",
+                        args = list(object = model,
+                                    s = "lambda.1se")),
              check_result_details = FALSE)  %.>%
-  rq_partialf(.,
-              get_column,
-              arg_name = "d",
-              args = list(cname = "1"),
-              check_result_details = FALSE) 
+  rq_partial(.,
+             step = new("SrcFunction", 
+                        expr_src = ".[, cname, drop = TRUE]",
+                        arg_name = ".",
+                        args = list(cname = "1")),
+             check_result_details = FALSE) 
 
 cat(format(ops))
 
@@ -174,6 +177,8 @@ dTest %.>% ops %.>% head
 
 head(dTest$prediction)
 ```
+
+What is different is which system is holding the pipeline unevaluated.  Earlier it was the `wrapr::UnaryFn` conventions, and now it is the `rquery::relop` conventions.
 
 In the above example we are somewhat fighting `rquery` as `rquery` is intended to work only on `data.frame`s and `data.table`s, and in this example we are pushing around matrices and vectors (the `check_result_details = FALSE` settings are turning off checks that usually enforce types and columns.
 
