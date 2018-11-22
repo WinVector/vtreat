@@ -45,11 +45,14 @@ Suppose our analysis plan is the following:
  * Model `y` as a function of the other columns using `glmnet`.
 
 Now both `vtreat` and `glmnet` can scale, but we are going to keep the scaling
-as a seperate step to show how composite data preperation pipelines work.
+as a separate step to show how composite data preparation pipelines work.
 
 This can be done as follows.
 
 ```{r model1}
+# TODO: parallle on mkCrossFrameNExperiment?
+# TODO: search for alpha?
+
 # design a treatment plan using cross-validation methods
 cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
 
@@ -77,6 +80,10 @@ model <- cv.glmnet(as.matrix(tfs),
                    family = "gaussian", 
                    standardize = FALSE)
 
+get_column <- function(d, cname) {
+  as.numeric(d[, cname, drop=TRUE])
+}
+
 pipeline <- pipe_list(
   wrap_fname_S3('prepare',
                 fn_package = "vtreat",
@@ -94,13 +101,13 @@ pipeline <- pipe_list(
                 fn_package = "glmnet",
                 arg_name = "newx",
                 args = list(object = model,
-                            s = "lambda.1se")))
-  
+                            s = "lambda.1se")),
+  wrap_function_S3(get_column,
+                   arg_name = "d",
+                   args = list(cname = "1")))
 
-#dTrain %.>% pipeline
-#dTest %.>% pipeline
 
-dTrain$prediction <- (dTrain %.>% pipeline)[, 1, drop = TRUE]
+dTrain$prediction <- dTrain %.>% pipeline
 
 WVPlots::ScatterHist(dTrain, "prediction", "y", "fit on training data",
                      smoothmethod = "identity",
@@ -108,7 +115,7 @@ WVPlots::ScatterHist(dTrain, "prediction", "y", "fit on training data",
                      point_alpha = 0.1,
                      contour = TRUE)
 
-dTest$prediction <- (dTest %.>% pipeline)[, 1, drop = TRUE]
+dTest$prediction <- dTest %.>% pipeline
 
 WVPlots::ScatterHist(dTest, "prediction", "y", "fit on test",
                      smoothmethod = "identity",
@@ -119,7 +126,7 @@ WVPlots::ScatterHist(dTest, "prediction", "y", "fit on test",
 
 Of course, using `wrapr`'s sequencing controls on a non-trivial data processing pipeline starts duplicating functionality already present in [`rquery`](https://github.com/WinVector/rquery)/[`rqdatatable`](https://github.com/WinVector/rqdatatable/).  Let's work with `rqdatatable` instead.
 
-What we want is to wrap partially evaluated functions as `rquery` pipeline nodes.  That can be accomplished easilly.
+What we want is to wrap partially evaluated functions as `rquery` pipeline nodes. While they are more opaque than the `pipe_list()` wrapping they include a number of powerful operators.
 
 ```{r rq}
 library("rqdatatable")
@@ -137,7 +144,6 @@ ops <- mk_td("d", colnames(dTrain)) %.>%
              arg_name = "x", 
              args = list(center = centering,
                          scale = scaling),
-             columns_produced = newvars,
              check_result_details = FALSE) %.>%
   rq_partial(.,
              "predict.cv.glmnet",
@@ -145,10 +151,18 @@ ops <- mk_td("d", colnames(dTrain)) %.>%
              arg_name = "newx",
              args = list(object = model,
                          s = "lambda.1se"),
-             columns_produced = "1",
-             check_result_details = FALSE)
+             check_result_details = FALSE)  %.>%
+  rq_partialf(.,
+              get_column,
+              arg_name = "d",
+              args = list(cname = "1"),
+              check_result_details = FALSE) 
 
-dTest %.>% ops ->s2
+dTest %.>% ops %.>% head
+
+head(dTest$prediction)
 ```
 
+In the above example we are somewhat fighting `rquery` as `rquery` is intended to work only on `data.frame`s and `data.table`s, and in this example we are pushing around matrices and vectors (the `check_result_details = FALSE` settings are turning off checks that usually enforce types and columns.
 
+But we now have two examples of a non-trivial modeling workflow saved as a serialiazble object (alternately `pipeline` and `ops`).
