@@ -115,6 +115,7 @@ pipeline <-
       arg_name = "d",
       args = list(cname = "1"))
 
+cat(format(pipeline))
 
 dTrain$prediction <- dTrain %.>% pipeline
 
@@ -166,6 +167,8 @@ ops <- mk_td("d", colnames(dTrain)) %.>%
               arg_name = "d",
               args = list(cname = "1"),
               check_result_details = FALSE) 
+
+cat(format(ops))
 
 dTest %.>% ops %.>% head
 

@@ -73,9 +73,9 @@ This can be done as follows.
 cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 12:43:55 2018"
-    ## [1] " start cross frame work Thu Nov 22 12:44:01 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 12:44:11 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 13:39:32 2018"
+    ## [1] " start cross frame work Thu Nov 22 13:39:38 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 13:39:45 2018"
 
 ``` r
 # get the list of new variables
@@ -146,7 +146,17 @@ pipeline <-
       arg_name = "d",
       args = list(cname = "1"))
 
+cat(format(pipeline))
+```
 
+    ## UnaryFnList(
+    ##    vtreat::prepare(dframe=., treatmentplan, varRestriction),
+    ##    base::subset(x=., select),
+    ##    base::scale(x=., center, scale),
+    ##    glmnet::predict.cv.glmnet(newx=., object, s),
+    ##    PartialFunction(d=., cname))
+
+``` r
 dTrain$prediction <- dTrain %.>% pipeline
 
 WVPlots::ScatterHist(dTrain, "prediction", "y", "fit on training data",
@@ -212,6 +222,39 @@ ops <- mk_td("d", colnames(dTrain)) %.>%
               args = list(cname = "1"),
               check_result_details = FALSE) 
 
+cat(format(ops))
+```
+
+    ## table(d; 
+    ##   y,
+    ##   var_001,
+    ##   var_002,
+    ##   var_003,
+    ##   var_004,
+    ##   var_005,
+    ##   var_006,
+    ##   var_007,
+    ##   var_008,
+    ##   var_009,
+    ##   var_010,
+    ##   noise_001,
+    ##   noise_002,
+    ##   noise_003,
+    ##   noise_004,
+    ##   noise_005,
+    ##   noise_006,
+    ##   noise_007,
+    ##   noise_008,
+    ##   noise_009,
+    ##   ...) %.>%
+    ##  non_sql_node(., vtreat::prepare) %.>%
+    ##  select_columns(.,
+    ##    var_001_clean, var_001_isBAD, var_002_clean, var_002_isBAD, var_003_clean, var_003_isBAD, var_004_clean, var_004_isBAD, var_005_clean, var_005_isBAD, var_006_clean, var_006_isBAD, var_007_clean, var_007_isBAD, var_008_clean, var_008_isBAD, var_009_clean, var_009_isBAD, var_010_clean, var_010_isBAD, noise_156_isBAD) %.>%
+    ##  non_sql_node(., base::scale) %.>%
+    ##  non_sql_node(., glmnet::predict.cv.glmnet) %.>%
+    ##  non_sql_node(., function)
+
+``` r
 dTest %.>% ops %.>% head
 ```
 
