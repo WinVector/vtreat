@@ -3,7 +3,7 @@ title: "Modeling Pipelines"
 output: github_document
 ---
 
-Reusable modeling pipelines are a practical idea that gets re-developed many times in many contexts.  [`wrapr`](https://github.com/WinVector/wrapr)  supplies a particularly powerful pipeline notation and as of version `1.7.1` pipeline re-use system.  We will demonstrate this with the [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
+Reusable modeling pipelines are a practical idea that gets re-developed many times in many contexts.  [`wrapr`](https://github.com/WinVector/wrapr)  supplies a particularly powerful pipeline notation and as of version `1.7.1` pipeline re-use system (notes [here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).  We will demonstrate this with the [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
 
 ```{r setup}
 library("wrapr")

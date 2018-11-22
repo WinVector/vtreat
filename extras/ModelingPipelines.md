@@ -5,7 +5,9 @@ Reusable modeling pipelines are a practical idea that gets re-developed
 many times in many contexts.
 [`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly
 powerful pipeline notation and as of version `1.7.1` pipeline re-use
-system. We will demonstrate this with the
+system (notes
+[here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).
+We will demonstrate this with the
 [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
 
 ``` r
@@ -70,9 +72,9 @@ This can be done as follows.
 cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Wed Nov 21 18:58:54 2018"
-    ## [1] " start cross frame work Wed Nov 21 18:59:00 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Nov 21 18:59:08 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Wed Nov 21 19:04:50 2018"
+    ## [1] " start cross frame work Wed Nov 21 19:04:55 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Nov 21 19:05:03 2018"
 
 ``` r
 # get the list of new variables
