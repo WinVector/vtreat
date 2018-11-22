@@ -25,6 +25,7 @@ library("glmnet")
 ``` r
 library("WVPlots")
 
+# function to make practice data
 mk_data <- function(nrows, n_var_cols, n_noise_cols) {
   d <- data.frame(y = rnorm(nrows))
   for(i in seq_len(n_var_cols)) {
@@ -72,9 +73,9 @@ This can be done as follows.
 cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Wed Nov 21 19:04:50 2018"
-    ## [1] " start cross frame work Wed Nov 21 19:04:55 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Nov 21 19:05:03 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 12:43:55 2018"
+    ## [1] " start cross frame work Thu Nov 22 12:44:01 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 12:44:11 2018"
 
 ``` r
 # get the list of new variables
@@ -111,31 +112,39 @@ model <- cv.glmnet(as.matrix(tfs),
                    family = "gaussian", 
                    standardize = FALSE)
 
+# need this function for later
 get_column <- function(d, cname) {
   as.numeric(d[, cname, drop=TRUE])
 }
 
-pipeline <- pipe_list(
-  wrap_fname_S3('prepare',
-                fn_package = "vtreat",
-                arg_name = "dframe", 
-                args = list(treatmentplan = cp$treatments,
-                            varRestriction = newvars)),
-  wrap_fname_S3('subset',
-                arg_name = "x",
-                args = list(select = newvars)),
-  wrap_fname_S3('scale',
-                arg_name = "x",
-                args = list(center = centering,
-                            scale = scaling)),
-  wrap_fname_S3("predict.cv.glmnet",
-                fn_package = "glmnet",
-                arg_name = "newx",
-                args = list(object = model,
-                            s = "lambda.1se")),
-  wrap_function_S3(get_column,
-                   arg_name = "d",
-                   args = list(cname = "1")))
+pipeline <-
+  new("PartialNamedFn",
+      fn_name = 'prepare',
+      fn_package = "vtreat",
+      arg_name = "dframe", 
+      args = list(treatmentplan = cp$treatments,
+                  varRestriction = newvars)) %.>%
+  new("PartialNamedFn",
+      fn_name ='subset',
+      fn_package = "base",
+      arg_name = "x",
+      args = list(select = newvars))  %.>%
+  new("PartialNamedFn",
+      fn_name ='scale',
+      fn_package = "base",
+      arg_name = "x",
+      args = list(center = centering,
+                  scale = scaling))  %.>%
+  new("PartialNamedFn",
+      fn_name ="predict.cv.glmnet",
+      fn_package = "glmnet",
+      arg_name = "newx",
+      args = list(object = model,
+                  s = "lambda.1se"))  %.>%
+  new("PartialFunction",
+      fn = get_column,
+      arg_name = "d",
+      args = list(cname = "1"))
 
 
 dTrain$prediction <- dTrain %.>% pipeline

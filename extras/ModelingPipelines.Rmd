@@ -11,6 +11,7 @@ library("vtreat")
 library("glmnet")
 library("WVPlots")
 
+# function to make practice data
 mk_data <- function(nrows, n_var_cols, n_noise_cols) {
   d <- data.frame(y = rnorm(nrows))
   for(i in seq_len(n_var_cols)) {
@@ -80,31 +81,39 @@ model <- cv.glmnet(as.matrix(tfs),
                    family = "gaussian", 
                    standardize = FALSE)
 
+# need this function for later
 get_column <- function(d, cname) {
   as.numeric(d[, cname, drop=TRUE])
 }
 
-pipeline <- pipe_list(
-  wrap_fname_S3('prepare',
-                fn_package = "vtreat",
-                arg_name = "dframe", 
-                args = list(treatmentplan = cp$treatments,
-                            varRestriction = newvars)),
-  wrap_fname_S3('subset',
-                arg_name = "x",
-                args = list(select = newvars)),
-  wrap_fname_S3('scale',
-                arg_name = "x",
-                args = list(center = centering,
-                            scale = scaling)),
-  wrap_fname_S3("predict.cv.glmnet",
-                fn_package = "glmnet",
-                arg_name = "newx",
-                args = list(object = model,
-                            s = "lambda.1se")),
-  wrap_function_S3(get_column,
-                   arg_name = "d",
-                   args = list(cname = "1")))
+pipeline <-
+  new("PartialNamedFn",
+      fn_name = 'prepare',
+      fn_package = "vtreat",
+      arg_name = "dframe", 
+      args = list(treatmentplan = cp$treatments,
+                  varRestriction = newvars)) %.>%
+  new("PartialNamedFn",
+      fn_name ='subset',
+      fn_package = "base",
+      arg_name = "x",
+      args = list(select = newvars))  %.>%
+  new("PartialNamedFn",
+      fn_name ='scale',
+      fn_package = "base",
+      arg_name = "x",
+      args = list(center = centering,
+                  scale = scaling))  %.>%
+  new("PartialNamedFn",
+      fn_name ="predict.cv.glmnet",
+      fn_package = "glmnet",
+      arg_name = "newx",
+      args = list(object = model,
+                  s = "lambda.1se"))  %.>%
+  new("PartialFunction",
+      fn = get_column,
+      arg_name = "d",
+      args = list(cname = "1"))
 
 
 dTrain$prediction <- dTrain %.>% pipeline
