@@ -27,6 +27,15 @@ library("WVPlots")
 
 ncore <- parallel::detectCores()
 cl <- parallel::makeCluster(ncore)
+library("doParallel")
+```
+
+    ## Loading required package: iterators
+
+    ## Loading required package: parallel
+
+``` r
+registerDoParallel(cl)
 
 # function to make practice data
 mk_data <- function(nrows, n_var_cols, n_noise_cols) {
@@ -75,9 +84,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 16:35:13 2018"
-    ## [1] " start cross frame work Thu Nov 22 16:35:17 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 16:35:22 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 16:46:12 2018"
+    ## [1] " start cross frame work Thu Nov 22 16:46:16 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 16:46:22 2018"
 
 ``` r
 # get the list of new variables
@@ -129,7 +138,8 @@ cross_scores <- vapply(
                        alpha = alpha,
                        family = "gaussian", 
                        standardize = FALSE,
-                       foldid = foldid)
+                       foldid = foldid, 
+                       parallel = TRUE)
     index <- which(model$lambda == model$lambda.1se)[[1]]
     score <- model$cvm[[index]]
   }, numeric(1))
@@ -147,7 +157,8 @@ model <- cv.glmnet(as.matrix(tfs),
                    alpha = alpha,
                    family = "gaussian", 
                    standardize = FALSE,
-                   nfolds = 5)
+                   nfolds = 5, 
+                   parallel = TRUE)
 
 pipeline <-
   new("PartialNamedFn",

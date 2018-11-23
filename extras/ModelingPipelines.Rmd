@@ -13,6 +13,8 @@ library("WVPlots")
 
 ncore <- parallel::detectCores()
 cl <- parallel::makeCluster(ncore)
+library("doParallel")
+registerDoParallel(cl)
 
 # function to make practice data
 mk_data <- function(nrows, n_var_cols, n_noise_cols) {
@@ -98,7 +100,8 @@ cross_scores <- vapply(
                        alpha = alpha,
                        family = "gaussian", 
                        standardize = FALSE,
-                       foldid = foldid)
+                       foldid = foldid, 
+                       parallel = TRUE)
     index <- which(model$lambda == model$lambda.1se)[[1]]
     score <- model$cvm[[index]]
   }, numeric(1))
@@ -112,7 +115,8 @@ model <- cv.glmnet(as.matrix(tfs),
                    alpha = alpha,
                    family = "gaussian", 
                    standardize = FALSE,
-                   nfolds = 5)
+                   nfolds = 5, 
+                   parallel = TRUE)
 
 pipeline <-
   new("PartialNamedFn",
