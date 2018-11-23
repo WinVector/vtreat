@@ -1,5 +1,5 @@
 
-# vtreat 1.3.3 2018/11/21
+# vtreat 1.3.3 2018/11/23
 
  * bump dependencies
 

@@ -227,14 +227,14 @@
 <a class="sourceLine" id="cb1-30" data-line-number="30">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb1-31" data-line-number="31">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-32" data-line-number="32"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 1.559780e-01 0.22202097                 2</span></a>
-<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 1.177202e-05 0.99153548                 2</span></a>
-<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z   z_clean clean 2.376018e-01 0.13176020                 0</span></a>
-<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span></a>
-<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span></a>
-<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span></a>
-<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 0.285095342 0.09874390                 2</span></a>
+<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 0.117443640 0.28930668                 2</span></a>
+<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z   z_clean clean 0.237601767 0.13176020                 0</span></a>
+<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span></a>
+<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span></a>
 <a class="sourceLine" id="cb1-41" data-line-number="41"></a>
 <a class="sourceLine" id="cb1-42" data-line-number="42"><span class="co"># help("prepare")</span></a>
 <a class="sourceLine" id="cb1-43" data-line-number="43"></a>
@@ -272,9 +272,9 @@
 <a class="sourceLine" id="cb2-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
 <a class="sourceLine" id="cb2-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 1.498471e-01 0.3434338                 2</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 1.646259e-01 0.3186062                 2</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 1.620332e-01 0.3228162                 2</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 3.558824e-01 0.1184999                 2</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 2.131202e-02 0.7301398                 2</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 4.512437e-02 0.6135229                 2</span></a>
 <a class="sourceLine" id="cb2-13" data-line-number="13"> <span class="co">#  4        z   z_clean clean 2.880952e-01 0.1701892                 0</span></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
 <a class="sourceLine" id="cb2-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>
@@ -324,11 +324,8 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>Install with either:</p>
+<p>Install with:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
-<p>or</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"WinVector/vtreat"</span>)</a></code></pre></div>
 </div>
 <div id="note" class="section level2">
 <h2 class="hasAnchor">

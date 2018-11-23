@@ -319,18 +319,12 @@ Related work:
 
 ## Installation
 
-Install with either:
+Install with:
 
 ```{r inst1, eval=FALSE}
 install.packages("vtreat")
 ```
 
-or
-
-```{r inst2, eval=FALSE}
-# install.packages("devtools")
-devtools::install_github("WinVector/vtreat")
-```
 
 
 ## Note

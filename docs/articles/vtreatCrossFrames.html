@@ -163,13 +163,13 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Nov 23 09:31:12 2018"
-## [1] "designing treatments Fri Nov 23 09:31:12 2018"
-## [1] " have initial level statistics Fri Nov 23 09:31:12 2018"
-## [1] " scoring treatments Fri Nov 23 09:31:13 2018"
-## [1] "have treatment plan Fri Nov 23 09:31:13 2018"
-## [1] "rescoring complex variables Fri Nov 23 09:31:13 2018"
-## [1] "done rescoring complex variables Fri Nov 23 09:31:13 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Nov 23 10:54:04 2018"
+## [1] "designing treatments Fri Nov 23 10:54:04 2018"
+## [1] " have initial level statistics Fri Nov 23 10:54:04 2018"
+## [1] " scoring treatments Fri Nov 23 10:54:05 2018"
+## [1] "have treatment plan Fri Nov 23 10:54:05 2018"
+## [1] "rescoring complex variables Fri Nov 23 10:54:05 2018"
+## [1] "done rescoring complex variables Fri Nov 23 10:54:05 2018"</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">)</a>
@@ -239,13 +239,13 @@
 <a class="sourceLine" id="cb12-10" data-line-number="10">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb12-11" data-line-number="11">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb12-12" data-line-number="12">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Nov 23 09:31:13 2018"
-## [1] "designing treatments Fri Nov 23 09:31:13 2018"
-## [1] " have initial level statistics Fri Nov 23 09:31:13 2018"
-## [1] " scoring treatments Fri Nov 23 09:31:13 2018"
-## [1] "have treatment plan Fri Nov 23 09:31:14 2018"
-## [1] "rescoring complex variables Fri Nov 23 09:31:14 2018"
-## [1] "done rescoring complex variables Fri Nov 23 09:31:14 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Nov 23 10:54:06 2018"
+## [1] "designing treatments Fri Nov 23 10:54:06 2018"
+## [1] " have initial level statistics Fri Nov 23 10:54:06 2018"
+## [1] " scoring treatments Fri Nov 23 10:54:06 2018"
+## [1] "have treatment plan Fri Nov 23 10:54:06 2018"
+## [1] "rescoring complex variables Fri Nov 23 10:54:06 2018"
+## [1] "done rescoring complex variables Fri Nov 23 10:54:06 2018"</code></pre>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb14-2" data-line-number="2">  <span class="dt">pruneSig=</span>pruneSig)</a>
 <a class="sourceLine" id="cb14-3" data-line-number="3">newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainTreated),<span class="st">'y'</span>)</a>
@@ -348,9 +348,9 @@
 <a class="sourceLine" id="cb20-5" data-line-number="5">           <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb20-6" data-line-number="6">           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></a>
 <a class="sourceLine" id="cb20-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 09:31:14 2018"
-## [1] " start cross frame work Fri Nov 23 09:31:15 2018"
-## [1] " vtreat::mkCrossFrameCExperiment done Fri Nov 23 09:31:15 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 10:54:06 2018"
+## [1] " start cross frame work Fri Nov 23 10:54:07 2018"
+## [1] " vtreat::mkCrossFrameCExperiment done Fri Nov 23 10:54:08 2018"</code></pre>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments</a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb22-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</a></code></pre></div>
