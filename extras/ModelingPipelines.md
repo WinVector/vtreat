@@ -25,6 +25,9 @@ library("glmnet")
 ``` r
 library("WVPlots")
 
+ncore <- parallel::detectCores()
+cl <- parallel::makeCluster(ncore)
+
 # function to make practice data
 mk_data <- function(nrows, n_var_cols, n_noise_cols) {
   d <- data.frame(y = rnorm(nrows))
@@ -66,16 +69,15 @@ pipelines work.
 This can be done as follows.
 
 ``` r
-# TODO: parallle on mkCrossFrameNExperiment?
-# TODO: search for alpha?
-
 # design a treatment plan using cross-validation methods
-cp <- vtreat::mkCrossFrameNExperiment(dTrain, vars, outcome_name)
+cp <- vtreat::mkCrossFrameNExperiment(
+  dTrain, vars, outcome_name,
+  parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 15:51:59 2018"
-    ## [1] " start cross frame work Thu Nov 22 15:52:08 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 15:52:18 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 16:35:13 2018"
+    ## [1] " start cross frame work Thu Nov 22 16:35:17 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 16:35:22 2018"
 
 ``` r
 # get the list of new variables
@@ -106,12 +108,46 @@ tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
              center = centering,
              scale = scaling)
 
+# build a cross-validation strategy to help us
+# search for a good alph hyper-parameter value
+cplan <- vtreat::kWayStratifiedY(
+  nrow(dTrain), 5, dTrain, dTrain[[outcome_name]])
+# convert the plan to cv.glmnet group notation
+foldid <- numeric(nrow(dTrain))
+for(i in seq_len(length(cplan))) {
+  cpi <- cplan[[i]]
+  foldid[cpi$app] <- i
+}
+
+# search for best cross-validated alpha
+alphas <- seq(0, 1, by=0.05)
+cross_scores <- vapply(
+  alphas,
+  function(alpha) {
+    model <- cv.glmnet(as.matrix(tfs), 
+                       cp$crossFrame[[outcome_name]],
+                       alpha = alpha,
+                       family = "gaussian", 
+                       standardize = FALSE,
+                       foldid = foldid)
+    index <- which(model$lambda == model$lambda.1se)[[1]]
+    score <- model$cvm[[index]]
+  }, numeric(1))
+best_i <- which(cross_scores==min(cross_scores))[[1]]
+alpha <- alphas[[best_i]]
+print(alpha)
+```
+
+    ## [1] 0.65
+
+``` r
+# re-fit model with chosen alpha
 model <- cv.glmnet(as.matrix(tfs), 
                    cp$crossFrame[[outcome_name]],
-                   alpha = 0.5,
+                   alpha = alpha,
                    family = "gaussian", 
-                   standardize = FALSE)
-
+                   standardize = FALSE,
+                   nfolds = 5)
 
 pipeline <-
   new("PartialNamedFn",
@@ -261,15 +297,15 @@ cat(format(ops))
 dTest %.>% ops %.>% head
 ```
 
-    ## [1]  0.328805547  0.017182136 -1.023561866 -0.005864751 -0.856758474
-    ## [6]  0.493458036
+    ## [1]  3.839109e-01  4.911605e-06 -1.113746e+00 -2.311193e-03 -9.336085e-01
+    ## [6]  5.399154e-01
 
 ``` r
 head(dTest$prediction)
 ```
 
-    ## [1]  0.328805547  0.017182136 -1.023561866 -0.005864751 -0.856758474
-    ## [6]  0.493458036
+    ## [1]  3.839109e-01  4.911605e-06 -1.113746e+00 -2.311193e-03 -9.336085e-01
+    ## [6]  5.399154e-01
 
 What is different is which system is holding the pipeline unevaluated.
 Earlier it was the `wrapr::UnaryFn` conventions, and now it is the
@@ -279,7 +315,11 @@ In the above example we are somewhat fighting `rquery` as `rquery` is
 intended to work only on `data.frame`s and `data.table`s, and in this
 example we are pushing around matrices and vectors (the
 `check_result_details = FALSE` settings are turning off checks that
-usually enforce types and columns.
+usually enforce types, columns, and conversions).
 
 But we now have two examples of a non-trivial modeling workflow saved as
 a serialiazble object (alternately `pipeline` and `ops`).
+
+``` r
+parallel::stopCluster(cl)
+```
