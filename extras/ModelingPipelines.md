@@ -84,9 +84,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 16:46:12 2018"
-    ## [1] " start cross frame work Thu Nov 22 16:46:16 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 16:46:22 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Nov 22 21:08:05 2018"
+    ## [1] " start cross frame work Thu Nov 22 21:08:09 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Nov 22 21:08:15 2018"
 
 ``` r
 # get the list of new variables
