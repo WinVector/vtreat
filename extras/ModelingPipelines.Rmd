@@ -217,6 +217,10 @@ pipeline <-
 
 cat(format(pipeline))
 
+pipeline@items
+
+str(pipeline@items[[3]])
+
 dTrain %.>% pipeline %.>% head(.)
 ```
 
@@ -271,30 +275,36 @@ library("rqdatatable")
 
 # pipe line leaving result as a data.frame
 # rquery/rqdatatable prefer to work over data.frames
-pipeline <-
-  new("PartialNamedFn",
-      fn_name = 'prepare',
-      fn_package = "vtreat",
-      arg_name = "dframe", 
-      args = list(treatmentplan = cp$treatments,
-                  varRestriction = newvars)) %.>%
-  new("PartialNamedFn",
-      fn_name ='subset',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(select = newvars))  %.>%
-  new("PartialNamedFn",
-      fn_name ='scale',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(center = centering,
-                  scale = scaling))  %.>%
-  new("PartialNamedFn",
-      fn_name ="predict.cv.glmnet",
-      fn_package = "glmnet",
-      arg_name = "newx",
-      args = list(object = model,
-                  s = "lambda.1se"))
+# also show we can build pipelines without the pipe notation.
+pipeline <- new(
+  "UnaryFnList",
+  items = list(
+    new("PartialNamedFn",
+        fn_name = 'prepare',
+        fn_package = "vtreat",
+        arg_name = "dframe", 
+        args = list(treatmentplan = cp$treatments,
+                    varRestriction = newvars)),
+    new("PartialNamedFn",
+        fn_name ='subset',
+        fn_package = "base",
+        arg_name = "x",
+        args = list(select = newvars)),
+    new("PartialNamedFn",
+        fn_name ='scale',
+        fn_package = "base",
+        arg_name = "x",
+        args = list(center = centering,
+                    scale = scaling)),
+    new("PartialNamedFn",
+        fn_name ="predict.cv.glmnet",
+        fn_package = "glmnet",
+        arg_name = "newx",
+        args = list(object = model,
+                    s = "lambda.1se"))))
+
+cat(format(pipeline))
+
 
 
 ops <- mk_td("d", colnames(dTrain)) %.>%

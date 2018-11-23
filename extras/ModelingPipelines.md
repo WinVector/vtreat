@@ -84,9 +84,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 13:26:02 2018"
-    ## [1] " start cross frame work Fri Nov 23 13:26:05 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 13:26:10 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 15:43:25 2018"
+    ## [1] " start cross frame work Fri Nov 23 15:43:29 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 15:43:35 2018"
 
 ``` r
 # get the list of new variables
@@ -322,6 +322,39 @@ cat(format(pipeline))
     ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
 
 ``` r
+pipeline@items
+```
+
+    ## [[1]]
+    ## [1] "vtreat::prepare(dframe=., treatmentplan, varRestriction)"
+    ## 
+    ## [[2]]
+    ## [1] "base::subset(x=., select)"
+    ## 
+    ## [[3]]
+    ## [1] "base::scale(x=., center, scale)"
+    ## 
+    ## [[4]]
+    ## [1] "glmnet::predict.cv.glmnet(newx=., object, s)"
+    ## 
+    ## [[5]]
+    ## [1] "SrcFunction{ .[, cname, drop = TRUE] }(.=., cname)"
+
+``` r
+str(pipeline@items[[3]])
+```
+
+    ## Formal class 'PartialNamedFn' [package "wrapr"] with 4 slots
+    ##   ..@ fn_name   : chr "scale"
+    ##   ..@ fn_package: chr "base"
+    ##   ..@ arg_name  : chr "x"
+    ##   ..@ args      :List of 2
+    ##   .. ..$ center: Named num [1:21] -3.99e-02 1.45e-01 -4.99e+05 1.47e-01 -7.73e+03 ...
+    ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
+    ##   .. ..$ scale : Named num [1:21] 1.68e-01 3.53e-01 1.95e+06 3.54e-01 3.57e+04 ...
+    ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
+
+``` r
 dTrain %.>% pipeline %.>% head(.)
 ```
 
@@ -400,32 +433,44 @@ library("rqdatatable")
 ``` r
 # pipe line leaving result as a data.frame
 # rquery/rqdatatable prefer to work over data.frames
-pipeline <-
-  new("PartialNamedFn",
-      fn_name = 'prepare',
-      fn_package = "vtreat",
-      arg_name = "dframe", 
-      args = list(treatmentplan = cp$treatments,
-                  varRestriction = newvars)) %.>%
-  new("PartialNamedFn",
-      fn_name ='subset',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(select = newvars))  %.>%
-  new("PartialNamedFn",
-      fn_name ='scale',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(center = centering,
-                  scale = scaling))  %.>%
-  new("PartialNamedFn",
-      fn_name ="predict.cv.glmnet",
-      fn_package = "glmnet",
-      arg_name = "newx",
-      args = list(object = model,
-                  s = "lambda.1se"))
+# also show we can build pipelines without the pipe notation.
+pipeline <- new(
+  "UnaryFnList",
+  items = list(
+    new("PartialNamedFn",
+        fn_name = 'prepare',
+        fn_package = "vtreat",
+        arg_name = "dframe", 
+        args = list(treatmentplan = cp$treatments,
+                    varRestriction = newvars)),
+    new("PartialNamedFn",
+        fn_name ='subset',
+        fn_package = "base",
+        arg_name = "x",
+        args = list(select = newvars)),
+    new("PartialNamedFn",
+        fn_name ='scale',
+        fn_package = "base",
+        arg_name = "x",
+        args = list(center = centering,
+                    scale = scaling)),
+    new("PartialNamedFn",
+        fn_name ="predict.cv.glmnet",
+        fn_package = "glmnet",
+        arg_name = "newx",
+        args = list(object = model,
+                    s = "lambda.1se"))))
 
+cat(format(pipeline))
+```
 
+    ## UnaryFnList(
+    ##    vtreat::prepare(dframe=., treatmentplan, varRestriction),
+    ##    base::subset(x=., select),
+    ##    base::scale(x=., center, scale),
+    ##    glmnet::predict.cv.glmnet(newx=., object, s))
+
+``` r
 ops <- mk_td("d", colnames(dTrain)) %.>%
   rq_partial(., 
              step = pipeline,
