@@ -180,7 +180,10 @@ environment(fn) <- env
 
 This augmented function can be serialized and works when restored, as it has a private environment that is copied with it.
 
-We want a more explicit solution, that shows later code readers exactly what is going on (even if we have to be a bit more verbose). Such a solution is given by `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation.  We can use this system to encode our model prediction pipeline as follows.
+We want a more explicit solution, that shows later code readers exactly what is going on (even if we have to be a bit more verbose). The idea is: when working with others (or even your future self) you do not want things to have worked due to "luck" or objects that happened to volunteer to join the calculation from your environment.  You want to explicitly declare what is in a calculation, so you can see the deceleration later when skimming the code.  "Works on my machine" is the bane of software development, and "alien artifacts" (items of unknown origin and provenance) hiding in a modeling pipeline undermines reproducible research.  Failures are much cheaper during development than in production, so you want to front-load them and find potential issues early.
+
+
+Such a solution is given by `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation.  We can use this system to encode our model prediction pipeline as follows.
 
 ```{r}
 pipeline <-
