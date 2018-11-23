@@ -121,7 +121,7 @@ model <- cv.glmnet(as.matrix(tfs),
 
 The question then is: how do we share such a model?  Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order.
 
-A not quite satisfactory way to do this is to wrap all of the steps into a function which would then capture all of the needed parameters (`cp$treatments`, `newvars`, `centering`, `scaling`, and `model`) in its closure.
+A not quite satisfactory way to do this is to wrap all of the steps into a function which would then capture all of the needed parameters (`cp$treatments`, `newvars`, `centering`, `scaling`, and `model`) in its [closure](https://en.wikipedia.org/wiki/Closure_(computer_programming)).
 
 ```{r}
 fn <- function(.) {
@@ -155,13 +155,32 @@ And then if we read that function back in into a new `R` session and tried to us
 library("wrapr")
 fn <- readRDS("fn.RDS")
 dTrain <- readRDS("dTrain.RDS")
+fn(dTrain)
 #  Error in vtreat::prepare(cp$treatments, ., varRestriction = newvars) : 
 #   object 'cp' not found 
 ```
 
 `R`'s serialization rules do not save the `R_GlobalEnv` environment.  One can work around this by introducing an intermediate environment, but using closures to store data is a bit problematic.  For instance a *lot* of extra stuff tends to leak as was noted [here](http://www.win-vector.com/blog/2014/05/trimming-the-fat-from-glm-models-in-r/).
 
-A better solution is given by `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation.  We can use this system to encode our model prediction pipeline as follows.
+We can identify the problem ahead of time by analyzing `fn`.
+
+```{r codetools}
+codetools::findGlobals(fn, merge = FALSE)
+```
+
+One could then build a custom closure containing the free-variable references.
+
+```{r ctfix}
+env <- new.env(parent = globalenv())
+for(nmi in codetools::findGlobals(fn, merge = FALSE)$variables) {
+  assign(nmi, get(nmi), envir = env)
+}
+environment(fn) <- env
+```
+
+This augmented function can be serialized and works when restored, as it has a private environment that is copied with it.
+
+We want a more explicit solution, that shows later code readers exactly what is going on (even if we have to be a bit more verbose). Such a solution is given by `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation.  We can use this system to encode our model prediction pipeline as follows.
 
 ```{r}
 pipeline <-
@@ -198,7 +217,7 @@ cat(format(pipeline))
 dTrain %.>% pipeline %.>% head(.)
 ```
 
-This pipeline is just a list of steps and values with some extra class annotations.  It can be saved.
+This pipeline is just a list of steps and values with some extra class annotations.  The pipeline can be saved, and contains the required parameters in lists.
 
 ```{r eval=FALSE}
 saveRDS(pipeline, "pipeline.RDS")
@@ -218,6 +237,7 @@ dTrain <- readRDS("dTrain.RDS")
 dTrain %.>% pipeline %.>% head(.)
 ```
 
+What we are seeing here is the typical tension between using function closures as objects (the direct environment manipulation solution) or using objects as environments (the `wrapr` function object solution). The usual phrasings are "closures are poor man's objects" or "objects are poor man's closures."
 
 The `wrapr::UnaryFn` pipeline is very easy to use (so called as the pipeline classes are derived from `wrapr::UnaryFn`).  Once you have set it up you pretty much want to use it (instead of repeating the steps by hand).  For example we can use it to evaluate our fit model performance on both training and test data.
 
@@ -240,7 +260,7 @@ WVPlots::ScatterHist(dTest, "prediction", "y", "fit on test",
                      contour = TRUE)
 ```
 
-One can incorporate saved `UnaryFn` into a larger [`rquery`](https://github.com/WinVector/rquery)/[`rqdatatable`](https://github.com/WinVector/rqdatatable/)  pipeline using the `rq_partial()` node, which takes a `UnaryFn` as an argument.  For example:
+One can incorporate a `UnaryFn` into a larger [`rquery`](https://github.com/WinVector/rquery)/[`rqdatatable`](https://github.com/WinVector/rqdatatable/)  pipeline using the `rq_partial()` node, which takes a `UnaryFn` as an argument.  For example:
 
 
 ```{r rq}
