@@ -84,9 +84,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 19:49:39 2018"
-    ## [1] " start cross frame work Fri Nov 23 19:49:44 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 19:49:50 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 20:22:34 2018"
+    ## [1] " start cross frame work Fri Nov 23 20:22:39 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 20:22:44 2018"
 
 ``` r
 # get the list of new variables
@@ -369,6 +369,7 @@ library("wrapr")
 
 p <- readRDS("pipeline.RDS")
 dTrain <- readRDS("dTrain.RDS")
+dTrain %.>% pipeline %.>% head(.)
 ```
 
     ##           1           2           3           4           5           6 
