@@ -84,9 +84,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 15:43:25 2018"
-    ## [1] " start cross frame work Fri Nov 23 15:43:29 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 15:43:35 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 19:49:39 2018"
+    ## [1] " start cross frame work Fri Nov 23 19:49:44 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 19:49:50 2018"
 
 ``` r
 # get the list of new variables
@@ -283,33 +283,24 @@ prediction pipeline as follows.
 
 ``` r
 pipeline <-
-  new("PartialNamedFn",
-      fn_name = 'prepare',
-      fn_package = "vtreat",
-      arg_name = "dframe", 
-      args = list(treatmentplan = cp$treatments,
-                  varRestriction = newvars)) %.>%
-  new("PartialNamedFn",
-      fn_name ='subset',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(select = newvars))  %.>%
-  new("PartialNamedFn",
-      fn_name ='scale',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(center = centering,
-                  scale = scaling))  %.>%
-  new("PartialNamedFn",
-      fn_name ="predict.cv.glmnet",
-      fn_package = "glmnet",
-      arg_name = "newx",
-      args = list(object = model,
-                  s = "lambda.1se"))  %.>%
-  new("SrcFunction", 
-      expr_src = ".[, cname, drop = TRUE]",
-      arg_name = ".",
-      args = list(cname = "1"))
+  pkgfn("vtreat::prepare",
+        arg_name = "dframe", 
+        args = list(treatmentplan = cp$treatments,
+                    varRestriction = newvars)) %.>%
+  pkgfn("subset",
+        arg_name = "x",
+        args = list(select = newvars))  %.>%
+  pkgfn("scale",
+        arg_name = "x",
+        args = list(center = centering,
+                    scale = scaling))  %.>%
+  pkgfn("glmnet::predict.cv.glmnet",
+        arg_name = "newx",
+        args = list(object = model,
+                    s = "lambda.1se"))  %.>%
+  srcfn(".[, cname, drop = TRUE]",
+        arg_name = ".",
+        args = list(cname = "1"))
 
 cat(format(pipeline))
 ```
@@ -434,29 +425,19 @@ library("rqdatatable")
 # pipe line leaving result as a data.frame
 # rquery/rqdatatable prefer to work over data.frames
 # also show we can build pipelines without the pipe notation.
-pipeline <- new(
-  "UnaryFnList",
-  items = list(
-    new("PartialNamedFn",
-        fn_name = 'prepare',
-        fn_package = "vtreat",
+pipeline <- fnlist(list(
+  pkgfn("vtreat::prepare",
         arg_name = "dframe", 
         args = list(treatmentplan = cp$treatments,
                     varRestriction = newvars)),
-    new("PartialNamedFn",
-        fn_name ='subset',
-        fn_package = "base",
+  pkgfn("subset",
         arg_name = "x",
         args = list(select = newvars)),
-    new("PartialNamedFn",
-        fn_name ='scale',
-        fn_package = "base",
+  pkgfn("scale",
         arg_name = "x",
         args = list(center = centering,
                     scale = scaling)),
-    new("PartialNamedFn",
-        fn_name ="predict.cv.glmnet",
-        fn_package = "glmnet",
+  pkgfn("glmnet::predict.cv.glmnet",
         arg_name = "newx",
         args = list(object = model,
                     s = "lambda.1se"))))

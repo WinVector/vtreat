@@ -187,33 +187,24 @@ Such a solution is given by `wrapr`'s ["function object" abstraction](https://wi
 
 ```{r}
 pipeline <-
-  new("PartialNamedFn",
-      fn_name = 'prepare',
-      fn_package = "vtreat",
-      arg_name = "dframe", 
-      args = list(treatmentplan = cp$treatments,
-                  varRestriction = newvars)) %.>%
-  new("PartialNamedFn",
-      fn_name ='subset',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(select = newvars))  %.>%
-  new("PartialNamedFn",
-      fn_name ='scale',
-      fn_package = "base",
-      arg_name = "x",
-      args = list(center = centering,
-                  scale = scaling))  %.>%
-  new("PartialNamedFn",
-      fn_name ="predict.cv.glmnet",
-      fn_package = "glmnet",
-      arg_name = "newx",
-      args = list(object = model,
-                  s = "lambda.1se"))  %.>%
-  new("SrcFunction", 
-      expr_src = ".[, cname, drop = TRUE]",
-      arg_name = ".",
-      args = list(cname = "1"))
+  pkgfn("vtreat::prepare",
+        arg_name = "dframe", 
+        args = list(treatmentplan = cp$treatments,
+                    varRestriction = newvars)) %.>%
+  pkgfn("subset",
+        arg_name = "x",
+        args = list(select = newvars))  %.>%
+  pkgfn("scale",
+        arg_name = "x",
+        args = list(center = centering,
+                    scale = scaling))  %.>%
+  pkgfn("glmnet::predict.cv.glmnet",
+        arg_name = "newx",
+        args = list(object = model,
+                    s = "lambda.1se"))  %.>%
+  srcfn(".[, cname, drop = TRUE]",
+        arg_name = ".",
+        args = list(cname = "1"))
 
 cat(format(pipeline))
 
@@ -276,29 +267,19 @@ library("rqdatatable")
 # pipe line leaving result as a data.frame
 # rquery/rqdatatable prefer to work over data.frames
 # also show we can build pipelines without the pipe notation.
-pipeline <- new(
-  "UnaryFnList",
-  items = list(
-    new("PartialNamedFn",
-        fn_name = 'prepare',
-        fn_package = "vtreat",
+pipeline <- fnlist(list(
+  pkgfn("vtreat::prepare",
         arg_name = "dframe", 
         args = list(treatmentplan = cp$treatments,
                     varRestriction = newvars)),
-    new("PartialNamedFn",
-        fn_name ='subset',
-        fn_package = "base",
+  pkgfn("subset",
         arg_name = "x",
         args = list(select = newvars)),
-    new("PartialNamedFn",
-        fn_name ='scale',
-        fn_package = "base",
+  pkgfn("scale",
         arg_name = "x",
         args = list(center = centering,
                     scale = scaling)),
-    new("PartialNamedFn",
-        fn_name ="predict.cv.glmnet",
-        fn_package = "glmnet",
+  pkgfn("glmnet::predict.cv.glmnet",
         arg_name = "newx",
         args = list(object = model,
                     s = "lambda.1se"))))
