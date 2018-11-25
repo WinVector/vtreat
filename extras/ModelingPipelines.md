@@ -1,14 +1,7 @@
 Modeling Pipelines
 ================
 
-Reusable modeling pipelines are a practical idea that gets re-developed
-many times in many contexts.
-[`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly
-powerful pipeline notation and as of version `1.7.1` pipeline re-use
-system (notes
-[here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).
-We will demonstrate this with the
-[`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
+Reusable modeling pipelines are a practical idea that gets re-developed many times in many contexts. [`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly powerful pipeline notation, and as of version `1.8.0` pipeline re-use system (notes [here](https://winvector.github.io/wrapr/articles/Function_Objects.html)). We will demonstrate this with the [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
 
 ``` r
 library("wrapr")
@@ -67,13 +60,11 @@ vars <- setdiff(colnames(dTrain), outcome_name)
 
 Suppose our analysis plan is the following:
 
-  - Fix missing values with `vtreat`.
-  - Scale and center the data.
-  - Model `y` as a function of the other columns using `glmnet`.
+-   Fix missing values with `vtreat`.
+-   Scale and center the data.
+-   Model `y` as a function of the other columns using `glmnet`.
 
-Now both `vtreat` and `glmnet` can scale, but we are going to keep the
-scaling as a separate step to show how composite data preparation
-pipelines work.
+Now both `vtreat` and `glmnet` can scale, but we are going to keep the scaling as a separate step to show how composite data preparation pipelines work.
 
 First we combine the pre-processing steps, and a fit model as follows.
 
@@ -84,9 +75,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Fri Nov 23 20:22:34 2018"
-    ## [1] " start cross frame work Fri Nov 23 20:22:39 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Nov 23 20:22:44 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 15:14:04 2018"
+    ## [1] " start cross frame work Sun Nov 25 15:14:09 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 15:14:17 2018"
 
 ``` r
 # get the list of new variables
@@ -161,125 +152,11 @@ model <- cv.glmnet(as.matrix(tfs),
                    parallel = TRUE)
 ```
 
-The question then is: how do we share such a model? Roughly we need to
-share the model, any fit parameters (such as centering and scaling
-choices), *and* the code sequence to apply all of these steps in the
-proper order.
+The question then is: how do we share such a model? Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order.
 
-A not quite satisfactory way to do this is to wrap all of the steps into
-a function which would then capture all of the needed parameters
-(`cp$treatments`, `newvars`, `centering`, `scaling`, and `model`) in its
-[closure](https://en.wikipedia.org/wiki/Closure_\(computer_programming\)).
+A really neat way to do this is the following.
 
-``` r
-fn <- function(.) {
-  . %.>%
-    vtreat::prepare(cp$treatments, ., varRestriction = newvars) %.>%
-    subset(., select = newvars) %.>%
-    scale(., center = centering, scale = scaling) %.>%
-    glmnet::predict.cv.glmnet(model, newx = .,  s = "lambda.1se") %.>%
-    .[, "1", drop = TRUE]
-}
-
-fn(dTrain) %.>% head(.)
-```
-
-    ##           1           2           3           4           5           6 
-    ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
-
-``` r
-print(fn)
-```
-
-    ## function(.) {
-    ##   . %.>%
-    ##     vtreat::prepare(cp$treatments, ., varRestriction = newvars) %.>%
-    ##     subset(., select = newvars) %.>%
-    ##     scale(., center = centering, scale = scaling) %.>%
-    ##     glmnet::predict.cv.glmnet(model, newx = .,  s = "lambda.1se") %.>%
-    ##     .[, "1", drop = TRUE]
-    ## }
-
-``` r
-environment(fn)
-```
-
-    ## <environment: R_GlobalEnv>
-
-It turns out this does not quite work, which is probably among the
-reasons this is not a common method of sharing data processing
-pipelines.
-
-If we were to try to share such a function by saving it as follows.
-
-``` r
-saveRDS(fn, "fn.RDS")
-saveRDS(dTrain, "dTrain.RDS")
-```
-
-And then if we read that function back in into a new `R` session and
-tried to use it, we would see the following error.
-
-``` r
-# Fresh R session, not part of this markdown
-library("wrapr")
-fn <- readRDS("fn.RDS")
-dTrain <- readRDS("dTrain.RDS")
-fn(dTrain)
-#  Error in vtreat::prepare(cp$treatments, ., varRestriction = newvars) : 
-#   object 'cp' not found 
-```
-
-`R`’s serialization rules do not save the `R_GlobalEnv` environment. One
-can work around this by introducing an intermediate environment, but
-using closures to store data is a bit problematic. For instance a *lot*
-of extra stuff tends to leak as was noted
-[here](http://www.win-vector.com/blog/2014/05/trimming-the-fat-from-glm-models-in-r/).
-
-We can identify the problem ahead of time by analyzing `fn`.
-
-``` r
-codetools::findGlobals(fn, merge = FALSE)
-```
-
-    ## $functions
-    ## [1] "::"     "["      "{"      "%.>%"   "$"      "scale"  "subset"
-    ## 
-    ## $variables
-    ## [1] "centering" "cp"        "model"     "newvars"   "scaling"
-
-One could then build a custom closure containing the free-variable
-references.
-
-``` r
-env <- new.env(parent = globalenv())
-for(nmi in codetools::findGlobals(fn, merge = FALSE)$variables) {
-  assign(nmi, get(nmi), envir = env)
-}
-environment(fn) <- env
-```
-
-This augmented function can be serialized and works when restored, as it
-has a private environment that is copied with it.
-
-We want a more explicit solution, that shows later code readers exactly
-what is going on (even if we have to be a bit more verbose). The idea
-is: when working with others (or even your future self) you do not want
-things to have worked due to “luck” or objects that happened to
-volunteer to join the calculation from your environment. You want to
-explicitly declare what is in a calculation, so you can see the
-deceleration later when skimming the code. “Works on my machine” is the
-bane of software development, and “alien artifacts” (items of unknown
-origin and provenance) hiding in a modeling pipeline undermines
-reproducible research. Failures are much cheaper during development than
-in production, so you want to front-load them and find potential issues
-early.
-
-Such a solution is given by `wrapr`’s [“function object”
-abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html),
-which treats names of functions, plus arguments as an efficient notation
-for partial evaluation. We can use this system to encode our model
-prediction pipeline as follows.
+Use `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation. We can use this system to encode our model prediction pipeline as follows.
 
 ``` r
 pipeline <-
@@ -311,6 +188,8 @@ cat(format(pipeline))
     ##    base::scale(x=., center, scale),
     ##    glmnet::predict.cv.glmnet(newx=., object, s),
     ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
+
+The pipeline is a simple list of steps (with some class annotations added).
 
 ``` r
 pipeline@items
@@ -345,6 +224,10 @@ str(pipeline@items[[3]])
     ##   .. ..$ scale : Named num [1:21] 1.68e-01 3.53e-01 1.95e+06 3.54e-01 3.57e+04 ...
     ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
 
+If you do not like pipe notation you can also build the pipeline using [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) list notation.
+
+And you can pipe data into the pipeline.
+
 ``` r
 dTrain %.>% pipeline %.>% head(.)
 ```
@@ -352,16 +235,23 @@ dTrain %.>% pipeline %.>% head(.)
     ##           1           2           3           4           5           6 
     ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
 
-This pipeline is just a list of steps and values with some extra class
-annotations. The pipeline can be saved, and contains the required
-parameters in lists.
+Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
 
 ``` r
+ApplyTo(pipeline, dTrain) %.>% head(.)
+```
+
+    ##           1           2           3           4           5           6 
+    ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
+
+The pipeline can be saved, and contains the required parameters in lists.
+
+``` r
+saveRDS(dTrain, "dTrain.RDS")
 saveRDS(pipeline, "pipeline.RDS")
 ```
 
-And this time the processing pipeline can be read back and used as
-follows.
+Now the processing pipeline can be read back and used as follows.
 
 ``` r
 # Fresh R session , not part of this markdown
@@ -375,145 +265,35 @@ dTrain %.>% pipeline %.>% head(.)
     ##           1           2           3           4           5           6 
     ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
 
-What we are seeing here is the typical tension between using function
-closures as objects (the direct environment manipulation solution) or
-using objects as environments (the `wrapr` function object solution).
-The usual phrasings are “closures are poor man’s objects” or “objects
-are poor man’s closures.”
-
-The `wrapr::UnaryFn` pipeline is very easy to use (so called as the
-pipeline classes are derived from `wrapr::UnaryFn`). Once you have set
-it up you pretty much want to use it (instead of repeating the steps by
-hand). For example we can use it to evaluate our fit model performance
-on both training and test data.
+We can use this pipeline on different data, as we do to create performance plots below.
 
 ``` r
 dTrain$prediction <- dTrain %.>% pipeline
 
-WVPlots::ScatterHist(dTrain, "prediction", "y", "fit on training data",
-                     smoothmethod = "identity",
-                     estimate_sig = TRUE,
-                     point_alpha = 0.1,
-                     contour = TRUE)
+WVPlots::ScatterHist(
+  dTrain, "prediction", "y", "fit on training data",
+  smoothmethod = "identity",
+  estimate_sig = TRUE,
+  point_alpha = 0.1,
+  contour = TRUE)
 ```
 
-![](ModelingPipelines_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](ModelingPipelines_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 dTest$prediction <- dTest %.>% pipeline
 
-WVPlots::ScatterHist(dTest, "prediction", "y", "fit on test",
-                     smoothmethod = "identity",
-                     estimate_sig = TRUE,
-                     point_alpha = 0.1,
-                     contour = TRUE)
+WVPlots::ScatterHist(
+  dTest, "prediction", "y", "fit on test",
+  smoothmethod = "identity",
+  estimate_sig = TRUE,
+  point_alpha = 0.1,
+  contour = TRUE)
 ```
 
-![](ModelingPipelines_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](ModelingPipelines_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
-One can incorporate a `UnaryFn` into a larger
-[`rquery`](https://github.com/WinVector/rquery)/[`rqdatatable`](https://github.com/WinVector/rqdatatable/)
-pipeline using the `rq_partial()` node, which takes a `UnaryFn` as an
-argument. For example:
-
-``` r
-library("rqdatatable")
-```
-
-    ## Loading required package: rquery
-
-``` r
-# pipe line leaving result as a data.frame
-# rquery/rqdatatable prefer to work over data.frames
-# also show we can build pipelines without the pipe notation.
-pipeline <- fnlist(list(
-  pkgfn("vtreat::prepare",
-        arg_name = "dframe", 
-        args = list(treatmentplan = cp$treatments,
-                    varRestriction = newvars)),
-  pkgfn("subset",
-        arg_name = "x",
-        args = list(select = newvars)),
-  pkgfn("scale",
-        arg_name = "x",
-        args = list(center = centering,
-                    scale = scaling)),
-  pkgfn("glmnet::predict.cv.glmnet",
-        arg_name = "newx",
-        args = list(object = model,
-                    s = "lambda.1se"))))
-
-cat(format(pipeline))
-```
-
-    ## UnaryFnList(
-    ##    vtreat::prepare(dframe=., treatmentplan, varRestriction),
-    ##    base::subset(x=., select),
-    ##    base::scale(x=., center, scale),
-    ##    glmnet::predict.cv.glmnet(newx=., object, s))
-
-``` r
-ops <- mk_td("d", colnames(dTrain)) %.>%
-  rq_partial(., 
-             step = pipeline,
-             columns_produced = "1") 
-
-cat(format(ops))
-```
-
-    ## table(d; 
-    ##   y,
-    ##   var_001,
-    ##   var_002,
-    ##   var_003,
-    ##   var_004,
-    ##   var_005,
-    ##   var_006,
-    ##   var_007,
-    ##   var_008,
-    ##   var_009,
-    ##   var_010,
-    ##   noise_001,
-    ##   noise_002,
-    ##   noise_003,
-    ##   noise_004,
-    ##   noise_005,
-    ##   noise_006,
-    ##   noise_007,
-    ##   noise_008,
-    ##   noise_009,
-    ##   ...) %.>%
-    ##  non_sql_node(., UnaryFnList(
-    ##    vtreat::prepare(dframe=., treatmentplan, varRestriction),
-    ##    base::subset(x=., select),
-    ##    base::scale(x=., center, scale),
-    ##    glmnet::predict.cv.glmnet(newx=., object, s)))
-
-``` r
-dTest %.>% ops %.>% head
-```
-
-    ##                1
-    ## 1:  3.839109e-01
-    ## 2:  4.911605e-06
-    ## 3: -1.113746e+00
-    ## 4: -2.311193e-03
-    ## 5: -9.336085e-01
-    ## 6:  5.399154e-01
-
-``` r
-head(dTest$prediction)
-```
-
-    ## [1]  3.839109e-01  4.911605e-06 -1.113746e+00 -2.311193e-03 -9.336085e-01
-    ## [6]  5.399154e-01
-
-Obviously all we did is wrap the `UnaryFn` steps into an `rquery` node,
-but the point is that node could then be part of a larger non-trivial
-data processing pipeline (which also can be saved and shared).
-
-And that is how to effectively save, share, and deploy non-trivial
-modeling workflows.
+And that is how to effectively save, share, and deploy non-trivial modeling workflows.
 
 ``` r
 parallel::stopCluster(cl)
