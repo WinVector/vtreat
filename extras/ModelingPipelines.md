@@ -75,9 +75,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 16:06:12 2018"
-    ## [1] " start cross frame work Sun Nov 25 16:06:15 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 16:06:18 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 16:34:57 2018"
+    ## [1] " start cross frame work Sun Nov 25 16:34:59 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 16:35:03 2018"
 
 ``` r
 # get the list of new variables
@@ -257,9 +257,9 @@ Now the processing pipeline can be read back and used as follows.
 # Fresh R session , not part of this markdown
 library("wrapr")
 
-p <- readRDS("pipeline.RDS")
+pipeline <- readRDS("pipeline.RDS")
 dTrain <- readRDS("dTrain.RDS")
-dTrain %.>% p %.>% head(.)
+dTrain %.>% pipeline %.>% head(.)
 ```
 
     ##           1           2           3           4           5           6 

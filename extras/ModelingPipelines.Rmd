@@ -186,9 +186,9 @@ Now the processing pipeline can be read back and used as follows.
 # Fresh R session , not part of this markdown
 library("wrapr")
 
-p <- readRDS("pipeline.RDS")
+pipeline <- readRDS("pipeline.RDS")
 dTrain <- readRDS("dTrain.RDS")
-dTrain %.>% p %.>% head(.)
+dTrain %.>% pipeline %.>% head(.)
 ```
 ```{r echo=FALSE}
 # simulate reading back for presentation, to make sure values match
