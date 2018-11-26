@@ -142,6 +142,10 @@ lambdas <- m$model$lambda
 s <- m$model$lambda.min
 lambdas <- lambdas[lambdas>=s]
 
+print(nvars)
+print(alpha)
+print(s)
+
 # learn a centering and scaling of the cross-validated 
 # training frame
 tfs <- scale(cp$crossFrame[, newvars, drop = FALSE], 

@@ -94,9 +94,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 07:53:31 2018"
-    ## [1] " start cross frame work Mon Nov 26 07:53:34 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 07:53:41 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 08:15:13 2018"
+    ## [1] " start cross frame work Mon Nov 26 08:15:15 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 08:15:20 2018"
 
 ``` r
 print(cp$method)
@@ -184,7 +184,7 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 3: nvars=38; alpha=0.441 : y = 1.06 : 0.2 secs : infill_ei
 
-    ## [mbo] 4: nvars=346; alpha=1 : y = 1.08 : 2.1 secs : infill_ei
+    ## [mbo] 4: nvars=346; alpha=1 : y = 1.08 : 2.0 secs : infill_ei
 
     ## [mbo] 5: nvars=60; alpha=1 : y = 1.05 : 0.2 secs : infill_ei
 
@@ -192,11 +192,11 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 7: nvars=31; alpha=6.37e-05 : y = 1.06 : 0.2 secs : infill_ei
 
-    ## [mbo] 8: nvars=86; alpha=1 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 8: nvars=86; alpha=1 : y = 1.05 : 0.5 secs : infill_ei
 
-    ## [mbo] 9: nvars=420; alpha=0.815 : y = 1.08 : 3.1 secs : infill_ei
+    ## [mbo] 9: nvars=420; alpha=0.815 : y = 1.08 : 2.6 secs : infill_ei
 
-    ## [mbo] 10: nvars=49; alpha=1 : y = 1.05 : 0.2 secs : infill_ei
+    ## [mbo] 10: nvars=49; alpha=1 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 11: nvars=2; alpha=0.636 : y = 1.39 : 0.1 secs : infill_ei
 
@@ -204,19 +204,19 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 13: nvars=83; alpha=0.365 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 14: nvars=116; alpha=1 : y = 1.06 : 0.5 secs : infill_ei
+    ## [mbo] 14: nvars=116; alpha=1 : y = 1.06 : 0.4 secs : infill_ei
 
-    ## [mbo] 15: nvars=160; alpha=1 : y = 1.07 : 0.7 secs : infill_ei
+    ## [mbo] 15: nvars=160; alpha=1 : y = 1.07 : 0.6 secs : infill_ei
 
     ## [mbo] 16: nvars=55; alpha=0.688 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 17: nvars=107; alpha=1.71e-05 : y = 1.06 : 0.5 secs : infill_ei
+    ## [mbo] 17: nvars=107; alpha=1.71e-05 : y = 1.06 : 0.4 secs : infill_ei
 
     ## [mbo] 18: nvars=227; alpha=1 : y = 1.08 : 1.1 secs : infill_ei
 
-    ## [mbo] 19: nvars=63; alpha=2.06e-06 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 19: nvars=63; alpha=2.06e-06 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 20: nvars=313; alpha=1 : y = 1.08 : 1.9 secs : infill_ei
+    ## [mbo] 20: nvars=313; alpha=1 : y = 1.08 : 1.6 secs : infill_ei
 
     ## [mbo] 21: nvars=66; alpha=0.42 : y = 1.05 : 0.2 secs : infill_ei
 
@@ -224,13 +224,13 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 23: nvars=69; alpha=0.998 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 24: nvars=318; alpha=1.46e-05 : y = 1.12 : 1.9 secs : infill_ei
+    ## [mbo] 24: nvars=318; alpha=1.46e-05 : y = 1.12 : 1.8 secs : infill_ei
 
     ## [mbo] 25: nvars=49; alpha=0.611 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 26: nvars=94; alpha=0.346 : y = 1.05 : 0.4 secs : infill_ei
+    ## [mbo] 26: nvars=94; alpha=0.346 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 27: nvars=137; alpha=0.000819 : y = 1.06 : 0.7 secs : infill_ei
+    ## [mbo] 27: nvars=137; alpha=0.000819 : y = 1.06 : 0.6 secs : infill_ei
 
     ## [mbo] 28: nvars=58; alpha=0.0997 : y = 1.05 : 0.2 secs : infill_ei
 
@@ -242,13 +242,13 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 32: nvars=53; alpha=0.000119 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 33: nvars=420; alpha=6.47e-06 : y = 1.16 : 3.0 secs : infill_ei
+    ## [mbo] 33: nvars=420; alpha=6.47e-06 : y = 1.16 : 2.8 secs : infill_ei
 
-    ## [mbo] 34: nvars=405; alpha=1 : y = 1.08 : 3.4 secs : infill_ei
+    ## [mbo] 34: nvars=405; alpha=1 : y = 1.08 : 2.9 secs : infill_ei
 
-    ## [mbo] 35: nvars=90; alpha=0.732 : y = 1.05 : 0.5 secs : infill_ei
+    ## [mbo] 35: nvars=90; alpha=0.732 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 36: nvars=173; alpha=0.532 : y = 1.07 : 0.8 secs : infill_ei
+    ## [mbo] 36: nvars=173; alpha=0.532 : y = 1.07 : 0.7 secs : infill_ei
 
     ## [mbo] 37: nvars=45; alpha=0.769 : y = 1.05 : 0.2 secs : infill_ei
 
@@ -256,59 +256,59 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 39: nvars=78; alpha=2.35e-06 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 40: nvars=95; alpha=1 : y = 1.05 : 0.5 secs : infill_ei
+    ## [mbo] 40: nvars=95; alpha=1 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 41: nvars=33; alpha=0.669 : y = 1.06 : 0.2 secs : infill_ei
+    ## [mbo] 41: nvars=33; alpha=0.669 : y = 1.06 : 0.1 secs : infill_ei
 
     ## [mbo] 42: nvars=52; alpha=0.443 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 43: nvars=152; alpha=0.332 : y = 1.07 : 0.7 secs : infill_ei
+    ## [mbo] 43: nvars=152; alpha=0.332 : y = 1.07 : 0.6 secs : infill_ei
 
-    ## [mbo] 44: nvars=111; alpha=0.52 : y = 1.06 : 0.5 secs : infill_ei
+    ## [mbo] 44: nvars=111; alpha=0.52 : y = 1.06 : 0.4 secs : infill_ei
 
-    ## [mbo] 45: nvars=251; alpha=1 : y = 1.08 : 1.4 secs : infill_ei
+    ## [mbo] 45: nvars=251; alpha=1 : y = 1.08 : 1.2 secs : infill_ei
 
-    ## [mbo] 46: nvars=64; alpha=0.867 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 46: nvars=64; alpha=0.867 : y = 1.05 : 0.2 secs : infill_ei
 
     ## [mbo] 47: nvars=54; alpha=0.93 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 48: nvars=364; alpha=0.761 : y = 1.08 : 2.4 secs : infill_ei
+    ## [mbo] 48: nvars=364; alpha=0.761 : y = 1.08 : 2.2 secs : infill_ei
 
-    ## [mbo] 49: nvars=69; alpha=3.9e-05 : y = 1.05 : 0.6 secs : infill_ei
+    ## [mbo] 49: nvars=69; alpha=3.9e-05 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 50: nvars=51; alpha=0.351 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 50: nvars=51; alpha=0.351 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 51: nvars=52; alpha=0.0537 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 51: nvars=52; alpha=0.0537 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 52: nvars=61; alpha=0.53 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 52: nvars=61; alpha=0.53 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 53: nvars=291; alpha=1 : y = 1.08 : 1.7 secs : infill_ei
+    ## [mbo] 53: nvars=291; alpha=1 : y = 1.08 : 1.5 secs : infill_ei
 
-    ## [mbo] 54: nvars=97; alpha=9.38e-05 : y = 1.05 : 0.8 secs : infill_ei
+    ## [mbo] 54: nvars=97; alpha=9.38e-05 : y = 1.05 : 0.5 secs : infill_ei
 
-    ## [mbo] 55: nvars=55; alpha=0.000316 : y = 1.05 : 0.2 secs : infill_ei
+    ## [mbo] 55: nvars=55; alpha=0.000316 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 56: nvars=53; alpha=0.77 : y = 1.05 : 0.2 secs : infill_ei
+    ## [mbo] 56: nvars=53; alpha=0.77 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 57: nvars=52; alpha=0.206 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 58: nvars=53; alpha=1 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 59: nvars=270; alpha=5.14e-05 : y = 1.11 : 1.8 secs : infill_ei
+    ## [mbo] 59: nvars=270; alpha=5.14e-05 : y = 1.11 : 2.1 secs : infill_ei
 
     ## [mbo] 60: nvars=81; alpha=0.101 : y = 1.05 : 0.4 secs : infill_ei
 
     ## [mbo] 61: nvars=76; alpha=0.999 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 62: nvars=51; alpha=0.000118 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 62: nvars=51; alpha=0.000118 : y = 1.05 : 0.4 secs : infill_ei
 
     ## [mbo] 63: nvars=79; alpha=0.525 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 64: nvars=42; alpha=8.17e-05 : y = 1.06 : 0.4 secs : infill_ei
+    ## [mbo] 64: nvars=42; alpha=8.17e-05 : y = 1.06 : 0.3 secs : infill_ei
 
     ## [mbo] 65: nvars=30; alpha=0.311 : y = 1.06 : 0.2 secs : infill_ei
 
-    ## [mbo] 66: nvars=57; alpha=0.819 : y = 1.05 : 0.4 secs : infill_ei
+    ## [mbo] 66: nvars=57; alpha=0.819 : y = 1.05 : 0.2 secs : infill_ei
 
     ## [mbo] 67: nvars=135; alpha=1 : y = 1.06 : 0.6 secs : infill_ei
 
@@ -320,9 +320,9 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 71: nvars=85; alpha=0.000229 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 72: nvars=53; alpha=0.39 : y = 1.05 : 0.2 secs : infill_ei
+    ## [mbo] 72: nvars=53; alpha=0.39 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 73: nvars=52; alpha=0.32 : y = 1.05 : 0.2 secs : infill_ei
+    ## [mbo] 73: nvars=52; alpha=0.32 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 74: nvars=60; alpha=0.000125 : y = 1.05 : 0.3 secs : infill_ei
 
@@ -348,27 +348,27 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 85: nvars=53; alpha=0.722 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 86: nvars=63; alpha=0.24 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 86: nvars=63; alpha=0.24 : y = 1.05 : 0.4 secs : infill_ei
 
     ## [mbo] 87: nvars=75; alpha=0.000222 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 88: nvars=100; alpha=0.204 : y = 1.06 : 0.4 secs : infill_ei
 
-    ## [mbo] 89: nvars=214; alpha=0.635 : y = 1.08 : 1.2 secs : infill_ei
+    ## [mbo] 89: nvars=214; alpha=0.635 : y = 1.08 : 0.9 secs : infill_ei
 
-    ## [mbo] 90: nvars=53; alpha=0.592 : y = 1.05 : 0.4 secs : infill_ei
+    ## [mbo] 90: nvars=53; alpha=0.592 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 91: nvars=67; alpha=0.733 : y = 1.05 : 0.2 secs : infill_ei
+    ## [mbo] 91: nvars=67; alpha=0.733 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 92: nvars=72; alpha=0.812 : y = 1.05 : 0.3 secs : infill_ei
 
     ## [mbo] 93: nvars=93; alpha=0.0734 : y = 1.05 : 0.4 secs : infill_ei
 
-    ## [mbo] 94: nvars=77; alpha=0.29 : y = 1.05 : 0.4 secs : infill_ei
+    ## [mbo] 94: nvars=77; alpha=0.29 : y = 1.05 : 0.3 secs : infill_ei
 
-    ## [mbo] 95: nvars=50; alpha=0.000182 : y = 1.05 : 0.3 secs : infill_ei
+    ## [mbo] 95: nvars=50; alpha=0.000182 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 96: nvars=41; alpha=0.999 : y = 1.06 : 0.3 secs : infill_ei
+    ## [mbo] 96: nvars=41; alpha=0.999 : y = 1.06 : 0.2 secs : infill_ei
 
     ## [mbo] 97: nvars=53; alpha=0.348 : y = 1.05 : 0.2 secs : infill_ei
 
@@ -376,7 +376,7 @@ run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info 
 
     ## [mbo] 99: nvars=50; alpha=0.242 : y = 1.05 : 0.2 secs : infill_ei
 
-    ## [mbo] 100: nvars=53; alpha=0.811 : y = 1.05 : 0.4 secs : infill_ei
+    ## [mbo] 100: nvars=53; alpha=0.811 : y = 1.05 : 0.2 secs : infill_ei
 
 ``` r
 opt <- run$x
@@ -406,6 +406,24 @@ lambdas <- m$model$lambda
 s <- m$model$lambda.min
 lambdas <- lambdas[lambdas>=s]
 
+print(nvars)
+```
+
+    ## [1] 53
+
+``` r
+print(alpha)
+```
+
+    ## [1] 0.0001189942
+
+``` r
+print(s)
+```
+
+    ## [1] 0.03029936
+
+``` r
 # learn a centering and scaling of the cross-validated 
 # training frame
 tfs <- scale(cp$crossFrame[, newvars, drop = FALSE], 

@@ -118,11 +118,12 @@ cross_scores <- do.call(rbind, cross_scores)
 cross_scores$alpha = alphas
 best_i <- which(cross_scores$score==min(cross_scores$score))[[1]]
 alpha <- alphas[[best_i]]
-lambda <- cross_scores$best_lambda[[best_i]]
+s <- cross_scores$best_lambda[[best_i]]
 lambdas <- cross_scores$lambdas[[best_i]]
-lambdas <- lambdas[lambdas>=lambda]
+lambdas <- lambdas[lambdas>=s]
+print(length(newvars))
 print(alpha)
-print(lambda)
+print(s)
 
 # show cross-val results
 ggplot(data = cross_scores,
@@ -131,14 +132,14 @@ ggplot(data = cross_scores,
   geom_line() +
   ggtitle("best cross validated mean loss as function of alpha")
 
-pf <- data.frame(lambda = cross_scores$lambdas[[best_i]],
+pf <- data.frame(s = cross_scores$lambdas[[best_i]],
                  cvm = cross_scores$cvm[[best_i]])
 ggplot(data = pf,
-       aes(x = lambda, y = cvm)) +
+       aes(x = s, y = cvm)) +
   geom_point() +
   geom_line() +
   scale_x_log10() +
-  ggtitle("cross validated  mean loss as function of lambda",
+  ggtitle("cross validated  mean loss as function of lambda/s",
           subtitle = paste("alpha =", alpha))
 
 # re-fit model with chosen alpha
@@ -172,7 +173,7 @@ pipeline <-
   pkgfn("glmnet::predict.glmnet",
         arg_name = "newx",
         args = list(object = model,
-                    s = lambda))  %.>%
+                    s = s))  %.>%
   srcfn(".[, cname, drop = TRUE]",
         arg_name = ".",
         args = list(cname = "1"))

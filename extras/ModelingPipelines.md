@@ -81,9 +81,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 07:53:00 2018"
-    ## [1] " start cross frame work Mon Nov 26 07:53:03 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 07:53:10 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 08:14:11 2018"
+    ## [1] " start cross frame work Mon Nov 26 08:14:13 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 08:14:18 2018"
 
 ``` r
 print(cp$method)
@@ -152,16 +152,22 @@ cross_scores <- do.call(rbind, cross_scores)
 cross_scores$alpha = alphas
 best_i <- which(cross_scores$score==min(cross_scores$score))[[1]]
 alpha <- alphas[[best_i]]
-lambda <- cross_scores$best_lambda[[best_i]]
+s <- cross_scores$best_lambda[[best_i]]
 lambdas <- cross_scores$lambdas[[best_i]]
-lambdas <- lambdas[lambdas>=lambda]
+lambdas <- lambdas[lambdas>=s]
+print(length(newvars))
+```
+
+    ## [1] 21
+
+``` r
 print(alpha)
 ```
 
     ## [1] 0
 
 ``` r
-print(lambda)
+print(s)
 ```
 
     ## [1] 0.02292036
@@ -178,14 +184,14 @@ ggplot(data = cross_scores,
 ![](ModelingPipelines_files/figure-markdown_github/model1-1.png)
 
 ``` r
-pf <- data.frame(lambda = cross_scores$lambdas[[best_i]],
+pf <- data.frame(s = cross_scores$lambdas[[best_i]],
                  cvm = cross_scores$cvm[[best_i]])
 ggplot(data = pf,
-       aes(x = lambda, y = cvm)) +
+       aes(x = s, y = cvm)) +
   geom_point() +
   geom_line() +
   scale_x_log10() +
-  ggtitle("cross validated  mean loss as function of lambda",
+  ggtitle("cross validated  mean loss as function of lambda/s",
           subtitle = paste("alpha =", alpha))
 ```
 
@@ -223,7 +229,7 @@ pipeline <-
   pkgfn("glmnet::predict.glmnet",
         arg_name = "newx",
         args = list(object = model,
-                    s = lambda))  %.>%
+                    s = s))  %.>%
   srcfn(".[, cname, drop = TRUE]",
         arg_name = ".",
         args = list(cname = "1"))
