@@ -3,7 +3,7 @@ title: "Modeling Pipelines HP"
 output: github_document
 ---
 
-Workflow similar to [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelines.md), but much more hyper parameter tuning.  Notice it *didn't* actually improve the held-out model.
+Workflow similar to [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelines.md), but much more hyper parameter tuning.  Notice it *didn't* actually improve the held-out model.  Our advice is to not always treat the number of variables as just another hyper parameter, but instead do a simple initial filtering step.
 
 
 ```{r}

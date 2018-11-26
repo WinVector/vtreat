@@ -251,8 +251,11 @@ WVPlots::ScatterHist(
 
 And that is how to effectively save, share, and deploy non-trivial modeling workflows.
 
+(We have another run [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md) showing why we do not recommend always using the number of variables as "just another hyperparameter", but instead using simple threshold based filtering.)
 
 ```{r cleanup}
 parallel::stopCluster(cl)
 ```
+
+
 

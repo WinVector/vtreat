@@ -81,9 +81,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 07:32:33 2018"
-    ## [1] " start cross frame work Mon Nov 26 07:32:37 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 07:32:44 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 07:53:00 2018"
+    ## [1] " start cross frame work Mon Nov 26 07:53:03 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 07:53:10 2018"
 
 ``` r
 print(cp$method)
@@ -343,6 +343,8 @@ WVPlots::ScatterHist(
 ![](ModelingPipelines_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
 And that is how to effectively save, share, and deploy non-trivial modeling workflows.
+
+(We have another run [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md) showing why we do not recommend always using the number of variables as "just another hyperparameter", but instead using simple threshold based filtering.)
 
 ``` r
 parallel::stopCluster(cl)
