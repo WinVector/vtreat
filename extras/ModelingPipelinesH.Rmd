@@ -1,0 +1,207 @@
+---
+title: "Modeling Pipelines HP"
+output: github_document
+---
+
+Workflow similar to [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelines.md), but much more hyper parameter tuning.  Notice it *didn't* actually improve the held-out model.
+
+
+```{r}
+library("wrapr")
+library("vtreat")
+library("glmnet")
+library("ggplot2")
+library("WVPlots")
+library("doParallel")
+# https://arxiv.org/abs/1703.03373
+library("mlrMBO")
+
+ncore <- parallel::detectCores()
+cl <- parallel::makeCluster(ncore)
+registerDoParallel(cl)
+
+# function to make practice data
+mk_data <- function(nrows, n_var_cols, n_noise_cols) {
+  d <- data.frame(y = rnorm(nrows))
+  for(i in seq_len(n_var_cols)) {
+    vari = paste0("var_", sprintf("%03g", i))
+    d[[vari]] <- rnorm(nrows)
+    d$y <- d$y + (2/n_var_cols)*d[[vari]]
+    d[[vari]][d[[vari]]>abs(2*rnorm(nrows))] <- NA
+    d[[vari]] <- rlnorm(1, meanlog=10, sdlog = 10)*d[[vari]]
+  }
+  for(i in seq_len(n_noise_cols)) {
+    vari = paste0("noise_", sprintf("%03g", i))
+    d[[vari]] <- rnorm(nrows)
+    d[[vari]][d[[vari]]>abs(2*rnorm(nrows))] <- NA
+    d[[vari]] <- rlnorm(1, meanlog=10, sdlog = 10)*d[[vari]]
+  }
+  d
+}
+
+set.seed(2018)
+d <- mk_data(10000, 10, 200)
+is_train <- runif(nrow(d))<=0.5
+dTrain <- d[is_train, , drop = FALSE]
+dTest <- d[!is_train, , drop = FALSE]
+outcome_name <- "y"
+vars <- setdiff(colnames(dTrain), outcome_name)
+
+# design a treatment plan using cross-validation methods
+ncross <- 5
+cplan <- vtreat::kWayStratifiedY(
+  nrow(dTrain), ncross, dTrain, dTrain[[outcome_name]])
+cp <- vtreat::mkCrossFrameNExperiment(
+  dTrain, vars, outcome_name,
+  splitFunction = pre_comp_xval(nrow(dTrain), ncross, cplan),
+  ncross = ncross,
+  parallelCluster = cl)
+print(cp$method)
+
+# sort the variables by possible sig
+sf <- cp$treatments$scoreFrame
+orderedvars <- sf$varName[order(sf$sig)]
+
+# build a cross-validation strategy to help us
+# search for a good alpha hyper-parameter value
+# convert the plan to cv.glmnet group notation
+foldid <- numeric(nrow(dTrain))
+for(i in seq_len(length(cplan))) {
+  cpi <- cplan[[i]]
+  foldid[cpi$app] <- i
+}
+
+
+build_model <- function(nvars, alpha) {
+  newvars <- orderedvars[seq_len(nvars)]
+  
+  # learn a centering and scaling of the cross-validated 
+  # training frame
+  tfs <- scale(cp$crossFrame[, newvars, drop = FALSE], 
+               center = TRUE, scale = TRUE)
+  centering <- attr(tfs, "scaled:center")
+  scaling <- attr(tfs, "scaled:scale")
+  
+  # apply the centering and scaling to the cross-validated 
+  # training frame
+  tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
+               center = centering,
+               scale = scaling)
+  
+  # look for best lambda
+  model <- cv.glmnet(as.matrix(tfs), 
+                     cp$crossFrame[[outcome_name]],
+                     alpha = alpha,
+                     family = "gaussian", 
+                     standardize = FALSE,
+                     foldid = foldid, 
+                     parallel = TRUE)
+  index <- which(model$lambda == model$lambda.min)[[1]]
+  score <- model$cvm[[index]]
+  list(model = model, score = score)
+}
+
+fn = function(x) {
+  scored_model <- build_model(nvars = x[[1]], alpha = x[[2]])
+  scored_model$score
+}
+
+# https://cran.r-project.org/web/packages/mlrMBO/vignettes/mlrMBO.html
+obj_fn <- makeSingleObjectiveFunction(
+  name = "loss",
+  fn = function(x) {
+    scored_model <- build_model(nvars = x[[1]], alpha = x[[2]])
+    scored_model$score
+  },
+  par.set = makeParamSet(
+    makeIntegerVectorParam("nvars", len = 1L, lower = 2L, upper = length(orderedvars)),
+    makeNumericVectorParam("alpha", len = 1L, lower = 0, upper = 1)
+  ),
+  minimize = TRUE
+)
+des = generateDesign(n = 20, par.set = getParamSet(obj_fn), fun = lhs::randomLHS)
+des$y <- vapply(seq_len(nrow(des)),
+                function(i) {
+                  obj_fn(c(des$nvars[[i]],des$alpha[[i]]))
+                }, numeric(1))
+surr_km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", control = list(trace = FALSE))
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 100)
+control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
+run = mbo(obj_fn, design = des, learner = surr_km, control = control, show.info = TRUE)
+opt <- run$x
+print(opt)
+print(run$y)
+alpha <- opt$alpha
+nvars <- opt$nvars
+
+# re-fit model with chosen alpha and nvars
+m <- build_model(nvars, alpha)
+newvars <- orderedvars[seq_len(nvars)]
+lambdas <- m$model$lambda
+s <- m$model$lambda.min
+lambdas <- lambdas[lambdas>=s]
+
+# learn a centering and scaling of the cross-validated 
+# training frame
+tfs <- scale(cp$crossFrame[, newvars, drop = FALSE], 
+             center = TRUE, scale = TRUE)
+centering <- attr(tfs, "scaled:center")
+scaling <- attr(tfs, "scaled:scale")
+
+# apply the centering and scaling to the cross-validated 
+# training frame
+tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
+             center = centering,
+             scale = scaling)
+
+model <- glmnet(as.matrix(tfs), 
+                cp$crossFrame[[outcome_name]],
+                alpha = alpha,
+                family = "gaussian", 
+                standardize = FALSE,
+                lambda = lambdas)
+
+pipeline <-
+  pkgfn("vtreat::prepare",
+        arg_name = "dframe", 
+        args = list(treatmentplan = cp$treatments,
+                    varRestriction = newvars)) %.>%
+  pkgfn("subset",
+        arg_name = "x",
+        args = list(select = newvars))  %.>%
+  pkgfn("scale",
+        arg_name = "x",
+        args = list(center = centering,
+                    scale = scaling))  %.>%
+  pkgfn("glmnet::predict.glmnet",
+        arg_name = "newx",
+        args = list(object = model,
+                    s = s))  %.>%
+  srcfn(".[, cname, drop = TRUE]",
+        arg_name = ".",
+        args = list(cname = "1"))
+
+cat(format(pipeline))
+
+dTrain$prediction <- dTrain %.>% pipeline
+
+WVPlots::ScatterHist(
+  dTrain, "prediction", "y", "fit on training data",
+  smoothmethod = "identity",
+  estimate_sig = TRUE,
+  point_alpha = 0.1,
+  contour = TRUE)
+
+dTest$prediction <- dTest %.>% pipeline
+
+WVPlots::ScatterHist(
+  dTest, "prediction", "y", "fit on test",
+  smoothmethod = "identity",
+  estimate_sig = TRUE,
+  point_alpha = 0.1,
+  contour = TRUE)
+
+parallel::stopCluster(cl)
+```
+
