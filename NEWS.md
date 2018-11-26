@@ -1,6 +1,7 @@
 
-# vtreat 1.3.3 2018/11/23
+# vtreat 1.3.3 2018/11/25
 
+ * add pre-computed split plan.
  * bump dependencies
 
 # vtreat 1.3.2 2018/11/05

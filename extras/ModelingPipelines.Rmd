@@ -58,9 +58,15 @@ First we combine the pre-processing steps, and a fit model as follows.
 
 ```{r model1}
 # design a treatment plan using cross-validation methods
+ncross <- 5
+cplan <- vtreat::kWayStratifiedY(
+  nrow(dTrain), ncross, dTrain, dTrain[[outcome_name]])
 cp <- vtreat::mkCrossFrameNExperiment(
   dTrain, vars, outcome_name,
+  splitFunction = pre_comp_xval(nrow(dTrain), ncross, cplan),
+  ncross = ncross,
   parallelCluster = cl)
+print(cp$method)
 
 # get the list of new variables
 sf <- cp$treatments$scoreFrame
@@ -82,8 +88,6 @@ tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
 
 # build a cross-validation strategy to help us
 # search for a good alpha hyper-parameter value
-cplan <- vtreat::kWayStratifiedY(
-  nrow(dTrain), 5, dTrain, dTrain[[outcome_name]])
 # convert the plan to cv.glmnet group notation
 foldid <- numeric(nrow(dTrain))
 for(i in seq_len(length(cplan))) {

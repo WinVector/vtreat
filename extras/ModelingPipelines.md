@@ -71,14 +71,25 @@ First we combine the pre-processing steps, and a fit model as follows.
 
 ``` r
 # design a treatment plan using cross-validation methods
+ncross <- 5
+cplan <- vtreat::kWayStratifiedY(
+  nrow(dTrain), ncross, dTrain, dTrain[[outcome_name]])
 cp <- vtreat::mkCrossFrameNExperiment(
   dTrain, vars, outcome_name,
+  splitFunction = pre_comp_xval(nrow(dTrain), ncross, cplan),
+  ncross = ncross,
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 18:53:35 2018"
-    ## [1] " start cross frame work Sun Nov 25 18:53:37 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 18:53:41 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 19:21:58 2018"
+    ## [1] " start cross frame work Sun Nov 25 19:22:00 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 19:22:06 2018"
+
+``` r
+print(cp$method)
+```
+
+    ## [1] "kwaycrossystratified (pre-computed 5053 5 )"
 
 ``` r
 # get the list of new variables
@@ -111,8 +122,6 @@ tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
 
 # build a cross-validation strategy to help us
 # search for a good alpha hyper-parameter value
-cplan <- vtreat::kWayStratifiedY(
-  nrow(dTrain), 5, dTrain, dTrain[[outcome_name]])
 # convert the plan to cv.glmnet group notation
 foldid <- numeric(nrow(dTrain))
 for(i in seq_len(length(cplan))) {
@@ -155,7 +164,7 @@ print(alpha)
 print(lambda)
 ```
 
-    ## [1] 0.02294242
+    ## [1] 0.02292036
 
 ``` r
 # show cross-val results
@@ -259,7 +268,7 @@ str(pipeline@items[[3]])
     ##   ..@ fn_package: chr "base"
     ##   ..@ arg_name  : chr "x"
     ##   ..@ args      :List of 2
-    ##   .. ..$ center: Named num [1:21] -3.99e-02 1.45e-01 -4.99e+05 1.47e-01 -7.73e+03 ...
+    ##   .. ..$ center: Named num [1:21] -3.98e-02 1.45e-01 -4.99e+05 1.47e-01 -7.73e+03 ...
     ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
     ##   .. ..$ scale : Named num [1:21] 1.68e-01 3.53e-01 1.95e+06 3.54e-01 3.57e+04 ...
     ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
@@ -273,7 +282,7 @@ dTrain %.>% pipeline %.>% head(.)
 ```
 
     ##          1          2          3          4          5          6 
-    ## -0.6001871  0.4630789  0.1521985  0.4012384  0.4333677  0.1035226
+    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
 
 Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
 
@@ -282,7 +291,7 @@ ApplyTo(pipeline, dTrain) %.>% head(.)
 ```
 
     ##          1          2          3          4          5          6 
-    ## -0.6001871  0.4630789  0.1521985  0.4012384  0.4333677  0.1035226
+    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
 
 The pipeline can be saved, and contains the required parameters in lists.
 
@@ -303,7 +312,7 @@ dTrain %.>% pipeline %.>% head(.)
 ```
 
     ##          1          2          3          4          5          6 
-    ## -0.6001871  0.4630789  0.1521985  0.4012384  0.4333677  0.1035226
+    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
 
 We can use this pipeline on different data, as we do to create performance plots below.
 
