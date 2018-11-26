@@ -188,7 +188,7 @@ library("wrapr")
 
 p <- readRDS("pipeline.RDS")
 dTrain <- readRDS("dTrain.RDS")
-dTrain %.>% pipeline %.>% head(.)
+dTrain %.>% p %.>% head(.)
 ```
 ```{r echo=FALSE}
 # simulate reading back for presentation, to make sure values match
