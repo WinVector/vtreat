@@ -153,7 +153,7 @@ pre_comp_xval <- function(nRows, nSplits, splitplan) {
   eRows <- nRows
   eSplits <- nSplits
   attr(splitplan, 'splitmethod') <- paste(attr(splitplan, 'splitmethod'),
-                                          "(pre-computed", eRows, eSplits, ")")
+                                          "( pre-computed", eRows, eSplits, ")")
   f <- function(nRows, nSplits, dframe, y) {
     if(nRows!=eRows) {
       stop("row count mismatch")
