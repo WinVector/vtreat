@@ -11,10 +11,10 @@ library("vtreat")
 library("glmnet")
 library("ggplot2")
 library("WVPlots")
+library("doParallel")
 
 ncore <- parallel::detectCores()
 cl <- parallel::makeCluster(ncore)
-library("doParallel")
 registerDoParallel(cl)
 
 # function to make practice data

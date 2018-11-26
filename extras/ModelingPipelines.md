@@ -18,9 +18,6 @@ library("glmnet")
 ``` r
 library("ggplot2")
 library("WVPlots")
-
-ncore <- parallel::detectCores()
-cl <- parallel::makeCluster(ncore)
 library("doParallel")
 ```
 
@@ -29,6 +26,8 @@ library("doParallel")
     ## Loading required package: parallel
 
 ``` r
+ncore <- parallel::detectCores()
+cl <- parallel::makeCluster(ncore)
 registerDoParallel(cl)
 
 # function to make practice data
@@ -81,9 +80,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 08:14:11 2018"
-    ## [1] " start cross frame work Mon Nov 26 08:14:13 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 08:14:18 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 08:24:09 2018"
+    ## [1] " start cross frame work Mon Nov 26 08:24:11 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 08:24:16 2018"
 
 ``` r
 print(cp$method)
