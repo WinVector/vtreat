@@ -75,9 +75,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 16:34:57 2018"
-    ## [1] " start cross frame work Sun Nov 25 16:34:59 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 16:35:03 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 18:34:58 2018"
+    ## [1] " start cross frame work Sun Nov 25 18:35:01 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 18:35:06 2018"
 
 ``` r
 # get the list of new variables
@@ -109,7 +109,7 @@ tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
              scale = scaling)
 
 # build a cross-validation strategy to help us
-# search for a good alph hyper-parameter value
+# search for a good alpha hyper-parameter value
 cplan <- vtreat::kWayStratifiedY(
   nrow(dTrain), 5, dTrain, dTrain[[outcome_name]])
 # convert the plan to cv.glmnet group notation
@@ -121,7 +121,7 @@ for(i in seq_len(length(cplan))) {
 
 # search for best cross-validated alpha
 alphas <- seq(0, 1, by=0.05)
-cross_scores <- vapply(
+cross_scores <- lapply(
   alphas,
   function(alpha) {
     model <- cv.glmnet(as.matrix(tfs), 
@@ -131,25 +131,37 @@ cross_scores <- vapply(
                        standardize = FALSE,
                        foldid = foldid, 
                        parallel = TRUE)
-    index <- which(model$lambda == model$lambda.1se)[[1]]
+    index <- which(model$lambda == model$lambda.min)[[1]]
     score <- model$cvm[[index]]
-  }, numeric(1))
-best_i <- which(cross_scores==min(cross_scores))[[1]]
+    res <- data.frame(score = score, best_lambda = model$lambda.min)
+    res$lambdas <- list(model$lambda)
+    res
+  })
+cross_scores <- do.call(rbind, cross_scores)
+best_i <- which(cross_scores$score==min(cross_scores$score))[[1]]
 alpha <- alphas[[best_i]]
+lambda <- cross_scores$best_lambda[[best_i]]
+lambdas <- cross_scores$lambdas[[best_i]]
+lambdas <- lambdas[lambdas>=lambda]
 print(alpha)
 ```
 
-    ## [1] 0.65
+    ## [1] 0
+
+``` r
+print(lambda)
+```
+
+    ## [1] 0.02294242
 
 ``` r
 # re-fit model with chosen alpha
-model <- cv.glmnet(as.matrix(tfs), 
-                   cp$crossFrame[[outcome_name]],
-                   alpha = alpha,
-                   family = "gaussian", 
-                   standardize = FALSE,
-                   nfolds = 5, 
-                   parallel = TRUE)
+model <- glmnet(as.matrix(tfs), 
+                cp$crossFrame[[outcome_name]],
+                alpha = alpha,
+                family = "gaussian", 
+                standardize = FALSE,
+                lambda = lambdas)
 ```
 
 The question then is: how do we share such a model? Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order.
@@ -171,10 +183,10 @@ pipeline <-
         arg_name = "x",
         args = list(center = centering,
                     scale = scaling))  %.>%
-  pkgfn("glmnet::predict.cv.glmnet",
+  pkgfn("glmnet::predict.glmnet",
         arg_name = "newx",
         args = list(object = model,
-                    s = "lambda.1se"))  %.>%
+                    s = lambda))  %.>%
   srcfn(".[, cname, drop = TRUE]",
         arg_name = ".",
         args = list(cname = "1"))
@@ -186,7 +198,7 @@ cat(format(pipeline))
     ##    vtreat::prepare(dframe=., treatmentplan, varRestriction),
     ##    base::subset(x=., select),
     ##    base::scale(x=., center, scale),
-    ##    glmnet::predict.cv.glmnet(newx=., object, s),
+    ##    glmnet::predict.glmnet(newx=., object, s),
     ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
 
 The pipeline is a simple list of steps (with some class annotations added).
@@ -205,7 +217,7 @@ pipeline@items
     ## [1] "base::scale(x=., center, scale)"
     ## 
     ## [[4]]
-    ## [1] "glmnet::predict.cv.glmnet(newx=., object, s)"
+    ## [1] "glmnet::predict.glmnet(newx=., object, s)"
     ## 
     ## [[5]]
     ## [1] "SrcFunction{ .[, cname, drop = TRUE] }(.=., cname)"
@@ -232,8 +244,8 @@ And you can pipe data into the pipeline.
 dTrain %.>% pipeline %.>% head(.)
 ```
 
-    ##           1           2           3           4           5           6 
-    ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
+    ##          1          2          3          4          5          6 
+    ## -0.6001871  0.4630789  0.1521985  0.4012384  0.4333677  0.1035226
 
 Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
 
@@ -241,8 +253,8 @@ Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/w
 ApplyTo(pipeline, dTrain) %.>% head(.)
 ```
 
-    ##           1           2           3           4           5           6 
-    ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
+    ##          1          2          3          4          5          6 
+    ## -0.6001871  0.4630789  0.1521985  0.4012384  0.4333677  0.1035226
 
 The pipeline can be saved, and contains the required parameters in lists.
 
@@ -262,8 +274,8 @@ dTrain <- readRDS("dTrain.RDS")
 dTrain %.>% pipeline %.>% head(.)
 ```
 
-    ##           1           2           3           4           5           6 
-    ## -0.47525463  0.37781506  0.10450622  0.31710969  0.37555403  0.02842425
+    ##          1          2          3          4          5          6 
+    ## -0.6001871  0.4630789  0.1521985  0.4012384  0.4333677  0.1035226
 
 We can use this pipeline on different data, as we do to create performance plots below.
 
