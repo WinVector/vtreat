@@ -9,6 +9,7 @@ Reusable modeling pipelines are a practical idea that gets re-developed many tim
 library("wrapr")
 library("vtreat")
 library("glmnet")
+library("ggplot2")
 library("WVPlots")
 
 ncore <- parallel::detectCores()
@@ -106,9 +107,11 @@ cross_scores <- lapply(
     score <- model$cvm[[index]]
     res <- data.frame(score = score, best_lambda = model$lambda.min)
     res$lambdas <- list(model$lambda)
+    res$cvm <- list(model$cvm)
     res
   })
 cross_scores <- do.call(rbind, cross_scores)
+cross_scores$alpha = alphas
 best_i <- which(cross_scores$score==min(cross_scores$score))[[1]]
 alpha <- alphas[[best_i]]
 lambda <- cross_scores$best_lambda[[best_i]]
@@ -116,6 +119,23 @@ lambdas <- cross_scores$lambdas[[best_i]]
 lambdas <- lambdas[lambdas>=lambda]
 print(alpha)
 print(lambda)
+
+# show cross-val results
+ggplot(data = cross_scores,
+       aes(x = alpha, y = score)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("best cross validated mean loss as function of alpha")
+
+pf <- data.frame(lambda = cross_scores$lambdas[[best_i]],
+                 cvm = cross_scores$cvm[[best_i]])
+ggplot(data = pf,
+       aes(x = lambda, y = cvm)) +
+  geom_point() +
+  geom_line() +
+  scale_x_log10() +
+  ggtitle("cross validated  mean loss as function of lambda",
+          subtitle = paste("alpha =", alpha))
 
 # re-fit model with chosen alpha
 model <- glmnet(as.matrix(tfs), 

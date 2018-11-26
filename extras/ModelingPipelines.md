@@ -16,6 +16,7 @@ library("glmnet")
     ## Loaded glmnet 2.0-16
 
 ``` r
+library("ggplot2")
 library("WVPlots")
 
 ncore <- parallel::detectCores()
@@ -75,9 +76,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 18:34:58 2018"
-    ## [1] " start cross frame work Sun Nov 25 18:35:01 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 18:35:06 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Sun Nov 25 18:53:35 2018"
+    ## [1] " start cross frame work Sun Nov 25 18:53:37 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Nov 25 18:53:41 2018"
 
 ``` r
 # get the list of new variables
@@ -135,9 +136,11 @@ cross_scores <- lapply(
     score <- model$cvm[[index]]
     res <- data.frame(score = score, best_lambda = model$lambda.min)
     res$lambdas <- list(model$lambda)
+    res$cvm <- list(model$cvm)
     res
   })
 cross_scores <- do.call(rbind, cross_scores)
+cross_scores$alpha = alphas
 best_i <- which(cross_scores$score==min(cross_scores$score))[[1]]
 alpha <- alphas[[best_i]]
 lambda <- cross_scores$best_lambda[[best_i]]
@@ -153,6 +156,31 @@ print(lambda)
 ```
 
     ## [1] 0.02294242
+
+``` r
+# show cross-val results
+ggplot(data = cross_scores,
+       aes(x = alpha, y = score)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("best cross validated mean loss as function of alpha")
+```
+
+![](ModelingPipelines_files/figure-markdown_github/model1-1.png)
+
+``` r
+pf <- data.frame(lambda = cross_scores$lambdas[[best_i]],
+                 cvm = cross_scores$cvm[[best_i]])
+ggplot(data = pf,
+       aes(x = lambda, y = cvm)) +
+  geom_point() +
+  geom_line() +
+  scale_x_log10() +
+  ggtitle("cross validated  mean loss as function of lambda",
+          subtitle = paste("alpha =", alpha))
+```
+
+![](ModelingPipelines_files/figure-markdown_github/model1-2.png)
 
 ``` r
 # re-fit model with chosen alpha
