@@ -80,15 +80,15 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Mon Nov 26 08:24:09 2018"
-    ## [1] " start cross frame work Mon Nov 26 08:24:11 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Mon Nov 26 08:24:16 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Tue Nov 27 12:37:14 2018"
+    ## [1] " start cross frame work Tue Nov 27 12:37:16 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Nov 27 12:37:21 2018"
 
 ``` r
 print(cp$method)
 ```
 
-    ## [1] "kwaycrossystratified (pre-computed 5053 5 )"
+    ## [1] "kwaycrossystratified ( pre-computed 5053 5 )"
 
 ``` r
 # get the list of new variables
@@ -206,9 +206,24 @@ model <- glmnet(as.matrix(tfs),
                 lambda = lambdas)
 ```
 
-The question then is: how do we share such a model? Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order.
+The question then is: how do we share such a model? Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order. In this case the modeling pipeline consists of the following pieces:
 
-A really neat way to do this is the following.
+-   The treatment plan `cp$treatments`.
+-   The list of chosen variables `newvars`.
+-   The centering and scaling vectors `centering` and `scaling`.
+-   The `glmnet` model `model` and final chosen lambda/s value `s`.
+
+These values are needed to run any data through the sequence of operations:
+
+-   Using `vtreat` to prepare the data.
+-   Restricting down to only modeling variables to make sure we have the right data for the scaling step.
+-   Rescaling and centering the data.
+-   Applying the `glmnet` model.
+-   Converting the matrix of predictions into a vector of predictions.
+
+The problem is: having worked had to build the model (taking a lot of steps and optimizing parameters/hyperparemeters) has left us with a lot of items and steps we need to share to have the full prediction process.
+
+A really neat way to simply share of these things is the following.
 
 Use `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation. We can use this system to encode our model prediction pipeline as follows.
 
@@ -243,7 +258,25 @@ cat(format(pipeline))
     ##    glmnet::predict.glmnet(newx=., object, s),
     ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
 
-The pipeline is a simple list of steps (with some class annotations added).
+And you can then pipe data into the pipeline to get predictions.
+
+``` r
+dTrain %.>% pipeline %.>% head(.)
+```
+
+    ##          1          2          3          4          5          6 
+    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
+
+Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
+
+``` r
+ApplyTo(pipeline, dTrain) %.>% head(.)
+```
+
+    ##          1          2          3          4          5          6 
+    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
+
+The pipeline itself is a simple list of steps (with some class annotations added).
 
 ``` r
 pipeline@items
@@ -280,25 +313,7 @@ str(pipeline@items[[3]])
 
 If you do not like pipe notation you can also build the pipeline using [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) list notation.
 
-And you can pipe data into the pipeline.
-
-``` r
-dTrain %.>% pipeline %.>% head(.)
-```
-
-    ##          1          2          3          4          5          6 
-    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
-
-Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
-
-``` r
-ApplyTo(pipeline, dTrain) %.>% head(.)
-```
-
-    ##          1          2          3          4          5          6 
-    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
-
-The pipeline can be saved, and contains the required parameters in lists.
+The pipeline can be saved, and contains the required parameters in simple lists.
 
 ``` r
 saveRDS(dTrain, "dTrain.RDS")
