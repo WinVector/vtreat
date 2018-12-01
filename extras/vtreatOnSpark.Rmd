@@ -4,6 +4,8 @@ output: github_document
 ---
 
 ```{r setup}
+base::date()
+
 library("vtreat")
 packageVersion("vtreat")
 library("rquery")
@@ -11,14 +13,28 @@ packageVersion("rquery")
 packageVersion("cdata")
 packageVersion("sparklyr")
 
+conf <- sparklyr::spark_config()
+conf$sparklyr.log.console <- FALSE
+conf$spark.yarn.am.cores <- 2
+conf$spark.executor.cores <- 2
+conf$spark.executor.memory <- "4G"
+conf$spark.yarn.am.memory <- "4G" 
+conf$`sparklyr.shell.driver-memory` <- "4G"
+conf$`sparklyr.shell.executor-memory` <- "4G"
+conf$`spark.yarn.executor.memoryOverhead` <- "4G"
 
-db <- sparklyr::spark_connect(version='2.2.0', 
-                              master = "local")
-db_opts <- rq_connection_tests(db)
-options(db_opts)
+raw_connection <- sparklyr::spark_connect(version='2.2.0', 
+                              master = "local",
+                              config = conf)
+db_opts <- rq_connection_tests(raw_connection)
+db <- rquery_db_info(connection = raw_connection,
+                     is_dbi = TRUE,
+                     connection_options = db_opts)
+base::date()
 ```
 
 ```{r data, include = FALSE}
+base::date()
 dir <- '~/Documents/work/PracticalDataScienceWithR/zmPDSwR/KDD2009/' 
 
 d <- read.table(paste(dir,'orange_small_train.data.gz',sep=''),
@@ -37,9 +53,11 @@ rq_copy_to(db, "kdd2009", d,
            overwrite = TRUE,
            temporary = TRUE)
 rm(list = c("dir", "d", "churn"))
+base::date()
 ```
 
 ```{r start}
+base::date()
 tmp_name_gen <- wrapr::mk_tmp_name_source("kddvtreat")
 
 d <- db_td(db, "kdd2009") %.>%
@@ -64,9 +82,11 @@ d_test <- d %.>%
 d_variable_design <- d %.>%
   select_rows_nse(., (sample_col > 0.5) & (sample_col <= 0.9)) %.>%
   materialize(db, ., table_name = tmp_name_gen())
+base::date()
 ```
 
 ```{r design_var_treatments}
+base::date()
 cl = parallel::makeCluster(4)
 print(length(vars))
 # design treatments in small groups to manage memory
@@ -80,13 +100,17 @@ treatment_plans <- lapply(vgroups,
                                                       parallelCluster = cl,
                                                       verbose = FALSE)
                           })
+base::date()
 
+base::date()
 # get unified scoreFrame
 scoreFrame <- lapply(treatment_plans,
                      function(tpi) {
                        tpi$scoreFrame
                      })
 scoreFrame <- do.call(rbind, scoreFrame)
+base::date()
+
 
 # try to get Bonferroni- corrected valid derived variables.
 approximate_df <- length(vars) + nrow(scoreFrame)
@@ -96,10 +120,13 @@ newvars <- scoreFrame$varName[ (scoreFrame$varMoves) &
                                  (scoreFrame$rsq >= 1.0e-3) ]
 newvars <- unique(newvars)
 print(length(newvars))
+base::date()
 ```
 
 
 ```{r treatdata}
+base::date()
+
 col_sample <- execute(db, d_train, limit = 1L)
 rqplan <- as_rquery_plan(treatment_plans, var_restriction = newvars)
 
@@ -116,6 +143,9 @@ if(FALSE) {
   # cat(sql)
 }
 
+base::date()
+
+
 d_train <- rquery_prepare(db, rqplan, d_train, 
                           tmp_name_gen(), 
                           col_sample = col_sample,
@@ -123,12 +153,15 @@ d_train <- rquery_prepare(db, rqplan, d_train,
                           overwrite = TRUE)
 length(column_names(d_train))
 
+base::date()
+
 # cdata::qlook(db, d_train$table_name)
 # rquery::rlook(db, d_train$table_name)
 d_train %.>% 
   orderby(., limit = 10) %.>% 
   execute(db, .) %.>% 
   str(., list.len = 10000)
+base::date()
 ```
 
 
@@ -139,5 +172,5 @@ parallel::stopCluster(cl)
 for(ti in tmp_name_gen(dumpList = TRUE)) {
   rq_remove_table(db = db, table_name = ti)
 }
-sparklyr::spark_disconnect(db)
+sparklyr::spark_disconnect(raw_connection)
 ```
