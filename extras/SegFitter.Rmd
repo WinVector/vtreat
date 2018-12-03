@@ -10,6 +10,7 @@ library("ggplot2")
 ```{r fns}
 customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
                     'n.PiecewiseV.num' = vtreat::solve_piecewise)
+codeRestriction = c("PiecewiseV", "clean", "isBAD", "catB", "catP")
 ```
 
 
@@ -38,6 +39,7 @@ cfn <- vtreat::mkCrossFrameNExperiment(
   d[d$is_train, , drop=FALSE], 
   c('x', 'x_noise', 'x_cat', 'x_cat_noise'), 'y',
   customCoders = customCoders,
+  codeRestriction = codeRestriction,
   verbose = FALSE)
 
 cfn$treatments
@@ -80,6 +82,7 @@ cfc <- vtreat::mkCrossFrameCExperiment(
   d[d$is_train, , drop=FALSE], 
   c('x', 'x_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE,
   customCoders = customCoders,
+  codeRestriction = codeRestriction,
   verbose = FALSE)
 
 cfc$treatments
