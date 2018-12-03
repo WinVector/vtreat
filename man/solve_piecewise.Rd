@@ -16,11 +16,11 @@ solve_piecewise(varName, x, y, w = NULL)
 \item{w}{numeric positive, same length as x (weights, can be NULL)}
 }
 \value{
-isotonicly adjusted y (non-decreasing)
+segmented y prediction
 }
 \description{
 Return a vector of length y that is a piecewise function of x.
 This vector is picked as close to
 y (by square-distance) as possible for a set of x-only determined
-cut-points.
+cut-points.  Cross-validates for a good number of segments.
 }

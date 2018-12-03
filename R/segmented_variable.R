@@ -27,7 +27,10 @@ encode_x_as_lambdas <- function(x, minx, maxx, xs) {
 }
 
 # Fit a piecewise linear function at cut-points
-fit_segments <- function(x, y, w = NULL) {
+fit_segments <- function(x, y, k,
+                         ...,
+                         w = NULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_segments")
   if(is.null(w)) {
     w = numeric(length(x)) + 1
   }
@@ -44,7 +47,7 @@ fit_segments <- function(x, y, w = NULL) {
   minx <- min(x)
   maxx <- max(x)
   xs <- sort(x)
-  idxs <- sort(unique(c(1, round(seq(1, n, by = n^(2/3))))))
+  idxs <- sort(unique(c(1, round(seq(1, n, length.out = k)))))
   idxs <- pmin(n, pmax(1, idxs))
   idxs <- idxs[idxs<n]
   xs <- sort(unique(xs[idxs]))
@@ -57,7 +60,8 @@ fit_segments <- function(x, y, w = NULL) {
   model <- stats::lm(f, data = ff, weights = w)
   coef <- model$coefficients
   coef[is.na(coef)] <- 0
-  list(minx = minx, 
+  list(k =k,
+       minx = minx, 
        maxx = maxx,
        xs = xs,
        meany = meany,
@@ -78,20 +82,43 @@ pred_segs <- function(model, x) {
 #' Return a vector of length y that is a piecewise function of x.
 #' This vector is picked as close to
 #' y (by square-distance) as possible for a set of x-only determined
-#' cut-points.
+#' cut-points.  Cross-validates for a good number of segments.
 #'
 #' @param varName character, name of variable
 #' @param x numeric input (not empty, no NAs). 
 #' @param y numeric or castable to such (same length as x no NAs), output to match
 #' @param w numeric positive, same length as x (weights, can be NULL)
-#' @return isotonicly adjusted y (non-decreasing)
+#' @return segmented y prediction
 #'
 #'
 #' @export
 #' 
-solve_piecewise <- function(varName, x, y, w=NULL) {
+solve_piecewise <- function(varName, x, y, w = NULL) {
   tryCatch({
-    model <- fit_segments(x, y, w=w)
+    n <- length(x)
+    if(is.null(w)) {
+      w <- numeric(n) + 1
+    }
+    if(n<=20) {
+      k <- min(2, n)
+    } else {
+      ks <- sort(unique(c(1, 2, round(exp(seq(1, log(n/5), length.out=20))))))
+      ks <- ks[ks<n/10]
+      is_test <- seq_len(n) %in% sample.int(n, n, replace = FALSE)[seq_len(floor(n/2))]
+      xvals <- vapply(
+        ks,
+        function(k) {
+          model <- fit_segments(x[!is_test], y[!is_test], k=k, w=w[!is_test])
+          preds <- pred_segs(model, x[is_test])
+          mean((y[is_test] - preds)^2)
+        }, numeric(1))
+      idx <- which.min(xvals)
+      k <- ks[[idx]]
+      # names(xvals) <- as.character(ks)
+      # print(xvals)
+      # print(k)
+    }
+    model <- fit_segments(x, y, k=k, w=w)
     return(pred_segs(model, x))
   },
   error = function(e) { return(NULL) })

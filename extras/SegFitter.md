@@ -33,14 +33,14 @@ cfe$treatments
 ```
 
     ##              varName varMoves          rsq           sig needsSplit
-    ## 1       x_PiecewiseV     TRUE 6.399558e-01 1.453735e-269       TRUE
-    ## 2            x_clean     TRUE 3.471087e-05  8.379824e-01      FALSE
-    ## 3 x_noise_PiecewiseV     TRUE 1.515844e-03  1.764563e-01       TRUE
-    ## 4      x_noise_clean     TRUE 1.623646e-05  8.887815e-01      FALSE
+    ## 1       x_PiecewiseV     TRUE 0.6550661901 6.156370e-279       TRUE
+    ## 2            x_clean     TRUE 0.0007680121  3.376642e-01      FALSE
+    ## 3 x_noise_PiecewiseV     TRUE 0.0003799665  5.001037e-01       TRUE
+    ## 4      x_noise_clean     TRUE 0.0029398181  6.053472e-02      FALSE
     ##   extraModelDegrees origName       code
-    ## 1              1207        x PiecewiseV
+    ## 1              1199        x PiecewiseV
     ## 2                 0        x      clean
-    ## 3              1207  x_noise PiecewiseV
+    ## 3              1199  x_noise PiecewiseV
     ## 4                 0  x_noise      clean
 
 ``` r
