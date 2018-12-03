@@ -44,6 +44,8 @@ cfn <- vtreat::mkCrossFrameNExperiment(
 
 cfn$treatments
 
+vtreat::variable_values(cfn$treatments$scoreFrame)
+
 prepared <- vtreat::prepare(cfn$treatments, d)
 d$x_PiecewiseV <- prepared$x_PiecewiseV
 
@@ -86,5 +88,7 @@ cfc <- vtreat::mkCrossFrameCExperiment(
   verbose = FALSE)
 
 cfc$treatments
+
+vtreat::variable_values(cfc$treatments$scoreFrame)
 ```
 

@@ -25,12 +25,12 @@ head(d)
 ```
 
     ##      x x_cat     y_ideal x_noise x_cat_noise          y    yc is_train
-    ## 1 0.00   l_0 0.000000000    1.97       l_0.2 -0.1458958 FALSE    FALSE
-    ## 2 0.01   l_0 0.009999833   11.71       l_5.1  0.5319236  TRUE     TRUE
-    ## 3 0.02   l_0 0.019998667    3.05       l_7.4 -0.4709165 FALSE     TRUE
-    ## 4 0.03   l_0 0.029995500    8.72       l_8.4 -0.3062934 FALSE     TRUE
-    ## 5 0.04   l_0 0.039989334    0.80       l_0.3 -0.4006318 FALSE     TRUE
-    ## 6 0.05   l_0 0.049979169    9.69      l_14.8  0.1850090 FALSE    FALSE
+    ## 1 0.00   l_0 0.000000000    9.52       l_9.6  0.4790223 FALSE     TRUE
+    ## 2 0.01   l_0 0.009999833    7.12       l_1.8 -0.1065460 FALSE     TRUE
+    ## 3 0.02   l_0 0.019998667   14.00         l_3 -0.0168744 FALSE     TRUE
+    ## 4 0.03   l_0 0.029995500    6.54       l_2.9  0.4516119 FALSE    FALSE
+    ## 5 0.04   l_0 0.039989334   13.59       l_3.5 -1.2377398 FALSE     TRUE
+    ## 6 0.05   l_0 0.049979169    4.15       l_8.2  0.5005280  TRUE     TRUE
 
 ``` r
 summary(d)
@@ -44,12 +44,12 @@ summary(d)
     ##  3rd Qu.:11.25                      3rd Qu.: 0.8104   3rd Qu.:11.25  
     ##  Max.   :15.00                      Max.   : 1.0000   Max.   :15.00  
     ##  x_cat_noise              y               yc           is_train      
-    ##  Length:1501        Min.   :-2.5733   Mode :logical   Mode :logical  
-    ##  Class :character   1st Qu.:-0.5789   FALSE:966       FALSE:287      
-    ##  Mode  :character   Median : 0.1669   TRUE :535       TRUE :1214     
-    ##                     Mean   : 0.1044                                  
-    ##                     3rd Qu.: 0.7858                                  
-    ##                     Max.   : 2.4120
+    ##  Length:1501        Min.   :-2.4096   Mode :logical   Mode :logical  
+    ##  Class :character   1st Qu.:-0.5704   FALSE:953       FALSE:313      
+    ##  Mode  :character   Median : 0.1699   TRUE :548       TRUE :1188     
+    ##                     Mean   : 0.1116                                  
+    ##                     3rd Qu.: 0.7943                                  
+    ##                     Max.   : 2.1773
 
 ``` r
 ggplot(data=d) +
@@ -72,19 +72,29 @@ cfn$treatments
 ```
 
     ##              varName varMoves          rsq           sig needsSplit
-    ## 1       x_PiecewiseV     TRUE 6.737987e-01 4.149158e-297       TRUE
-    ## 2            x_clean     TRUE 1.382718e-03  1.954138e-01      FALSE
-    ## 3 x_noise_PiecewiseV     TRUE 2.127247e-03  1.082282e-01       TRUE
-    ## 4      x_noise_clean     TRUE 1.321510e-04  6.890538e-01      FALSE
-    ## 5         x_cat_catP     TRUE 3.156838e-03  5.032614e-02       TRUE
-    ## 6   x_cat_noise_catP     TRUE 8.842717e-05  7.434306e-01       TRUE
+    ## 1       x_PiecewiseV     TRUE 0.6884968644 1.171943e-302       TRUE
+    ## 2            x_clean     TRUE 0.0013931344  1.985901e-01      FALSE
+    ## 3 x_noise_PiecewiseV     TRUE 0.0006633046  3.751276e-01       TRUE
+    ## 4      x_noise_clean     TRUE 0.0003866661  4.983346e-01      FALSE
+    ## 5         x_cat_catP     TRUE 0.0026513228  7.605188e-02       TRUE
+    ## 6   x_cat_noise_catP     TRUE 0.0001434787  6.800174e-01       TRUE
     ##   extraModelDegrees    origName       code
-    ## 1              1214           x PiecewiseV
+    ## 1              1188           x PiecewiseV
     ## 2                 0           x      clean
-    ## 3              1214     x_noise PiecewiseV
+    ## 3              1188     x_noise PiecewiseV
     ## 4                 0     x_noise      clean
     ## 5               150       x_cat       catP
     ## 6               150 x_cat_noise       catP
+
+``` r
+vtreat::variable_values(cfn$treatments$scoreFrame)
+```
+
+    ##                      rsq           sig
+    ## x           0.6884968644 2.343886e-302
+    ## x_cat       0.0026513228  7.605188e-02
+    ## x_cat_noise 0.0001434787  6.800174e-01
+    ## x_noise     0.0006633046  7.502552e-01
 
 ``` r
 prepared <- vtreat::prepare(cfn$treatments, d)
@@ -150,20 +160,30 @@ cfc$treatments
 ```
 
     ##              varName varMoves          rsq           sig needsSplit
-    ## 1       x_PiecewiseV     TRUE 3.689978e-01 4.463434e-128       TRUE
-    ## 2            x_clean     TRUE 1.423295e-03  1.348442e-01      FALSE
-    ## 3 x_noise_PiecewiseV     TRUE 1.947111e-03  8.030668e-02       TRUE
-    ## 4      x_noise_clean     TRUE 4.380962e-05  7.930630e-01      FALSE
-    ## 5         x_cat_catP     TRUE 4.223036e-03  1.000562e-02       TRUE
-    ## 6         x_cat_catB     TRUE 2.785072e-01  3.784975e-97       TRUE
-    ## 7   x_cat_noise_catP     TRUE 1.038291e-04  6.863152e-01       TRUE
-    ## 8   x_cat_noise_catB     TRUE 1.499055e-04  6.274870e-01       TRUE
+    ## 1       x_PiecewiseV     TRUE 4.233905e-01 6.741049e-145       TRUE
+    ## 2            x_clean     TRUE 8.243324e-08  9.909762e-01      FALSE
+    ## 3 x_noise_PiecewiseV     TRUE 1.012852e-03  2.099631e-01       TRUE
+    ## 4      x_noise_clean     TRUE 1.235119e-05  8.898922e-01      FALSE
+    ## 5         x_cat_catP     TRUE 1.964521e-04  5.808626e-01       TRUE
+    ## 6         x_cat_catB     TRUE 3.074449e-01 9.257645e-106       TRUE
+    ## 7   x_cat_noise_catP     TRUE 2.809176e-05  8.346164e-01       TRUE
+    ## 8   x_cat_noise_catB     TRUE 4.682810e-04  3.939715e-01       TRUE
     ##   extraModelDegrees    origName       code
-    ## 1              1214           x PiecewiseV
+    ## 1              1188           x PiecewiseV
     ## 2                 0           x      clean
-    ## 3              1214     x_noise PiecewiseV
+    ## 3              1188     x_noise PiecewiseV
     ## 4                 0     x_noise      clean
     ## 5               150       x_cat       catP
     ## 6               150       x_cat       catB
     ## 7               150 x_cat_noise       catP
     ## 8               150 x_cat_noise       catB
+
+``` r
+vtreat::variable_values(cfc$treatments$scoreFrame)
+```
+
+    ##                     rsq           sig
+    ## x           0.423390543 1.348210e-144
+    ## x_cat       0.307444869 1.851529e-105
+    ## x_cat_noise 0.000468281  7.879430e-01
+    ## x_noise     0.001012852  4.199261e-01
