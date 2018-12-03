@@ -24,20 +24,20 @@ d$is_train <- runif(nrow(d))>=0.2
 head(d)
 ```
 
-    ##   x_numeric x_cat     y_ideal x_numeric_noise x_cat_noise           y
-    ## 1      0.00   l_0 0.000000000           12.53       l_6.2 -0.12216836
-    ## 2      0.01   l_0 0.009999833            2.27         l_6 -0.10059294
-    ## 3      0.02   l_0 0.019998667            5.37       l_7.2 -0.65979645
-    ## 4      0.03   l_0 0.029995500           12.64       l_5.5  0.53589010
-    ## 5      0.04   l_0 0.039989334            5.95       l_8.2 -0.02865555
-    ## 6      0.05   l_0 0.049979169           12.72       l_5.3  0.15017077
-    ##      yc is_train
-    ## 1 FALSE     TRUE
-    ## 2 FALSE     TRUE
-    ## 3 FALSE     TRUE
-    ## 4  TRUE     TRUE
-    ## 5 FALSE     TRUE
-    ## 6 FALSE     TRUE
+    ##   x_numeric x_cat     y_ideal x_numeric_noise x_cat_noise          y    yc
+    ## 1      0.00   l_0 0.000000000            0.03      l_13.5 -1.0324863 FALSE
+    ## 2      0.01   l_0 0.009999833           13.40       l_7.9 -0.5923803 FALSE
+    ## 3      0.02   l_0 0.019998667            1.08         l_3 -0.1716321 FALSE
+    ## 4      0.03   l_0 0.029995500            5.65       l_9.6 -0.1398762 FALSE
+    ## 5      0.04   l_0 0.039989334            8.68       l_0.4  0.2956738 FALSE
+    ## 6      0.05   l_0 0.049979169           11.44       l_7.6  0.8007378  TRUE
+    ##   is_train
+    ## 1     TRUE
+    ## 2     TRUE
+    ## 3     TRUE
+    ## 4    FALSE
+    ## 5     TRUE
+    ## 6     TRUE
 
 ``` r
 summary(d)
@@ -51,12 +51,12 @@ summary(d)
     ##  3rd Qu.:11.25                      3rd Qu.: 0.8104   3rd Qu.:11.25  
     ##  Max.   :15.00                      Max.   : 1.0000   Max.   :15.00  
     ##  x_cat_noise              y               yc           is_train      
-    ##  Length:1501        Min.   :-2.2950   Mode :logical   Mode :logical  
-    ##  Class :character   1st Qu.:-0.5285   FALSE:971       FALSE:303      
-    ##  Mode  :character   Median : 0.1862   TRUE :530       TRUE :1198     
-    ##                     Mean   : 0.1146                                  
-    ##                     3rd Qu.: 0.7686                                  
-    ##                     Max.   : 2.5606
+    ##  Length:1501        Min.   :-2.1693   Mode :logical   Mode :logical  
+    ##  Class :character   1st Qu.:-0.5649   FALSE:943       FALSE:312      
+    ##  Mode  :character   Median : 0.1866   TRUE :558       TRUE :1189     
+    ##                     Mean   : 0.1164                                  
+    ##                     3rd Qu.: 0.7984                                  
+    ##                     Max.   : 2.4871
 
 ``` r
 ggplot(data=d) +
@@ -79,16 +79,16 @@ cfn$treatments
 ```
 
     ##                      varName varMoves          rsq           sig
-    ## 1       x_numeric_PiecewiseV     TRUE 6.428032e-01 1.251525e-269
-    ## 2            x_numeric_clean     TRUE 1.539031e-03  1.747952e-01
-    ## 3 x_numeric_noise_PiecewiseV     TRUE 1.973588e-04  6.271352e-01
-    ## 4      x_numeric_noise_clean     TRUE 4.780295e-05  8.110589e-01
-    ## 5                 x_cat_catP     TRUE 2.519119e-03  8.247675e-02
-    ## 6           x_cat_noise_catP     TRUE 3.334111e-04  5.277823e-01
+    ## 1       x_numeric_PiecewiseV     TRUE 6.643856e-01 1.095506e-283
+    ## 2            x_numeric_clean     TRUE 1.349497e-04  6.890382e-01
+    ## 3 x_numeric_noise_PiecewiseV     TRUE 1.021873e-03  2.707245e-01
+    ## 4      x_numeric_noise_clean     TRUE 2.946122e-05  8.516873e-01
+    ## 5                 x_cat_catP     TRUE 1.260035e-04  6.990015e-01
+    ## 6           x_cat_noise_catP     TRUE 8.543700e-05  7.501854e-01
     ##   needsSplit extraModelDegrees        origName       code
-    ## 1       TRUE              1198       x_numeric PiecewiseV
+    ## 1       TRUE              1189       x_numeric PiecewiseV
     ## 2      FALSE                 0       x_numeric      clean
-    ## 3       TRUE              1198 x_numeric_noise PiecewiseV
+    ## 3       TRUE              1189 x_numeric_noise PiecewiseV
     ## 4      FALSE                 0 x_numeric_noise      clean
     ## 5       TRUE               150           x_cat       catP
     ## 6       TRUE               150     x_cat_noise       catP
@@ -97,11 +97,11 @@ cfn$treatments
 vtreat::variable_values(cfn$treatments$scoreFrame)
 ```
 
-    ##                          rsq count           sig
-    ## x_cat           0.0025191191     1  8.247675e-02
-    ## x_cat_noise     0.0003334111     1  5.277823e-01
-    ## x_numeric       0.6428032338     2 2.503050e-269
-    ## x_numeric_noise 0.0001973588     2  1.000000e+00
+    ##                          rsq count           sig             var
+    ## x_cat           0.0001260035     1  6.990015e-01           x_cat
+    ## x_cat_noise     0.0000854370     1  7.501854e-01     x_cat_noise
+    ## x_numeric       0.6643856030     2 2.191011e-283       x_numeric
+    ## x_numeric_noise 0.0010218729     2  5.414490e-01 x_numeric_noise
 
 ``` r
 # or directly
@@ -110,11 +110,11 @@ vtreat::value_variables_N(
   c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'y')
 ```
 
-    ##                          rsq count           sig
-    ## x_cat           7.151639e-05     1  7.699767e-01
-    ## x_cat_noise     1.698720e-04     1  6.522308e-01
-    ## x_numeric       6.380760e-01     2 6.524385e-266
-    ## x_numeric_noise 8.223152e-04     2  6.426811e-01
+    ##                          rsq count           sig             var
+    ## x_cat           2.565557e-05     1  8.614940e-01           x_cat
+    ## x_cat_noise     1.255758e-03     1  2.220778e-01     x_cat_noise
+    ## x_numeric       6.677550e-01     2 5.479597e-286       x_numeric
+    ## x_numeric_noise 5.605690e-03     2  1.961133e-02 x_numeric_noise
 
 ``` r
 prepared <- vtreat::prepare(cfn$treatments, d)
@@ -180,18 +180,18 @@ cfc$treatments
 ```
 
     ##                      varName varMoves          rsq           sig
-    ## 1       x_numeric_PiecewiseV     TRUE 3.599038e-01 2.390335e-124
-    ## 2            x_numeric_clean     TRUE 6.423886e-04  3.163398e-01
-    ## 3 x_numeric_noise_PiecewiseV     TRUE 4.449050e-04  4.043462e-01
-    ## 4      x_numeric_noise_clean     TRUE 4.338235e-05  7.945609e-01
-    ## 5                 x_cat_catP     TRUE 1.372271e-04  6.432795e-01
-    ## 6                 x_cat_catB     TRUE 2.439967e-01  6.312272e-85
-    ## 7           x_cat_noise_catP     TRUE 9.218479e-05  7.042582e-01
-    ## 8           x_cat_noise_catB     TRUE 8.090736e-04  2.607936e-01
+    ## 1       x_numeric_PiecewiseV     TRUE 4.015507e-01 6.620016e-138
+    ## 2            x_numeric_clean     TRUE 1.086919e-07  9.896237e-01
+    ## 3 x_numeric_noise_PiecewiseV     TRUE 5.883605e-04  3.386514e-01
+    ## 4      x_numeric_noise_clean     TRUE 6.652784e-05  7.476434e-01
+    ## 5                 x_cat_catP     TRUE 4.521774e-04  4.015701e-01
+    ## 6                 x_cat_catB     TRUE 2.890474e-01 8.061679e-100
+    ## 7           x_cat_noise_catP     TRUE 2.454077e-04  5.366033e-01
+    ## 8           x_cat_noise_catB     TRUE 5.308126e-06  9.275851e-01
     ##   needsSplit extraModelDegrees        origName       code
-    ## 1       TRUE              1198       x_numeric PiecewiseV
+    ## 1       TRUE              1189       x_numeric PiecewiseV
     ## 2      FALSE                 0       x_numeric      clean
-    ## 3       TRUE              1198 x_numeric_noise PiecewiseV
+    ## 3       TRUE              1189 x_numeric_noise PiecewiseV
     ## 4      FALSE                 0 x_numeric_noise      clean
     ## 5       TRUE               150           x_cat       catP
     ## 6       TRUE               150           x_cat       catB
@@ -202,11 +202,11 @@ cfc$treatments
 vtreat::variable_values(cfc$treatments$scoreFrame)
 ```
 
-    ##                          rsq count           sig
-    ## x_cat           0.2439966515     2  1.262454e-84
-    ## x_cat_noise     0.0008090736     2  5.215871e-01
-    ## x_numeric       0.3599037768     2 4.780670e-124
-    ## x_numeric_noise 0.0004449050     2  8.086923e-01
+    ##                          rsq count           sig             var
+    ## x_cat           0.2890474403     2  1.612336e-99           x_cat
+    ## x_cat_noise     0.0002454077     2  1.000000e+00     x_cat_noise
+    ## x_numeric       0.4015507463     2 1.324003e-137       x_numeric
+    ## x_numeric_noise 0.0005883605     2  6.773028e-01 x_numeric_noise
 
 ``` r
 # or directly
@@ -215,8 +215,8 @@ vtreat::value_variables_C(
   c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE)
 ```
 
-    ##                          rsq count           sig
-    ## x_cat           0.2284307597     2  2.502406e-79
-    ## x_cat_noise     0.0009746853     2  4.342168e-01
-    ## x_numeric       0.3555818674     2 1.409012e-122
-    ## x_numeric_noise 0.0004908883     2  7.621490e-01
+    ##                          rsq count           sig             var
+    ## x_cat           0.2942699939     2 2.747278e-101           x_cat
+    ## x_cat_noise     0.0021761925     2  1.314800e-01     x_cat_noise
+    ## x_numeric       0.4064983758     2 2.801900e-139       x_numeric
+    ## x_numeric_noise 0.0009857903     2  4.310386e-01 x_numeric_noise

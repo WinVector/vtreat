@@ -14,6 +14,7 @@ variable_values <- function(sf) {
   res <- cbind(res, data.frame(count = tapply(numeric(nrow(sf))+1, sf$origName, sum)))
   res <- cbind(res, data.frame(sig = tapply(sf$sig, sf$origName, min)))
   res$sig <- pmin(1, res$sig*res$count) # Bonforroni correction
+  res$var <- rownames(res)
   res
 }
 
