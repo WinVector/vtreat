@@ -1,7 +1,7 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2018-07-21
+2018-12-03
 
 Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
 
@@ -146,7 +146,7 @@ dTrain <- d[d$isTrain, , drop=FALSE]
 sigr::wrapChiSqTest(dTrain, 'soln', 'yIdeal')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.69 (X2(1,N=87)=77, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.688 (X2(1,N=87)=77.12, p<1e-05)."
 
 ``` r
 table(dTrain$prediction, dTrain$yIdeal)
@@ -176,7 +176,7 @@ table(dTrain$yObserved, dTrain$yIdeal)
 sigr::wrapFisherTest(dTrain, 'yObserved', 'yIdeal')
 ```
 
-    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=20, p<1e-05)."
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=19.91, p<1e-05)."
 
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
@@ -185,7 +185,7 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 sigr::wrapChiSqTest(dTest, 'soln', 'yIdeal')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.72 (X2(1,N=113)=1.1e+02, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.7233 (X2(1,N=113)=105.3, p<1e-05)."
 
 ``` r
 table(dTest$prediction, dTest$yIdeal)
@@ -215,7 +215,7 @@ table(dTest$yObserved, dTest$yIdeal)
 sigr::wrapFisherTest(dTest, 'yObserved', 'yIdeal')
 ```
 
-    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.9, p<1e-05)."
+    ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.936, p<1e-05)."
 
 Model calibration/polish
 ------------------------
@@ -247,7 +247,7 @@ model <- glm(yObserved ~ x, data = d[d$isTrain, , drop=FALSE], family = binomial
 sigr::wrapChiSqTest(model)
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.35 (X2(1,N=87)=42, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.3522 (X2(1,N=87)=41.57, p<1e-05)."
 
 ``` r
 d$rawScore <- predict(model, newdata = d)  # oops forgot type='response'
@@ -320,7 +320,7 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.14 (X2(1,N=113)=19, p=1.3e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.1356 (X2(1,N=113)=18.96, p=1.335e-05)."
 
 ``` r
 dTest %.>% 
@@ -347,7 +347,7 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
 sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.2 (X2(1,N=113)=28, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.2027 (X2(1,N=113)=28.36, p<1e-05)."
 
 ``` r
 dTest %.>% 
@@ -374,7 +374,7 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.71 (X2(1,N=113)=1e+02, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.7135 (X2(1,N=113)=103.9, p<1e-05)."
 
 ``` r
 dTest %.>% 
@@ -401,7 +401,7 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
 sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
 ```
 
-    ## [1] "Chi-Square Test summary: pseudo-R2=0.64 (X2(1,N=113)=93, p<1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.6388 (X2(1,N=113)=93.02, p<1e-05)."
 
 ``` r
 dTest %.>% 

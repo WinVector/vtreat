@@ -104,8 +104,8 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
       k <- min(2, n)
     } else {
       # cross-val for a good k
-      ks <- sort(unique(c(1, 2, round(exp(seq(1, log(n/5), length.out=20))))))
-      ks <- ks[ks<n/10]
+      ks <- sort(unique(pmax(1, round(exp(seq(0, log(n/10), length.out=5))))))
+      ks <- ks[ks<=n/10]
       is_test <- seq_len(n) %in% sample.int(n, n, replace = FALSE)[seq_len(floor(n/2))]
       xvals <- vapply(
         ks,
