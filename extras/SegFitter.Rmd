@@ -15,10 +15,10 @@ codeRestriction = c("PiecewiseV", "clean", "isBAD", "catB", "catP")
 
 
 ```{r example}
-d <- data.frame(x = seq(0, 15, by = 0.01))
-d$x_cat <- paste0("l_", round(d$x, digits = 1))
-d$y_ideal <- sin(d$x)
-d$x_noise <- d$x[sample.int(nrow(d), nrow(d), replace = FALSE)]
+d <- data.frame(x_numeric = seq(0, 15, by = 0.01))
+d$x_cat <- paste0("l_", round(d$x_numeric, digits = 1))
+d$y_ideal <- sin(d$x_numeric)
+d$x_numeric_noise <- d$x_numeric[sample.int(nrow(d), nrow(d), replace = FALSE)]
 d$x_cat_noise <- d$x_cat[sample.int(nrow(d), nrow(d), replace = FALSE)]
 d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
 d$yc <- d$y>0.5
@@ -29,15 +29,15 @@ head(d)
 summary(d)
 
 ggplot(data=d) +
-  geom_point(aes(x = x, y = y, color = yc), alpha=0.5) + 
-  geom_line(aes(x = x, y = y_ideal), color = "lightblue") +
+  geom_point(aes(x = x_numeric, y = y, color = yc), alpha=0.5) + 
+  geom_line(aes(x = x_numeric, y = y_ideal), color = "lightblue") +
   geom_hline(yintercept = 0.5, color = "red")
 ```
 
 ```{r solve_numeric}
 cfn <- vtreat::mkCrossFrameNExperiment(
   d[d$is_train, , drop=FALSE], 
-  c('x', 'x_noise', 'x_cat', 'x_cat_noise'), 'y',
+  c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'y',
   customCoders = customCoders,
   codeRestriction = codeRestriction,
   verbose = FALSE)
@@ -47,34 +47,34 @@ cfn$treatments
 vtreat::variable_values(cfn$treatments$scoreFrame)
 
 prepared <- vtreat::prepare(cfn$treatments, d)
-d$x_PiecewiseV <- prepared$x_PiecewiseV
+d$x_numeric_PiecewiseV <- prepared$x_numeric_PiecewiseV
 
 ggplot(data=d) +
-  # geom_point(aes(x = x, y = y)) + 
-  geom_line(aes(x = x, y = y_ideal), color = "lightblue") + 
-  geom_line(aes(x = x, y = x_PiecewiseV))
+  # geom_point(aes(x = x_numeric, y = y)) + 
+  geom_line(aes(x = x_numeric, y = y_ideal), color = "lightblue") + 
+  geom_line(aes(x = x_numeric, y = x_numeric_PiecewiseV))
 
 WVPlots::ScatterHist(d[d$is_train, , drop=FALSE], 
-                     "x_PiecewiseV", "y",
-                     "x_PiecewiseV versus observed y on train",
+                     "x_numeric_PiecewiseV", "y",
+                     "x_numeric_PiecewiseV versus observed y on train",
                      smoothmethod = "identity",
                      estimate_sig = TRUE)
 
 WVPlots::ScatterHist(d[d$is_train, , drop=FALSE], 
-                     "x_PiecewiseV", "y_ideal",
-                     "x_PiecewiseV versus ideal y on train",
+                     "x_numeric_PiecewiseV", "y_ideal",
+                     "x_numeric_PiecewiseV versus ideal y on train",
                      smoothmethod = "identity",
                      estimate_sig = TRUE)
 
 WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE], 
-                     "x_PiecewiseV", "y",
-                     "x_PiecewiseV versus observed y on test",
+                     "x_numeric_PiecewiseV", "y",
+                     "x_numeric_PiecewiseV versus observed y on test",
                      smoothmethod = "identity",
                      estimate_sig = TRUE)
 
 WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE], 
-                     "x_PiecewiseV", "y_ideal",
-                     "x_PiecewiseV versus ideal y on test",
+                     "x_numeric_PiecewiseV", "y_ideal",
+                     "x_numeric_PiecewiseV versus ideal y on test",
                      smoothmethod = "identity",
                      estimate_sig = TRUE)
 ```
@@ -82,7 +82,7 @@ WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE],
 ```{r solve_cat}
 cfc <- vtreat::mkCrossFrameCExperiment(
   d[d$is_train, , drop=FALSE], 
-  c('x', 'x_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE,
+  c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE,
   customCoders = customCoders,
   codeRestriction = codeRestriction,
   verbose = FALSE)
