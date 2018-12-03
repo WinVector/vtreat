@@ -96,16 +96,26 @@ pred_segs <- function(model, x) {
 solve_piecewise <- function(varName, x, y, w = NULL) {
   tryCatch({
     n <- length(x)
+    if(n<=2) {
+      return(NULL)
+    }
+    nunique <- length(unique(x))
+    if(nunique<=2) {
+      return(NULL)
+    }
     if(is.null(w)) {
       w <- numeric(n) + 1
     }
     if(n<=20) {
       # too small, 1 or 2 segments
-      k <- min(2, n)
+      k <- 2
     } else {
       # cross-val for a good k
       ks <- sort(unique(pmax(1, round(exp(seq(0, log(n/10), length.out=5))))))
-      ks <- ks[ks<=n/10]
+      ks <- ks[ks<=min(n/10, nunique)]
+      if(length(ks)<1) {
+        return(NULL)
+      }
       is_test <- seq_len(n) %in% sample.int(n, n, replace = FALSE)[seq_len(floor(n/2))]
       xvals <- vapply(
         ks,
