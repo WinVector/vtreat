@@ -111,7 +111,7 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
       k <- 2
     } else {
       # cross-val for a good k
-      ks <- sort(unique(pmax(1, round(exp(seq(0, log(n/10), length.out=5))))))
+      ks <- c(1, 2, 4, 8, 16, 32, 64)
       ks <- ks[ks<=min(n/10, nunique)]
       if(length(ks)<1) {
         return(NULL)
