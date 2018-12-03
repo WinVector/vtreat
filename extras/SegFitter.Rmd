@@ -15,25 +15,38 @@ customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
 
 ```{r example}
 d <- data.frame(x = seq(0, 15, by = 0.01))
+d$x_cat <- paste0("l_", round(d$x, digits = 1))
 d$y_ideal <- sin(d$x)
 d$x_noise <- d$x[sample.int(nrow(d), nrow(d), replace = FALSE)]
+d$x_cat_noise <- d$x_cat[sample.int(nrow(d), nrow(d), replace = FALSE)]
 d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
+d$yc <- d$y>0.5
 d$is_train <- runif(nrow(d))>=0.2
 
-ggplot(data=d) +
-  geom_point(aes(x = x, y = y), alpha=0.5) + 
-  geom_line(aes(x = x, y = y_ideal), color = "lightblue")
+head(d)
 
-cfe <- vtreat::mkCrossFrameNExperiment(d[d$is_train, , drop=FALSE], 
-                                        c('x', 'x_noise'), 'y',
-                                        customCoders = customCoders,
-                                        verbose = FALSE)
-cfe$treatments
-prepared <- vtreat::prepare(cfe$treatments, d)
+summary(d)
+
+ggplot(data=d) +
+  geom_point(aes(x = x, y = y, color = yc), alpha=0.5) + 
+  geom_line(aes(x = x, y = y_ideal), color = "lightblue") +
+  geom_hline(yintercept = 0.5, color = "red")
+```
+
+```{r solve_numeric}
+cfn <- vtreat::mkCrossFrameNExperiment(
+  d[d$is_train, , drop=FALSE], 
+  c('x', 'x_noise', 'x_cat', 'x_cat_noise'), 'y',
+  customCoders = customCoders,
+  verbose = FALSE)
+
+cfn$treatments
+
+prepared <- vtreat::prepare(cfn$treatments, d)
 d$x_PiecewiseV <- prepared$x_PiecewiseV
 
 ggplot(data=d) +
- # geom_point(aes(x = x, y = y)) + 
+  # geom_point(aes(x = x, y = y)) + 
   geom_line(aes(x = x, y = y_ideal), color = "lightblue") + 
   geom_line(aes(x = x, y = x_PiecewiseV))
 
@@ -61,3 +74,14 @@ WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE],
                      smoothmethod = "identity",
                      estimate_sig = TRUE)
 ```
+
+```{r solve_cat}
+cfc <- vtreat::mkCrossFrameCExperiment(
+  d[d$is_train, , drop=FALSE], 
+  c('x', 'x_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE,
+  customCoders = customCoders,
+  verbose = FALSE)
+
+cfc$treatments
+```
+
