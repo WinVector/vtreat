@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pre-computed cross-plan (so same split happens each time). — pre_comp_xval • vtreat</title>
+<title>Return variable evaluations. — variable_values • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Pre-computed cross-plan (so same split happens each time). — pre_comp_xval" />
+<meta property="og:title" content="Return variable evaluations. — variable_values" />
 
-<meta property="og:description" content="Pre-computed cross-plan (so same split happens each time)." />
+<meta property="og:description" content="Return variable evaluations." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -139,72 +139,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pre-computed cross-plan (so same split happens each time).</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/outOfSample.R'><code>R/outOfSample.R</code></a></small>
-    <div class="hidden name"><code>pre_comp_xval.Rd</code></div>
+    <h1>Return variable evaluations.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/variable_importance.R'><code>R/variable_importance.R</code></a></small>
+    <div class="hidden name"><code>variable_values.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Pre-computed cross-plan (so same split happens each time).</p>
+    <p>Return variable evaluations.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pre_comp_xval</span>(<span class='no'>nRows</span>, <span class='no'>nSplits</span>, <span class='no'>splitplan</span>)</pre>
+    <pre class="usage"><span class='fu'>variable_values</span>(<span class='no'>sf</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nRows</th>
-      <td><p>number of rows to split (integer &gt;1).</p></td>
-    </tr>
-    <tr>
-      <th>nSplits</th>
-      <td><p>number of groups to split into (ignored).</p></td>
-    </tr>
-    <tr>
-      <th>splitplan</th>
-      <td><p>split plan to actually use</p></td>
+      <th>sf</th>
+      <td><p>scoreFrame from from vtreat treatments</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>splitplan</p>
+    <p>per-original varaible evaluations</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='no'>p1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='oneWayHoldout.html'>oneWayHoldout</a></span>(<span class='fl'>3</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>)
-<span class='no'>p2</span> <span class='kw'>&lt;-</span> <span class='fu'>pre_comp_xval</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='no'>p1</span>)
-<span class='fu'>p2</span>(<span class='fl'>3</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt; [[1]]$train
-#&gt; [1] 2 3
-#&gt; 
-#&gt; [[1]]$app
-#&gt; [1] 1
-#&gt; 
-#&gt; 
-#&gt; [[2]]
-#&gt; [[2]]$train
-#&gt; [1] 1 3
-#&gt; 
-#&gt; [[2]]$app
-#&gt; [1] 2
-#&gt; 
-#&gt; 
-#&gt; [[3]]
-#&gt; [[3]]$train
-#&gt; [1] 1 2
-#&gt; 
-#&gt; [[3]]$app
-#&gt; [1] 3
-#&gt; 
-#&gt; 
-#&gt; attr(,"splitmethod")
-#&gt; [1] "oneway ( pre-computed 3 3 )"</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -212,9 +173,7 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

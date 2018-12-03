@@ -46,6 +46,11 @@ cfn$treatments
 
 vtreat::variable_values(cfn$treatments$scoreFrame)
 
+# or directly
+vtreat::value_variables_N(
+  d[d$is_train, , drop=FALSE], 
+  c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'y')
+
 prepared <- vtreat::prepare(cfn$treatments, d)
 d$x_numeric_PiecewiseV <- prepared$x_numeric_PiecewiseV
 
@@ -90,5 +95,10 @@ cfc <- vtreat::mkCrossFrameCExperiment(
 cfc$treatments
 
 vtreat::variable_values(cfc$treatments$scoreFrame)
+
+# or directly
+vtreat::value_variables_C(
+  d[d$is_train, , drop=FALSE], 
+  c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE)
 ```
 
