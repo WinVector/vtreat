@@ -35,7 +35,7 @@ encode_x_as_lambdas <- function(x, minx, maxx, xs) {
 #' Fit a piecewise linear function at cut-points
 fit_segments <- function(x, y, w = NULL) {
   if(is.null(w)) {
-    w = numeric(length(x))
+    w = numeric(length(x)) + 1
   }
   meany = mean(y)
   missing_pred = meany
@@ -59,7 +59,8 @@ fit_segments <- function(x, y, w = NULL) {
   vars <- colnames(ff)
   ff$y <- y
   f <- paste("y", paste(c("0", vars), collapse = " + "), sep = " ~ ")
-  model <- lm(f, data = ff)
+  f <- as.formula(f)
+  model <- lm(f, data = ff, weights = w)
   coef <- model$coefficients
   coef[is.na(coef)] <- 0
   list(minx = minx, 
@@ -80,10 +81,10 @@ pred_segs <- function(model, x) {
 
 #' Solve as piecewise linear problem.
 #'
-#' Return a vector of length y that is a function of x
-#' (differs at must where x differs) obeying the same order
-#' constraints as x.  This vector is picked as close to
-#' y (by square-distance) as possible.
+#' Return a vector of length y that is a piecewise function of x.
+#' This vector is picked as close to
+#' y (by square-distance) as possible for a set of x-only determined
+#' cut-points.
 #'
 #' @param varName character, name of variable
 #' @param x numeric, factor, or character input (not empty, no NAs). 
@@ -92,10 +93,6 @@ pred_segs <- function(model, x) {
 #' @return isotonicly adjusted y (non-decreasing)
 #'
 #'
-#' @examples
-#' 
-#' solveNonDecreasing('v', 1:3, c(1,2,1))
-#' # [1] 1.0 1.5 1.5
 #' 
 solve_piecewise <- function(varName, x, y, w=NULL) {
   tryCatch({
@@ -132,14 +129,14 @@ cfe$treatments
 ```
 
     ##              varName varMoves          rsq           sig needsSplit
-    ## 1       x_PiecewiseV     TRUE 6.466391e-01 5.897642e-277       TRUE
-    ## 2            x_clean     TRUE 2.962418e-05  8.494975e-01      FALSE
-    ## 3 x_noise_PiecewiseV     TRUE 1.521621e-03  1.736743e-01       TRUE
-    ## 4      x_noise_clean     TRUE 1.148099e-03  2.373414e-01      FALSE
+    ## 1       x_PiecewiseV     TRUE 0.6617838599 2.133662e-278       TRUE
+    ## 2            x_clean     TRUE 0.0005793060  4.097820e-01      FALSE
+    ## 3 x_noise_PiecewiseV     TRUE 0.0001200204  7.075540e-01       TRUE
+    ## 4      x_noise_clean     TRUE 0.0002793699  5.670716e-01      FALSE
     ##   extraModelDegrees origName       code
-    ## 1              1218        x PiecewiseV
+    ## 1              1175        x PiecewiseV
     ## 2                 0        x      clean
-    ## 3              1218  x_noise PiecewiseV
+    ## 3              1175  x_noise PiecewiseV
     ## 4                 0  x_noise      clean
 
 ``` r
