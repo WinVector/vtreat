@@ -1,14 +1,11 @@
----
-title: "SegFitter"
-output: github_document
----
+SegFitter
+================
 
-```{r pkgs}
+``` r
 library("ggplot2")
 ```
 
-```{r fns}
-
+``` r
 # encode xs as lambdas
 encode_x_as_lambdas <- function(x, minx, maxx, xs) {
   n <- length(x)
@@ -75,8 +72,7 @@ pred_segs <- function(model, x) {
 }
 ```
 
-
-```{r example}
+``` r
 d <- data.frame(x = seq(0, 15, by = 0.01))
 d$y_ideal <- sin(d$x)
 d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
@@ -84,7 +80,11 @@ d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
 ggplot(data=d) +
   geom_point(aes(x = x, y = y), alpha=0.5) + 
   geom_line(aes(x = x, y = y_ideal), color = "lightblue")
+```
 
+![](SegFitter_files/figure-markdown_github/example-1.png)
+
+``` r
 model <- fit_segments(d$x, d$y)
 d$pred <- pred_segs(model, d$x)
 ggplot(data=d) +
@@ -92,3 +92,5 @@ ggplot(data=d) +
   geom_line(aes(x = x, y = y_ideal), color = "lightblue") + 
   geom_line(aes(x = x, y = pred))
 ```
+
+![](SegFitter_files/figure-markdown_github/example-2.png)
