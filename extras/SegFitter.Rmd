@@ -9,7 +9,9 @@ library("ggplot2")
 
 ```{r fns}
 
-# encode xs as lambdas
+# encode x as lambdas
+# x_i = previous + lambda * next_x
+# copying forward the variable causes later models to pick up the previous as above.
 encode_x_as_lambdas <- function(x, minx, maxx, xs) {
   n <- length(x)
   k <- length(xs)
@@ -27,7 +29,7 @@ encode_x_as_lambdas <- function(x, minx, maxx, xs) {
     }
     v <- (x-left)/(right-left)
     v[x<left] <- 0
-    v[x>=right] <- 1 # copy to res of the models
+    v[x>=right] <- 1 # copy to rest of the models
     ff[[vname]] <- v
   }
   ff
@@ -99,8 +101,11 @@ pred_segs <- function(model, x) {
 #' # [1] 1.0 1.5 1.5
 #' 
 solve_piecewise <- function(varName, x, y, w=NULL) {
-  model <- fit_segments(x, y, w=w)
-  pred_segs(model, x)
+  tryCatch({
+    model <- fit_segments(x, y, w=w)
+    return(pred_segs(model, x))
+  },
+  error = function(e) { return(NULL) })
 }
 
 customCoders = list('c.PiecewiseV.num' = solve_piecewise,
@@ -111,6 +116,7 @@ customCoders = list('c.PiecewiseV.num' = solve_piecewise,
 ```{r example}
 d <- data.frame(x = seq(0, 15, by = 0.01))
 d$y_ideal <- sin(d$x)
+d$x_noise <- d$x[sample.int(nrow(d), nrow(d), replace = FALSE)]
 d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
 d$is_train <- runif(nrow(d))>=0.2
 
@@ -119,7 +125,7 @@ ggplot(data=d) +
   geom_line(aes(x = x, y = y_ideal), color = "lightblue")
 
 cfe <- vtreat::mkCrossFrameNExperiment(d[d$is_train, , drop=FALSE], 
-                                        'x', 'y',
+                                        c('x', 'x_noise'), 'y',
                                         customCoders = customCoders,
                                         verbose = FALSE)
 cfe$treatments

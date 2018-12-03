@@ -6,7 +6,9 @@ library("ggplot2")
 ```
 
 ``` r
-# encode xs as lambdas
+# encode x as lambdas
+# x_i = previous + lambda * next_x
+# copying forward the variable causes later models to pick up the previous as above.
 encode_x_as_lambdas <- function(x, minx, maxx, xs) {
   n <- length(x)
   k <- length(xs)
@@ -24,7 +26,7 @@ encode_x_as_lambdas <- function(x, minx, maxx, xs) {
     }
     v <- (x-left)/(right-left)
     v[x<left] <- 0
-    v[x>=right] <- 1 # copy to res of the models
+    v[x>=right] <- 1 # copy to rest of the models
     ff[[vname]] <- v
   }
   ff
@@ -96,8 +98,11 @@ pred_segs <- function(model, x) {
 #' # [1] 1.0 1.5 1.5
 #' 
 solve_piecewise <- function(varName, x, y, w=NULL) {
-  model <- fit_segments(x, y, w=w)
-  pred_segs(model, x)
+  tryCatch({
+    model <- fit_segments(x, y, w=w)
+    return(pred_segs(model, x))
+  },
+  error = function(e) { return(NULL) })
 }
 
 customCoders = list('c.PiecewiseV.num' = solve_piecewise,
@@ -107,6 +112,7 @@ customCoders = list('c.PiecewiseV.num' = solve_piecewise,
 ``` r
 d <- data.frame(x = seq(0, 15, by = 0.01))
 d$y_ideal <- sin(d$x)
+d$x_noise <- d$x[sample.int(nrow(d), nrow(d), replace = FALSE)]
 d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
 d$is_train <- runif(nrow(d))>=0.2
 
@@ -119,18 +125,22 @@ ggplot(data=d) +
 
 ``` r
 cfe <- vtreat::mkCrossFrameNExperiment(d[d$is_train, , drop=FALSE], 
-                                        'x', 'y',
+                                        c('x', 'x_noise'), 'y',
                                         customCoders = customCoders,
                                         verbose = FALSE)
 cfe$treatments
 ```
 
-    ##        varName varMoves         rsq           sig needsSplit
-    ## 1 x_PiecewiseV     TRUE 0.655368743 2.136152e-279       TRUE
-    ## 2      x_clean     TRUE 0.000658704  3.743851e-01      FALSE
+    ##              varName varMoves          rsq           sig needsSplit
+    ## 1       x_PiecewiseV     TRUE 6.466391e-01 5.897642e-277       TRUE
+    ## 2            x_clean     TRUE 2.962418e-05  8.494975e-01      FALSE
+    ## 3 x_noise_PiecewiseV     TRUE 1.521621e-03  1.736743e-01       TRUE
+    ## 4      x_noise_clean     TRUE 1.148099e-03  2.373414e-01      FALSE
     ##   extraModelDegrees origName       code
-    ## 1              1200        x PiecewiseV
+    ## 1              1218        x PiecewiseV
     ## 2                 0        x      clean
+    ## 3              1218  x_noise PiecewiseV
+    ## 4                 0  x_noise      clean
 
 ``` r
 prepared <- vtreat::prepare(cfe$treatments, d)
