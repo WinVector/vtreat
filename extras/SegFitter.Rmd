@@ -63,7 +63,7 @@ fit_segments <- function(x, y, w = NULL) {
   ff$y <- y
   f <- paste("y", paste(c("0", vars), collapse = " + "), sep = " ~ ")
   f <- as.formula(f)
-  model <- lm(f, data = ff, weights = w)
+  model <- stats::lm(f, data = ff, weights = w)
   coef <- model$coefficients
   coef[is.na(coef)] <- 0
   list(minx = minx, 

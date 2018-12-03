@@ -60,7 +60,7 @@ fit_segments <- function(x, y, w = NULL) {
   ff$y <- y
   f <- paste("y", paste(c("0", vars), collapse = " + "), sep = " ~ ")
   f <- as.formula(f)
-  model <- lm(f, data = ff, weights = w)
+  model <- stats::lm(f, data = ff, weights = w)
   coef <- model$coefficients
   coef[is.na(coef)] <- 0
   list(minx = minx, 
@@ -129,14 +129,14 @@ cfe$treatments
 ```
 
     ##              varName varMoves          rsq           sig needsSplit
-    ## 1       x_PiecewiseV     TRUE 0.6617838599 2.133662e-278       TRUE
-    ## 2            x_clean     TRUE 0.0005793060  4.097820e-01      FALSE
-    ## 3 x_noise_PiecewiseV     TRUE 0.0001200204  7.075540e-01       TRUE
-    ## 4      x_noise_clean     TRUE 0.0002793699  5.670716e-01      FALSE
+    ## 1       x_PiecewiseV     TRUE 6.602968e-01 4.123299e-295       TRUE
+    ## 2            x_clean     TRUE 6.808968e-07  9.767398e-01      FALSE
+    ## 3 x_noise_PiecewiseV     TRUE 3.942983e-05  8.244101e-01       TRUE
+    ## 4      x_noise_clean     TRUE 8.000606e-04  3.174859e-01      FALSE
     ##   extraModelDegrees origName       code
-    ## 1              1175        x PiecewiseV
+    ## 1              1251        x PiecewiseV
     ## 2                 0        x      clean
-    ## 3              1175  x_noise PiecewiseV
+    ## 3              1251  x_noise PiecewiseV
     ## 4                 0  x_noise      clean
 
 ``` r
