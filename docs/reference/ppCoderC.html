@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return variable evaluations. — variable_values • vtreat</title>
+<title>Solve a categorical partial pooling problem. — ppCoderC • vtreat</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Return variable evaluations. — variable_values" />
+<meta property="og:title" content="Solve a categorical partial pooling problem. — ppCoderC" />
 
-<meta property="og:description" content="Return variable evaluations." />
+<meta property="og:description" content="Please see http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/ and
+http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -141,31 +142,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return variable evaluations.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/variable_importance.R'><code>R/variable_importance.R</code></a></small>
-    <div class="hidden name"><code>variable_values.Rd</code></div>
+    <h1>Solve a categorical partial pooling problem.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/partial_pooling.R'><code>R/partial_pooling.R</code></a></small>
+    <div class="hidden name"><code>ppCoderC.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Return variable evaluations.</p>
+    <p>Please see <a href='http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/'>http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/</a> and
+<a href='http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/'>http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/</a>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>variable_values</span>(<span class='no'>sf</span>)</pre>
+    <pre class="usage"><span class='fu'>ppCoderC</span>(<span class='no'>v</span>, <span class='no'>vcol</span>, <span class='no'>y</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>sf</th>
-      <td><p>scoreFrame from from vtreat treatments</p></td>
+      <th>v</th>
+      <td><p>character variable name</p></td>
+    </tr>
+    <tr>
+      <th>vcol</th>
+      <td><p>character, independent or input variable</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>logical, dependent or outcome variable to predict</p></td>
+    </tr>
+    <tr>
+      <th>w</th>
+      <td><p>row/example weights</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>per-original varaible evaluations</p>
+    <p>scored training data column</p>
     
 
   </div>

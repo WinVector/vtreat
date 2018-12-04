@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return variable evaluations. — variable_values • vtreat</title>
+<title>Solve for best non-increasing fit. — solveNonIncreasing • vtreat</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,12 @@
 
 
 
-<meta property="og:title" content="Return variable evaluations. — variable_values" />
+<meta property="og:title" content="Solve for best non-increasing fit. — solveNonIncreasing" />
 
-<meta property="og:description" content="Return variable evaluations." />
+<meta property="og:description" content="Return a vector of length y that is a function of x
+(differs at must where x differs) obeying the opposite order
+constraints as x.  This vector is picked as close to
+y (by square-distance) as possible." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -141,33 +144,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return variable evaluations.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/variable_importance.R'><code>R/variable_importance.R</code></a></small>
-    <div class="hidden name"><code>variable_values.Rd</code></div>
+    <h1>Solve for best non-increasing fit.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/isotone.R'><code>R/isotone.R</code></a></small>
+    <div class="hidden name"><code>solveNonIncreasing.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Return variable evaluations.</p>
+    <p>Return a vector of length y that is a function of x
+(differs at must where x differs) obeying the opposite order
+constraints as x.  This vector is picked as close to
+y (by square-distance) as possible.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>variable_values</span>(<span class='no'>sf</span>)</pre>
+    <pre class="usage"><span class='fu'>solveNonIncreasing</span>(<span class='no'>varName</span>, <span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>sf</th>
-      <td><p>scoreFrame from from vtreat treatments</p></td>
+      <th>varName</th>
+      <td><p>character, name of variable</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>numeric, factor, or character input (not empty, no NAs).</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>numeric (same length as x no NAs), output to match</p></td>
+    </tr>
+    <tr>
+      <th>w</th>
+      <td><p>numeric positive, same length as x (weights, can be NULL)</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>per-original varaible evaluations</p>
+    <p>isotonicly adjusted y (non-decreasing)</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Please see <a href='https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md'>https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md</a>.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+
+<span class='kw'>if</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ns-load'>requireNamespace</a></span>(<span class='st'>"isotone"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+   <span class='fu'>solveNonIncreasing</span>(<span class='st'>'v'</span>, <span class='fl'>1</span>:<span class='fl'>3</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>1</span>))
+}</div><div class='output co'>#&gt; [1] 1.5 1.5 1.0</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -175,7 +204,11 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

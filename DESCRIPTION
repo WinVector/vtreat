@@ -27,6 +27,8 @@ Imports:
 Suggests:
     rquery (>= 1.2.0),
     rqdatatable (>= 1.1.1),
+    isotone,
+    lme4,
     testthat,
     knitr,
     rmarkdown,
