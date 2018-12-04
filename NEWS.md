@@ -4,7 +4,7 @@
  * add segmented variable calculation.
  * add pre-computed split plan.
  * bump dependencies.
- * Example more higher order coders.
+ * Example higher order coders.
 
 # vtreat 1.3.2 2018/11/05
 
