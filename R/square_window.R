@@ -25,7 +25,7 @@ square_window <- function(varName, x, y, w = NULL) {
     }
     meany = mean(y)
     d <- data.frame(x = x, y = y, orig_idx = seq_len(n))
-    d <- d[order(d$x, runif(length(d$x))), , drop = FALSE]
+    d <- d[order(d$x, stats::runif(length(d$x))), , drop = FALSE]
     d <- d[!is.na(d$x), , drop = FALSE]
     if(nrow(d)<=10) {
       return(NULL)

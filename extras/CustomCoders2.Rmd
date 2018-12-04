@@ -1,5 +1,5 @@
 ---
-title: "SegFitter"
+title: "CustomCoders2"
 output: github_document
 ---
 
@@ -11,7 +11,13 @@ library("ggplot2")
 customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
                     'n.PiecewiseV.num' = vtreat::solve_piecewise,
                     'c.knearest.num' = vtreat::square_window,
-                    'n.knearest.num' = vtreat::square_window)
+                    'n.knearest.num' = vtreat::square_window,
+                    'n.poolN.center' = vtreat::ppCoderN, 
+                    'c.poolC.center' = vtreat::ppCoderC,
+                    'n.NonDecreasingV.num' = vtreat::solveNonDecreasing,
+                    'n.NonIncreasingV.num' = vtreat::solveNonIncreasing, 
+                    'c.NonDecreasingV.num' = vtreat::solveNonDecreasing,
+                    'c.NonIncreasingV.num' = vtreat::solveNonIncreasing)
 codeRestriction = c("PiecewiseV", 
                     "knearest",
                     "poolN", "poolC",
@@ -21,7 +27,7 @@ codeRestriction = c("PiecewiseV",
 
 
 ```{r example}
-d <- data.frame(x_numeric = seq(0, 15, by = 0.01))
+d <- data.frame(x_numeric = seq(0, 15, by = 0.1))
 d$x_cat <- paste0("l_", round(d$x_numeric, digits = 1))
 d$y_ideal <- sin(d$x_numeric)
 d$x_numeric_noise <- d$x_numeric[sample.int(nrow(d), nrow(d), replace = FALSE)]
@@ -29,12 +35,6 @@ d$x_cat_noise <- d$x_cat[sample.int(nrow(d), nrow(d), replace = FALSE)]
 d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
 d$yc <- d$y>0.5
 d$is_train <- runif(nrow(d))>=0.2
-
-dcheck <- d[1:2, ]
-dcheck$x_numeric <- NA_real_
-dcheck$x_cat[1] <- "new_level"
-dcheck$x_cat[2] <- NA_character_
-dcheck
 
 head(d)
 
@@ -102,8 +102,6 @@ WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE],
                      "x_numeric_PiecewiseV versus ideal y on test",
                      smoothmethod = "identity",
                      estimate_sig = TRUE)
-
-vtreat::prepare(cfn$treatments, dcheck)
 ```
 
 ```{r solve_cat}
@@ -122,8 +120,5 @@ vtreat::variable_values(cfc$treatments$scoreFrame)
 vtreat::value_variables_C(
   d[d$is_train, , drop=FALSE], 
   c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE)
-
-
-vtreat::prepare(cfc$treatments, dcheck)
 ```
 
