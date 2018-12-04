@@ -59,8 +59,12 @@ value_variables_N <- function(dframe,varlist,
                               use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_N")
   customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
-                      'n.PiecewiseV.num' = vtreat::solve_piecewise)
-  codeRestriction = c("PiecewiseV", "clean", "isBAD", "catB", "catP")
+                      'n.PiecewiseV.num' = vtreat::solve_piecewise,
+                      'c.knearest.num' = vtreat::square_window,
+                      'n.knearest.num' = vtreat::square_window)
+  codeRestriction = c("PiecewiseV", 
+                      "knearest",
+                      "clean", "isBAD", "catB", "catP")
   cfn <- mkCrossFrameNExperiment(
     dframe= dframe,
     varlist = varlist,
@@ -126,8 +130,12 @@ value_variables_C <- function(dframe,varlist,
                               use_parallel = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_C")
   customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
-                      'n.PiecewiseV.num' = vtreat::solve_piecewise)
-  codeRestriction = c("PiecewiseV", "clean", "isBAD", "catB", "catP")
+                      'n.PiecewiseV.num' = vtreat::solve_piecewise,
+                      'c.knearest.num' = vtreat::square_window,
+                      'n.knearest.num' = vtreat::square_window)
+  codeRestriction = c("PiecewiseV", 
+                      "knearest",
+                      "clean", "isBAD", "catB", "catP")
   cfc <- mkCrossFrameCExperiment(
     dframe= dframe,
     varlist = varlist,

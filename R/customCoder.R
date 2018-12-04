@@ -164,7 +164,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   }
   d <- data.frame(x = xcol,
                   pred = scores)
-  # TODO: weighted version
+  # TODO: weighted version 
   agg <- aggregate(pred~x, data=d, mean)
   predXs <- agg$x
   if(length(predXs)<=1) {
@@ -174,6 +174,12 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   ord <- order(agg$x)
   predXs <- predXs[ord]
   predYs <- predYs[ord]
+  # sample down
+  if(length(predXs)>10000) {
+    idxs <- seq(1, length(predXs)) 
+    predXs <- predXs[idxs]
+    predYs <- predYs[idxs]
+  }
   newVarName <- vtreat_make_names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,

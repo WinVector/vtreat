@@ -9,8 +9,12 @@ library("ggplot2")
 
 ```{r fns}
 customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
-                    'n.PiecewiseV.num' = vtreat::solve_piecewise)
-codeRestriction = c("PiecewiseV", "clean", "isBAD", "catB", "catP")
+                    'n.PiecewiseV.num' = vtreat::solve_piecewise,
+                    'c.knearest.num' = vtreat::square_window,
+                    'n.knearest.num' = vtreat::square_window)
+codeRestriction = c("PiecewiseV", 
+                    "knearest",
+                    "clean", "isBAD", "catB", "catP")
 ```
 
 
@@ -53,11 +57,19 @@ vtreat::value_variables_N(
 
 prepared <- vtreat::prepare(cfn$treatments, d)
 d$x_numeric_PiecewiseV <- prepared$x_numeric_PiecewiseV
+d$x_numeric_knearest <- prepared$x_numeric_knearest
 
 ggplot(data=d) +
   # geom_point(aes(x = x_numeric, y = y)) + 
   geom_line(aes(x = x_numeric, y = y_ideal), color = "lightblue") + 
-  geom_line(aes(x = x_numeric, y = x_numeric_PiecewiseV))
+  geom_line(aes(x = x_numeric, y = x_numeric_PiecewiseV)) +
+  ggtitle("y_ideal as a function of x_numeric_PiecewiseV")
+
+ggplot(data=d) +
+  # geom_point(aes(x = x_numeric, y = y)) + 
+  geom_line(aes(x = x_numeric, y = y_ideal), color = "lightblue") + 
+  geom_line(aes(x = x_numeric, y = x_numeric_knearest)) +
+  ggtitle("y_ideal as a function of x_numeric_knearest")
 
 WVPlots::ScatterHist(d[d$is_train, , drop=FALSE], 
                      "x_numeric_PiecewiseV", "y",

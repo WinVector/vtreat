@@ -1,5 +1,5 @@
 
-
+# low frequency model
 # encode x as lambdas
 # x_i = previous + lambda * next_x
 # copying forward the variable causes later models to pick up the previous as above.
