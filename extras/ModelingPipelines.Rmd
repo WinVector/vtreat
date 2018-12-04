@@ -12,6 +12,8 @@ library("glmnet")
 library("ggplot2")
 library("WVPlots")
 library("doParallel")
+library("rqdatatable")
+
 
 ncore <- parallel::detectCores()
 cl <- parallel::makeCluster(ncore)
@@ -202,6 +204,10 @@ And you can then pipe data into the pipeline to get predictions.
 ```{r}
 dTrain %.>% pipeline %.>% head(.)
 ```
+
+```{r}
+dTest %.>% pipeline %.>% head(.)
+```
  
 Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
 
@@ -265,6 +271,70 @@ WVPlots::ScatterHist(
   point_alpha = 0.1,
   contour = TRUE)
 ```
+
+`wrapr` `UnaryFn` pipelines can also be placed inside (stricter, table oriented) `rqdatatable` pipelines.
+
+
+```{r}
+p_table <- 
+  pkgfn("vtreat::prepare",
+        arg_name = "dframe", 
+        args = list(treatmentplan = cp$treatments,
+                    varRestriction = newvars)) %.>%
+  pkgfn("subset",
+        arg_name = "x",
+        args = list(select = newvars))  %.>%
+  pkgfn("scale",
+        arg_name = "x",
+        args = list(center = centering,
+                    scale = scaling))  %.>%
+  pkgfn("glmnet::predict.glmnet",
+        arg_name = "newx",
+        args = list(object = model,
+                    s = s)) %.>%
+  pkgfn("base::data.frame",
+        arg_name = "")
+
+
+ops <- mk_td("d", vars) %.>%
+  rq_ufn(., p_table, 
+         columns_produced = "X1") %.>%
+  rename_columns(., "prob" %:=% "X1")
+
+columns_used(ops)
+
+column_names(ops)
+
+cat(format(ops))
+
+dTest %.>% 
+  ops %.>%
+  head(.)
+```
+
+
+Or `rqdatatable` pipelines can be stored in `UnaryFn` nodes.
+
+```{r}
+d2 <- data.frame(x = 1)
+
+ops <- mk_td("d", "x") %.>%
+  extend(., y = x + 1)
+
+cat(format(ops))
+
+d2 %.>% ops
+
+p <- rq_fn_wrapper(ops) %.>%
+  srcfn(".[, cname, drop = TRUE]",
+        arg_name = ".",
+        args = list(cname = "y"))
+
+cat(format(p))
+
+d2 %.>% p
+```
+
 
 
 And that is how to effectively save, share, and deploy non-trivial modeling workflows.
