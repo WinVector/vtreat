@@ -628,15 +628,18 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
   if(length(useableVars)<=0) {
     stop('no useable vars')
   }
+  vars_we_warned_on <- list()
   for(ti in treatmentplan$treatments) {
     if(length(intersect(ti$newvars,useableVars))>0) {
       newType <- typeof(dframe[[ti$origvar]])
       newClass <- paste(class(dframe[[ti$origvar]]))
       if((ti$origType!=newType) || (ti$origClass!=newClass)) {
-        warning(paste('variable',ti$origvar,'expected type/class',
-                      ti$origType,ti$origClass,
-                      'saw ',newType,newClass))
-        
+        if(is.null(vars_we_warned_on[[ti$origvar]])) {
+          warning(paste('variable',ti$origvar,'expected type/class',
+                        ti$origType,ti$origClass,
+                        'saw ',newType,newClass))
+          vars_we_warned_on[ti$origvar] <- 1
+        }
       }
     }
   }
