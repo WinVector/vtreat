@@ -335,6 +335,20 @@ cat(format(p))
 d2 %.>% p
 ```
 
+Pipelines can be changed to functions (but note: they are a bit harder to combine after that as in the `wrapr`
+dot pipe functions have a high combination precedence).
+
+```{r}
+cat(format(ops))
+class(ops)
+f1 <- as_fn(ops)
+f1(d2)
+
+class(p)
+cat(format(p))
+f2 <- as_fn(p)
+f2(d2)
+```
 
 
 And that is how to effectively save, share, and deploy non-trivial modeling workflows.

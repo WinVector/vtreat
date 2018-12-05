@@ -86,9 +86,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Wed Dec  5 10:19:19 2018"
-    ## [1] " start cross frame work Wed Dec  5 10:19:20 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec  5 10:19:26 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Wed Dec  5 11:03:58 2018"
+    ## [1] " start cross frame work Wed Dec  5 11:04:01 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec  5 11:04:09 2018"
 
 ``` r
 print(cp$method)
@@ -547,6 +547,58 @@ cat(format(p))
 
 ``` r
 d2 %.>% p
+```
+
+    ## [1] 2
+
+Pipelines can be changed to functions (but note: they are a bit harder to combine after that as in the `wrapr` dot pipe functions have a high combination precedence).
+
+``` r
+cat(format(ops))
+```
+
+    ## table(d; 
+    ##   x) %.>%
+    ##  extend(.,
+    ##   y := x + 1)
+
+``` r
+class(ops)
+```
+
+    ## [1] "relop_extend" "relop"
+
+``` r
+f1 <- as_fn(ops)
+f1(d2)
+```
+
+    ##    x y
+    ## 1: 1 2
+
+``` r
+class(p)
+```
+
+    ## [1] "UnaryFnList"
+    ## attr(,"package")
+    ## [1] "wrapr"
+
+``` r
+cat(format(p))
+```
+
+    ## UnaryFnList(
+    ##    rq_u_fn_w{ table(d; 
+    ##   x) %.>%
+    ##  extend(.,
+    ##   y := x + 1)
+    ##  },
+    ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
+
+``` r
+f2 <- as_fn(p)
+f2(d2)
 ```
 
     ## [1] 2
