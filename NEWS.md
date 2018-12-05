@@ -1,5 +1,5 @@
 
-# vtreat 1.3.3 2018/12/04
+# vtreat 1.3.3 2018/12/05
 
  * add segmented variable calculation.
  * add pre-computed split plan.

@@ -86,9 +86,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Tue Dec  4 15:44:09 2018"
-    ## [1] " start cross frame work Tue Dec  4 15:44:11 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec  4 15:44:16 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Wed Dec  5 10:19:19 2018"
+    ## [1] " start cross frame work Wed Dec  5 10:19:20 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec  5 10:19:26 2018"
 
 ``` r
 print(cp$method)
