@@ -86,9 +86,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Wed Dec  5 11:03:58 2018"
-    ## [1] " start cross frame work Wed Dec  5 11:04:01 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec  5 11:04:09 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Wed Dec  5 12:36:34 2018"
+    ## [1] " start cross frame work Wed Dec  5 12:36:36 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec  5 12:36:41 2018"
 
 ``` r
 print(cp$method)
@@ -250,7 +250,7 @@ pipeline <-
         arg_name = "newx",
         args = list(object = model,
                     s = s))  %.>%
-  srcfn(".[, cname, drop = TRUE]",
+  srcfn(qe(.[, cname, drop = TRUE]),
         arg_name = ".",
         args = list(cname = "1"))
 
@@ -530,7 +530,7 @@ d2 %.>% ops
 
 ``` r
 p <- rq_fn_wrapper(ops) %.>%
-  srcfn(".[, cname, drop = TRUE]",
+  srcfn(qe(.[, cname, drop = TRUE]),
         arg_name = ".",
         args = list(cname = "y"))
 

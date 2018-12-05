@@ -192,7 +192,7 @@ pipeline <-
         arg_name = "newx",
         args = list(object = model,
                     s = s))  %.>%
-  srcfn(".[, cname, drop = TRUE]",
+  srcfn(qe(.[, cname, drop = TRUE]),
         arg_name = ".",
         args = list(cname = "1"))
 
@@ -326,7 +326,7 @@ cat(format(ops))
 d2 %.>% ops
 
 p <- rq_fn_wrapper(ops) %.>%
-  srcfn(".[, cname, drop = TRUE]",
+  srcfn(qe(.[, cname, drop = TRUE]),
         arg_name = ".",
         args = list(cname = "y"))
 
