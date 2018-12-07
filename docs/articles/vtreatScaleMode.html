@@ -260,12 +260,12 @@ dTrainN<span class="op">$</span>y &lt;-<span class="st"> </span><span class="dv"
 cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,
                                          <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,
                                          <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Fri Dec  7 13:18:43 2018"
-## [1] " start cross frame work Fri Dec  7 13:18:43 2018"
-## [1] " vtreat::mkCrossFrameNExperiment done Fri Dec  7 13:18:43 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Fri Dec  7 14:02:51 2018"
+## [1] " start cross frame work Fri Dec  7 14:02:51 2018"
+## [1] " vtreat::mkCrossFrameNExperiment done Fri Dec  7 14:02:51 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newvars &lt;-<span class="st"> </span>cEraw<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(newvars)</code></pre></div>
-<pre><code>## [1] "x1_clean" "x2_clean" "x3_clean"</code></pre>
+<pre><code>## [1] "x1" "x2" "x3"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(cEraw<span class="op">$</span>crossFrame[, newvars])
 pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/prcomp">prcomp</a></span>(dM1,
                        <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
@@ -274,20 +274,20 @@ pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="
 ## [1] 1157.8816 1044.9080  179.8415
 ## 
 ## Rotation (n x k) = (3 x 3):
-##                  PC1         PC2         PC3
-## x1_clean  0.98564543 -0.16880819 0.002623125
-## x2_clean  0.16849926  0.98457413 0.047135824
-## x3_clean -0.01053957 -0.04601721 0.998885045</code></pre>
+##            PC1         PC2         PC3
+## x1  0.98564543 -0.16880819 0.002623125
+## x2  0.16849926  0.98457413 0.047135824
+## x3 -0.01053957 -0.04601721 0.998885045</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainN<span class="op">$</span>yScaled &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/scale">scale</a></span>(dTrainN<span class="op">$</span>y,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
 cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,
                                             <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
                                             <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Fri Dec  7 13:18:43 2018"
-## [1] " start cross frame work Fri Dec  7 13:18:43 2018"
-## [1] " vtreat::mkCrossFrameNExperiment done Fri Dec  7 13:18:43 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Fri Dec  7 14:02:51 2018"
+## [1] " start cross frame work Fri Dec  7 14:02:51 2018"
+## [1] " vtreat::mkCrossFrameNExperiment done Fri Dec  7 14:02:51 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newvars_s &lt;-<span class="st"> </span>cEscaled<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(newvars_s)</code></pre></div>
-<pre><code>## [1] "x1_clean" "x2_clean" "x3_clean"</code></pre>
+<pre><code>## [1] "x1" "x2" "x3"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dM2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(cEscaled<span class="op">$</span>crossFrame[, newvars_s])
 pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/prcomp">prcomp</a></span>(dM2,
                           <span class="dt">scale.=</span><span class="ot">FALSE</span>,<span class="dt">center=</span><span class="ot">TRUE</span>)
@@ -296,10 +296,10 @@ pCscaled &lt;-<span class="st"> </span>stats<span class="op">::</span><span clas
 ## [1] 0.7843205 0.7283565 0.1177734
 ## 
 ## Rotation (n x k) = (3 x 3):
-##                 PC1          PC2         PC3
-## x1_clean  0.9810074 -0.191767234 0.029151677
-## x2_clean  0.1915603  0.981432326 0.009759229
-## x3_clean -0.0304819 -0.003989572 0.999527357</code></pre>
+##           PC1          PC2         PC3
+## x1  0.9810074 -0.191767234 0.029151677
+## x2  0.1915603  0.981432326 0.009759229
+## x3 -0.0304819 -0.003989572 0.999527357</code></pre>
 <p>Notice the second application of <code><a href="https://www.rdocumentation.org/packages/stats/topics/prcomp">stats::prcomp</a></code> has more standard scaling of the reported standard deviations (though we still do not advise choosing latent variables based on mere comparisons to unit magnitude).</p>
 </div>
   </div>

@@ -142,19 +142,19 @@ dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
    <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 13:18:49 2018"
-## [1] "designing treatments Fri Dec  7 13:18:49 2018"
-## [1] " have initial level statistics Fri Dec  7 13:18:49 2018"
-## [1] " scoring treatments Fri Dec  7 13:18:49 2018"
-## [1] "have treatment plan Fri Dec  7 13:18:50 2018"
-## [1] "rescoring complex variables Fri Dec  7 13:18:50 2018"
-## [1] "done rescoring complex variables Fri Dec  7 13:18:50 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 14:02:58 2018"
+## [1] "designing treatments Fri Dec  7 14:02:58 2018"
+## [1] " have initial level statistics Fri Dec  7 14:02:58 2018"
+## [1] " scoring treatments Fri Dec  7 14:02:58 2018"
+## [1] "have treatment plan Fri Dec  7 14:02:58 2018"
+## [1] "rescoring complex variables Fri Dec  7 14:02:58 2018"
+## [1] "done rescoring complex variables Fri Dec  7 14:02:58 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq        sig extraModelDegrees
 ## 1        x    x_catP  catP 0.54085208 0.03392101                 2
 ## 2        x    x_catB  catB 0.00000000 1.00000000                 2
-## 3        z   z_clean clean 0.25792985 0.14299775                 0
+## 3        z         z clean 0.25792985 0.14299775                 0
 ## 4        z   z_isBAD isBAD 0.19087450 0.20766228                 0
 ## 5        x  x_lev_NA   lev 0.19087450 0.20766228                 0
 ## 6        x x_lev_x_a   lev 0.08170417 0.40972582                 0
@@ -196,19 +196,19 @@ dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
    <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 13:18:50 2018"
-## [1] "designing treatments Fri Dec  7 13:18:50 2018"
-## [1] " have initial level statistics Fri Dec  7 13:18:50 2018"
-## [1] " scoring treatments Fri Dec  7 13:18:50 2018"
-## [1] "have treatment plan Fri Dec  7 13:18:50 2018"
-## [1] "rescoring complex variables Fri Dec  7 13:18:50 2018"
-## [1] "done rescoring complex variables Fri Dec  7 13:18:50 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 14:02:58 2018"
+## [1] "designing treatments Fri Dec  7 14:02:58 2018"
+## [1] " have initial level statistics Fri Dec  7 14:02:58 2018"
+## [1] " scoring treatments Fri Dec  7 14:02:58 2018"
+## [1] "have treatment plan Fri Dec  7 14:02:58 2018"
+## [1] "rescoring complex variables Fri Dec  7 14:02:58 2018"
+## [1] "done rescoring complex variables Fri Dec  7 14:02:58 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.1538462 0.4418233                 2
-## 2        x    x_catN  catN 0.1131222 0.5145190                 2
+## 1        x    x_catP  catP 0.2857143 0.2745766                 2
+## 2        x    x_catN  catN 0.1052632 0.5304117                 2
 ## 3        x    x_catD  catD 0.1111111 0.5185185                 2
-## 4        z   z_clean clean 0.3045045 0.2562868                 0
+## 4        z         z clean 0.3045045 0.2562868                 0
 ## 5        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 6        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 7        x x_lev_x_a   lev 0.1111111 0.5185185                 0
@@ -240,15 +240,15 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
    <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 13:18:50 2018"
-## [1] "designing treatments Fri Dec  7 13:18:50 2018"
-## [1] " have initial level statistics Fri Dec  7 13:18:50 2018"
-## [1] " scoring treatments Fri Dec  7 13:18:50 2018"
-## [1] "have treatment plan Fri Dec  7 13:18:50 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 14:02:58 2018"
+## [1] "designing treatments Fri Dec  7 14:02:58 2018"
+## [1] " have initial level statistics Fri Dec  7 14:02:58 2018"
+## [1] " scoring treatments Fri Dec  7 14:02:58 2018"
+## [1] "have treatment plan Fri Dec  7 14:02:58 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
-## 2        z   z_clean clean                 0
+## 2        z         z clean                 0
 ## 3        z   z_isBAD isBAD                 0
 ## 4        x  x_lev_NA   lev                 0
 ## 5        x x_lev_x_a   lev                 0
@@ -284,7 +284,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
 ## 1        x    x_catN  catN 0.1131222 0.5145190                 2
-## 2        z   z_clean clean 0.3045045 0.2562868                 0
+## 2        z         z clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
@@ -295,13 +295,13 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 
 <span class="co"># no catN variables</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTreated)</code></pre></div>
-<pre><code>##   z_clean z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
-## 1     1.0       0        0         1         0 0
-## 2     2.0       0        0         1         0 0
-## 3     3.0       0        0         1         0 1
-## 4     4.0       0        0         0         1 0
-## 5     3.2       1        0         0         1 1
-## 6     6.0       0        1         0         0 1</code></pre>
+<pre><code>##     z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
+## 1 1.0       0        0         1         0 0
+## 2 2.0       0        0         1         0 0
+## 3 3.0       0        0         1         0 1
+## 4 4.0       0        0         0         1 0
+## 5 3.2       1        0         0         1 1
+## 6 6.0       0        1         0         0 1</code></pre>
 <p><code>varRestriction</code> works similarly, only you must list the explicit variables to use. See the example below.</p>
 </div>
 <div id="overall" class="section level2">
@@ -328,18 +328,18 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
                                                       <span class="st">'isBAD'</span>),
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
-<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1052632 0.5304117                 2
-## 2        z   z_clean clean 0.3045045 0.2562868                 0
-## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
-## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
-## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
+## 1        x    x_catN  catN 1.110223e-16 1.0000000                 2
+## 2        z         z clean 3.045045e-01 0.2562868                 0
+## 3        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
+## 4        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
+## 5        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pruneSig &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
 vScoreFrame &lt;-<span class="st"> </span>treatmentsN<span class="op">$</span>scoreFrame
 varsToUse &lt;-<span class="st"> </span>vScoreFrame<span class="op">$</span>varName[(vScoreFrame<span class="op">$</span>sig<span class="op">&lt;=</span>pruneSig)]
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(varsToUse)</code></pre></div>
-<pre><code>## [1] "x_catN"    "z_clean"   "z_isBAD"   "x_lev_NA"  "x_lev_x_a" "x_lev_x_b"</code></pre>
+<pre><code>## [1] "x_catN"    "z"         "z_isBAD"   "x_lev_NA"  "x_lev_x_a" "x_lev_x_b"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(vScoreFrame<span class="op">$</span>origName[vScoreFrame<span class="op">$</span>varName <span class="op">%in%</span><span class="st"> </span>varsToUse]))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(origVarNames)</code></pre></div>
 <pre><code>## [1] "x" "z"</code></pre>
@@ -348,13 +348,13 @@ dTreated =<span class="st"> </span><span class="kw"><a href="../reference/prepar
                    <span class="dt">varRestriction =</span> varsToUse)
 
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTreated)</code></pre></div>
-<pre><code>##       x_catN z_clean z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
-## 1 -0.1666667     1.0       0        0         1         0 0
-## 2 -0.1666667     2.0       0        0         1         0 0
-## 3 -0.1666667     3.0       0        0         1         0 1
-## 4  0.0000000     4.0       0        0         0         1 0
-## 5  0.0000000     3.2       1        0         0         1 1
-## 6  0.5000000     6.0       0        1         0         0 1</code></pre>
+<pre><code>##       x_catN   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
+## 1 -0.1666667 1.0       0        0         1         0 0
+## 2 -0.1666667 2.0       0        0         1         0 0
+## 3 -0.1666667 3.0       0        0         1         0 1
+## 4  0.0000000 4.0       0        0         0         1 0
+## 5  0.0000000 3.2       1        0         0         1 1
+## 6  0.5000000 6.0       0        1         0         0 1</code></pre>
 <p>We strongly suggest using the standard variables coded as ‘lev’, ‘clean’, and ‘isBad’; and the “y aware” variables coded as ‘catN’ and ‘catB’. The non sub-model variables (‘catP’ and ‘catD’) can be useful (possibly as interactions or guards on the corresponding ‘catN’ and ‘catB’ variables) but also encode distributional facts about the data that may or may not be appropriate depending on your problem domain.</p>
 <p>When displaying variables to end users we suggest using the original names and the min significance seen on any derived variable:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">origVarNames &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(vScoreFrame<span class="op">$</span>origName[vScoreFrame<span class="op">$</span>varName <span class="op">%in%</span><span class="st"> </span>varsToUse]))

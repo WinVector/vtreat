@@ -199,7 +199,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># look at the data we would train models on</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(cfe_m<span class="op">$</span>cross_frame)</code></pre></div>
 <pre><code>## 'data.frame':    1000 obs. of  16 variables:
-##  $ x1_clean      : num  0.818 0.587 -0.671 0.103 -0.318 ...
+##  $ x1            : num  0.818 0.587 -0.671 0.103 -0.318 ...
 ##  $ x2_catP       : num  0.313 0.313 0.325 0.362 0.313 0.362 0.362 0.325 0.313 0.325 ...
 ##  $ x3_catP       : num  0.333 0.333 0.333 0.347 0.32 0.347 0.333 0.347 0.333 0.347 ...
 ##  $ x2_lev_x_a    : num  0 0 1 0 0 0 0 1 0 1 ...
@@ -223,7 +223,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 }
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(cfe_m<span class="op">$</span>treat_m, d))</code></pre></div>
 <pre><code>## 'data.frame':    1000 obs. of  16 variables:
-##  $ x1_clean      : num  0.0205 0.5867 -0.6712 0.1033 -0.3182 ...
+##  $ x1            : num  0.0205 0.5867 -0.6712 0.1033 -0.3182 ...
 ##  $ x2_catP       : num  0.0005 0.313 0.325 0.362 0.313 0.362 0.362 0.325 0.313 0.325 ...
 ##  $ x3_catP       : num  0.0005 0.333 0.333 0.347 0.32 0.347 0.333 0.347 0.333 0.347 ...
 ##  $ x2_lev_x_a    : num  0 0 1 0 0 0 0 1 0 1 ...
@@ -254,7 +254,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">x1_clean</td>
+<td align="left">x1</td>
 <td align="right">0.0558908</td>
 <td align="right">0.0000382</td>
 <td align="left">Large1</td>
@@ -308,7 +308,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <td align="left">Large1</td>
 </tr>
 <tr class="even">
-<td align="left">x1_clean</td>
+<td align="left">x1</td>
 <td align="right">0.0015382</td>
 <td align="right">0.1615618</td>
 <td align="left">Large2</td>
@@ -362,7 +362,7 @@ cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCro
 <td align="left">Large2</td>
 </tr>
 <tr class="odd">
-<td align="left">x1_clean</td>
+<td align="left">x1</td>
 <td align="right">0.0064771</td>
 <td align="right">0.0034947</td>
 <td align="left">NoInfo</td>
