@@ -50,8 +50,7 @@ print(treatmentsC$scoreFrame[,scoreColsToPrint])
 ```
 
 For each user supplied variable or column (in this case `x` and `z`) 'vtreat'
-proposes derived or treated variables (in this case `x_lev_x.a`, 
-`x_lev_x.b`, `x_catP`, `x_catB`, `z_clean`, and `z_isBAD`).  The mapping
+proposes derived or treated variables.  The mapping
 from original variable name to derived variable name is given by comparing the
 columns `origName` and `varName`.  One can map facts about the new variables
 back to the original variables as follows:

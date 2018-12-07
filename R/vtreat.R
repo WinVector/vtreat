@@ -548,8 +548,8 @@ prepare <- function(treatmentplan, dframe,
 #' dTestC <- data.frame(x= c('a','b','c',NA),
 #'                      z= c(10,20,30,NA))
 #' treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-#' dTrainCTreated <- prepare(treatmentsC, dTrainC, varRestriction= c('z_clean'))
-#' dTestCTreated <- prepare(treatmentsC, dTestC, varRestriction= c('z_clean'))
+#' dTrainCTreated <- prepare(treatmentsC, dTrainC)
+#' dTestCTreated <- prepare(treatmentsC, dTestC)
 #'
 #' dTrainZ <- data.frame(x= c('a','a','a','b','b','b'),
 #'                       z= c(1,2,3,4,5,6))

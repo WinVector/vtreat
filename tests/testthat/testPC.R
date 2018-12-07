@@ -11,10 +11,10 @@ test_that("testPC: test piecewise constant", {
   cfe <- mkCrossFrameNExperiment(d,'x','y',
                                  splitFunction = splitter,
                                  ncross = 2)
-  expect_true(length(cfe$evalSets)==2)
+  testthat::expect_true(length(cfe$evalSets)==2)
   xValCount <- vapply(cfe$evalSets,function(ci) { 
     length(unique(d$x[ci$train]))},
     numeric(1))
-  expect_true(all(xValCount==1))
-  expect_true('x_clean' %in% colnames(cfe$crossFrame))
+  testthat::expect_true(all(xValCount==1))
+  testthat::expect_true('clean' %in% cfe$treatments$scoreFrame$code)
 })

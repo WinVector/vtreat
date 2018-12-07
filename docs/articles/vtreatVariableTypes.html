@@ -110,7 +110,7 @@
       <h1>Variable Types</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2018-12-03</h4>
+            <h4 class="date">2018-12-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatVariableTypes.Rmd"><code>vignettes/vtreatVariableTypes.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatVariableTypes.Rmd</code></div>
@@ -142,13 +142,13 @@ dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
    <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Mon Dec  3 18:43:25 2018"
-## [1] "designing treatments Mon Dec  3 18:43:25 2018"
-## [1] " have initial level statistics Mon Dec  3 18:43:25 2018"
-## [1] " scoring treatments Mon Dec  3 18:43:25 2018"
-## [1] "have treatment plan Mon Dec  3 18:43:25 2018"
-## [1] "rescoring complex variables Mon Dec  3 18:43:25 2018"
-## [1] "done rescoring complex variables Mon Dec  3 18:43:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 13:18:49 2018"
+## [1] "designing treatments Fri Dec  7 13:18:49 2018"
+## [1] " have initial level statistics Fri Dec  7 13:18:49 2018"
+## [1] " scoring treatments Fri Dec  7 13:18:49 2018"
+## [1] "have treatment plan Fri Dec  7 13:18:50 2018"
+## [1] "rescoring complex variables Fri Dec  7 13:18:50 2018"
+## [1] "done rescoring complex variables Fri Dec  7 13:18:50 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code        rsq        sig extraModelDegrees
@@ -159,7 +159,7 @@ treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 ## 5        x  x_lev_NA   lev 0.19087450 0.20766228                 0
 ## 6        x x_lev_x_a   lev 0.08170417 0.40972582                 0
 ## 7        x x_lev_x_b   lev 0.00000000 1.00000000                 0</code></pre>
-<p>For each user supplied variable or column (in this case <code>x</code> and <code>z</code>) ‘vtreat’ proposes derived or treated variables (in this case <code>x_lev_x.a</code>, <code>x_lev_x.b</code>, <code>x_catP</code>, <code>x_catB</code>, <code>z_clean</code>, and <code>z_isBAD</code>). The mapping from original variable name to derived variable name is given by comparing the columns <code>origName</code> and <code>varName</code>. One can map facts about the new variables back to the original variables as follows:</p>
+<p>For each user supplied variable or column (in this case <code>x</code> and <code>z</code>) ‘vtreat’ proposes derived or treated variables. The mapping from original variable name to derived variable name is given by comparing the columns <code>origName</code> and <code>varName</code>. One can map facts about the new variables back to the original variables as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Build a map from vtreat names back to reasonable display names</span>
 vmap &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">as.list</a></span>(treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>origName)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(vmap) &lt;-<span class="st"> </span>treatmentsC<span class="op">$</span>scoreFrame<span class="op">$</span>varName
@@ -196,23 +196,23 @@ dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
    <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Mon Dec  3 18:43:25 2018"
-## [1] "designing treatments Mon Dec  3 18:43:25 2018"
-## [1] " have initial level statistics Mon Dec  3 18:43:25 2018"
-## [1] " scoring treatments Mon Dec  3 18:43:25 2018"
-## [1] "have treatment plan Mon Dec  3 18:43:25 2018"
-## [1] "rescoring complex variables Mon Dec  3 18:43:25 2018"
-## [1] "done rescoring complex variables Mon Dec  3 18:43:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 13:18:50 2018"
+## [1] "designing treatments Fri Dec  7 13:18:50 2018"
+## [1] " have initial level statistics Fri Dec  7 13:18:50 2018"
+## [1] " scoring treatments Fri Dec  7 13:18:50 2018"
+## [1] "have treatment plan Fri Dec  7 13:18:50 2018"
+## [1] "rescoring complex variables Fri Dec  7 13:18:50 2018"
+## [1] "done rescoring complex variables Fri Dec  7 13:18:50 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 4.385965e-01 0.1518345                 2
-## 2        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 3        x    x_catD  catD 1.111111e-01 0.5185185                 2
-## 4        z   z_clean clean 3.045045e-01 0.2562868                 0
-## 5        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
-## 6        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 7        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
-## 8        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.1538462 0.4418233                 2
+## 2        x    x_catN  catN 0.1131222 0.5145190                 2
+## 3        x    x_catD  catD 0.1111111 0.5185185                 2
+## 4        z   z_clean clean 0.3045045 0.2562868                 0
+## 5        z   z_isBAD isBAD 0.2000000 0.3739010                 0
+## 6        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 7        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 8        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>The treatment of numeric targets is similar to that of categorical targets. In the numeric case the possible derived variable types are:</p>
 <ul>
 <li>
@@ -240,11 +240,11 @@ dTrainZ &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
    <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),
    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainZ))</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Mon Dec  3 18:43:25 2018"
-## [1] "designing treatments Mon Dec  3 18:43:25 2018"
-## [1] " have initial level statistics Mon Dec  3 18:43:25 2018"
-## [1] " scoring treatments Mon Dec  3 18:43:25 2018"
-## [1] "have treatment plan Mon Dec  3 18:43:25 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 13:18:50 2018"
+## [1] "designing treatments Fri Dec  7 13:18:50 2018"
+## [1] " have initial level statistics Fri Dec  7 13:18:50 2018"
+## [1] " scoring treatments Fri Dec  7 13:18:50 2018"
+## [1] "have treatment plan Fri Dec  7 13:18:50 2018"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -283,7 +283,7 @@ treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 <span class="co"># no catP or catD variables</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1052632 0.5304117                 2
+## 1        x    x_catN  catN 0.1131222 0.5145190                 2
 ## 2        z   z_clean clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0

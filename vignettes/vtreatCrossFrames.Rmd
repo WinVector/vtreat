@@ -62,7 +62,10 @@ treatments <- vtreat::designTreatmentsC(dTrain,c('xBad1','xBad2','xBad3','xGood1
 dTrainTreated <- vtreat::prepare(treatments,dTrain,
   pruneSig=c() # Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems
 )
-m1 <- glm(y~xBad1_catB + xBad2_catB + xBad3_catB + xGood1_clean + xGood2_clean,
+
+f <- wrapr::mk_formula("y", treatments$scoreFrame$varName)
+print(f)
+m1 <- glm(f,
           data=dTrainTreated,family=binomial(link='logit'))
 print(summary(m1))  # notice low residual deviance
 
