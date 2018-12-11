@@ -110,7 +110,7 @@
       <h1>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2018-12-07</h4>
+            <h4 class="date">2018-12-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -125,17 +125,17 @@
 <p>As an upper bound think of setting <code>pruneSig</code> below <em>1/numberOfColumns</em>. Setting <code>pruneSig</code> to <em>1/numberOfColumns</em> means that (in expectation) only a constant number of pure noise variables (variables with no actual relation to the outcome we are trying to predict) should create columns. This means (under some assumptions, and in expectation) we expect only a bounded number of noisy columns to be exposed to downstream statistical and machine learning algorithms (which they can presumably handle).</p>
 <p>As a lower bound think of what sort of good variables get thrown out at a given setting of <code>pruneSig</code>. For example suppose our problem is categorization in a data set with <em>n/2</em> positive examples and <em>n/2</em> negative examples. Consider the observed significance of a rare indicator variable that is on <em>k</em> times in training and is only on for positive instances. A random variable that is on <em>k</em> times would achieve this purity with probability <span class="math inline">\(2^{-k}\)</span>, so we expect it to have a <em>-log(significance)</em> in the ballpark of <em>k</em>. So a <code>pruneSig</code> of <span class="math inline">\(2^{-k}\)</span> will filter all such variables out (be they good or bad). Thus if you want levels or indicators that are on only a <em>z</em> fraction of the time on a training set of size <em>n</em> you want <code>pruneSig</code> &gt;&gt; <span class="math inline">\(2^{-z*n}\)</span>.</p>
 <p>Example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">signk &lt;-<span class="st"> </span><span class="cf">function</span>(n,k) {
-  sigTab &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="ot">TRUE</span>,n<span class="op">/</span><span class="dv">2</span>),<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="ot">FALSE</span>,n<span class="op">/</span><span class="dv">2</span>)),<span class="dt">v=</span><span class="ot">FALSE</span>)
-  sigTab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(k),<span class="st">'v'</span>] &lt;-<span class="st"> </span><span class="ot">TRUE</span>
-  vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(sigTab,<span class="st">'v'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)<span class="op">$</span>scoreFrame[<span class="dv">1</span>,<span class="st">'sig'</span>]
-}
-sigTab &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">k=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">50</span>,<span class="dv">100</span>))
-<span class="co"># If you want to see a rare but perfect indicator of positive class</span>
-<span class="co"># that's only on k times out of 1000, this is the lower bound on pruneSig</span>
-sigTab<span class="op">$</span>sigEst =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">vapply</a></span>(sigTab<span class="op">$</span>k,<span class="cf">function</span>(k) <span class="kw">signk</span>(<span class="dv">1000</span>,k),<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric</a></span>(<span class="dv">1</span>)) 
-sigTab<span class="op">$</span>minusLogSig =<span class="st"> </span><span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(sigTab<span class="op">$</span>sigEst) <span class="co"># we expect this to be approximately k</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(sigTab)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">signk &lt;-<span class="st"> </span><span class="cf">function</span>(n,k) {</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  sigTab &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="ot">TRUE</span>,n<span class="op">/</span><span class="dv">2</span>),<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="ot">FALSE</span>,n<span class="op">/</span><span class="dv">2</span>)),<span class="dt">v=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  sigTab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(k),<span class="st">'v'</span>] &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(sigTab,<span class="st">'v'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)<span class="op">$</span>scoreFrame[<span class="dv">1</span>,<span class="st">'sig'</span>]</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">sigTab &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">k=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">50</span>,<span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co"># If you want to see a rare but perfect indicator of positive class</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co"># that's only on k times out of 1000, this is the lower bound on pruneSig</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">sigTab<span class="op">$</span>sigEst =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">vapply</a></span>(sigTab<span class="op">$</span>k,<span class="cf">function</span>(k) <span class="kw">signk</span>(<span class="dv">1000</span>,k),<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric</a></span>(<span class="dv">1</span>)) </a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">sigTab<span class="op">$</span>minusLogSig =<span class="st"> </span><span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(sigTab<span class="op">$</span>sigEst) <span class="co"># we expect this to be approximately k</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(sigTab)</a></code></pre></div>
 <pre><code>##     k       sigEst minusLogSig
 ## 1   1 2.388636e-01    1.431863
 ## 2   2 9.565153e-02    2.347044
@@ -148,14 +148,14 @@ sigTab<span class="op">$</span>minusLogSig =<span class="st"> </span><span class
 ## 9 100 1.952762e-34   77.618649</code></pre>
 <p>For a data set with 100 variables (and 1000 rows), you might want to set <code>pruneSig</code> &lt;= 0.01 to limit the number of pure noise variables that enter the model. Note that this value is smaller than the lower bounds given above for <span class="math inline">\(k &lt; 5\)</span>. This means that in a data set of this width and length, you may not be able to detect rare but perfect indicators that occur fewer than 5 times. You would have a chance of using such rare indicators in a <em>catN</em> or <em>catB</em> effects coded variable.</p>
 <p>Below we design a data frame with a perfect categorical variable (completely determines the outcome y) where each level occurs exactly 2 times. The individual levels are insignificant, but we can still extract a significant <em>catB</em> effect coded variable.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">3346</span>)
-n &lt;-<span class="st"> </span><span class="dv">1000</span>
-k &lt;-<span class="st"> </span><span class="dv">4</span>
-d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n,<span class="dt">size=</span><span class="dv">1</span>,<span class="dt">prob=</span><span class="fl">0.5</span>)<span class="op">&gt;</span><span class="dv">0</span>)
-d<span class="op">$</span>catVarNoise &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">'lev'</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"%03d"</span>,<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">floor</a></span>(n<span class="op">/</span>k))),(k<span class="op">+</span><span class="dv">1</span>))[<span class="dv">1</span><span class="op">:</span>n]
-d<span class="op">$</span>catVarPerfect &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(d<span class="op">$</span>catVar,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/substr">substr</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(d<span class="op">$</span>y),<span class="dv">1</span>,<span class="dv">1</span>))
-d &lt;-<span class="st"> </span>d[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/order">order</a></span>(d<span class="op">$</span>catVarPerfect),]
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(d)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">3346</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">k &lt;-<span class="st"> </span><span class="dv">4</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n,<span class="dt">size=</span><span class="dv">1</span>,<span class="dt">prob=</span><span class="fl">0.5</span>)<span class="op">&gt;</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">d<span class="op">$</span>catVarNoise &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">'lev'</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"%03d"</span>,<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">floor</a></span>(n<span class="op">/</span>k))),(k<span class="op">+</span><span class="dv">1</span>))[<span class="dv">1</span><span class="op">:</span>n]</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">d<span class="op">$</span>catVarPerfect &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(d<span class="op">$</span>catVar,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/substr">substr</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(d<span class="op">$</span>y),<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">d &lt;-<span class="st"> </span>d[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/order">order</a></span>(d<span class="op">$</span>catVarPerfect),]</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(d)</a></code></pre></div>
 <pre><code>##         y catVarNoise catVarPerfect
 ## 1   FALSE      lev001       lev001F
 ## 501 FALSE      lev001       lev001F
@@ -163,37 +163,37 @@ d &lt;-<span class="st"> </span>d[<span class="kw"><a href="https://www.rdocumen
 ## 751  TRUE      lev001       lev001T
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(d,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Fri Dec  7 14:02:53 2018"
-## [1] "designing treatments Fri Dec  7 14:02:53 2018"
-## [1] " have initial level statistics Fri Dec  7 14:02:53 2018"
-## [1] " scoring treatments Fri Dec  7 14:02:53 2018"
-## [1] "have treatment plan Fri Dec  7 14:02:53 2018"
-## [1] "rescoring complex variables Fri Dec  7 14:02:53 2018"
-## [1] "done rescoring complex variables Fri Dec  7 14:02:53 2018"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
-estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {
-  d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
-  model &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/formula">as.formula</a></span>(<span class="st">'y~x'</span>),
-                      <span class="dt">data=</span>d,
-                      <span class="dt">family=</span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))
-  delta_deviance &lt;-<span class="st"> </span>model<span class="op">$</span>null.deviance <span class="op">-</span><span class="st"> </span>model<span class="op">$</span>deviance
-  delta_df &lt;-<span class="st"> </span>model<span class="op">$</span>df.null <span class="op">-</span><span class="st"> </span>model<span class="op">$</span>df.residual <span class="op">+</span><span class="st"> </span>numberOfHiddenDegrees
-  pRsq &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="op">-</span><span class="st"> </span>model<span class="op">$</span>deviance<span class="op">/</span>model<span class="op">$</span>null.deviance
-  sig &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Chisquare">pchisq</a></span>(delta_deviance, delta_df, <span class="dt">lower.tail=</span><span class="ot">FALSE</span>)
-  sig
-}
-
-prepD &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatmentsC,d,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(d,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] "vtreat 1.3.3 inspecting inputs Tue Dec 11 10:54:40 2018"
+## [1] "designing treatments Tue Dec 11 10:54:40 2018"
+## [1] " have initial level statistics Tue Dec 11 10:54:40 2018"
+## [1] " scoring treatments Tue Dec 11 10:54:40 2018"
+## [1] "have treatment plan Tue Dec 11 10:54:40 2018"
+## [1] "rescoring complex variables Tue Dec 11 10:54:40 2018"
+## [1] "done rescoring complex variables Tue Dec 11 10:54:40 2018"</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Estimate effect significance (not coefficient significance).</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  model &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/formula">as.formula</a></span>(<span class="st">'y~x'</span>),</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">                      <span class="dt">data=</span>d,</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">                      <span class="dt">family=</span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">  delta_deviance &lt;-<span class="st"> </span>model<span class="op">$</span>null.deviance <span class="op">-</span><span class="st"> </span>model<span class="op">$</span>deviance</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">  delta_df &lt;-<span class="st"> </span>model<span class="op">$</span>df.null <span class="op">-</span><span class="st"> </span>model<span class="op">$</span>df.residual <span class="op">+</span><span class="st"> </span>numberOfHiddenDegrees</a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">  pRsq &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="op">-</span><span class="st"> </span>model<span class="op">$</span>deviance<span class="op">/</span>model<span class="op">$</span>null.deviance</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">  sig &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Chisquare">pchisq</a></span>(delta_deviance, delta_df, <span class="dt">lower.tail=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">  sig</a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">}</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14">prepD &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatmentsC,d,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</a></code></pre></div>
 <p>vtreat produces good variable significances using out of sample simulation (cross frames).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)])</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##              varName          rsq           sig extraModelDegrees
 ## 1   catVarNoise_catB 0.0003794619  4.683998e-01               249
 ## 2 catVarPerfect_catP 0.0007396777  3.113758e-01               473
 ## 3 catVarPerfect_catB 0.6951868195 1.802669e-211               473</code></pre>
 <p>For categorical targets we have in the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes). For numeric targets the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
 <p>Signal carrying complex variables can score as significant, even those composed of rare levels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y<span class="op">~</span>d<span class="op">$</span>catVarPerfect<span class="op">==</span><span class="st">'lev001T'</span>,<span class="dt">data=</span>d,<span class="dt">family=</span>binomial))</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y<span class="op">~</span>d<span class="op">$</span>catVarPerfect<span class="op">==</span><span class="st">'lev001T'</span>,<span class="dt">data=</span>d,<span class="dt">family=</span>binomial))</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ d$catVarPerfect == "lev001T", family = binomial, 
@@ -215,15 +215,15 @@ prepD &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class=
 ## AIC: 1386.6
 ## 
 ## Number of Fisher Scoring iterations: 12</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarPerfect_catB,prepD<span class="op">$</span>y,<span class="dv">0</span>) <span class="co"># wrong est</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarPerfect_catB,prepD<span class="op">$</span>y,<span class="dv">0</span>) <span class="co"># wrong est</span></a></code></pre></div>
 <pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
 <pre><code>## [1] 2.958641e-303</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarPerfect_catB,prepD<span class="op">$</span>y,
-          <span class="dt">numberOfHiddenDegrees=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(d<span class="op">$</span>catVarPerfect))<span class="op">-</span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarPerfect_catB,prepD<span class="op">$</span>y,</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">          <span class="dt">numberOfHiddenDegrees=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(d<span class="op">$</span>catVarPerfect))<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
 <pre><code>## [1] 3.963376e-90</code></pre>
 <p>Noise variables (those without a relation to outcome) are also scored correctly as long was we account for the degrees of freedom.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y<span class="op">~</span>d<span class="op">$</span>catVarNoise<span class="op">==</span><span class="st">'lev001'</span>,<span class="dt">data=</span>d,<span class="dt">family=</span>binomial))</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y<span class="op">~</span>d<span class="op">$</span>catVarNoise<span class="op">==</span><span class="st">'lev001'</span>,<span class="dt">data=</span>d,<span class="dt">family=</span>binomial))</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ d$catVarNoise == "lev001", family = binomial, 
@@ -245,10 +245,10 @@ prepD &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class=
 ## AIC: 1389.5
 ## 
 ## Number of Fisher Scoring iterations: 3</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarNoise_catB,prepD<span class="op">$</span>y,<span class="dv">0</span>) <span class="co"># wrong est</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarNoise_catB,prepD<span class="op">$</span>y,<span class="dv">0</span>) <span class="co"># wrong est</span></a></code></pre></div>
 <pre><code>## [1] 1.223667e-63</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarNoise_catB,prepD<span class="op">$</span>y,
-          <span class="dt">numberOfHiddenDegrees=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(d<span class="op">$</span>catVarNoise))<span class="op">-</span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">estSigGLM</span>(prepD<span class="op">$</span>catVarNoise_catB,prepD<span class="op">$</span>y,</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">          <span class="dt">numberOfHiddenDegrees=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(d<span class="op">$</span>catVarNoise))<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## [1] 0.07074029</code></pre>
   </div>
 
@@ -263,7 +263,7 @@ prepD &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class=
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
 </div>

@@ -50,19 +50,21 @@ vars <- setdiff(colnames(dTrain), outcome_name)
 Suppose our analysis plan is the following:
 
 * Fix missing values with `vtreat`.
-* Scale and center the data.
+* Scale and center the original variables (but not the new indicator variables).
 * Model `y` as a function of the other columns using `glmnet`.
 
 Now both `vtreat` and `glmnet` can scale, but we are going to keep the scaling
-as a separate step to show how composite data preparation pipelines work.
+as a separate step to control which variables are scaled, and to show how composite data preparation pipelines work.
 
 First we combine the pre-processing steps, and a fit model as follows.
 
 ```{r model1}
-# design a treatment plan using cross-validation methods
+# design a cross-validation plan
 ncross <- 5
 cplan <- vtreat::kWayStratifiedY(
   nrow(dTrain), ncross, dTrain, dTrain[[outcome_name]])
+
+# design a treatment plan using cross-validation methods
 cp <- vtreat::mkCrossFrameNExperiment(
   dTrain, vars, outcome_name,
   splitFunction = pre_comp_xval(nrow(dTrain), ncross, cplan),
@@ -77,19 +79,20 @@ print(newvars)
 
 # learn a centering and scaling of the cross-validated 
 # training frame
-tfs <- scale(cp$crossFrame[, newvars, drop = FALSE], 
+vars_to_scale = intersect(newvars, sf$varName[sf$code=="clean"])
+print(vars_to_scale)
+tfs <- scale(cp$crossFrame[, vars_to_scale, drop = FALSE], 
              center = TRUE, scale = TRUE)
 centering <- attr(tfs, "scaled:center")
 scaling <- attr(tfs, "scaled:scale")
 
+
 # apply the centering and scaling to the cross-validated 
 # training frame
-tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
-             center = centering,
-             scale = scaling)
+tfs <- center_scale(cp$crossFrame[, newvars, drop = FALSE],
+                    center = centering,
+                    scale = scaling)
 
-# build a cross-validation strategy to help us
-# search for a good alpha hyper-parameter value
 # convert the plan to cv.glmnet group notation
 foldid <- numeric(nrow(dTrain))
 for(i in seq_len(length(cplan))) {
@@ -181,19 +184,17 @@ pipeline <-
         arg_name = "dframe", 
         args = list(treatmentplan = cp$treatments,
                     varRestriction = newvars)) %.>%
-  pkgfn("subset",
-        arg_name = "x",
-        args = list(select = newvars))  %.>%
-  pkgfn("scale",
-        arg_name = "x",
+  pkgfn("vtreat::center_scale",
+        arg_name = "d",
         args = list(center = centering,
                     scale = scaling))  %.>%
+  srcfn(qe(as.matrix(.[, newvars, drop = FALSE])),
+        args = list(newvars = newvars)) %.>%
   pkgfn("glmnet::predict.glmnet",
         arg_name = "newx",
         args = list(object = model,
                     s = s))  %.>%
   srcfn(qe(.[, cname, drop = TRUE]),
-        arg_name = ".",
         args = list(cname = "1"))
 
 cat(format(pipeline))

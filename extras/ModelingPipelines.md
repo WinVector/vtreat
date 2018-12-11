@@ -1,7 +1,14 @@
 Modeling Pipelines
 ================
 
-Reusable modeling pipelines are a practical idea that gets re-developed many times in many contexts. [`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly powerful pipeline notation, and as of version `1.8.0` pipeline re-use system (notes [here](https://winvector.github.io/wrapr/articles/Function_Objects.html)). We will demonstrate this with the [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
+Reusable modeling pipelines are a practical idea that gets re-developed
+many times in many contexts.
+[`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly
+powerful pipeline notation, and as of version `1.8.0` pipeline re-use
+system (notes
+[here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).
+We will demonstrate this with the
+[`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
 
 ``` r
 library("wrapr")
@@ -66,19 +73,24 @@ vars <- setdiff(colnames(dTrain), outcome_name)
 
 Suppose our analysis plan is the following:
 
--   Fix missing values with `vtreat`.
--   Scale and center the data.
--   Model `y` as a function of the other columns using `glmnet`.
+  - Fix missing values with `vtreat`.
+  - Scale and center the original variables (but not the new indicator
+    variables).
+  - Model `y` as a function of the other columns using `glmnet`.
 
-Now both `vtreat` and `glmnet` can scale, but we are going to keep the scaling as a separate step to show how composite data preparation pipelines work.
+Now both `vtreat` and `glmnet` can scale, but we are going to keep the
+scaling as a separate step to control which variables are scaled, and to
+show how composite data preparation pipelines work.
 
 First we combine the pre-processing steps, and a fit model as follows.
 
 ``` r
-# design a treatment plan using cross-validation methods
+# design a cross-validation plan
 ncross <- 5
 cplan <- vtreat::kWayStratifiedY(
   nrow(dTrain), ncross, dTrain, dTrain[[outcome_name]])
+
+# design a treatment plan using cross-validation methods
 cp <- vtreat::mkCrossFrameNExperiment(
   dTrain, vars, outcome_name,
   splitFunction = pre_comp_xval(nrow(dTrain), ncross, cplan),
@@ -86,9 +98,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Wed Dec  5 16:50:52 2018"
-    ## [1] " start cross frame work Wed Dec  5 16:50:55 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec  5 16:51:01 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Tue Dec 11 11:01:17 2018"
+    ## [1] " start cross frame work Tue Dec 11 11:01:21 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 11:01:30 2018"
 
 ``` r
 print(cp$method)
@@ -103,30 +115,37 @@ newvars <- sf$varName[sf$sig <= 1/nrow(sf)]
 print(newvars)
 ```
 
-    ##  [1] "var_001_clean"   "var_001_isBAD"   "var_002_clean"  
-    ##  [4] "var_002_isBAD"   "var_003_clean"   "var_003_isBAD"  
-    ##  [7] "var_004_clean"   "var_004_isBAD"   "var_005_clean"  
-    ## [10] "var_005_isBAD"   "var_006_clean"   "var_006_isBAD"  
-    ## [13] "var_007_clean"   "var_007_isBAD"   "var_008_clean"  
-    ## [16] "var_008_isBAD"   "var_009_clean"   "var_009_isBAD"  
-    ## [19] "var_010_clean"   "var_010_isBAD"   "noise_156_isBAD"
+    ##  [1] "var_001"         "var_001_isBAD"   "var_002"        
+    ##  [4] "var_002_isBAD"   "var_003"         "var_003_isBAD"  
+    ##  [7] "var_004"         "var_004_isBAD"   "var_005"        
+    ## [10] "var_005_isBAD"   "var_006"         "var_006_isBAD"  
+    ## [13] "var_007"         "var_007_isBAD"   "var_008"        
+    ## [16] "var_008_isBAD"   "var_009"         "var_009_isBAD"  
+    ## [19] "var_010"         "var_010_isBAD"   "noise_156_isBAD"
 
 ``` r
 # learn a centering and scaling of the cross-validated 
 # training frame
-tfs <- scale(cp$crossFrame[, newvars, drop = FALSE], 
+vars_to_scale = intersect(newvars, sf$varName[sf$code=="clean"])
+print(vars_to_scale)
+```
+
+    ##  [1] "var_001" "var_002" "var_003" "var_004" "var_005" "var_006" "var_007"
+    ##  [8] "var_008" "var_009" "var_010"
+
+``` r
+tfs <- scale(cp$crossFrame[, vars_to_scale, drop = FALSE], 
              center = TRUE, scale = TRUE)
 centering <- attr(tfs, "scaled:center")
 scaling <- attr(tfs, "scaled:scale")
 
+
 # apply the centering and scaling to the cross-validated 
 # training frame
-tfs <- scale(cp$crossFrame[, newvars, drop = FALSE],
-             center = centering,
-             scale = scaling)
+tfs <- center_scale(cp$crossFrame[, newvars, drop = FALSE],
+                    center = centering,
+                    scale = scaling)
 
-# build a cross-validation strategy to help us
-# search for a good alpha hyper-parameter value
 # convert the plan to cv.glmnet group notation
 foldid <- numeric(nrow(dTrain))
 for(i in seq_len(length(cplan))) {
@@ -169,13 +188,13 @@ print(length(newvars))
 print(alpha)
 ```
 
-    ## [1] 0
+    ## [1] 0.05
 
 ``` r
 print(s)
 ```
 
-    ## [1] 0.02292036
+    ## [1] 0.002446381
 
 ``` r
 # show cross-val results
@@ -186,7 +205,7 @@ ggplot(data = cross_scores,
   ggtitle("best cross validated mean loss as function of alpha")
 ```
 
-![](ModelingPipelines_files/figure-markdown_github/model1-1.png)
+![](ModelingPipelines_files/figure-gfm/model1-1.png)<!-- -->
 
 ``` r
 pf <- data.frame(s = cross_scores$lambdas[[best_i]],
@@ -200,7 +219,7 @@ ggplot(data = pf,
           subtitle = paste("alpha =", alpha))
 ```
 
-![](ModelingPipelines_files/figure-markdown_github/model1-2.png)
+![](ModelingPipelines_files/figure-gfm/model1-2.png)<!-- -->
 
 ``` r
 # re-fit model with chosen alpha
@@ -212,26 +231,38 @@ model <- glmnet(as.matrix(tfs),
                 lambda = lambdas)
 ```
 
-The question then is: how do we share such a model? Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order. In this case the modeling pipeline consists of the following pieces:
+The question then is: how do we share such a model? Roughly we need to
+share the model, any fit parameters (such as centering and scaling
+choices), *and* the code sequence to apply all of these steps in the
+proper order. In this case the modeling pipeline consists of the
+following pieces:
 
--   The treatment plan `cp$treatments`.
--   The list of chosen variables `newvars`.
--   The centering and scaling vectors `centering` and `scaling`.
--   The `glmnet` model `model` and final chosen lambda/s value `s`.
+  - The treatment plan `cp$treatments`.
+  - The list of chosen variables `newvars`.
+  - The centering and scaling vectors `centering` and `scaling`.
+  - The `glmnet` model `model` and final chosen lambda/s value `s`.
 
-These values are needed to run any data through the sequence of operations:
+These values are needed to run any data through the sequence of
+operations:
 
--   Using `vtreat` to prepare the data.
--   Restricting down to only modeling variables to make sure we have the right data for the scaling step.
--   Rescaling and centering the data.
--   Applying the `glmnet` model.
--   Converting the matrix of predictions into a vector of predictions.
+  - Using `vtreat` to prepare the data.
+  - Restricting down to only modeling variables to make sure we have the
+    right data for the scaling step.
+  - Rescaling and centering the data.
+  - Applying the `glmnet` model.
+  - Converting the matrix of predictions into a vector of predictions.
 
-The problem is: having worked had to build the model (taking a lot of steps and optimizing parameters/hyperparemeters) has left us with a lot of items and steps we need to share to have the full prediction process.
+The problem is: having worked had to build the model (taking a lot of
+steps and optimizing parameters/hyperparemeters) has left us with a lot
+of items and steps we need to share to have the full prediction process.
 
 A really neat way to simply share of these things is the following.
 
-Use `wrapr`'s ["function object" abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html), which treats names of functions, plus arguments as an efficient notation for partial evaluation. We can use this system to encode our model prediction pipeline as follows.
+Use `wrapr`’s [“function object”
+abstraction](https://winvector.github.io/wrapr/articles/Function_Objects.html),
+which treats names of functions, plus arguments as an efficient notation
+for partial evaluation. We can use this system to encode our model
+prediction pipeline as follows.
 
 ``` r
 pipeline <-
@@ -239,19 +270,17 @@ pipeline <-
         arg_name = "dframe", 
         args = list(treatmentplan = cp$treatments,
                     varRestriction = newvars)) %.>%
-  pkgfn("subset",
-        arg_name = "x",
-        args = list(select = newvars))  %.>%
-  pkgfn("scale",
-        arg_name = "x",
+  pkgfn("vtreat::center_scale",
+        arg_name = "d",
         args = list(center = centering,
                     scale = scaling))  %.>%
+  srcfn(qe(as.matrix(.[, newvars, drop = FALSE])),
+        args = list(newvars = newvars)) %.>%
   pkgfn("glmnet::predict.glmnet",
         arg_name = "newx",
         args = list(object = model,
                     s = s))  %.>%
   srcfn(qe(.[, cname, drop = TRUE]),
-        arg_name = ".",
         args = list(cname = "1"))
 
 cat(format(pipeline))
@@ -259,37 +288,38 @@ cat(format(pipeline))
 
     ## UnaryFnList(
     ##    vtreat::prepare(dframe=., treatmentplan, varRestriction),
-    ##    base::subset(x=., select),
-    ##    base::scale(x=., center, scale),
+    ##    vtreat::center_scale(d=., center, scale),
+    ##    SrcFunction{ as.matrix(.[, newvars, drop = FALSE]) }(.=., newvars),
     ##    glmnet::predict.glmnet(newx=., object, s),
     ##    SrcFunction{ .[, cname, drop = TRUE] }(.=., cname))
 
-And you can then pipe data into the pipeline to get predictions.
+And you can then pipe data into the pipeline to get
+    predictions.
 
 ``` r
 dTrain %.>% pipeline %.>% head(.)
 ```
 
-    ##          1          2          3          4          5          6 
-    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
+    ## [1] -0.60372843  0.46662315  0.15205810  0.39812493  0.44087441  0.09160836
 
 ``` r
 dTest %.>% pipeline %.>% head(.)
 ```
 
-    ##           1           2           3           4           5           6 
-    ##  0.53640371 -0.05179475 -1.33273081  0.01080681 -1.12037319  0.65583570
+    ## [1]  0.532070422 -0.046165380 -1.347887772  0.007668392 -1.133345162
+    ## [6]  0.662722678
 
-Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
+Or you can use a functional notation
+[`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
 
 ``` r
 ApplyTo(pipeline, dTrain) %.>% head(.)
 ```
 
-    ##          1          2          3          4          5          6 
-    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
+    ## [1] -0.60372843  0.46662315  0.15205810  0.39812493  0.44087441  0.09160836
 
-The pipeline itself is a simple list of steps (with some class annotations added).
+The pipeline itself is a simple list of steps (with some class
+annotations added).
 
 ``` r
 pipeline@items
@@ -299,10 +329,10 @@ pipeline@items
     ## [1] "vtreat::prepare(dframe=., treatmentplan, varRestriction)"
     ## 
     ## [[2]]
-    ## [1] "base::subset(x=., select)"
+    ## [1] "vtreat::center_scale(d=., center, scale)"
     ## 
     ## [[3]]
-    ## [1] "base::scale(x=., center, scale)"
+    ## [1] "SrcFunction{ as.matrix(.[, newvars, drop = FALSE]) }(.=., newvars)"
     ## 
     ## [[4]]
     ## [1] "glmnet::predict.glmnet(newx=., object, s)"
@@ -314,19 +344,18 @@ pipeline@items
 str(pipeline@items[[3]])
 ```
 
-    ## Formal class 'PartialNamedFn' [package "wrapr"] with 4 slots
-    ##   ..@ fn_name   : chr "scale"
-    ##   ..@ fn_package: chr "base"
-    ##   ..@ arg_name  : chr "x"
-    ##   ..@ args      :List of 2
-    ##   .. ..$ center: Named num [1:21] -3.98e-02 1.45e-01 -4.99e+05 1.47e-01 -7.73e+03 ...
-    ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
-    ##   .. ..$ scale : Named num [1:21] 1.68e-01 3.53e-01 1.95e+06 3.54e-01 3.57e+04 ...
-    ##   .. .. ..- attr(*, "names")= chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
+    ## Formal class 'SrcFunction' [package "wrapr"] with 3 slots
+    ##   ..@ expr_src: chr "as.matrix(.[, newvars, drop = FALSE])"
+    ##   ..@ arg_name: chr "."
+    ##   ..@ args    :List of 1
+    ##   .. ..$ newvars: chr [1:21] "var_001" "var_001_isBAD" "var_002" "var_002_isBAD" ...
 
-If you do not like pipe notation you can also build the pipeline using [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) list notation.
+If you do not like pipe notation you can also build the pipeline using
+[`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html)
+list notation.
 
-The pipeline can be saved, and contains the required parameters in simple lists.
+The pipeline can be saved, and contains the required parameters in
+simple lists.
 
 ``` r
 saveRDS(dTrain, "dTrain.RDS")
@@ -344,10 +373,10 @@ dTrain <- readRDS("dTrain.RDS")
 dTrain %.>% pipeline %.>% head(.)
 ```
 
-    ##          1          2          3          4          5          6 
-    ## -0.6006445  0.4624558  0.1524533  0.4016349  0.4334204  0.1031797
+    ## [1] -0.60372843  0.46662315  0.15205810  0.39812493  0.44087441  0.09160836
 
-We can use this pipeline on different data, as we do to create performance plots below.
+We can use this pipeline on different data, as we do to create
+performance plots below.
 
 ``` r
 dTrain$prediction <- dTrain %.>% pipeline
@@ -360,7 +389,7 @@ WVPlots::ScatterHist(
   contour = TRUE)
 ```
 
-![](ModelingPipelines_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](ModelingPipelines_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 dTest$prediction <- dTest %.>% pipeline
@@ -373,11 +402,16 @@ WVPlots::ScatterHist(
   contour = TRUE)
 ```
 
-![](ModelingPipelines_files/figure-markdown_github/unnamed-chunk-9-2.png)
+![](ModelingPipelines_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
 
-And that is how to effectively save, share, and deploy non-trivial modeling workflows.
+And that is how to effectively save, share, and deploy non-trivial
+modeling workflows.
 
-(We have another run [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md) showing why we do not recommend always using the number of variables as "just another hyperparameter", but instead using simple threshold based filtering.)
+(We have another run
+[here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md)
+showing why we do not recommend always using the number of variables as
+“just another hyperparameter”, but instead using simple threshold
+based filtering.)
 
 ``` r
 parallel::stopCluster(cl)
