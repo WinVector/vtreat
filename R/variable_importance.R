@@ -19,7 +19,7 @@ variable_values <- function(sf) {
 }
 
 
-#' Value variables for predictin a numeric outcome.
+#' Value variables for prediction a numeric outcome.
 #' 
 #'  
 #' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
@@ -85,7 +85,7 @@ value_variables_N <- function(dframe,varlist,
 }
 
 
-#' Value variables for predictin a categorical outcome.
+#' Value variables for prediction a categorical outcome.
 #' 
 #' 
 #'

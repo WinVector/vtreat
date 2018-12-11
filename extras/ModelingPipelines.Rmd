@@ -3,22 +3,11 @@ title: "Modeling Pipelines"
 output: github_document
 ---
 
-Reusable modeling pipelines are a practical idea that gets re-developed many times in many contexts.  [`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly powerful pipeline notation, and as of version `1.8.0` pipeline re-use system (notes [here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).  We will demonstrate this with the [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
+Reusable modeling pipelines are a practical idea that gets re-developed many times in many contexts.  [`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly powerful pipeline notation, and, as of version `1.8.0`, a pipe-stage re-use system (notes [here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).  We will demonstrate this with the [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
 
-```{r setup}
-library("wrapr")
-library("vtreat")
-library("glmnet")
-library("ggplot2")
-library("WVPlots")
-library("doParallel")
-library("rqdatatable")
+Our example task is to fit a model on some arbitrary data.  Our model will try to predict `y` as a function of the other columns.
 
-
-ncore <- parallel::detectCores()
-cl <- parallel::makeCluster(ncore)
-registerDoParallel(cl)
-
+```{r mkdata, echo=FALSE, include=FALSE}
 # function to make practice data
 mk_data <- function(nrows, n_var_cols, n_noise_cols) {
   d <- data.frame(y = rnorm(nrows))
@@ -40,6 +29,76 @@ mk_data <- function(nrows, n_var_cols, n_noise_cols) {
 
 set.seed(2018)
 d <- mk_data(10000, 10, 200)
+```
+
+Our example data is 10,000 rows of 210 variables.  Ten of the variables are related to the outcome to predict (`y`) and 200 of them are irrelevant pure noise.  Since this is a synthetic example we know which is which (and deliberately places this information in the column names).
+
+The data looks like the following:
+
+```{r str}
+str(d)
+```
+
+Let's start our example analysis.  
+
+We load our packages.
+
+```{r setup, warning=FALSE, message=FALSE}
+library("wrapr")
+library("vtreat")
+library("glmnet")
+library("ggplot2")
+library("WVPlots")
+library("doParallel")
+library("rqdatatable")
+```
+
+We will also need a couple of simple functions that are part of the upcoming [`vtreat 1.3.3`](https://github.com/WinVector/vtreat).
+
+```{r fns}
+# Always return the same cross-validation plan.
+
+# will be released as:
+# https://github.com/WinVector/vtreat/blob/master/R/pre_comp_xval.R
+pre_comp_xval <- function(nRows, nSplits, splitplan) {
+  force(splitplan)
+  attr(splitplan, 'splitmethod') <- paste(attr(splitplan, 'splitmethod'),
+                                          "( pre-computed", nRows, nSplits, ")")
+  f <- function(nRows, nSplits, dframe, y) {
+    return(splitplan)
+  }
+  f
+}
+
+# Center and scale some variables in a data.frame.
+#
+# will be released as:
+# https://github.com/WinVector/vtreat/blob/master/R/center_scale.R
+center_scale <- function(d, 
+                         center,
+                         scale) {
+  for(ni in names(center)) {
+    d[[ni]] <- d[[ni]] - center[[ni]]
+  }
+  for(ni in names(scale)) {
+    d[[ni]] <- d[[ni]]/scale[[ni]]
+  }
+  d
+}
+```
+
+
+We set up a parallel cluster to speed up some calculations.
+
+```{r init}
+ncore <- parallel::detectCores()
+cl <- parallel::makeCluster(ncore)
+registerDoParallel(cl)
+```
+
+We split our data into training and a test evaluation set.
+
+```{r}
 is_train <- runif(nrow(d))<=0.5
 dTrain <- d[is_train, , drop = FALSE]
 dTest <- d[!is_train, , drop = FALSE]
@@ -56,7 +115,7 @@ Suppose our analysis plan is the following:
 Now both `vtreat` and `glmnet` can scale, but we are going to keep the scaling
 as a separate step to control which variables are scaled, and to show how composite data preparation pipelines work.
 
-First we combine the pre-processing steps, and a fit model as follows.
+We a fit model with cross-validated data treatment and hyper-parameters as follows.  The process described is intentionally long and involved, simulating a number of steps (possibly some requiring domain knowledge) taken by a data scientist to build a good model.
 
 ```{r model1}
 # design a cross-validation plan
@@ -86,21 +145,20 @@ tfs <- scale(cp$crossFrame[, vars_to_scale, drop = FALSE],
 centering <- attr(tfs, "scaled:center")
 scaling <- attr(tfs, "scaled:scale")
 
-
 # apply the centering and scaling to the cross-validated 
 # training frame
 tfs <- center_scale(cp$crossFrame[, newvars, drop = FALSE],
                     center = centering,
                     scale = scaling)
 
-# convert the plan to cv.glmnet group notation
+# convert the cross-validation plan to cv.glmnet group notation
 foldid <- numeric(nrow(dTrain))
 for(i in seq_len(length(cplan))) {
   cpi <- cplan[[i]]
   foldid[cpi$app] <- i
 }
 
-# search for best cross-validated alpha
+# search for best cross-validated alpha for cv.glmnet
 alphas <- seq(0, 1, by=0.05)
 cross_scores <- lapply(
   alphas,
@@ -156,6 +214,8 @@ model <- glmnet(as.matrix(tfs),
                 lambda = lambdas)
 ```
 
+At this point we have model that works on prepared data (data that has gone through the `vtreat` and scaling steps).  The point to remember: it was a lot of steps to transform data and build the model, so it may also be a fair number of steps to apply the model.
+
 The question then is: how do we share such a model?  Roughly we need to share the model, any fit parameters (such as centering and scaling choices), *and* the code sequence to apply all of these steps in the proper order.  In this case the modeling pipeline consists of the following pieces:
 
   * The treatment plan `cp$treatments`.
@@ -163,15 +223,15 @@ The question then is: how do we share such a model?  Roughly we need to share th
   * The centering and scaling vectors `centering` and `scaling`.
   * The `glmnet` model `model` and final chosen lambda/s value `s`.
 
-These values are needed to run any data through the sequence of operations:
+These values are needed to run any news data through the sequence of operations:
 
   * Using `vtreat` to prepare the data.
-  * Restricting down to only modeling variables to make sure we have the right data for the scaling step.
-  * Rescaling and centering the data.
+  * Rescaling and centering the chosen variables.
+  * Converting from a `data.frame` to a matrix of only input-variable columns.
   * Applying the `glmnet` model.
   * Converting the matrix of predictions into a vector of predictions.
-  
-The problem is: having worked had to build the model (taking a lot of steps and optimizing parameters/hyperparemeters) has left us with a lot of items and steps we need to share to have
+
+These are all steps we did in an ad-hoc manner while building the model.  Having worked hard to build the model (taking a lot of steps and optimizing parameters/hyperparemeters) has left us with a lot of items and steps we need to share to have
 the full prediction process.
 
 A really neat way to simply share of these things is the following.
@@ -184,7 +244,7 @@ pipeline <-
         arg_name = "dframe", 
         args = list(treatmentplan = cp$treatments,
                     varRestriction = newvars)) %.>%
-  pkgfn("vtreat::center_scale",
+  wrapfn(center_scale,
         arg_name = "d",
         args = list(center = centering,
                     scale = scaling))  %.>%
@@ -200,7 +260,9 @@ pipeline <-
 cat(format(pipeline))
 ```
 
-And you can then pipe data into the pipeline to get predictions.
+The above pipeline uses several `wrapr` abstractions:
+
+You can then pipe data into the pipeline to get predictions.
 
 ```{r}
 dTrain %.>% pipeline %.>% head(.)
@@ -213,11 +275,11 @@ dTest %.>% pipeline %.>% head(.)
 Or you can use a functional notation [`ApplyTo()`](https://winvector.github.io/wrapr/reference/ApplyTo.html).
 
 ```{r}
-ApplyTo(pipeline, dTrain) %.>% head(.)
+head(ApplyTo(pipeline, dTrain))
 ```
 
 
-The pipeline itself is a simple list of steps (with some class annotations added).  
+The pipeline itself is an `R` `S4` class containing a simple list of steps.  
 
 ```{r}
 pipeline@items
@@ -226,7 +288,6 @@ str(pipeline@items[[3]])
 ```
 
 If you do not like pipe notation you can also build the pipeline using [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) list notation.
-
 
 
 The pipeline can be saved, and contains the required parameters in simple lists.
@@ -273,11 +334,11 @@ WVPlots::ScatterHist(
   contour = TRUE)
 ```
 
-
+The idea is: the work was complicated, but sharing it was not.
 
 And that is how to effectively save, share, and deploy non-trivial modeling workflows.
 
-(We have another run [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md) showing why we do not recommend always using the number of variables as "just another hyperparameter", but instead using simple threshold based filtering.)
+(More on `wrapr` function objects can be found [here](https://winvector.github.io/wrapr/articles/Function_Objects.html).  We also have another run [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md) showing why we do not recommend always using the number of variables as "just another hyper-parameter", but instead using simple threshold based filtering.  The coming version of `vtreat` also has a new non-linear variable filter function called [value_variables_*()](https://winvector.github.io/vtreat/reference/value_variables_N.html)).
 
 ```{r cleanup}
 parallel::stopCluster(cl)

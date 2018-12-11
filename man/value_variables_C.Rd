@@ -2,7 +2,7 @@
 % Please edit documentation in R/variable_importance.R
 \name{value_variables_C}
 \alias{value_variables_C}
-\title{Value variables for predictin a categorical outcome.}
+\title{Value variables for prediction a categorical outcome.}
 \usage{
 value_variables_C(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
@@ -56,5 +56,5 @@ value_variables_C(dframe, varlist, outcomename, outcometarget, ...,
 table of variable valuations
 }
 \description{
-Value variables for predictin a categorical outcome.
+Value variables for prediction a categorical outcome.
 }
