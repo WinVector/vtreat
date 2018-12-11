@@ -262,7 +262,13 @@ cat(format(pipeline))
 
 The above pipeline uses several `wrapr` abstractions:
 
-You can then pipe data into the pipeline to get predictions.
+  * [`pkgfn()`](https://winvector.github.io/wrapr/reference/pkgfn.html) which wraps a function specified by a package qualified name.
+  * [`wrapfn()`](https://winvector.github.io/wrapr/reference/wrapfn.html) which wraps a function specified by value.
+  * [`srcfn()`](https://winvector.github.io/wrapr/reference/srcfn.html) which wraps quoted code (here quoted by [`wrapr::qe()`](https://winvector.github.io/wrapr/reference/qe.html), but quote marks will also work).
+  
+Each of these captures the action and extra values needed to perform each step of the model application.  The steps can be chained together by pipes (as shown above), or assembled directly as a list using [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) or [as_fnlist()](https://winvector.github.io/wrapr/reference/as_fnlist.html).  Function lists can be built all at once or concatenated together from pieces. More details on `wrapr` function objects can be found [here](https://winvector.github.io/wrapr/articles/Function_Objects.html).
+  
+After all this you can then pipe data into the pipeline to get predictions.
 
 ```{r}
 dTrain %.>% pipeline %.>% head(.)
@@ -334,7 +340,7 @@ WVPlots::ScatterHist(
   contour = TRUE)
 ```
 
-The idea is: the work was complicated, but sharing it was not.
+The idea is: the work was complicated, but sharing should not be complicated.
 
 And that is how to effectively save, share, and deploy non-trivial modeling workflows.
 

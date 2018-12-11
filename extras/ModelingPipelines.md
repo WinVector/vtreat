@@ -223,9 +223,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.3 start initial treatment design Tue Dec 11 16:44:43 2018"
-    ## [1] " start cross frame work Tue Dec 11 16:44:48 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 16:44:59 2018"
+    ## [1] "vtreat 1.3.2 start initial treatment design Tue Dec 11 16:59:37 2018"
+    ## [1] " start cross frame work Tue Dec 11 16:59:40 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 16:59:48 2018"
 
 ``` r
 print(cp$method)
@@ -240,13 +240,13 @@ newvars <- sf$varName[sf$sig <= 1/nrow(sf)]
 print(newvars)
 ```
 
-    ##  [1] "var_001"         "var_001_isBAD"   "var_002"        
-    ##  [4] "var_002_isBAD"   "var_003"         "var_003_isBAD"  
-    ##  [7] "var_004"         "var_004_isBAD"   "var_005"        
-    ## [10] "var_005_isBAD"   "var_006"         "var_006_isBAD"  
-    ## [13] "var_007"         "var_007_isBAD"   "var_008"        
-    ## [16] "var_008_isBAD"   "var_009"         "var_009_isBAD"  
-    ## [19] "var_010"         "var_010_isBAD"   "noise_156_isBAD"
+    ##  [1] "var_001_clean"   "var_001_isBAD"   "var_002_clean"  
+    ##  [4] "var_002_isBAD"   "var_003_clean"   "var_003_isBAD"  
+    ##  [7] "var_004_clean"   "var_004_isBAD"   "var_005_clean"  
+    ## [10] "var_005_isBAD"   "var_006_clean"   "var_006_isBAD"  
+    ## [13] "var_007_clean"   "var_007_isBAD"   "var_008_clean"  
+    ## [16] "var_008_isBAD"   "var_009_clean"   "var_009_isBAD"  
+    ## [19] "var_010_clean"   "var_010_isBAD"   "noise_156_isBAD"
 
 ``` r
 # learn a centering and scaling of the cross-validated 
@@ -255,8 +255,9 @@ vars_to_scale = intersect(newvars, sf$varName[sf$code=="clean"])
 print(vars_to_scale)
 ```
 
-    ##  [1] "var_001" "var_002" "var_003" "var_004" "var_005" "var_006" "var_007"
-    ##  [8] "var_008" "var_009" "var_010"
+    ##  [1] "var_001_clean" "var_002_clean" "var_003_clean" "var_004_clean"
+    ##  [5] "var_005_clean" "var_006_clean" "var_007_clean" "var_008_clean"
+    ##  [9] "var_009_clean" "var_010_clean"
 
 ``` r
 tfs <- scale(cp$crossFrame[, vars_to_scale, drop = FALSE], 
@@ -425,8 +426,27 @@ cat(format(pipeline))
 
 The above pipeline uses several `wrapr` abstractions:
 
-You can then pipe data into the pipeline to get
-    predictions.
+  - [`pkgfn()`](https://winvector.github.io/wrapr/reference/pkgfn.html)
+    which wraps a function specified by a package qualified
+    name.
+  - [`wrapfn()`](https://winvector.github.io/wrapr/reference/wrapfn.html)
+    which wraps a function specified by value.
+  - [`srcfn()`](https://winvector.github.io/wrapr/reference/srcfn.html)
+    which wraps quoted code (here quoted by
+    [`wrapr::qe()`](https://winvector.github.io/wrapr/reference/qe.html),
+    but quote marks will also work).
+
+Each of these captures the action and extra values needed to perform
+each step of the model application. The steps can be chained together by
+pipes (as shown above), or assembled directly as a list using
+[`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) or
+[as\_fnlist()](https://winvector.github.io/wrapr/reference/as_fnlist.html).
+Function lists can be built all at once or concatenated together from
+pieces. More details on `wrapr` function objects can be found
+[here](https://winvector.github.io/wrapr/articles/Function_Objects.html).
+
+After all this you can then pipe data into the pipeline to get
+predictions.
 
 ``` r
 dTrain %.>% pipeline %.>% head(.)
@@ -480,7 +500,7 @@ str(pipeline@items[[3]])
     ##   ..@ expr_src: chr "as.matrix(.[, newvars, drop = FALSE])"
     ##   ..@ arg_name: chr "."
     ##   ..@ args    :List of 1
-    ##   .. ..$ newvars: chr [1:21] "var_001" "var_001_isBAD" "var_002" "var_002_isBAD" ...
+    ##   .. ..$ newvars: chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
 
 If you do not like pipe notation you can also build the pipeline using
 [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html)
@@ -536,7 +556,8 @@ WVPlots::ScatterHist(
 
 ![](ModelingPipelines_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
 
-The idea is: the work was complicated, but sharing it was not.
+The idea is: the work was complicated, but sharing should not be
+complicated.
 
 And that is how to effectively save, share, and deploy non-trivial
 modeling workflows.
