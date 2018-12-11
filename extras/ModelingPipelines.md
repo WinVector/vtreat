@@ -4,8 +4,7 @@ Modeling Pipelines
 Reusable modeling pipelines are a practical idea that gets re-developed
 many times in many contexts.
 [`wrapr`](https://github.com/WinVector/wrapr) supplies a particularly
-powerful pipeline notation, and, as of version `1.8.0`, a pipe-stage
-re-use system (notes
+powerful pipeline notation, and a pipe-stage re-use system (notes
 [here](https://winvector.github.io/wrapr/articles/Function_Objects.html)).
 We will demonstrate this with the
 [`vtreat`](https://github.com/WinVector/vtreat) data preparation system.
@@ -14,9 +13,9 @@ Our example task is to fit a model on some arbitrary data. Our model
 will try to predict `y` as a function of the other columns.
 
 Our example data is 10,000 rows of 210 variables. Ten of the variables
-are related to the outcome to predict (`y`) and 200 of them are
+are related to the outcome to predict (`y`), and 200 of them are
 irrelevant pure noise. Since this is a synthetic example we know which
-is which (and deliberately places this information in the column names).
+is which (and deliberately encode this information in the column names).
 
 The data looks like the following:
 
@@ -204,7 +203,7 @@ Now both `vtreat` and `glmnet` can scale, but we are going to keep the
 scaling as a separate step to control which variables are scaled, and to
 show how composite data preparation pipelines work.
 
-We a fit model with cross-validated data treatment and hyper-parameters
+We fit a model with cross-validated data treatment and hyper-parameters
 as follows. The process described is intentionally long and involved,
 simulating a number of steps (possibly some requiring domain knowledge)
 taken by a data scientist to build a good model.
@@ -223,9 +222,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.2 start initial treatment design Tue Dec 11 16:59:37 2018"
-    ## [1] " start cross frame work Tue Dec 11 16:59:40 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 16:59:48 2018"
+    ## [1] "vtreat 1.3.2 start initial treatment design Tue Dec 11 18:39:57 2018"
+    ## [1] " start cross frame work Tue Dec 11 18:40:00 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 18:40:08 2018"
 
 ``` r
 print(cp$method)
@@ -260,6 +259,8 @@ print(vars_to_scale)
     ##  [9] "var_009_clean" "var_010_clean"
 
 ``` r
+# learn the centering and scalling on the "cross-frame"
+# training data.
 tfs <- scale(cp$crossFrame[, vars_to_scale, drop = FALSE], 
              center = TRUE, scale = TRUE)
 centering <- attr(tfs, "scaled:center")
@@ -304,12 +305,8 @@ alpha <- alphas[[best_i]]
 s <- cross_scores$best_lambda[[best_i]]
 lambdas <- cross_scores$lambdas[[best_i]]
 lambdas <- lambdas[lambdas>=s]
-print(length(newvars))
-```
 
-    ## [1] 21
-
-``` r
+#print chosen hyper-params
 print(alpha)
 ```
 
@@ -376,7 +373,7 @@ These values are needed to run any news data through the sequence of
 operations:
 
   - Using `vtreat` to prepare the data.
-  - Rescaling and centering the chosen variables.
+  - Re-scaling and centering the chosen variables.
   - Converting from a `data.frame` to a matrix of only input-variable
     columns.
   - Applying the `glmnet` model.
@@ -427,21 +424,29 @@ cat(format(pipeline))
 The above pipeline uses several `wrapr` abstractions:
 
   - [`pkgfn()`](https://winvector.github.io/wrapr/reference/pkgfn.html)
-    which wraps a function specified by a package qualified
-    name.
+    which wraps a function specified by a package qualified name. When
+    used the function is called with the pipeline argument as the first
+    argument (and named `arg_name`), and extra arguments supplied from
+    the list
+    `args`.
   - [`wrapfn()`](https://winvector.github.io/wrapr/reference/wrapfn.html)
-    which wraps a function specified by value.
+    which wraps a function specified by value. When used the function is
+    called with the pipeline argument as the first argument (and named
+    `arg_name`), and extra arguments supplied from the list `args`.
   - [`srcfn()`](https://winvector.github.io/wrapr/reference/srcfn.html)
     which wraps quoted code (here quoted by
     [`wrapr::qe()`](https://winvector.github.io/wrapr/reference/qe.html),
-    but quote marks will also work).
+    but quote marks will also work). When used the function is evaluated
+    in an environment with the pipeline argument mapped to the name
+    specified in `arg_name` (defaults to `.`), and the additional
+    arguments from `args` available in the evaluation environment.
 
 Each of these captures the action and extra values needed to perform
 each step of the model application. The steps can be chained together by
 pipes (as shown above), or assembled directly as a list using
 [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) or
 [as\_fnlist()](https://winvector.github.io/wrapr/reference/as_fnlist.html).
-Function lists can be built all at once or concatenated together from
+Function lists can be built all at once, or concatenated together from
 pieces. More details on `wrapr` function objects can be found
 [here](https://winvector.github.io/wrapr/articles/Function_Objects.html).
 
@@ -502,10 +507,6 @@ str(pipeline@items[[3]])
     ##   ..@ args    :List of 1
     ##   .. ..$ newvars: chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
 
-If you do not like pipe notation you can also build the pipeline using
-[`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html)
-list notation.
-
 The pipeline can be saved, and contains the required parameters in
 simple lists.
 
@@ -562,7 +563,9 @@ complicated.
 And that is how to effectively save, share, and deploy non-trivial
 modeling workflows.
 
-(More on `wrapr` function objects can be found
+(The source for this example can be found
+[here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelines.Rmd).
+More on `wrapr` function objects can be found
 [here](https://winvector.github.io/wrapr/articles/Function_Objects.html).
 We also have another run
 [here](https://github.com/WinVector/vtreat/blob/master/extras/ModelingPipelinesH.md)
@@ -570,8 +573,9 @@ showing why we do not recommend always using the number of variables as
 “just another hyper-parameter”, but instead using simple threshold
 based filtering. The coming version of `vtreat` also has a new
 non-linear variable filter function called
-[value\_variables\_\*()](https://winvector.github.io/vtreat/reference/value_variables_N.html)).
+[value\_variables\_\*()](https://winvector.github.io/vtreat/reference/value_variables_N.html).)
 
 ``` r
+# clean-up
 parallel::stopCluster(cl)
 ```
