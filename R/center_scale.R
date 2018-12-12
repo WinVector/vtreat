@@ -15,6 +15,8 @@
 #' vars_to_transform = "x"
 #' t <- base::scale(as.matrix(d[, vars_to_transform, drop = FALSE]), 
 #'                  center = TRUE, scale = TRUE)
+#' t
+#' 
 #' centering <- attr(t, "scaled:center")
 #' scaling <- attr(t, "scaled:scale")
 #' center_scale(d, center = centering, scale = scaling)
@@ -28,7 +30,10 @@ center_scale <- function(d,
     d[[ni]] <- d[[ni]] - center[[ni]]
   }
   for(ni in names(scale)) {
-    d[[ni]] <- d[[ni]]/scale[[ni]]
+    si <- scale[[ni]]
+    if((length(si)==1) && (!is.na(si)) && (!is.infinite(si)) && (si!=0.0)) {
+      d[[ni]] <- d[[ni]]/scale[[ni]]
+    }
   }
   d
 }

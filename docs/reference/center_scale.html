@@ -183,6 +183,18 @@
 <span class='no'>vars_to_transform</span> <span class='kw'>=</span> <span class='st'>"x"</span>
 <span class='no'>t</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>base</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/scale'>scale</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>d</span>[, <span class='no'>vars_to_transform</span>, <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>]),
                  <span class='kw'>center</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>t</span></div><div class='output co'>#&gt;               x
+#&gt; [1,] -1.2649111
+#&gt; [2,] -0.6324555
+#&gt; [3,]  0.0000000
+#&gt; [4,]  0.6324555
+#&gt; [5,]  1.2649111
+#&gt; attr(,"scaled:center")
+#&gt; x 
+#&gt; 3 
+#&gt; attr(,"scaled:scale")
+#&gt;        x 
+#&gt; 1.581139 </div><div class='input'>
 <span class='no'>centering</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>t</span>, <span class='st'>"scaled:center"</span>)
 <span class='no'>scaling</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>t</span>, <span class='st'>"scaled:scale"</span>)
 <span class='fu'>center_scale</span>(<span class='no'>d</span>, <span class='kw'>center</span> <span class='kw'>=</span> <span class='no'>centering</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='no'>scaling</span>)</div><div class='output co'>#&gt;            x y

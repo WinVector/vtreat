@@ -110,7 +110,7 @@
       <h1>vtreat scale mode</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2018-12-11</h4>
+            <h4 class="date">2018-12-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatScaleMode.Rmd"><code>vignettes/vtreatScaleMode.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatScaleMode.Rmd</code></div>
@@ -260,9 +260,9 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <a class="sourceLine" id="cb20-7" data-line-number="7">cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,</a>
 <a class="sourceLine" id="cb20-8" data-line-number="8">                                         <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,</a>
 <a class="sourceLine" id="cb20-9" data-line-number="9">                                         <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Tue Dec 11 16:42:33 2018"
-## [1] " start cross frame work Tue Dec 11 16:42:33 2018"
-## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 16:42:33 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Wed Dec 12 15:03:28 2018"
+## [1] " start cross frame work Wed Dec 12 15:03:29 2018"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec 12 15:03:29 2018"</code></pre>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">newvars &lt;-<span class="st"> </span>cEraw<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName</a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(newvars)</a></code></pre></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>
@@ -282,9 +282,9 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <a class="sourceLine" id="cb26-2" data-line-number="2">cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,</a>
 <a class="sourceLine" id="cb26-3" data-line-number="3">                                            <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,</a>
 <a class="sourceLine" id="cb26-4" data-line-number="4">                                            <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Tue Dec 11 16:42:33 2018"
-## [1] " start cross frame work Tue Dec 11 16:42:33 2018"
-## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 16:42:33 2018"</code></pre>
+<pre><code>## [1] "vtreat 1.3.3 start initial treatment design Wed Dec 12 15:03:29 2018"
+## [1] " start cross frame work Wed Dec 12 15:03:29 2018"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec 12 15:03:29 2018"</code></pre>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">newvars_s &lt;-<span class="st"> </span>cEscaled<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName</a>
 <a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(newvars_s)</a></code></pre></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>

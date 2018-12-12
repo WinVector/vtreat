@@ -26,6 +26,8 @@ d <- data.frame(x = 1:5,
 vars_to_transform = "x"
 t <- base::scale(as.matrix(d[, vars_to_transform, drop = FALSE]), 
                  center = TRUE, scale = TRUE)
+t
+
 centering <- attr(t, "scaled:center")
 scaling <- attr(t, "scaled:scale")
 center_scale(d, center = centering, scale = scaling)
