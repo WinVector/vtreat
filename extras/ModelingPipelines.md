@@ -136,7 +136,6 @@ library("glmnet")
 library("ggplot2")
 library("WVPlots")
 library("doParallel")
-library("rqdatatable")
 ```
 
 We will also need a couple of simple functions that are part of the
@@ -222,9 +221,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.2 start initial treatment design Tue Dec 11 18:39:57 2018"
-    ## [1] " start cross frame work Tue Dec 11 18:40:00 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Dec 11 18:40:08 2018"
+    ## [1] "vtreat 1.3.2 start initial treatment design Wed Dec 12 12:41:26 2018"
+    ## [1] " start cross frame work Wed Dec 12 12:41:30 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec 12 12:41:40 2018"
 
 ``` r
 print(cp$method)

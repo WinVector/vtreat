@@ -50,7 +50,6 @@ library("glmnet")
 library("ggplot2")
 library("WVPlots")
 library("doParallel")
-library("rqdatatable")
 ```
 
 We will also need a couple of simple functions that are part of the upcoming [`vtreat 1.3.3`](https://github.com/WinVector/vtreat).
