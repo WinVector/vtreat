@@ -221,9 +221,9 @@ cp <- vtreat::mkCrossFrameNExperiment(
   parallelCluster = cl)
 ```
 
-    ## [1] "vtreat 1.3.2 start initial treatment design Wed Dec 12 12:41:26 2018"
-    ## [1] " start cross frame work Wed Dec 12 12:41:30 2018"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Dec 12 12:41:40 2018"
+    ## [1] "vtreat 1.3.3 start initial treatment design Thu Dec 13 01:00:38 2018"
+    ## [1] " start cross frame work Thu Dec 13 01:00:42 2018"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Thu Dec 13 01:00:54 2018"
 
 ``` r
 print(cp$method)
@@ -238,13 +238,13 @@ newvars <- sf$varName[sf$sig <= 1/nrow(sf)]
 print(newvars)
 ```
 
-    ##  [1] "var_001_clean"   "var_001_isBAD"   "var_002_clean"  
-    ##  [4] "var_002_isBAD"   "var_003_clean"   "var_003_isBAD"  
-    ##  [7] "var_004_clean"   "var_004_isBAD"   "var_005_clean"  
-    ## [10] "var_005_isBAD"   "var_006_clean"   "var_006_isBAD"  
-    ## [13] "var_007_clean"   "var_007_isBAD"   "var_008_clean"  
-    ## [16] "var_008_isBAD"   "var_009_clean"   "var_009_isBAD"  
-    ## [19] "var_010_clean"   "var_010_isBAD"   "noise_156_isBAD"
+    ##  [1] "var_001"         "var_001_isBAD"   "var_002"        
+    ##  [4] "var_002_isBAD"   "var_003"         "var_003_isBAD"  
+    ##  [7] "var_004"         "var_004_isBAD"   "var_005"        
+    ## [10] "var_005_isBAD"   "var_006"         "var_006_isBAD"  
+    ## [13] "var_007"         "var_007_isBAD"   "var_008"        
+    ## [16] "var_008_isBAD"   "var_009"         "var_009_isBAD"  
+    ## [19] "var_010"         "var_010_isBAD"   "noise_156_isBAD"
 
 ``` r
 # learn a centering and scaling of the cross-validated 
@@ -253,9 +253,8 @@ vars_to_scale = intersect(newvars, sf$varName[sf$code=="clean"])
 print(vars_to_scale)
 ```
 
-    ##  [1] "var_001_clean" "var_002_clean" "var_003_clean" "var_004_clean"
-    ##  [5] "var_005_clean" "var_006_clean" "var_007_clean" "var_008_clean"
-    ##  [9] "var_009_clean" "var_010_clean"
+    ##  [1] "var_001" "var_002" "var_003" "var_004" "var_005" "var_006" "var_007"
+    ##  [8] "var_008" "var_009" "var_010"
 
 ``` r
 # learn the centering and scalling on the "cross-frame"
@@ -504,24 +503,36 @@ str(pipeline@items[[3]])
     ##   ..@ expr_src: chr "as.matrix(.[, newvars, drop = FALSE])"
     ##   ..@ arg_name: chr "."
     ##   ..@ args    :List of 1
-    ##   .. ..$ newvars: chr [1:21] "var_001_clean" "var_001_isBAD" "var_002_clean" "var_002_isBAD" ...
+    ##   .. ..$ newvars: chr [1:21] "var_001" "var_001_isBAD" "var_002" "var_002_isBAD" ...
 
 The pipeline can be saved, and contains the required parameters in
 simple lists.
 
 ``` r
 saveRDS(dTrain, "dTrain.RDS")
+saveRDS(dTest, "dTest.RDS")
 saveRDS(pipeline, "pipeline.RDS")
+parallel::stopCluster(cl)
+rm(list = ls())
 ```
 
 Now the processing pipeline can be read back and used as follows.
 
 ``` r
-# Fresh R session , not part of this markdown
+# As in a fresh R session
 library("wrapr")
+library("vtreat")
+library("glmnet")
+library("ggplot2")
+library("WVPlots")
+library("doParallel")
+```
 
+``` r
 pipeline <- readRDS("pipeline.RDS")
 dTrain <- readRDS("dTrain.RDS")
+dTest <- readRDS("dTest.RDS")
+
 dTrain %.>% pipeline %.>% head(.)
 ```
 
@@ -541,7 +552,7 @@ WVPlots::ScatterHist(
   contour = TRUE)
 ```
 
-![](ModelingPipelines_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ModelingPipelines_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 dTest$prediction <- dTest %.>% pipeline
@@ -554,7 +565,7 @@ WVPlots::ScatterHist(
   contour = TRUE)
 ```
 
-![](ModelingPipelines_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
+![](ModelingPipelines_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
 
 The idea is: the work was complicated, but sharing should not be
 complicated.
@@ -576,5 +587,7 @@ non-linear variable filter function called
 
 ``` r
 # clean-up
-parallel::stopCluster(cl)
+unlink("pipeline.RDS")
+unlink("dTrain.RDS")
+unlink("dTest.RDS")
 ```

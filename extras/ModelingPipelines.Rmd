@@ -298,25 +298,34 @@ str(pipeline@items[[3]])
 
 The pipeline can be saved, and contains the required parameters in simple lists.
 
-```{r eval=FALSE}
+```{r}
 saveRDS(dTrain, "dTrain.RDS")
+saveRDS(dTest, "dTest.RDS")
 saveRDS(pipeline, "pipeline.RDS")
+parallel::stopCluster(cl)
+rm(list = ls())
 ```
 
 Now the processing pipeline can be read back and used as follows.
 
-```{r eval=FALSE}
-# Fresh R session , not part of this markdown
+```{r setup2, warning=FALSE, message=FALSE}
+# As in a fresh R session
 library("wrapr")
+library("vtreat")
+library("glmnet")
+library("ggplot2")
+library("WVPlots")
+library("doParallel")
+```
 
+```{r}
 pipeline <- readRDS("pipeline.RDS")
 dTrain <- readRDS("dTrain.RDS")
+dTest <- readRDS("dTest.RDS")
+
 dTrain %.>% pipeline %.>% head(.)
 ```
-```{r echo=FALSE}
-# simulate reading back for presentation, to make sure values match
-dTrain %.>% pipeline %.>% head(.)
-```
+
 
 We can use this pipeline on different data, as we do to create performance plots below.
 
@@ -348,7 +357,9 @@ And that is how to effectively save, share, and deploy non-trivial modeling work
 
 ```{r cleanup}
 # clean-up
-parallel::stopCluster(cl)
+unlink("pipeline.RDS")
+unlink("dTrain.RDS")
+unlink("dTest.RDS")
 ```
 
 
