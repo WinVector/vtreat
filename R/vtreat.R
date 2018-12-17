@@ -573,7 +573,7 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
                                   use_parallel= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare")
   .checkArgs1(dframe=dframe)
-  if(class(treatmentplan)!='treatmentplan') {
+  if(!('treatmentplan' %in% class(treatmentplan))) {
     stop("treatmentplan must be of class treatmentplan")
   }
   vtreatVersion <- packageVersion('vtreat')
@@ -631,8 +631,8 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
   vars_we_warned_on <- list()
   for(ti in treatmentplan$treatments) {
     if(length(intersect(ti$newvars,useableVars))>0) {
-      newType <- typeof(dframe[[ti$origvar]])
-      newClass <- paste(class(dframe[[ti$origvar]]))
+      newType <- paste(typeof(dframe[[ti$origvar]]), collapse = " ")
+      newClass <- paste(class(dframe[[ti$origvar]]), collapse = " ")
       if((ti$origType!=newType) || (ti$origClass!=newClass)) {
         if(is.null(vars_we_warned_on[[ti$origvar]])) {
           warning(paste('variable',ti$origvar,'expected type/class',

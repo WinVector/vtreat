@@ -337,7 +337,7 @@ as_rquery_plan <- function(treatmentplans,
   newvars <- character(0)
   for(tstep in treatmentplans) {
     if(!is.null(tstep)) {
-      if(class(tstep)!='treatmentplan') {
+      if(!('treatmentplan' %in% class(tstep))) {
         stop("vtreat::as_rquery_plan treatmentplans must be a non-empty list of treatmentplans")
       }
       newvarsi <- tstep$scoreFrame$varName

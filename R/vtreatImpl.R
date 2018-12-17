@@ -25,13 +25,15 @@ mkVtreatListWorker <- function(scale,doCollar) {
     xcolClean <- .cleanColumn(xcolOrig,nRows)
     if(is.null(xcolClean)) {
       return(paste('column',ti$origvar,
-                   'is not a type/class vtreat can work with (',class(xcolOrig),')'))
+                   'is not a type/class vtreat can work with (',
+                   paste(class(xcolOrig), collapse = " "),')'))
     }
     if(!is.null(ti$convertedColClass)) {
-      curColClass <- paste(class(xcolClean))
+      curColClass <- paste(class(xcolClean), collapse = " ")
       if(curColClass!=ti$convertedColClass) {
         return(paste('column',ti$origvar,'expected to convert to ',
-                     ti$convertedColClass,'saw',class(xcolOrig),curColClass))
+                     ti$convertedColClass,'saw',
+                     paste(class(xcolOrig), collapse = " "), curColClass))
       }
     }
     .vtreatA(ti,xcolClean,scale,doCollar)
@@ -255,17 +257,17 @@ mkVtreatListWorker <- function(scale,doCollar) {
   acceptTreatment <- function(ti) {
     if(!is.null(ti)) {
       ti$origType <- typeof(vcolOrig)
-      ti$origClass <- paste(class(vcolOrig))
-      ti$convertedColClass <- paste(class(vcol))
+      ti$origClass <- paste(class(vcolOrig), collapse = " ")
+      ti$convertedColClass <- paste(class(vcol), collapse = " ")
       treatments[[length(treatments)+1]] <<- ti # Deliberate side-effect
     }
   }
   if(is.null(vcol)) {
     warning(paste('column',v,
                   'is not a type/class/value vtreat can work with (',
-                  class(vcolOrig),')'))
+                  paste(class(vcolOrig), collapse= " "),')'))
   } else {
-    colclass <- class(vcol)
+    colclass <- paste(class(vcol), collapse = " ")
     if(.has.range(vcol)) {
       ti <- NULL
       if((colclass=='numeric') || (colclass=='integer')) {
@@ -553,7 +555,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                          vcol <- .cleanColumn(vcolOrig,nRows)
                          if(.has.range(vcol)) {
                            hasRange <- TRUE
-                           colclass <- class(vcol)
+                           colclass <- paste(class(vcol), collapse = " ")
                            if((colclass=='character') || (colclass=='factor')) {
                              # expect character or factor here
                              if(!is.null(zC)) {  # in categorical mode

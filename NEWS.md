@@ -2,6 +2,7 @@
 # vtreat 1.3.3 2018/12/17
 
  * remove _clean suffix.
+ * Fix non-scalar comparisions (mostly form class vectors).
  * add segmented variable calculation.
  * add pre-computed split plan.
  * bump dependencies.
