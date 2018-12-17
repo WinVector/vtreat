@@ -1,5 +1,5 @@
 
-# vtreat 1.3.3 2018/12/12
+# vtreat 1.3.3 2018/12/17
 
  * remove _clean suffix.
  * add segmented variable calculation.
