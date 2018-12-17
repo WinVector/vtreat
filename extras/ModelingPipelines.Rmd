@@ -52,40 +52,6 @@ library("WVPlots")
 library("doParallel")
 ```
 
-We will also need a couple of simple functions that are part of the upcoming [`vtreat 1.3.3`](https://github.com/WinVector/vtreat).
-
-```{r fns}
-# Always return the same cross-validation plan.
-
-# will be released as:
-# https://github.com/WinVector/vtreat/blob/master/R/pre_comp_xval.R
-pre_comp_xval <- function(nRows, nSplits, splitplan) {
-  force(splitplan)
-  attr(splitplan, 'splitmethod') <- paste(attr(splitplan, 'splitmethod'),
-                                          "( pre-computed", nRows, nSplits, ")")
-  f <- function(nRows, nSplits, dframe, y) {
-    return(splitplan)
-  }
-  f
-}
-
-# Center and scale some variables in a data.frame.
-#
-# will be released as:
-# https://github.com/WinVector/vtreat/blob/master/R/center_scale.R
-center_scale <- function(d, 
-                         center,
-                         scale) {
-  for(ni in names(center)) {
-    d[[ni]] <- d[[ni]] - center[[ni]]
-  }
-  for(ni in names(scale)) {
-    d[[ni]] <- d[[ni]]/scale[[ni]]
-  }
-  d
-}
-```
-
 
 We set up a parallel cluster to speed up some calculations.
 
@@ -247,7 +213,7 @@ pipeline <-
         arg_name = "dframe", 
         args = list(treatmentplan = cp$treatments,
                     varRestriction = newvars)) %.>%
-  wrapfn(center_scale,
+  pkgfn("vtreat::center_scale",
         arg_name = "d",
         args = list(center = centering,
                     scale = scaling))  %.>%
@@ -266,8 +232,12 @@ cat(format(pipeline))
 The above pipeline uses several `wrapr` abstractions:
 
   * [`pkgfn()`](https://winvector.github.io/wrapr/reference/pkgfn.html) which wraps a function specified by a package qualified name.  When used the function is called with the pipeline argument as the first argument (and named `arg_name`), and extra arguments supplied from the list `args`.
-  * [`wrapfn()`](https://winvector.github.io/wrapr/reference/wrapfn.html) which wraps a function specified by value.  When used the function is called with the pipeline argument as the first argument (and named `arg_name`), and extra arguments supplied from the list `args`.
   * [`srcfn()`](https://winvector.github.io/wrapr/reference/srcfn.html) which wraps quoted code (here quoted by [`wrapr::qe()`](https://winvector.github.io/wrapr/reference/qe.html), but quote marks will also work).  When used the function is evaluated in an environment with the pipeline argument mapped to the name specified in `arg_name` (defaults to `.`), and the additional arguments from `args` available in the evaluation environment.
+  
+Another (not used) wrapper is the following:
+
+  * [`wrapfn()`](https://winvector.github.io/wrapr/reference/wrapfn.html) which wraps a function specified by value.  When used the function is called with the pipeline argument as the first argument (and named `arg_name`), and extra arguments supplied from the list `args`.
+
   
 Each of these captures the action and extra values needed to perform each step of the model application.  The steps can be chained together by pipes (as shown above), or assembled directly as a list using [`fnlist()`](https://winvector.github.io/wrapr/reference/fnlist.html) or [as_fnlist()](https://winvector.github.io/wrapr/reference/as_fnlist.html).  Function lists can be built all at once, or concatenated together from pieces. More details on `wrapr` function objects can be found [here](https://winvector.github.io/wrapr/articles/Function_Objects.html).
   
