@@ -1,0 +1,77 @@
+---
+title: "vtreat Variable Importance"
+author: "John Mount"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vtreat Variable Importance}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+[`vtreat`](https://github.com/WinVector/vtreat)'s purpose is to produce pure numeric [`R`](https://www.r-project.org) `data.frame`s that are ready for [supervised predictive modeling](https://en.wikipedia.org/wiki/Supervised_learning) (predicting a value from other values).  By ready we mean: a purely numeric data frame with no missing values and a reasonable number of columns (missing-values re-encoded with indicators, and high-degree categorical re-encode by effects codes or impact codes).
+
+Part of the `vtreat` philosophy is to assume after the `vtreat` variable processing the next step is a sophisticated [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) method.  Under this assumption we assume the machine learning methodology (be it regression, tree methods, random forests, boosting, or neural nets) will handle issues of redundant variables, joint distributions of variables, overall regularization, and joint dimension reduction.
+
+However, an important exception is: variable screening.  In practice we have seen wide data-warehouses with hundreds of columns overwhelm and defeat state of the art machine learning algorithms due to over-fitting.  We have some synthetic examples of this ([here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/) and [here](http://www.win-vector.com/blog/tag/talks/)).
+
+The upshot is: even in 2018 you can not treat every column you find in a data warehouse as a variable.  You must at least perform some basic screening.
+
+To help with this `vtreat` incorporates a per-variable linear significance report.  This report shows how useful each variable is taken alone in a linear or generalized linear model (some details can be found [here](https://arxiv.org/abs/1611.09477)).  However, this sort of calculation was optimized for speed, not discovery power.
+
+`vtreat` now includes a direct variable valuation system that works very well with complex numeric relationships.  It is a function called [`vtreat::value_variables_N()`](https://winvector.github.io/vtreat/reference/value_variables_N.html) for numeric or regression problems and [`vtreat::value_variables_C()`](https://winvector.github.io/vtreat/reference/value_variables_C.html) for binomial classification problems.  It works by fitting two transformed copies of each numeric variable to the outcome.  One transform is a low frequency transform realized as an optimal `k`-segment linear model for a moderate choice of `k`. The other fit is a high-frequency trasnform realized as a `k`-nearest neighbor average for moderate choice of `k`.  Some of the methodology is shown [here](https://github.com/WinVector/vtreat/blob/master/extras/SegFitter.md).
+
+We recommend using `vtreat::value_variables_*()` as an initial variable screen.
+
+Let's demonstrate this using the data from the segment fitter example.  In our case the value to be predicted ("`y`") is a noisy copy of `sin(x)`.  Let's set up our example data:
+
+```{r}
+set.seed(1999)
+d <- data.frame(x = seq(0, 15, by = 0.25))
+d$y_ideal <- sin(d$x)
+d$x_noise <- d$x[sample.int(nrow(d), nrow(d), replace = FALSE)]
+d$y <- d$y_ideal + 0.5*rnorm(nrow(d))
+dim(d)
+```
+
+Now a simple linear valuation of the the variables can be produced as follows.
+
+```{r}
+cfe <- vtreat::mkCrossFrameNExperiment(
+  d, 
+  varlist = c("x", "x_noise"), 
+  outcomename = "y")
+
+sf <- cfe$treatments$scoreFrame
+knitr::kable(sf[, c("varName", "rsq", "sig")])
+```
+
+Notice the signal carrying variable did not score better (having a larger `r`-squared and a smaller (better) significance value) than the noise variable (that is unrelated to the outcome).  This is because the relation between `x` and `y` is not linear.
+
+Now let's try `vtreat::value_variables_N()`.
+
+```{r}
+vf = vtreat::value_variables_N(
+  d, 
+  varlist = c("x", "x_noise"),
+  outcomename = "y")
+rownames(vf) <- NULL
+
+knitr::kable(vf[, c("var", "rsq", "sig")])
+```
+
+Now the difference is night and day.  The important variable `x` is singled out (scores very well), and the unimportant variable `x_noise` doesn't often score well. Though, as with all significance tests, useless variables can get lucky from time to time- (an issue that can be addressed by using a [Cohen's-`d` style calculation](http://www.win-vector.com/blog/2017/09/remember-p-values-are-not-effect-sizes/)).
+
+Our modeling advice is:
+
+  * Use `vtreat::value_variables_*()`
+  * Pick all variables with `sig <= 1/number_of_variables_being_considered`.
+  
+The idea is: each "pure noise" (or purely useless) variable has a significance that is distributed uniformly between zero and one.  So the expected number of useless variables that make it through the above screening is `number_of_useless_varaibles * P[useless_sig <= 1/number_of_variables_being_considered]`.  This equals `number_of_useless_varaibles * 1/number_of_variables_being_considered`. As `number_of_useless_varaibles <= number_of_variables_being_considered` we get this quantity is no more than one.  So we expect a constant number of useless variables to sneak through this filter.  The hope is: this should not be enough useless variables to overwhelm the next stage supervised machine learning step.
+
+Obviously there are situations where variable importance can not be discovered without considering joint distributions.  The most famous one being "xor" where the concept to be learned is if an odd or even number of indicator variables are zero or one (each such variable is individual completely uninformative about the outcome until you have all of the variables simultaneously).  However, for practical problems you often have that most variables have a higher marginal predictive power taken alone than they have in the final joint model (as other, better, variables consume some of common variables' predictive power in the joint model).  With this in mind single variable screening often at least gives an indication where to look.
+
+In conclusion the `vtreat` package and `vtreat::value_variables_*()` can be a valuable addition to your supervised learning practice.
+
+
+

@@ -4,6 +4,7 @@ pkgdown_sha: ~
 articles:
   MultiClassVtreat: MultiClassVtreat.html
   SavingTreamentPlans: SavingTreamentPlans.html
+  VariableImportance: VariableImportance.html
   vtreat: vtreat.html
   vtreatCrossFrames: vtreatCrossFrames.html
   vtreatGrouping: vtreatGrouping.html
