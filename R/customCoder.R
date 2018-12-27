@@ -98,10 +98,14 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
     if(doCollar) {
       xg <- pmax(min(args$cuts), pmin(max(args$cuts), xg))
     }
+    method <- args$method
+    if(is.null(method)) {
+      method <- "linear"
+    }
     treated[!naposns]  <- stats::approx(x=args$predXs, 
                                         y=args$predYs, 
                                         xout= xg,
-                                        method = "linear", 
+                                        method = method, 
                                         rule = 2)$y
   }
   fails <- .is.bad(treated)
@@ -160,6 +164,10 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   if(is.null(scores)) {
     return(NULL)
   }
+  method <- attr(scores, "method")
+  if(is.null(method)) {
+    method <- "linear"
+  }
   approx_table <- attr(scores, "approx_table")
   if(!is.null(approx_table)) {
     predXs <- approx_table$predXs
@@ -193,6 +201,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
                     f=.customCodeNum,
                     args=list(predXs=predXs,
                               predYs=predYs,
+                              method = method,
                               cuts=cuts,
                               missingValueCode=missingValueCode),
                     treatmentName=paste('Custom Code:', customCode),
