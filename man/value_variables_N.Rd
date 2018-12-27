@@ -8,7 +8,13 @@ value_variables_N(dframe, varlist, outcomename, ..., weights = c(),
   minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
   collarProb = 0, scale = FALSE, doCollar = FALSE,
   splitFunction = NULL, ncross = 3, forceSplit = FALSE,
-  verbose = FALSE, parallelCluster = NULL, use_parallel = TRUE)
+  verbose = FALSE, parallelCluster = NULL, use_parallel = TRUE,
+  customCoders = list(c.PiecewiseV.num = vtreat::solve_piecewise,
+  n.PiecewiseV.num = vtreat::solve_piecewise, c.knearest.num =
+  vtreat::square_window, n.knearest.num = vtreat::square_window,
+  c.spline.num = vtreat::spline_variable, n.spline.num =
+  vtreat::spline_variable), codeRestriction = c("PiecewiseV", "knearest",
+  "spline", "clean", "isBAD", "catB", "catP"))
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -46,6 +52,10 @@ value_variables_N(dframe, varlist, outcomename, ..., weights = c(),
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
 
 \item{use_parallel}{logical, if TRUE use parallel methods.}
+
+\item{customCoders}{additional coders to use for variable importance estimate.}
+
+\item{codeRestriction}{codes to restrict to for variable importance estimate.}
 }
 \value{
 table of variable valuations

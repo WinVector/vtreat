@@ -157,7 +157,13 @@
   <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>c.PiecewiseV.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/vtreat/topics/solve_piecewise'>solve_piecewise</a></span>,
+  <span class='kw'>n.PiecewiseV.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/vtreat/topics/solve_piecewise'>solve_piecewise</a></span>, <span class='kw'>c.knearest.num</span> <span class='kw'>=</span>
+  <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/vtreat/topics/square_window'>square_window</a></span>, <span class='kw'>n.knearest.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/vtreat/topics/square_window'>square_window</a></span>,
+  <span class='kw'>c.spline.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/vtreat/topics/spline_variable'>spline_variable</a></span>, <span class='kw'>n.spline.num</span> <span class='kw'>=</span>
+  <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/vtreat/topics/spline_variable'>spline_variable</a></span>), <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"PiecewiseV"</span>, <span class='st'>"knearest"</span>,
+  <span class='st'>"spline"</span>, <span class='st'>"clean"</span>, <span class='st'>"isBAD"</span>, <span class='st'>"catB"</span>, <span class='st'>"catP"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -233,6 +239,14 @@
     <tr>
       <th>use_parallel</th>
       <td><p>logical, if TRUE use parallel methods.</p></td>
+    </tr>
+    <tr>
+      <th>customCoders</th>
+      <td><p>additional coders to use for variable importance estimate.</p></td>
+    </tr>
+    <tr>
+      <th>codeRestriction</th>
+      <td><p>codes to restrict to for variable importance estimate.</p></td>
     </tr>
     </table>
     

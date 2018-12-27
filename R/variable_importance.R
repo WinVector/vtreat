@@ -40,6 +40,8 @@ variable_values <- function(sf) {
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param customCoders additional coders to use for variable importance estimate.
+#' @param codeRestriction codes to restrict to for variable importance estimate.
 #' @return table of variable valuations
 #' 
 #' @export
@@ -56,18 +58,18 @@ value_variables_N <- function(dframe,varlist,
                               forceSplit=FALSE,
                               verbose= FALSE,
                               parallelCluster=NULL,
-                              use_parallel = TRUE) {
+                              use_parallel = TRUE,
+                              customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
+                                                  'n.PiecewiseV.num' = vtreat::solve_piecewise,
+                                                  'c.knearest.num' = vtreat::square_window,
+                                                  'n.knearest.num' = vtreat::square_window,
+                                                  'c.spline.num' = vtreat::spline_variable,
+                                                  'n.spline.num' = vtreat::spline_variable),
+                              codeRestriction = c("PiecewiseV", 
+                                                  "knearest",
+                                                  "spline",
+                                                  "clean", "isBAD", "catB", "catP")) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_N")
-  customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
-                      'n.PiecewiseV.num' = vtreat::solve_piecewise,
-                      'c.knearest.num' = vtreat::square_window,
-                      'n.knearest.num' = vtreat::square_window,
-                      'c.spline.num' = vtreat::spline_variable,
-                      'n.spline.num' = vtreat::spline_variable)
-  codeRestriction = c("PiecewiseV", 
-                      "knearest",
-                      "spline",
-                      "clean", "isBAD", "catB", "catP")
   cfn <- mkCrossFrameNExperiment(
     dframe= dframe,
     varlist = varlist,
@@ -112,6 +114,8 @@ value_variables_N <- function(dframe,varlist,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param customCoders additional coders to use for variable importance estimate.
+#' @param codeRestriction codes to restrict to for variable importance estimate.
 #' @return table of variable valuations
 #' 
 #' 
@@ -130,18 +134,18 @@ value_variables_C <- function(dframe,varlist,
                               catScaling=FALSE,
                               verbose= FALSE,
                               parallelCluster=NULL,
-                              use_parallel = TRUE) {
+                              use_parallel = TRUE,
+                              customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
+                                                  'n.PiecewiseV.num' = vtreat::solve_piecewise,
+                                                  'c.knearest.num' = vtreat::square_window,
+                                                  'n.knearest.num' = vtreat::square_window,
+                                                  'c.spline.num' = vtreat::spline_variable,
+                                                  'n.spline.num' = vtreat::spline_variable),
+                              codeRestriction = c("PiecewiseV", 
+                                                  "knearest",
+                                                  "spline",
+                                                  "clean", "isBAD", "catB", "catP")) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_C")
-  customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
-                      'n.PiecewiseV.num' = vtreat::solve_piecewise,
-                      'c.knearest.num' = vtreat::square_window,
-                      'n.knearest.num' = vtreat::square_window,
-                      'c.spline.num' = vtreat::spline_variable,
-                      'n.spline.num' = vtreat::spline_variable)
-  codeRestriction = c("PiecewiseV", 
-                      "knearest",
-                      "spline",
-                      "clean", "isBAD", "catB", "catP")
   cfc <- mkCrossFrameCExperiment(
     dframe= dframe,
     varlist = varlist,
