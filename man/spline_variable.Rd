@@ -16,7 +16,7 @@ spline_variable(varName, x, y, w = NULL)
 \item{w}{numeric positive, same length as x (weights, can be NULL)}
 }
 \value{
-segmented y prediction
+spline y prediction
 }
 \description{
 Return a spline approximation of data.

@@ -7,7 +7,7 @@
 #' @param x numeric input (not empty, no NAs). 
 #' @param y numeric or castable to such (same length as x no NAs), output to match
 #' @param w numeric positive, same length as x (weights, can be NULL)
-#' @return segmented y prediction
+#' @return spline y prediction
 #'
 #'
 #' @export
