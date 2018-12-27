@@ -131,7 +131,12 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
       # print(k)
     }
     model <- fit_segments(x, y, k=k, w=w)
-    return(pred_segs(model, x))
+    estimate <- pred_segs(model, x)
+    approx_table <- data.frame(predXs = sort(unique(c(min(x), model$xs, max(x)))))
+    approx_table$predYs <- pred_segs(model, approx_table$predXs)
+    attr(estimate, "approx_table") <- approx_table
+    attr(estimate, "method") <- "linear"
+    return(estimate)
   },
   error = function(e) { return(NULL) })
 }
