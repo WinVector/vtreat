@@ -98,8 +98,11 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
     if(doCollar) {
       xg <- pmax(min(args$cuts), pmin(max(args$cuts), xg))
     }
-    treated[!naposns]  <- stats::approx(x=args$predXs, y=args$predYs, 
-                                        xout= xg)$y
+    treated[!naposns]  <- stats::approx(x=args$predXs, 
+                                        y=args$predYs, 
+                                        xout= xg,
+                                        method = "linear", 
+                                        rule = 2)$y
   }
   fails <- .is.bad(treated)
   if(any(fails)) {
