@@ -61,9 +61,12 @@ value_variables_N <- function(dframe,varlist,
   customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
                       'n.PiecewiseV.num' = vtreat::solve_piecewise,
                       'c.knearest.num' = vtreat::square_window,
-                      'n.knearest.num' = vtreat::square_window)
+                      'n.knearest.num' = vtreat::square_window,
+                      'c.spline.num' = vtreat::spline_variable,
+                      'n.spline.num' = vtreat::spline_variable)
   codeRestriction = c("PiecewiseV", 
                       "knearest",
+                      "spline",
                       "clean", "isBAD", "catB", "catP")
   cfn <- mkCrossFrameNExperiment(
     dframe= dframe,
@@ -132,9 +135,12 @@ value_variables_C <- function(dframe,varlist,
   customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
                       'n.PiecewiseV.num' = vtreat::solve_piecewise,
                       'c.knearest.num' = vtreat::square_window,
-                      'n.knearest.num' = vtreat::square_window)
+                      'n.knearest.num' = vtreat::square_window,
+                      'c.spline.num' = vtreat::spline_variable,
+                      'n.spline.num' = vtreat::spline_variable)
   codeRestriction = c("PiecewiseV", 
                       "knearest",
+                      "spline",
                       "clean", "isBAD", "catB", "catP")
   cfc <- mkCrossFrameCExperiment(
     dframe= dframe,

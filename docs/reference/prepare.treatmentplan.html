@@ -243,11 +243,11 @@ vtreat that produced the plan differs from the version running <code><a href='pr
                       <span class='kw'>y</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
 <span class='no'>dTestN</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
                      <span class='kw'>z</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'><a href='designTreatmentsN.html'>designTreatmentsN</a></span>(<span class='no'>dTrainN</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainN</span>), <span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.3.4 inspecting inputs Thu Dec 27 11:43:48 2018"
-#&gt; [1] "designing treatments Thu Dec 27 11:43:48 2018"
-#&gt; [1] " have initial level statistics Thu Dec 27 11:43:48 2018"
-#&gt; [1] " scoring treatments Thu Dec 27 11:43:48 2018"
-#&gt; [1] "have treatment plan Thu Dec 27 11:43:48 2018"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>, <span class='no'>dTrainN</span>, <span class='kw'>pruneSig</span><span class='kw'>=</span> <span class='fl'>0.2</span>)
+<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'><a href='designTreatmentsN.html'>designTreatmentsN</a></span>(<span class='no'>dTrainN</span>,<span class='fu'>colnames</span>(<span class='no'>dTrainN</span>), <span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.3.4 inspecting inputs Thu Dec 27 12:38:19 2018"
+#&gt; [1] "designing treatments Thu Dec 27 12:38:19 2018"
+#&gt; [1] " have initial level statistics Thu Dec 27 12:38:19 2018"
+#&gt; [1] " scoring treatments Thu Dec 27 12:38:19 2018"
+#&gt; [1] "have treatment plan Thu Dec 27 12:38:19 2018"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>, <span class='no'>dTrainN</span>, <span class='kw'>pruneSig</span><span class='kw'>=</span> <span class='fl'>0.2</span>)
 <span class='no'>dTestNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>, <span class='no'>dTestN</span>, <span class='kw'>pruneSig</span><span class='kw'>=</span> <span class='fl'>0.2</span>)
 
 <span class='no'>dTrainC</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>),
@@ -255,22 +255,22 @@ vtreat that produced the plan differs from the version running <code><a href='pr
                       <span class='kw'>y</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
 <span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
                      <span class='kw'>z</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='designTreatmentsC.html'>designTreatmentsC</a></span>(<span class='no'>dTrainC</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.3.4 inspecting inputs Thu Dec 27 11:43:48 2018"
-#&gt; [1] "designing treatments Thu Dec 27 11:43:48 2018"
-#&gt; [1] " have initial level statistics Thu Dec 27 11:43:48 2018"
-#&gt; [1] " scoring treatments Thu Dec 27 11:43:48 2018"
-#&gt; [1] "have treatment plan Thu Dec 27 11:43:48 2018"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>, <span class='no'>dTrainC</span>)
+<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='designTreatmentsC.html'>designTreatmentsC</a></span>(<span class='no'>dTrainC</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.3.4 inspecting inputs Thu Dec 27 12:38:19 2018"
+#&gt; [1] "designing treatments Thu Dec 27 12:38:19 2018"
+#&gt; [1] " have initial level statistics Thu Dec 27 12:38:19 2018"
+#&gt; [1] " scoring treatments Thu Dec 27 12:38:19 2018"
+#&gt; [1] "have treatment plan Thu Dec 27 12:38:19 2018"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>, <span class='no'>dTrainC</span>)
 <span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>, <span class='no'>dTestC</span>)
 
 <span class='no'>dTrainZ</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>),
                       <span class='kw'>z</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>))
 <span class='no'>dTestZ</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
                      <span class='kw'>z</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsZ</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='designTreatmentsZ.html'>designTreatmentsZ</a></span>(<span class='no'>dTrainZ</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainZ</span>))</div><div class='output co'>#&gt; [1] "vtreat 1.3.4 inspecting inputs Thu Dec 27 11:43:48 2018"
-#&gt; [1] "designing treatments Thu Dec 27 11:43:48 2018"
-#&gt; [1] " have initial level statistics Thu Dec 27 11:43:48 2018"
-#&gt; [1] " scoring treatments Thu Dec 27 11:43:48 2018"
-#&gt; [1] "have treatment plan Thu Dec 27 11:43:48 2018"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>, <span class='kw'>codeRestriction</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'lev'</span>))
+<span class='no'>treatmentsZ</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='designTreatmentsZ.html'>designTreatmentsZ</a></span>(<span class='no'>dTrainZ</span>, <span class='fu'>colnames</span>(<span class='no'>dTrainZ</span>))</div><div class='output co'>#&gt; [1] "vtreat 1.3.4 inspecting inputs Thu Dec 27 12:38:19 2018"
+#&gt; [1] "designing treatments Thu Dec 27 12:38:19 2018"
+#&gt; [1] " have initial level statistics Thu Dec 27 12:38:19 2018"
+#&gt; [1] " scoring treatments Thu Dec 27 12:38:19 2018"
+#&gt; [1] "have treatment plan Thu Dec 27 12:38:19 2018"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>, <span class='kw'>codeRestriction</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'lev'</span>))
 <span class='no'>dTestZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTestZ</span>, <span class='kw'>codeRestriction</span><span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'lev'</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
