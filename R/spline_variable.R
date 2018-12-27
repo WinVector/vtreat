@@ -1,4 +1,12 @@
 
+
+mk_spline_eval_fn <- function(spline) {
+  force(spline)
+  function(x) {
+    stats::predict(spline, x)$y
+  }
+}
+
 #' Spline numeric variable
 #'
 #' Return a spline approximation of data.
@@ -25,8 +33,13 @@ spline_variable <- function(varName, x, y, w = NULL) {
     if(is.null(w)) {
       w <- numeric(n) + 1
     }
-    spline <- stats::smooth.spline(x, y, keep.data = FALSE, cv = TRUE)
+    nknots <- min(nunique, 1000)
+    spline <- stats::smooth.spline(x, y, 
+                                   keep.data = FALSE, 
+                                   keep.stuff = FALSE,
+                                   cv = TRUE)$fit
     estimate <- stats::predict(spline, x)$y
+    attr(estimate, "eval_fn") <- mk_spline_eval_fn(spline)
     attr(estimate, "method") <- "linear"
     return(estimate)
   },
