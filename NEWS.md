@@ -1,6 +1,7 @@
 
-# vtreat 1.3.4 2018/12/17
+# vtreat 1.3.4 2018/12/27
 
+ * Fix .customCodeNum() extrapolation, down-sampling, and remote numeric ".center" option.
  * More docs.
 
 # vtreat 1.3.3 2018/12/17

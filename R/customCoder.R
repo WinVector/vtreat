@@ -158,12 +158,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
     error = function(e) { warning(e) }
   )
   if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(xcol))) {
-    scores <- rep(0.0, length(xcol))
-  } else {
-    if('center' %in% codeSeq) {
-      # shift scores to be mean zero with respect to weights
-      scores <- scores -  sum(scores*wNotNa)/sum(wNotNa)
-    }
+    return(NULL)
   }
   d <- data.frame(x = xcol,
                   pred = scores)
@@ -179,7 +174,7 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
   predYs <- predYs[ord]
   # sample down
   if(length(predXs)>10000) {
-    idxs <- seq(1, length(predXs)) 
+    idxs <- sort(unique(c(1, round(seq(1, length(predXs), length.out=10000)), length(predXs))))
     predXs <- predXs[idxs]
     predYs <- predYs[idxs]
   }
