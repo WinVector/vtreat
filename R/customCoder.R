@@ -157,26 +157,35 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
     },
     error = function(e) { warning(e) }
   )
-  if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(xcol))) {
+  if(is.null(scores)) {
     return(NULL)
   }
-  d <- data.frame(x = xcol,
-                  pred = scores)
-  # TODO: weighted version 
-  agg <- aggregate(pred~x, data=d, mean)
-  predXs <- agg$x
-  if(length(predXs)<=1) {
-    return(NULL)
-  }
-  predYs <- as.numeric(agg$pred)
-  ord <- order(agg$x)
-  predXs <- predXs[ord]
-  predYs <- predYs[ord]
-  # sample down
-  if(length(predXs)>10000) {
-    idxs <- sort(unique(c(1, round(seq(1, length(predXs), length.out=10000)), length(predXs))))
-    predXs <- predXs[idxs]
-    predYs <- predYs[idxs]
+  approx_table <- attr(scores, "approx_table")
+  if(!is.null(approx_table)) {
+    predXs <- approx_table$predXs
+    predYs <- approx_table$predYs
+  } else {
+    if((!is.numeric(scores)) || (length(scores)!=length(xcol))) {
+      return(NULL)
+    }
+    d <- data.frame(x = xcol,
+                    pred = scores)
+    # TODO: weighted version 
+    agg <- aggregate(pred~x, data=d, mean)
+    predXs <- agg$x
+    if(length(predXs)<=1) {
+      return(NULL)
+    }
+    predYs <- as.numeric(agg$pred)
+    ord <- order(agg$x)
+    predXs <- predXs[ord]
+    predYs <- predYs[ord]
+    # sample down
+    if(length(predXs)>10000) {
+      idxs <- sort(unique(c(1, round(seq(1, length(predXs), length.out=10000)), length(predXs))))
+      predXs <- predXs[idxs]
+      predYs <- predYs[idxs]
+    }
   }
   newVarName <- vtreat_make_names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
