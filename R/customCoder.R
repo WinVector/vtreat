@@ -44,7 +44,10 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
     },
     error = function(e) { warning(e) }
   )
-  if(is.null(scores) || (!is.numeric(scores)) || (length(scores)!=length(vcol))) {
+  if(is.null(scores)) {
+    return(NULL)
+  }
+  if((!is.numeric(scores)) || (length(scores)!=length(vcol))) {
     scores <- rep(0.0, length(vcol))
   } else {
     if('center' %in% codeSeq) {
