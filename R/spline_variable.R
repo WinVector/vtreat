@@ -35,6 +35,7 @@ spline_variable <- function(varName, x, y, w = NULL) {
     }
     nknots <- min(nunique, 1000)
     spline <- stats::smooth.spline(x, y, 
+                                   w = w,
                                    keep.data = FALSE, 
                                    keep.stuff = FALSE,
                                    cv = TRUE)$fit
