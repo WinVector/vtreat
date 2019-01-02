@@ -210,7 +210,7 @@
  <span class="co">#  </span>
  <span class="co">#  To cite package 'vtreat' in publications use:</span>
  <span class="co">#  </span>
- <span class="co">#    John Mount and Nina Zumel (2018). vtreat: A Statistically Sound</span>
+ <span class="co">#    John Mount and Nina Zumel (2019). vtreat: A Statistically Sound</span>
  <span class="co">#    'data.frame' Processor/Conditioner.</span>
  <span class="co">#    https://github.com/WinVector/vtreat/,</span>
  <span class="co">#    https://winvector.github.io/vtreat/.</span>
@@ -220,7 +220,7 @@
  <span class="co">#    @Manual{,</span>
  <span class="co">#      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},</span>
  <span class="co">#      author = {John Mount and Nina Zumel},</span>
- <span class="co">#      year = {2018},</span>
+ <span class="co">#      year = {2019},</span>
  <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span>
  <span class="co">#    }</span>
 
@@ -279,15 +279,15 @@ dTestN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>,
                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 4.047085e-01 0.08994062                 2</span>
- <span class="co">#  2        x    x_catN  catN 2.822908e-01 0.17539581                 2</span>
- <span class="co">#  3        x    x_catD  catD 2.096931e-02 0.73225708                 2</span>
- <span class="co">#  4        z         z clean 2.880952e-01 0.17018920                 0</span>
- <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.13397460                 0</span>
- <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.13397460                 0</span>
- <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.20703125                 0</span>
- <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 0.99999998                 0</span>
+ <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
+ <span class="co">#  1        x    x_catP  catP 1.348315e-01 0.3708945                 2</span>
+ <span class="co">#  2        x    x_catN  catN 4.582430e-02 0.6107193                 2</span>
+ <span class="co">#  3        x    x_catD  catD 2.549856e-01 0.2018336                 2</span>
+ <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span>
+ <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
+ <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>
+ <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span>
+ <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span>
 dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,<span class="dt">pruneSig=</span><span class="fl">1.0</span>,<span class="dt">scale=</span><span class="ot">TRUE</span>)
 varsN &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">colnames</span>(dTrainNTreated),<span class="st">'y'</span>)
 <span class="co"># all input variables should be mean 0</span>

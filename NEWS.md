@@ -1,5 +1,5 @@
 
-# vtreat 1.3.4 2018/12/27
+# vtreat 1.3.4 2019/01/02
 
  * Accept pre-built approximation tables from numeric custom coders.
  * Fix .customCodeNum() extrapolation, down-sampling, and remote numeric ".center" option.
