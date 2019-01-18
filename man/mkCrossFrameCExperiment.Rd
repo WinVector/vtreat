@@ -9,7 +9,7 @@ mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
   rareSig = 1, collarProb = 0, codeRestriction = NULL,
   customCoders = NULL, scale = FALSE, doCollar = FALSE,
   splitFunction = NULL, ncross = 3, forceSplit = FALSE,
-  catScaling = FALSE, verbose = TRUE, parallelCluster = NULL,
+  catScaling = TRUE, verbose = TRUE, parallelCluster = NULL,
   use_parallel = TRUE)
 }
 \arguments{

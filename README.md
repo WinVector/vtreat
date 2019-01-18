@@ -98,12 +98,12 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.3.4'
+ #  [1] '1.3.5'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
  #  
- #    John Mount and Nina Zumel (2018). vtreat: A Statistically Sound
+ #    John Mount and Nina Zumel (2019). vtreat: A Statistically Sound
  #    'data.frame' Processor/Conditioner.
  #    https://github.com/WinVector/vtreat/,
  #    https://winvector.github.io/vtreat/.
@@ -113,7 +113,7 @@ citation('vtreat')
  #    @Manual{,
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
- #      year = {2018},
+ #      year = {2019},
  #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
  #    }
 
@@ -129,8 +129,8 @@ treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.111456141 0.30194137                 2
- #  2        x    x_catB  catB 0.033761011 0.56994212                 2
+ #  1        x    x_catP  catP 0.059315943 0.45141252                 2
+ #  2        x    x_catB  catB 0.029824903 0.59334713                 2
  #  3        z         z clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -144,26 +144,23 @@ varsC <- setdiff(colnames(dTrainCTreated),'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
  #         x_catP        x_catB             z       z_isBAD      x_lev_NA 
- #   1.585994e-16  0.000000e+00  7.927952e-18 -7.926292e-18  3.965082e-18 
+ #   2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 
  #      x_lev_x_a     x_lev_x_b 
- #  -1.982154e-17  9.917546e-19
+ #  -6.345680e-17  1.189718e-17
 # all non NA slopes should be 1
 sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
- #     x_catP    x_catB         z   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
- #          1         1         1         1         1         1         1
+ #      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a 
+ #  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 
+ #   x_lev_x_b 
+ #  0.24663035
 dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
 print(dTestCTreated)
- #        x_catP     x_catB        z    z_isBAD   x_lev_NA  x_lev_x_a
- #  1 -0.2380952 -0.1897682 1.194595 -0.1714286 -0.1714286 -0.2380952
- #  2  0.1785714 -0.1489924 2.951351 -0.1714286 -0.1714286  0.1785714
- #  3  0.8035714 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714
- #  4  0.1785714  0.4336447 0.000000  0.4285714  0.4285714  0.1785714
- #      x_lev_x_b
- #  1  0.02857143
- #  2 -0.07142857
- #  3  0.02857143
- #  4  0.02857143
+ #        x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b
+ #  1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472
+ #  2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179
+ #  3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472
+ #  4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472
 ```
 
 ``` r
@@ -176,9 +173,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.558824e-01 0.1184999                 2
- #  2        x    x_catN  catN 3.132648e-02 0.6750039                 2
- #  3        x    x_catD  catD 4.512437e-02 0.6135229                 2
+ #  1        x    x_catP  catP 3.137255e-01 0.1487686                 2
+ #  2        x    x_catN  catN 2.536663e-02 0.7063823                 2
+ #  3        x    x_catD  catD 1.620332e-01 0.3228162                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0

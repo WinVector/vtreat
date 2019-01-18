@@ -235,14 +235,14 @@ dTestC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cl
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>,
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 0.059315943 0.45141252                 2</span>
- <span class="co">#  2        x    x_catB  catB 0.029824903 0.59334713                 2</span>
- <span class="co">#  3        z         z clean 0.237601767 0.13176020                 0</span>
- <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span>
- <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span>
- <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span>
- <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span>
+ <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
+ <span class="co">#  1        x    x_catP  catP 1.030137e-01 0.32099590                 2</span>
+ <span class="co">#  2        x    x_catB  catB 1.125399e-05 0.99172381                 2</span>
+ <span class="co">#  3        z         z clean 2.376018e-01 0.13176020                 0</span>
+ <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span>
+ <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span>
+ <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span>
+ <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span>
 
 <span class="co"># help("prepare")</span>
 
@@ -251,26 +251,23 @@ varsC &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class=
 <span class="co"># all input variables should be mean 0</span>
 <span class="kw">sapply</span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)
  <span class="co">#         x_catP        x_catB             z       z_isBAD      x_lev_NA </span>
- <span class="co">#   1.585994e-16  0.000000e+00  7.927952e-18 -7.926292e-18  3.965082e-18 </span>
+ <span class="co">#   2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 </span>
  <span class="co">#      x_lev_x_a     x_lev_x_b </span>
- <span class="co">#  -1.982154e-17  9.917546e-19</span>
+ <span class="co">#  -6.345680e-17  1.189718e-17</span>
 <span class="co"># all non NA slopes should be 1</span>
 <span class="kw">sapply</span>(varsC,<span class="cf">function</span>(c) { <span class="kw">lm</span>(<span class="kw">paste</span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),
    <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})
- <span class="co">#     x_catP    x_catB         z   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b </span>
- <span class="co">#          1         1         1         1         1         1         1</span>
+ <span class="co">#      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a </span>
+ <span class="co">#  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 </span>
+ <span class="co">#   x_lev_x_b </span>
+ <span class="co">#  0.24663035</span>
 dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
 <span class="kw">print</span>(dTestCTreated)
- <span class="co">#        x_catP     x_catB        z    z_isBAD   x_lev_NA  x_lev_x_a</span>
- <span class="co">#  1 -0.2380952 -0.1897682 1.194595 -0.1714286 -0.1714286 -0.2380952</span>
- <span class="co">#  2  0.1785714 -0.1489924 2.951351 -0.1714286 -0.1714286  0.1785714</span>
- <span class="co">#  3  0.8035714 -0.1320682 4.708108 -0.1714286 -0.1714286  0.1785714</span>
- <span class="co">#  4  0.1785714  0.4336447 0.000000  0.4285714  0.4285714  0.1785714</span>
- <span class="co">#      x_lev_x_b</span>
- <span class="co">#  1  0.02857143</span>
- <span class="co">#  2 -0.07142857</span>
- <span class="co">#  3  0.02857143</span>
- <span class="co">#  4  0.02857143</span></code></pre></div>
+ <span class="co">#        x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b</span>
+ <span class="co">#  1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472</span>
+ <span class="co">#  2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179</span>
+ <span class="co">#  3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472</span>
+ <span class="co">#  4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># numeric example</span>
 dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>,<span class="ot">NA</span>),
    <span class="dt">z=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>,<span class="ot">NA</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))
@@ -280,9 +277,9 @@ treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/design
                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw">print</span>(treatmentsN<span class="op">$</span>scoreFrame[,<span class="kw">c</span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
  <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 1.498471e-01 0.3434338                 2</span>
- <span class="co">#  2        x    x_catN  catN 1.646259e-01 0.3186062                 2</span>
- <span class="co">#  3        x    x_catD  catD 1.620332e-01 0.3228162                 2</span>
+ <span class="co">#  1        x    x_catP  catP 1.348315e-01 0.3708945                 2</span>
+ <span class="co">#  2        x    x_catN  catN 4.582430e-02 0.6107193                 2</span>
+ <span class="co">#  3        x    x_catD  catD 2.549856e-01 0.2018336                 2</span>
  <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span>
  <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
  <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>

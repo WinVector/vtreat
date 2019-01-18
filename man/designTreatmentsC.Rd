@@ -8,7 +8,7 @@ designTreatmentsC(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = NULL, collarProb = 0, codeRestriction = NULL,
   customCoders = NULL, splitFunction = NULL, ncross = 3,
-  forceSplit = FALSE, catScaling = FALSE, verbose = TRUE,
+  forceSplit = FALSE, catScaling = TRUE, verbose = TRUE,
   parallelCluster = NULL, use_parallel = TRUE)
 }
 \arguments{

@@ -1,6 +1,7 @@
 
 # vtreat 1.3.4 2019/01/17
 
+ * Make categorical scoring default TRUE>
  * logit-ize custom coders.
  
 # vtreat 1.3.4 2019/01/02
