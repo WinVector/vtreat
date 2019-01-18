@@ -33,9 +33,11 @@ spline_variable <- function(varName, x, y, w = NULL) {
     if(is.null(w)) {
       w <- numeric(n) + 1
     }
+    d <- data.frame(x = x, y = y, w = w, orig_idx = seq_len(n))
+    d <- d[order(d$x, stats::runif(length(d$x))), , drop = FALSE]
     nknots <- min(nunique, 1000)
-    spline <- stats::smooth.spline(x, y, 
-                                   w = w,
+    spline <- stats::smooth.spline(d$x, d$y, 
+                                   w = d$w,
                                    nknots = nknots,
                                    keep.data = FALSE, 
                                    keep.stuff = FALSE,

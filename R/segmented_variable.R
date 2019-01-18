@@ -106,6 +106,11 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
     if(is.null(w)) {
       w <- numeric(n) + 1
     }
+    xorig <- x
+    order <- order(x)
+    x <- x[order]
+    y <- y[order]
+    w <- w[order]
     if(n<=20) {
       # too small, 1 or 2 segments
       k <- 2
@@ -131,7 +136,7 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
       # print(k)
     }
     model <- fit_segments(x, y, k=k, w=w)
-    estimate <- pred_segs(model, x)
+    estimate <- pred_segs(model, xorig)
     approx_table <- data.frame(predXs = sort(unique(c(min(x), model$xs, max(x)))))
     approx_table$predYs <- pred_segs(model, approx_table$predXs)
     attr(estimate, "approx_table") <- approx_table
