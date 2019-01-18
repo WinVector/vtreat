@@ -112,7 +112,7 @@
       <h1>vtreat scale mode</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2019-01-17</h4>
+            <h4 class="date">2019-01-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreatScaleMode.Rmd"><code>vignettes/vtreatScaleMode.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatScaleMode.Rmd</code></div>
@@ -182,12 +182,12 @@ slopeFrame<span class="op">$</span>sig &lt;-<span class="st"> </span><span class
 slopeFrame<span class="op">$</span>badSlope &lt;-
 <span class="st">  </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(slopeFrame<span class="op">$</span>slope), <span class="ot">TRUE</span>, <span class="kw">abs</span>(slopeFrame<span class="op">$</span>slope <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.e-8</span>)
 <span class="kw">print</span>(slopeFrame)</code></pre></div>
-<pre><code>##     varName          mean slope        sig badSlope
-## 1    x_catP  1.850372e-17     1 0.03392101    FALSE
-## 2    x_catB  1.387779e-17     1 1.00000000    FALSE
-## 3  x_lev_NA -6.938894e-18     1 0.20766228    FALSE
-## 4 x_lev_x_a  0.000000e+00     1 0.40972582    FALSE
-## 5 x_lev_x_b  0.000000e+00    NA 1.00000000     TRUE</code></pre>
+<pre><code>##     varName          mean slope       sig badSlope
+## 1    x_catP  1.850372e-17     1 0.1547700    FALSE
+## 2    x_catB  1.387779e-17     1 0.5160763    FALSE
+## 3  x_lev_NA -6.938894e-18     1 0.2076623    FALSE
+## 4 x_lev_x_a  0.000000e+00     1 0.4097258    FALSE
+## 5 x_lev_x_b  0.000000e+00    NA 1.0000000     TRUE</code></pre>
 <p>The above claims are true with the exception of the derived variable <code>x_lev_x.b</code>. This is because the outcome variable <code>y</code> has identical distribution when the original variable <code>x==‘b’</code> and when <code>x!=‘b’</code> (on half the time in both cases). This means <code>y</code> is perfectly independent of <code>x==‘b’</code> and the regression slope must be zero (thus, cannot be 1). vtreat now treats this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance facts in <code>treatmentsC$scoreFrame</code> are about the un-scaled frame (where <code>x_lev_x.b</code> does in fact move).</p>
 <p>For a good discussion of the application of <em>y</em>-aware scaling to Principal Components Analysis please see <a href="http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/">here</a>.</p>
 <p>Previous versions of vtreat (0.5.22 and earlier) would copy variables that could not be sensibly scaled into the treated frame unaltered. This was considered the “most faithful” thing to do. However we now feel that this practice was not safe for many downstream procedures, such as principal components analysis and geometric clustering.</p>
@@ -262,9 +262,9 @@ dTrainN<span class="op">$</span>y &lt;-<span class="st"> </span><span class="dv"
 cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,
                                          <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,
                                          <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.5 start initial treatment design Thu Jan 17 23:37:37 2019"
-## [1] " start cross frame work Thu Jan 17 23:37:37 2019"
-## [1] " vtreat::mkCrossFrameNExperiment done Thu Jan 17 23:37:37 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.5 start initial treatment design Fri Jan 18 09:11:18 2019"
+## [1] " start cross frame work Fri Jan 18 09:11:18 2019"
+## [1] " vtreat::mkCrossFrameNExperiment done Fri Jan 18 09:11:18 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newvars &lt;-<span class="st"> </span>cEraw<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName
 <span class="kw">print</span>(newvars)</code></pre></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>
@@ -284,9 +284,9 @@ pCraw &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="
 cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(dTrainN,
                                             <span class="kw">c</span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
                                             <span class="dt">scale=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.5 start initial treatment design Thu Jan 17 23:37:37 2019"
-## [1] " start cross frame work Thu Jan 17 23:37:37 2019"
-## [1] " vtreat::mkCrossFrameNExperiment done Thu Jan 17 23:37:37 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.5 start initial treatment design Fri Jan 18 09:11:18 2019"
+## [1] " start cross frame work Fri Jan 18 09:11:18 2019"
+## [1] " vtreat::mkCrossFrameNExperiment done Fri Jan 18 09:11:18 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newvars_s &lt;-<span class="st"> </span>cEscaled<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName
 <span class="kw">print</span>(newvars_s)</code></pre></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>

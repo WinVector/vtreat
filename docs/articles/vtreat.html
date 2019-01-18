@@ -112,7 +112,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-01-17</h4>
+            <h4 class="date">2019-01-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat//blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -194,30 +194,22 @@ dTrainC &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw">colnames</span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.5 inspecting inputs Thu Jan 17 23:37:18 2019"
-## [1] "designing treatments Thu Jan 17 23:37:18 2019"
-## [1] " have initial level statistics Thu Jan 17 23:37:18 2019"
-## [1] " scoring treatments Thu Jan 17 23:37:18 2019"
-## [1] "have treatment plan Thu Jan 17 23:37:18 2019"
-## [1] "rescoring complex variables Thu Jan 17 23:37:18 2019"
-## [1] "done rescoring complex variables Thu Jan 17 23:37:18 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.5 inspecting inputs Fri Jan 18 09:11:00 2019"
+## [1] "designing treatments Fri Jan 18 09:11:00 2019"
+## [1] " have initial level statistics Fri Jan 18 09:11:00 2019"
+## [1] " scoring treatments Fri Jan 18 09:11:00 2019"
+## [1] "have treatment plan Fri Jan 18 09:11:00 2019"
+## [1] "rescoring complex variables Fri Jan 18 09:11:00 2019"
+## [1] "done rescoring complex variables Fri Jan 18 09:11:00 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC)</code></pre></div>
-<pre><code>##     varName varMoves        rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.11457614 0.3289524       TRUE                 2
-## 2    x_catB     TRUE 0.12081050 0.3161341       TRUE                 2
-## 3         z     TRUE 0.25792985 0.1429977      FALSE                 0
-## 4   z_isBAD     TRUE 0.19087450 0.2076623      FALSE                 0
-## 5  x_lev_NA     TRUE 0.19087450 0.2076623      FALSE                 0
-## 6 x_lev_x_a     TRUE 0.08170417 0.4097258      FALSE                 0
-## 7 x_lev_x_b     TRUE 0.00000000 1.0000000      FALSE                 0
-##   origName  code
-## 1        x  catP
-## 2        x  catB
-## 3        z clean
-## 4        z isBAD
-## 5        x   lev
-## 6        x   lev
-## 7        x   lev</code></pre>
+<pre><code>##   origName  code        rsq       sig extraModelDegrees
+## 1        x  catP 0.11457614 0.3289524                 2
+## 2        x  catB 0.12081050 0.3161341                 2
+## 3        z clean 0.25792985 0.1429977                 0
+## 4        z isBAD 0.19087450 0.2076623                 0
+## 5        x   lev 0.19087450 0.2076623                 0
+## 6        x   lev 0.08170417 0.4097258                 0
+## 7        x   lev 0.00000000 1.0000000                 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] "vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')"</code></pre>
 <p>Here we demonstrate the optional scaling feature of <code><a href="../reference/prepare.html">prepare()</a></code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it re-scales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
@@ -281,32 +273,23 @@ dTrainN &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span c
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw">colnames</span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.5 inspecting inputs Thu Jan 17 23:37:18 2019"
-## [1] "designing treatments Thu Jan 17 23:37:18 2019"
-## [1] " have initial level statistics Thu Jan 17 23:37:18 2019"
-## [1] " scoring treatments Thu Jan 17 23:37:18 2019"
-## [1] "have treatment plan Thu Jan 17 23:37:18 2019"
-## [1] "rescoring complex variables Thu Jan 17 23:37:18 2019"
-## [1] "done rescoring complex variables Thu Jan 17 23:37:19 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.5 inspecting inputs Fri Jan 18 09:11:00 2019"
+## [1] "designing treatments Fri Jan 18 09:11:00 2019"
+## [1] " have initial level statistics Fri Jan 18 09:11:00 2019"
+## [1] " scoring treatments Fri Jan 18 09:11:01 2019"
+## [1] "have treatment plan Fri Jan 18 09:11:01 2019"
+## [1] "rescoring complex variables Fri Jan 18 09:11:01 2019"
+## [1] "done rescoring complex variables Fri Jan 18 09:11:01 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(treatmentsN)</code></pre></div>
-<pre><code>##     varName varMoves         rsq       sig needsSplit extraModelDegrees
-## 1    x_catP     TRUE 0.177485620 0.3465370       TRUE                 2
-## 2    x_catN     TRUE 0.023068434 0.7451192       TRUE                 2
-## 3    x_catD     TRUE 0.173611111 0.3524132       TRUE                 2
-## 4         z     TRUE 0.336111111 0.1724763      FALSE                 0
-## 5   z_isBAD     TRUE 0.222222222 0.2855909      FALSE                 0
-## 6  x_lev_NA     TRUE 0.222222222 0.2855909      FALSE                 0
-## 7 x_lev_x_a     TRUE 0.173611111 0.3524132      FALSE                 0
-## 8 x_lev_x_b     TRUE 0.008333333 0.8456711      FALSE                 0
-##   origName  code
-## 1        x  catP
-## 2        x  catN
-## 3        x  catD
-## 4        z clean
-## 5        z isBAD
-## 6        x   lev
-## 7        x   lev
-## 8        x   lev</code></pre>
+<pre><code>##   origName  code         rsq       sig extraModelDegrees
+## 1        x  catP 0.379002625 0.1410898                 2
+## 2        x  catN 0.157681648 0.3777432                 2
+## 3        x  catD 0.005613741 0.8731603                 2
+## 4        z clean 0.336111111 0.1724763                 0
+## 5        z isBAD 0.222222222 0.2855909                 0
+## 6        x   lev 0.222222222 0.2855909                 0
+## 7        x   lev 0.173611111 0.3524132                 0
+## 8        x   lev 0.008333333 0.8456711                 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,
                           <span class="dt">pruneSig=</span><span class="kw">c</span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)
 <span class="kw">head</span>(dTrainNTreated)</code></pre></div>

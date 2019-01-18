@@ -81,7 +81,9 @@ print.vtreatment <- function(x, ...) {
 
 #' @export
 format.treatmentplan <- function(x, ...) { 
-  format(x$scoreFrame)
+  format(x$scoreFrame[ , 
+                       c('origName', 'code', 'rsq', 'sig', 'extraModelDegrees'), 
+                       drop = FALSE])
 }
 
 #' @export
