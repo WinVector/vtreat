@@ -33,7 +33,7 @@ test_that("testW1: test out of sample scoring defeats nested model bias", {
   expect_true('zip2_catB' %in% colnames(dTC))
 
   
-  # show naive method has high correlations
+  tC# show naive method has high correlations
   dTN <- prepare(tN,d,pruneSig=c())
   expect_true(cor(dTN$zip_catN,dTN$y)>0.2)
   

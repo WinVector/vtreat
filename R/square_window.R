@@ -1,5 +1,5 @@
 
-#' Build a square windows variable.
+#' Build a square windows variable, numeric target.
 #'
 #' Build a square moving average window (KNN in 1d).  This is a high-frequency feature.
 #'
@@ -44,3 +44,28 @@ square_window <- function(varName, x, y, w = NULL) {
   error = function(e) { return(NULL) })
 }
 
+
+#' Build a square windows variable, categorical target.
+#'
+#' Build a square moving average window (KNN in 1d).  This is a high-frequency feature.
+#' Approximation of the change in log odds.
+#'
+#' @param varName character, name of variable
+#' @param x numeric input (not empty, no NAs). 
+#' @param y numeric or castable to such (same length as x no NAs), output to match
+#' @param w numeric positive, same length as x (weights, can be NULL) IGNORED
+#' @return segmented y prediction
+#' 
+#' @examples 
+#' 
+#' d <- data.frame(x = c(NA, 1:6), y = c(0, 0, 0, 1, 1, 0, 0))
+#' square_window("v", d$x, d$y)
+#'
+#'
+#' @export
+#' 
+square_windowc <- function(varName, x, y, w = NULL) {
+  v <- square_window(varName = varName, 
+                       x = x, y = y , w = w)
+  .logit(v) - .logit(.wmean(y, w))
+}

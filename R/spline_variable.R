@@ -7,7 +7,7 @@ mk_spline_eval_fn <- function(spline) {
   }
 }
 
-#' Spline numeric variable
+#' Spline variable numeric target.
 #'
 #' Return a spline approximation of data.
 #'
@@ -48,3 +48,21 @@ spline_variable <- function(varName, x, y, w = NULL) {
   error = function(e) { return(NULL) })
 }
 
+#' Spline variable categorical target.
+#'
+#' Return a spline approximation of the change in log odds.
+#'
+#' @param varName character, name of variable
+#' @param x numeric input (not empty, no NAs). 
+#' @param y numeric or castable to such (same length as x no NAs), output to match
+#' @param w numeric positive, same length as x (weights, can be NULL)
+#' @return spline y prediction
+#'
+#'
+#' @export
+#' 
+spline_variablec <- function(varName, x, y, w = NULL) {
+  v <- spline_variable(varName = varName, 
+                       x = x, y = y , w = w)
+  .logit(v) - .logit(.wmean(y, w))
+}

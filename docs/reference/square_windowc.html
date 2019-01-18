@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solve a numeric partial pooling problem. — ppCoderN • vtreat</title>
+<title>Build a square windows variable, categorical target. — square_windowc • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Solve a numeric partial pooling problem. — ppCoderN" />
+<meta property="og:title" content="Build a square windows variable, categorical target. — square_windowc" />
 
-<meta property="og:description" content="Please see http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/ and
-http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/." />
+<meta property="og:description" content="Build a square moving average window (KNN in 1d).  This is a high-frequency feature.
+Approximation of the change in log odds." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -143,46 +143,52 @@ http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variab
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Solve a numeric partial pooling problem.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/partial_pooling.R'><code>R/partial_pooling.R</code></a></small>
-    <div class="hidden name"><code>ppCoderN.Rd</code></div>
+    <h1>Build a square windows variable, categorical target.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/square_window.R'><code>R/square_window.R</code></a></small>
+    <div class="hidden name"><code>square_windowc.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Please see <a href='http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/'>http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/</a> and
-<a href='http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/'>http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/</a>.</p>
+    <p>Build a square moving average window (KNN in 1d).  This is a high-frequency feature.
+Approximation of the change in log odds.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ppCoderN</span>(<span class='no'>v</span>, <span class='no'>vcol</span>, <span class='no'>y</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>square_windowc</span>(<span class='no'>varName</span>, <span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>v</th>
-      <td><p>character variable name</p></td>
+      <th>varName</th>
+      <td><p>character, name of variable</p></td>
     </tr>
     <tr>
-      <th>vcol</th>
-      <td><p>character, independent or input variable</p></td>
+      <th>x</th>
+      <td><p>numeric input (not empty, no NAs).</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>numeric, dependent or outcome variable to predict</p></td>
+      <td><p>numeric or castable to such (same length as x no NAs), output to match</p></td>
     </tr>
     <tr>
       <th>w</th>
-      <td><p>row/example weights</p></td>
+      <td><p>numeric positive, same length as x (weights, can be NULL) IGNORED</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>scored training data column</p>
+    <p>segmented y prediction</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>NA</span>, <span class='fl'>1</span>:<span class='fl'>6</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>))
+<span class='fu'><a href='square_window.html'>square_window</a></span>(<span class='st'>"v"</span>, <span class='no'>d</span>$<span class='no'>x</span>, <span class='no'>d</span>$<span class='no'>y</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -190,7 +196,9 @@ http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variab
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -1,4 +1,8 @@
 
+# vtreat 1.3.4 2019/01/17
+
+ * logit-ize custom coders.
+ 
 # vtreat 1.3.4 2019/01/02
 
  * Accept pre-built approximation tables from numeric custom coders.

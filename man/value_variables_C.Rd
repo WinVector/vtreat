@@ -8,11 +8,11 @@ value_variables_C(dframe, varlist, outcomename, outcometarget, ...,
   weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
   rareSig = 1, collarProb = 0, scale = FALSE, doCollar = FALSE,
   splitFunction = NULL, ncross = 3, forceSplit = FALSE,
-  catScaling = FALSE, verbose = FALSE, parallelCluster = NULL,
+  catScaling = TRUE, verbose = FALSE, parallelCluster = NULL,
   use_parallel = TRUE, customCoders = list(c.PiecewiseV.num =
-  vtreat::solve_piecewise, n.PiecewiseV.num = vtreat::solve_piecewise,
-  c.knearest.num = vtreat::square_window, n.knearest.num =
-  vtreat::square_window, c.spline.num = vtreat::spline_variable,
+  vtreat::solve_piecewisec, n.PiecewiseV.num = vtreat::solve_piecewise,
+  c.knearest.num = vtreat::square_windowc, n.knearest.num =
+  vtreat::square_window, c.spline.num = vtreat::spline_variablec,
   n.spline.num = vtreat::spline_variable),
   codeRestriction = c("PiecewiseV", "knearest", "spline", "clean",
   "isBAD", "catB", "catP"))

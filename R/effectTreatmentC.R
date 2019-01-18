@@ -34,9 +34,6 @@ as_rquery.vtreat_cat_Bayes <- function(tstep,
                           default_value = 0.0)
 }
 
-.logit <- function(x) {
-  log(x/(1-x))
-}
 
 # build a classification impact model
 # see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/

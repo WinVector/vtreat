@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solve a numeric partial pooling problem. — ppCoderN • vtreat</title>
+<title>Solve as piecewise logit problem, categorical target. — solve_piecewisec • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,12 @@
 
 
 
-<meta property="og:title" content="Solve a numeric partial pooling problem. — ppCoderN" />
+<meta property="og:title" content="Solve as piecewise logit problem, categorical target. — solve_piecewisec" />
 
-<meta property="og:description" content="Please see http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/ and
-http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/." />
+<meta property="og:description" content="Return a vector of length y that is a piecewise function of x.
+This vector is picked as close to
+y (by square-distance) as possible for a set of x-only determined
+cut-points.  Cross-validates for a good number of segments." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -143,44 +145,46 @@ http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variab
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Solve a numeric partial pooling problem.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/partial_pooling.R'><code>R/partial_pooling.R</code></a></small>
-    <div class="hidden name"><code>ppCoderN.Rd</code></div>
+    <h1>Solve as piecewise logit problem, categorical target.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/segmented_variable.R'><code>R/segmented_variable.R</code></a></small>
+    <div class="hidden name"><code>solve_piecewisec.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Please see <a href='http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/'>http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/</a> and
-<a href='http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/'>http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/</a>.</p>
+    <p>Return a vector of length y that is a piecewise function of x.
+This vector is picked as close to
+y (by square-distance) as possible for a set of x-only determined
+cut-points.  Cross-validates for a good number of segments.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ppCoderN</span>(<span class='no'>v</span>, <span class='no'>vcol</span>, <span class='no'>y</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>solve_piecewisec</span>(<span class='no'>varName</span>, <span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>v</th>
-      <td><p>character variable name</p></td>
+      <th>varName</th>
+      <td><p>character, name of variable</p></td>
     </tr>
     <tr>
-      <th>vcol</th>
-      <td><p>character, independent or input variable</p></td>
+      <th>x</th>
+      <td><p>numeric input (not empty, no NAs).</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>numeric, dependent or outcome variable to predict</p></td>
+      <td><p>numeric or castable to such (same length as x no NAs), output to match</p></td>
     </tr>
     <tr>
       <th>w</th>
-      <td><p>row/example weights</p></td>
+      <td><p>numeric positive, same length as x (weights, can be NULL)</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>scored training data column</p>
+    <p>segmented y prediction</p>
     
 
   </div>

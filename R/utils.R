@@ -134,6 +134,9 @@ plapply <- function(workList, worker,
 # weighted mean
 # assumes non-zero lists of clean entries, weights all >0
 .wmean <- function(x,weights) {
+  if(is.null(weights)) {
+    return(mean(x))
+  }
   sum(x*weights)/sum(weights)
 }
 
@@ -303,4 +306,15 @@ vtreat_make_names <- function(nms_in) {
   nms <- gsub("[^[:alnum:]]+", "_", nms)
   nms
 }
+
+
+.logit <- function(x, eps = 1.0e-6) {
+  nms <- names(x)
+  x <- pmax(eps, x)
+  x <- pmin(1-eps, x)
+  v <- log(x/(1-x))
+  names(v) <- nms
+  v
+}
+
 

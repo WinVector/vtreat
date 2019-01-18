@@ -77,7 +77,7 @@ pred_segs <- function(model, x) {
 }
 
 
-#' Solve as piecewise linear problem.
+#' Solve as piecewise linear problem, numeric target.
 #'
 #' Return a vector of length y that is a piecewise function of x.
 #' This vector is picked as close to
@@ -141,3 +141,26 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
   error = function(e) { return(NULL) })
 }
 
+
+#' Solve as piecewise logit problem, categorical target.
+#'
+#' Return a vector of length y that is a piecewise function of x.
+#' This vector is picked as close to
+#' y (by square-distance) as possible for a set of x-only determined
+#' cut-points.  Cross-validates for a good number of segments.
+#'
+#' @param varName character, name of variable
+#' @param x numeric input (not empty, no NAs). 
+#' @param y numeric or castable to such (same length as x no NAs), output to match
+#' @param w numeric positive, same length as x (weights, can be NULL)
+#' @return segmented y prediction
+#'
+#'
+#' @export
+#' 
+solve_piecewisec <- function(varName, x, y, w = NULL) {
+  v <- solve_piecewisec(varName = varName, 
+                     x = x, y = y , w = w)
+  # don't copy over approx table as we are piecewise logit, not piecewise linear.
+  .logit(v) - .logit(.wmean(y, w))
+}
