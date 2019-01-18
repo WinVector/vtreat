@@ -159,7 +159,7 @@ solve_piecewise <- function(varName, x, y, w = NULL) {
 #' @export
 #' 
 solve_piecewisec <- function(varName, x, y, w = NULL) {
-  v <- solve_piecewisec(varName = varName, 
+  v <- solve_piecewise(varName = varName, 
                      x = x, y = y , w = w)
   # don't copy over approx table as we are piecewise logit, not piecewise linear.
   .logit(v) - .logit(.wmean(y, w))
