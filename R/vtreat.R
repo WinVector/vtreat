@@ -158,7 +158,8 @@ print.treatmentplan <- function(x, ...) {
 #' dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=0.99)
 #' 
 #' @export
-designTreatmentsC <- function(dframe,varlist,outcomename,outcometarget,
+designTreatmentsC <- function(dframe,varlist,
+                              outcomename,outcometarget=TRUE,
                               ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,
@@ -715,7 +716,7 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
 #' 
 #' @export
 mkCrossFrameCExperiment <- function(dframe,varlist,
-                                    outcomename,outcometarget,
+                                    outcomename,outcometarget=TRUE,
                                     ...,
                                     weights=c(),
                                     minFraction=0.02,smFactor=0.0,

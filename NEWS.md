@@ -1,10 +1,11 @@
 
-# vtreat 1.3.5 2019/01/19
+# vtreat 1.3.5 2019/01/26
 
- * Make categorical scoring default TRUE>
+ * Make categorical scoring default TRUE.
  * logit-ize custom coders.
  * Get stricter about row ordering in custom coders.
  * neaten up printing a bit.
+ * truth-target interfaces.
  
 # vtreat 1.3.4 2019/01/02
 
