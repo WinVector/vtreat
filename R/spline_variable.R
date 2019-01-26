@@ -1,8 +1,12 @@
 
 
-mk_spline_eval_fn <- function(spline) {
+mk_spline_eval_fn <- function(spline, mn_x, mx_x) {
   force(spline)
+  force(mn_x)
+  force(mx_x)
   function(x) {
+    x <- pmax(x, mn_x)
+    x <- pmin(x, mx_x)
     stats::predict(spline, x)$y
   }
 }
@@ -35,7 +39,7 @@ spline_variable <- function(varName, x, y, w = NULL) {
     }
     d <- data.frame(x = x, y = y, w = w, orig_idx = seq_len(n))
     d <- d[order(d$x, stats::runif(length(d$x))), , drop = FALSE]
-    nknots <- min(nunique, 1000)
+    nknots <- min(nunique/2, 100)
     spline <- stats::smooth.spline(d$x, d$y, 
                                    w = d$w,
                                    nknots = nknots,
@@ -43,7 +47,7 @@ spline_variable <- function(varName, x, y, w = NULL) {
                                    keep.stuff = FALSE,
                                    cv = TRUE)$fit
     estimate <- stats::predict(spline, x)$y
-    attr(estimate, "eval_fn") <- mk_spline_eval_fn(spline)
+    attr(estimate, "eval_fn") <- mk_spline_eval_fn(spline, min(d$x), max(d$x))
     attr(estimate, "method") <- "linear"
     return(estimate)
   },

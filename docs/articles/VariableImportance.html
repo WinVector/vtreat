@@ -141,9 +141,9 @@ d<span class="op">$</span>y &lt;-<span class="st"> </span>d<span class="op">$</s
   d, 
   <span class="dt">varlist =</span> <span class="kw">c</span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>), 
   <span class="dt">outcomename =</span> <span class="st">"y"</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.5 start initial treatment design Sat Jan 26 09:36:23 2019"
-## [1] " start cross frame work Sat Jan 26 09:36:23 2019"
-## [1] " vtreat::mkCrossFrameNExperiment done Sat Jan 26 09:36:23 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.5 start initial treatment design Sat Jan 26 12:50:34 2019"
+## [1] " start cross frame work Sat Jan 26 12:50:34 2019"
+## [1] " vtreat::mkCrossFrameNExperiment done Sat Jan 26 12:50:34 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sf &lt;-<span class="st"> </span>cfe<span class="op">$</span>treatments<span class="op">$</span>scoreFrame
 knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(sf[, <span class="kw">c</span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</code></pre></div>
 <table class="table">
@@ -170,8 +170,729 @@ knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentati
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vf =<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vtreat/topics/value_variables_N">value_variables_N</a></span>(
   d, 
   <span class="dt">varlist =</span> <span class="kw">c</span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>),
-  <span class="dt">outcomename =</span> <span class="st">"y"</span>)
-<span class="kw">rownames</span>(vf) &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  <span class="dt">outcomename =</span> <span class="st">"y"</span>)</code></pre></div>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<pre><code>## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!
+
+## Warning in stats::smooth.spline(d$x, d$y, w = d$w, nknots = nknots,
+## keep.data = FALSE, : bvalue() mflag != 0: should never happen!</code></pre>
+<pre><code>## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!
+
+## Warning in predict.smooth.spline.fit(spline, x): bvalue() mflag != 0:
+## should never happen!</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rownames</span>(vf) &lt;-<span class="st"> </span><span class="ot">NULL</span>
 
 knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(vf[, <span class="kw">c</span>(<span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</code></pre></div>
 <table class="table">
@@ -183,7 +904,7 @@ knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentati
 <tbody>
 <tr class="odd">
 <td align="left">x</td>
-<td align="right">0.5885236</td>
+<td align="right">0.5529005</td>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">

@@ -6,6 +6,7 @@
  * Get stricter about row ordering in custom coders.
  * neaten up printing a bit.
  * truth-target interfaces.
+ * Collar spline and lower its complexity.
  
 # vtreat 1.3.4 2019/01/02
 
