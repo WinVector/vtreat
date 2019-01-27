@@ -3,7 +3,8 @@
 
  * Make categorical scoring default TRUE.
  * logit-ize custom coders.
- * Get stricter about row ordering in custom coders.
+ * spline custom coder.
+ * Get stricter about row ordering in building custom coders.
  * neaten up printing a bit.
  * Collar spline and lower its complexity.
  

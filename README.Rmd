@@ -319,7 +319,8 @@ Related work:
 
 ## Installation
 
-Install with:
+
+To install, from inside `R` please run:
 
 ```{r inst1, eval=FALSE}
 install.packages("vtreat")

@@ -173,9 +173,9 @@ treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[,c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
- #  2        x    x_catN  catN 2.606061e-01 0.1961166                 2
- #  3        x    x_catD  catD 6.666667e-02 0.5369633                 2
+ #  1        x    x_catP  catP 2.197309e-01 0.2413478                 2
+ #  2        x    x_catN  catN 7.286735e-02 0.5179131                 2
+ #  3        x    x_catD  catD 2.227248e-01 0.2377286                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -223,7 +223,7 @@ Related work:
 Installation
 ------------
 
-Install with:
+To install, from inside `R` please run:
 
 ``` r
 install.packages("vtreat")
