@@ -4,13 +4,13 @@
 \alias{mkCrossFrameCExperiment}
 \title{Run categorical cross-frame experiment.}
 \usage{
-mkCrossFrameCExperiment(dframe, varlist, outcomename,
-  outcometarget = TRUE, ..., weights = c(), minFraction = 0.02,
-  smFactor = 0, rareCount = 0, rareSig = 1, collarProb = 0,
-  codeRestriction = NULL, customCoders = NULL, scale = FALSE,
-  doCollar = FALSE, splitFunction = NULL, ncross = 3,
-  forceSplit = FALSE, catScaling = TRUE, verbose = TRUE,
-  parallelCluster = NULL, use_parallel = TRUE)
+mkCrossFrameCExperiment(dframe, varlist, outcomename, outcometarget, ...,
+  weights = c(), minFraction = 0.02, smFactor = 0, rareCount = 0,
+  rareSig = 1, collarProb = 0, codeRestriction = NULL,
+  customCoders = NULL, scale = FALSE, doCollar = FALSE,
+  splitFunction = NULL, ncross = 3, forceSplit = FALSE,
+  catScaling = TRUE, verbose = TRUE, parallelCluster = NULL,
+  use_parallel = TRUE)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
