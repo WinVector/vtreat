@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets — kWayStratifiedY • vtreat</title>
+<title>Patch columns into data.frame. — patch_columns_into_frame • vtreat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets — kWayStratifiedY" />
+<meta property="og:title" content="Patch columns into data.frame. — patch_columns_into_frame" />
 
-<meta property="og:description" content="k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets" />
+<meta property="og:description" content="Add columns from new_frame into old_frame, replacing any
+columns with matching names in orig_frame with values from
+new_frame." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -142,76 +144,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/outOfSample.R'><code>R/outOfSample.R</code></a></small>
-    <div class="hidden name"><code>kWayStratifiedY.Rd</code></div>
+    <h1>Patch columns into data.frame.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat//blob/master/R/patch_columns_into_frame.R'><code>R/patch_columns_into_frame.R</code></a></small>
+    <div class="hidden name"><code>patch_columns_into_frame.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets</p>
+    <p>Add columns from new_frame into old_frame, replacing any
+columns with matching names in orig_frame with values from
+new_frame.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kWayStratifiedY</span>(<span class='no'>nRows</span>, <span class='no'>nSplits</span>, <span class='no'>dframe</span>, <span class='no'>y</span>)</pre>
+    <pre class="usage"><span class='fu'>patch_columns_into_frame</span>(<span class='no'>orig_frame</span>, <span class='no'>new_frame</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nRows</th>
-      <td><p>number of rows to split (&gt;1)</p></td>
+      <th>orig_frame</th>
+      <td><p>data.frame to patch into.</p></td>
     </tr>
     <tr>
-      <th>nSplits</th>
-      <td><p>number of groups to split into (&lt;nRows,&gt;1).</p></td>
-    </tr>
-    <tr>
-      <th>dframe</th>
-      <td><p>original data frame (ignored).</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>numeric outcome variable try to have equidistributed in each split.</p></td>
+      <th>new_frame</th>
+      <td><p>data.frame to take replacement columns from.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>split plan</p>
+    <p>patched data.frame</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>set.seed</span>(<span class='fl'>23255</span>)
-<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>y</span><span class='kw'>=</span><span class='fu'>sin</span>(<span class='fl'>1</span>:<span class='fl'>100</span>))
-<span class='no'>pStrat</span> <span class='kw'>&lt;-</span> <span class='fu'>kWayStratifiedY</span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='fl'>5</span>,<span class='no'>d</span>,<span class='no'>d</span>$<span class='no'>y</span>)
-<span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='fl'>5</span>,<span class='no'>pStrat</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='no'>d</span>$<span class='no'>stratGroup</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/vtreat/topics/getSplitPlanAppLabels'>getSplitPlanAppLabels</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='no'>pStrat</span>)
-<span class='no'>pSimple</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='kWayCrossValidation.html'>kWayCrossValidation</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='fl'>5</span>,<span class='no'>d</span>,<span class='no'>d</span>$<span class='no'>y</span>)
-<span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='fl'>5</span>,<span class='no'>pSimple</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='no'>d</span>$<span class='no'>simpleGroup</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/vtreat/topics/getSplitPlanAppLabels'>getSplitPlanAppLabels</a></span>(<span class='fu'>nrow</span>(<span class='no'>d</span>),<span class='no'>pSimple</span>)
-<span class='fu'>summary</span>(<span class='fu'>tapply</span>(<span class='no'>d</span>$<span class='no'>y</span>,<span class='no'>d</span>$<span class='no'>simpleGroup</span>,<span class='no'>mean</span>))</div><div class='output co'>#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#&gt; -0.144403 -0.068234  0.045368 -0.001272  0.057092  0.103817 </div><div class='input'><span class='co'># ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + </span>
-<span class='co'>#   geom_density() + ggtitle('simple grouping')</span>
-<span class='fu'>summary</span>(<span class='fu'>tapply</span>(<span class='no'>d</span>$<span class='no'>y</span>,<span class='no'>d</span>$<span class='no'>stratGroup</span>,<span class='no'>mean</span>))</div><div class='output co'>#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#&gt; -0.018749 -0.006771  0.004188 -0.001272  0.006391  0.008583 </div><div class='input'># ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
-#   geom_density() + ggtitle('y-stratified grouping')
-
-
-# # And you can (and should) use your own functions or libraries.
-# splitFn <- function(nRows,nSplits,dframe,y) {
-#      fullSeq <- seq_len(nRows)
-#      part <- caret::createFolds(y=y,k=nSplits)
-#      lapply(part,
-#             function(appi) { 
-#                 list(train=setdiff(fullSeq,appi),app=appi)
-#             })
-# }
-# pCaret <- splitFn(nrow(d),5,d,d$y)
-# problemAppPlan(nrow(d),5,pCaret,TRUE)
-# d$caretGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pCaret)
-# ggplot(data=d,aes(x=y,color=as.factor(caretGroup))) +
-#    geom_density() + ggtitle('caret::createFolds grouping')
-
+<span class='no'>orig_frame</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='no'>new_frame</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>4</span>)
+<span class='fu'>patch_columns_into_frame</span>(<span class='no'>orig_frame</span>, <span class='no'>new_frame</span>)</div><div class='output co'>#&gt;   x y z
+#&gt; 1 1 3 4</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

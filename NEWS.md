@@ -1,4 +1,8 @@
 
+# vtreat 1.3.6 2019/02/04
+
+ * Add patch_columns_into_frame().
+
 # vtreat 1.3.5 2019/01/27
 
  * Make categorical scoring default TRUE.
