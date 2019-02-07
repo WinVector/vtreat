@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("rquery simple missingness")
-
-test_that("test_simple_missingness.R: Works As Expected", {
+test_simple_missingness <- function() {
   d <- wrapr::build_frame(
     "x1", "x2", "x3" |
     1   , 4   , "A"  |
@@ -13,4 +10,6 @@ test_that("test_simple_missingness.R: Works As Expected", {
   prepare(plan, d)
 
   prepare(plan, data.frame(x1=NA, x2=NA, x3="E"))
-})
+  
+  invisible(NULL)
+}

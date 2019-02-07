@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("Unique Value Examples")
-
-test_that("testUniqValue: Can work with unique values", {
+test_UniqValue <- function() {
   dTrainN <- data.frame(x=c('a','a','a','a','a','a','b'),
                         z=c(0,0,0,0,0,0,1),
                         y=c(1,0,0,0,0,0,0))
@@ -37,5 +34,7 @@ test_that("testUniqValue: Can work with unique values", {
                                   verbose=FALSE)
   dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
   dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
-  expect_true(!is.null(dTestZTreated))
-})
+  RUnit::checkTrue(!is.null(dTestZTreated))
+  
+  invisible(NULL)
+}

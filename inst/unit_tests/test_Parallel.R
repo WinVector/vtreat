@@ -1,12 +1,10 @@
-library('vtreat')
 
-context("Parallel Example")
-
-test_that("testParallel: Parallel works", {
+test_Parallel <- function() {
   # seems to kill testthat on stop, possibly https://github.com/hadley/testthat/issues/129
   Sys.setenv("R_TESTS" = "")
-  # load('tests/testthat/uci.car.data.Rdata')
-  load('uci.car.data.Rdata')
+
+  dir <- system.file("unit_tests", package = "vtreat", mustWork = TRUE)
+  load(paste(dir, 'uci.car.data.Rdata', sep = "/"))
   cl <- NULL
   if(requireNamespace("parallel",quietly=TRUE)) {
     cl <- parallel::makeCluster(2)
@@ -31,11 +29,13 @@ test_that("testParallel: Parallel works", {
                                     pvars,dYName,dYTarget,verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=c())
   
-  expect_true(nrow(dTrainCTreated)==nrow(dTrainCTreatedP))
-  expect_true(length(colnames(dTrainCTreated))==length(colnames(dTrainCTreatedP)))
-  expect_true(all(colnames(dTrainCTreated)==colnames(dTrainCTreatedP)))
+  RUnit::checkTrue(nrow(dTrainCTreated)==nrow(dTrainCTreatedP))
+  RUnit::checkTrue(length(colnames(dTrainCTreated))==length(colnames(dTrainCTreatedP)))
+  RUnit::checkTrue(all(colnames(dTrainCTreated)==colnames(dTrainCTreatedP)))
   for(v in setdiff(colnames(dTrainCTreated),dYName)) {
     ev <- max(abs(dTrainCTreated[[v]]-dTrainCTreatedP[[v]]))
-    expect_true(ev<1.0e-3)
+    RUnit::checkTrue(ev<1.0e-3)
   }
-})
+  
+  invisible(NULL)
+}

@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("Defensive Coding")
-
-test_that("testWeirdTypes: Protect from odd columns types (and warn)", {
+test_WeirdTypes <- function() {
   suppressWarnings({
   d <- data.frame(xInteger=1:4,
                   xNumeric=0,
@@ -30,7 +27,9 @@ test_that("testWeirdTypes: Protect from odd columns types (and warn)", {
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
-  expect_true(!is.null(treatmentsC))
-  expect_true(!is.null(treatmentsN))
+  RUnit::checkTrue(!is.null(treatmentsC))
+  RUnit::checkTrue(!is.null(treatmentsN))
   })
-})
+  
+  invisible(NULL)
+}

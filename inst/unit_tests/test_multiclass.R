@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("MulitClass")
-
-test_that("test_multiclass.R: Works As Expected", {
+test_multiclass <- function() {
   # create example data
   set.seed(326346)
   sym_bonuses <- rnorm(3)
@@ -28,10 +25,12 @@ test_that("test_multiclass.R: Works As Expected", {
   sf <- cfe_m$score_frame
   cf <- cfe_m$cross_frame
   prepped <- prepare(cfe_m$treat_m, d)
-  testthat::expect_equal(sort(colnames(prepped)), 
+  RUnit::checkEquals(sort(colnames(prepped)), 
                          sort(colnames(cf)))
-  testthat::expect_equal(character(0), 
+  RUnit::checkEquals(character(0), 
                          setdiff(sf$varName, colnames(cf)))
-  testthat::expect_equal("y", 
+  RUnit::checkEquals("y", 
                          setdiff(colnames(cf), sf$varName))
-})
+  
+  invisible(NULL)
+}

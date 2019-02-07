@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("rquery custom coders")
-
-test_that("test_custom_coder.R: Works As Expected", {
+test_custom_coder <- function() {
   set.seed(23525)
   x_codes <- rnorm(5)
   names(x_codes) <- letters[1:length(x_codes)]
@@ -44,15 +41,16 @@ test_that("test_custom_coder.R: Works As Expected", {
                                  outcometarget= 'Y',
                                  customCoders = customCoders, 
                                  verbose=FALSE)
-  testthat::expect("x1_logit" %in% treatplanC$scoreFrame$varName)
-  testthat::expect("x1_lm" %in% treatplanC$scoreFrame$varName)
+  RUnit::checkTrue("x1_logit" %in% treatplanC$scoreFrame$varName)
+  RUnit::checkTrue("x1_lm" %in% treatplanC$scoreFrame$varName)
   
   treatplanN = designTreatmentsN(d, 
                                  varlist = c("x1", "x2"),
                                  outcomename = 'yN',
                                  customCoders = customCoders, 
                                  verbose=FALSE)
-  testthat::expect("x1_lm" %in% treatplanN$scoreFrame$varName)
-  testthat::expect("x2_lm" %in% treatplanN$scoreFrame$varName)
+  RUnit::checkTrue("x1_lm" %in% treatplanN$scoreFrame$varName)
+  RUnit::checkTrue("x2_lm" %in% treatplanN$scoreFrame$varName)
   
-})
+  invisible(NULL)
+}

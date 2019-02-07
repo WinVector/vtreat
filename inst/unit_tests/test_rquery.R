@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("rquery")
-
-test_that("test_rquery.R: Works As Expected", {
+test_rquery <- function() {
   
   # see what tests we can run
   
@@ -94,4 +91,6 @@ test_that("test_rquery.R: Works As Expected", {
     }
     # TODO: compare frames
   }
-})
+  
+  invisible(NULL)
+}

@@ -15,4 +15,6 @@ test_name_munging <- function() {
   ts <- design_missingness_treatment(d)
   ds <- prepare(ts, d)
   RUnit::checkTrue(isTRUE(all.equal(make.names(colnames(ds)), colnames(ds))))
+  
+  invisible(NULL)
 }

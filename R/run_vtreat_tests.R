@@ -63,7 +63,9 @@ run_vtreat_tests <- function(...,
   test_suite <- RUnit::defineTestSuite(name = paste(pkg, "unit tests"),
                                        dirs = test_dirs,
                                        testFileRegexp = "^test_.+\\.R$",
-                                       testFuncRegexp = "^test_.+$")
+                                       testFuncRegexp = "^test_.+$",
+                                       rngKind = "Mersenne-Twister",
+                                       rngNormalKind = "Inversion")
   test_results <- RUnit::runTestSuite(test_suite,
                                       verbose = verbose,
                                       gcBeforeTest = FALSE)

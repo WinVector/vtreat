@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("Excercise Operations")
-
-test_that("testBO: Works As Expected", {
+test_BO <- function() {
   suppressWarnings({
   # build the common column types we are likely to encounter
   synthFrame <- function(n,censorD) {
@@ -77,9 +74,9 @@ test_that("testBO: Works As Expected", {
       nvars <- setdiff(colnames(dTrainNTreated),'yN')
       if(scale) {
         # all input variables should be mean 0 when scale is TRUE
-        expect_true(max(abs(vapply(dTrainNTreated[,nvars],mean,numeric(1))))<1.0e-5)
+        RUnit::checkTrue(max(abs(vapply(dTrainNTreated[,nvars],mean,numeric(1))))<1.0e-5)
         # all slopes should be 1 when scales is TRUE
-        expect_true(max(abs(1-
+        RUnit::checkTrue(max(abs(1-
                               vapply(nvars,
                                      function(c) { 
                                        lm(paste('yN',c,sep='~'),
@@ -104,9 +101,9 @@ test_that("testBO: Works As Expected", {
       cvars <- setdiff(colnames(dTrainCTreated),'yC')
       if(scale) {
         # all input variables should be mean 0 when scale is TRUE
-        expect_true(max(abs(vapply(dTrainCTreated[,cvars],mean,numeric(1))))<1.0e-5)
+        RUnit::checkTrue(max(abs(vapply(dTrainCTreated[,cvars],mean,numeric(1))))<1.0e-5)
         # all slopes should be 1 when scales is TRUE
-        expect_true(max(abs(1-
+        RUnit::checkTrue(max(abs(1-
                               vapply(cvars,
                                      function(c) { 
                                        glm(paste('yC',c,sep='~'),family=binomial,
@@ -123,4 +120,6 @@ test_that("testBO: Works As Expected", {
     }
   }
   })
-})
+  
+  invisible(NULL)
+}

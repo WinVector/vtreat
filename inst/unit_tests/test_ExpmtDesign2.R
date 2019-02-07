@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("ExperimentDesign2")
-
-test_that("testExpmtDesign: makekWayCrossValidationGroupedByColumn", {
+test_ExpmtDesign2 <- function() {
   set.seed(2325235)
   nrowd = 200
   y <- rnorm(nrowd)
@@ -11,24 +8,26 @@ test_that("testExpmtDesign: makekWayCrossValidationGroupedByColumn", {
   splitFn <- makekWayCrossValidationGroupedByColumn('group')
   eSets <- buildEvalSets(nrowd,y=y,dframe=d,
                          splitFunction=splitFn)
-  expect_true(attr(eSets,'splitmethod')=='kwaycrossystratifiedgrouped')
+  RUnit::checkTrue(attr(eSets,'splitmethod')=='kwaycrossystratifiedgrouped')
   fullSeq <- seq_len(nrowd)
-  expect_true(length(eSets)>0)
+  RUnit::checkTrue(length(eSets)>0)
   for(ei in eSets) {
-    expect_true(length(ei$train)>0)
-    expect_true(length(ei$app)>0)
-    expect_true(all(ei$train %in% fullSeq))
-    expect_true(all(ei$app %in% fullSeq))
+    RUnit::checkTrue(length(ei$train)>0)
+    RUnit::checkTrue(length(ei$app)>0)
+    RUnit::checkTrue(all(ei$train %in% fullSeq))
+    RUnit::checkTrue(all(ei$app %in% fullSeq))
   }
   apps <- Reduce(c,lapply(eSets,function(ei) ei$app))
-  expect_true(length(apps)==nrowd)
-  expect_true(length(unique(apps))==nrowd)
+  RUnit::checkTrue(length(apps)==nrowd)
+  RUnit::checkTrue(length(unique(apps))==nrowd)
   problem <- problemAppPlan(nrowd,3,eSets,TRUE)
-  expect_true(is.null(problem))
+  RUnit::checkTrue(is.null(problem))
   # check grouping property
   d$splitLabel <- vtreat::getSplitPlanAppLabels(nrow(d),eSets)
   rs <- rowSums(table(d$group,d$splitLabel)>0)
-  expect_true(max(rs)==1)
-  expect_true(min(rs)==1)
-})
+  RUnit::checkTrue(max(rs)==1)
+  RUnit::checkTrue(min(rs)==1)
+  
+  invisible(NULL)
+}
 

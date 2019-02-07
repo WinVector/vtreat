@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("Test Score Stability")
-
-test_that("testStability: Stability of estimates", {
+test_Stability <- function() {
   set.seed(235235)
   expandTab <- function(tab) {
     # expand out into data
@@ -47,5 +44,7 @@ test_that("testStability: Stability of estimates", {
     # looking at instability in csig of Weiss level
     csig[[i]] <- tP$scoreFrame$sig[tP$scoreFrame$varName=='x_lev_x_Weiss']
   }
-  expect_true((max(csig)-min(csig))<1.0e-5)
- })
+  RUnit::checkTrue((max(csig)-min(csig))<1.0e-5)
+  
+  invisible(NULL)
+ }

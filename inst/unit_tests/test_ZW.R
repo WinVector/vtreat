@@ -1,8 +1,5 @@
-library('vtreat')
 
-context("Weights")
-
-test_that("testZW: Test Zero Weights Don't Crash", {
+test_ZW <- function() {
   # categorical example
   set.seed(235256)
   dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
@@ -56,5 +53,7 @@ test_that("testZW: Test Zero Weights Don't Crash", {
   sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainNTreated)$coefficients[[2]]}) 
   dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
-  expect_true(!is.null(dTestNTreated))
-})
+  RUnit::checkTrue(!is.null(dTestNTreated))
+  
+  invisible(NULL)
+}

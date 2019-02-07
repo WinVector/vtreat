@@ -37,8 +37,7 @@ Suggests:
     RSQLite,
     datasets,
     R.rsp,
-    RUnit,
-    testthat
+    RUnit
 LazyData: true
 VignetteBuilder: knitr, R.rsp
 RoxygenNote: 6.1.1

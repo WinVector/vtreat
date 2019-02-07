@@ -1,8 +1,6 @@
-library('vtreat')
 
-context("Test Scale")
 
-test_that("testScale: check corner case on scale", {
+test_Scale <- function() {
   library('vtreat')
   dTrainC <- data.frame(x=c('a','a','a','b','b',NA),
                         z=c(1,2,3,4,NA,6),
@@ -28,10 +26,12 @@ test_that("testScale: check corner case on scale", {
                            },
                            numeric(1))
   slopeFrame$badSlope <- ifelse(is.na(slopeFrame$slope),TRUE,abs(slopeFrame$slope-1)>1.e-8)
-  expect_false(any(is.na(dTrainCTreatedUnscaled)))
-  expect_false(any(is.na(dTrainCTreatedScaled)))
-  expect_false(any(is.na(slopeFrame$mean)))
-  expect_false(any(is.infinite(slopeFrame$mean)))
-  expect_true(max(abs(slopeFrame$mean))<=1.0e-8)
-  expect_false(any(slopeFrame$badSlope & (slopeFrame$sig<1)))
-})
+  RUnit::checkTrue(!any(is.na(dTrainCTreatedUnscaled)))
+  RUnit::checkTrue(!any(is.na(dTrainCTreatedScaled)))
+  RUnit::checkTrue(!any(is.na(slopeFrame$mean)))
+  RUnit::checkTrue(!any(is.infinite(slopeFrame$mean)))
+  RUnit::checkTrue(max(abs(slopeFrame$mean))<=1.0e-8)
+  RUnit::checkTrue(!any(slopeFrame$badSlope & (slopeFrame$sig<1)))
+  
+  invisible(NULL)
+}
