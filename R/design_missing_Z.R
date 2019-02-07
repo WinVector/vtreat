@@ -32,6 +32,7 @@
 
 #' Design a simple treatment plan to indicate missingingness and perform simple imputation.
 #' 
+#' 
 #' @param dframe data.frame to drive design.
 #' @param ... not used, forces later arguments to bind by name.
 #' @param varlist character, names of columns to process.
@@ -72,14 +73,7 @@ design_missingness_treatment <- function(dframe,
     }
     if(drop_constant_columns) {
       if(!.has.range(vi)) {
-        ops <- c(ops, 
-                 list(
-                   list(
-                     col = ci,
-                     nm = ci,
-                     f = .xform_zap, 
-                     args = list())))
-        next
+         next
       }
     }
     if(is.logical(vi) || (is.numeric(vi) && (!is.factor(vi)))) {
@@ -93,16 +87,18 @@ design_missingness_treatment <- function(dframe,
                list(
                  list(
                    col = ci,
-                   nm = ci, 
+                   nm = vtreat_make_names(ci), 
                    f = .xform_num, 
+                   code = "numeric",
                    args = list(replacement = mean_v))))
       if(any(bads)) {
         ops <- c(ops,
                  list(
                    list(
                      col = ci,
-                     nm = paste0(ci, "_isBAD"), 
+                     nm = vtreat_make_names(paste0(ci, "_isBAD")), 
                      f = .ind_na, 
+                     code = "is_bad",
                      args = list())))
       }
     } else {
@@ -111,8 +107,9 @@ design_missingness_treatment <- function(dframe,
                list(
                  list(
                    col = ci,
-                   nm = ci, 
+                   nm = vtreat_make_names(ci), 
                    f = .xform_cat, 
+                   code = "cat",
                    args = list(known_values = sort(unique(vi)),
                                invalid_mark = invalid_mark))))
       
@@ -156,6 +153,7 @@ prepare.simple_plan <- function(treatmentplan, dframe,
     if(is.null(vi)) {
       stop(paste("vtreat::prepare.simple_plan: column", ci, " must be in data.frame"))
     }
+    res[[ci]] <- NULL
     vi <- pi$f(vi, pi$args)
     res[[pi$nm]] <- vi
   }
@@ -164,7 +162,16 @@ prepare.simple_plan <- function(treatmentplan, dframe,
 
 #' @export
 format.simple_plan <- function(x, ...) { 
-  "Simple Treatment Plan"
+  steps <- lapply(
+    x, 
+    function(xi) {
+      data.frame(origName = xi$col,
+                 varName = xi$nm,
+                 code = xi$code,
+                 stringsAsFactors = FALSE)
+    })
+  steps <- .rbindListOfFrames(steps)
+  format(steps)
 }
 
 #' @export

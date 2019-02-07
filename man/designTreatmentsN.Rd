@@ -67,6 +67,8 @@ The main fields are mostly vectors with names (all with the same names in the sa
 - sig : an estimate significance of effect
 
 See the vtreat vignette for a bit more detail and a worked example.
+
+Columns that do not vary are not passed through.
 }
 \examples{
 

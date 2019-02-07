@@ -2,7 +2,7 @@ Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
 Version: 1.3.6
-Date: 2019-02-04
+Date: 2019-02-07
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
@@ -29,7 +29,6 @@ Suggests:
     rqdatatable (>= 1.1.2),
     isotone,
     lme4,
-    testthat,
     knitr,
     rmarkdown,
     data.table (>= 1.11.4),
@@ -37,7 +36,9 @@ Suggests:
     DBI,
     RSQLite,
     datasets,
-    R.rsp
+    R.rsp,
+    RUnit,
+    testthat
 LazyData: true
 VignetteBuilder: knitr, R.rsp
 RoxygenNote: 6.1.1

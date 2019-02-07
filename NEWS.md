@@ -1,7 +1,8 @@
 
-# vtreat 1.3.6 2019/02/04
+# vtreat 1.3.6 2019/02/07
 
  * Add patch_columns_into_frame().
+ * Start switching to RUnit tests.
 
 # vtreat 1.3.5 2019/01/27
 

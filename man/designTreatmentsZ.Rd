@@ -49,6 +49,8 @@ The main fields are mostly vectors with names (all with the same names in the sa
 - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
 
 See the vtreat vignette for a bit more detail and a worked example.
+
+Columns that do not vary are not passed through.
 }
 \examples{
 

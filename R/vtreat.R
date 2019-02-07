@@ -82,7 +82,7 @@ print.vtreatment <- function(x, ...) {
 #' @export
 format.treatmentplan <- function(x, ...) { 
   format(x$scoreFrame[ , 
-                       c('origName', 'code', 'rsq', 'sig', 'extraModelDegrees'), 
+                       c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees'), 
                        drop = FALSE])
 }
 
@@ -123,6 +123,8 @@ print.treatmentplan <- function(x, ...) {
 #' - #' - sig : an estimate significance of effect
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
+#' 
+#' Columns that do not vary are not passed through.
 #'
 #' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
 #' @param varlist Names of columns to treat (effective variables).
@@ -233,6 +235,8 @@ designTreatmentsC <- function(dframe,varlist,
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
 #' 
+#' Columns that do not vary are not passed through.
+#' 
 #' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
 #' @param varlist Names of columns to treat (effective variables).
 #' @param outcomename Name of column holding outcome variable. dframe[[outcomename]] must be only finite non-missing values and there must be a cut such that dframe[[outcomename]] is both above the cut at least twice and below the cut at least twice.
@@ -331,6 +335,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' - varMoves : logical TRUE if the variable varied during hold out scoring, only variables that move will be in the treated frame
 #'
 #' See the vtreat vignette for a bit more detail and a worked example.
+#' 
+#' Columns that do not vary are not passed through.
 #' 
 #' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
 #' @param varlist Names of columns to treat (effective variables).
