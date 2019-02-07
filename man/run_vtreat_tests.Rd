@@ -39,9 +39,3 @@ Stops on error.
 Based on \url{https://github.com/RcppCore/Rcpp/blob/master/tests/doRUnit.R}.  This
 version is GPL-3, works derived from it must be distributed GPL-3.
 }
-\examples{
-
-run_vtreat_tests()
-
-
-}

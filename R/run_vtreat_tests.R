@@ -22,10 +22,6 @@
 #' @param require_pkg_attached logical, if TRUE require pkg be attached before testing.
 #' @return RUnit test results (invisible).
 #' 
-#' @examples 
-#' 
-#' run_vtreat_tests()
-#' 
 #'
 #' @export
 #'
