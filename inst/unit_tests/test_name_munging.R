@@ -8,7 +8,7 @@ test_name_munging <- function() {
     4.9             , 3            , NA            , 0.2          , "setosa"  |
     4.7             , 3.2          , 1.3           , 0.2          , "setosa"  )
   
-  t <- designTreatmentsZ(d, names(d))
+  t <- designTreatmentsZ(d, names(d), verbose = FALSE)
   d2 <- prepare(t, d)
   RUnit::checkTrue(isTRUE(all.equal(make.names(colnames(d2)), colnames(d2))))
   

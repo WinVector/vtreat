@@ -26,16 +26,16 @@
 #'
 #' @export
 #'
-run_package_tests <- function(...,
-                              verbose = TRUE,
-                              package_test_dirs = "unit_tests",
-                              test_dirs = character(0),
-                              stop_on_issue = TRUE,
-                              stop_if_no_tests = TRUE,
-                              require_RUnit_attached = FALSE,
-                              require_pkg_attached = TRUE,
-                              rngKind = "Mersenne-Twister",
-                              rngNormalKind = "Inversion") {
+run_vtreat_tests <- function(...,
+                             verbose = TRUE,
+                             package_test_dirs = "unit_tests",
+                             test_dirs = character(0),
+                             stop_on_issue = TRUE,
+                             stop_if_no_tests = TRUE,
+                             require_RUnit_attached = FALSE,
+                             require_pkg_attached = TRUE,
+                             rngKind = "Mersenne-Twister",
+                             rngNormalKind = "Inversion") {
   pkg <- "vtreat"
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::run_vtreat_tests")
   if(!requireNamespace("RUnit", quietly = TRUE)) {

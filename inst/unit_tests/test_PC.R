@@ -8,7 +8,8 @@ test_PC <- function() {
   splitter <- makekWayCrossValidationGroupedByColumn('x')
   cfe <- mkCrossFrameNExperiment(d,'x','y',
                                  splitFunction = splitter,
-                                 ncross = 2)
+                                 ncross = 2, 
+                                 verbose = FALSE)
   RUnit::checkTrue(length(cfe$evalSets)==2)
   xValCount <- vapply(cfe$evalSets,function(ci) { 
     length(unique(d$x[ci$train]))},
