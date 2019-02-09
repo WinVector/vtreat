@@ -1,7 +1,7 @@
 
 
 
-#' Run package tests.
+#' Run vtreat tests.
 #'
 #'
 #' For all files with names of the form "^test_.+\\.R$" in the package directory unit_tests
@@ -20,22 +20,24 @@
 #' @param stop_if_no_tests logical, if TRUE stop if no tests were found.
 #' @param require_RUnit_attached logical, if TRUE require RUnit be attached before testing.
 #' @param require_pkg_attached logical, if TRUE require pkg be attached before testing.
+#' @param rngKind pseudo-random number generator method name.
+#' @param rngNormalKind pseudo-random normal generator method name.
 #' @return RUnit test results (invisible).
-#' 
 #'
 #' @export
 #'
-run_vtreat_tests <- function(...,
-                             verbose = TRUE,
-                             package_test_dirs = "unit_tests",
-                             test_dirs = character(0),
-                             stop_on_issue = TRUE,
-                             stop_if_no_tests = TRUE,
-                             require_RUnit_attached = FALSE,
-                             require_pkg_attached = TRUE) {
+run_package_tests <- function(...,
+                              verbose = TRUE,
+                              package_test_dirs = "unit_tests",
+                              test_dirs = character(0),
+                              stop_on_issue = TRUE,
+                              stop_if_no_tests = TRUE,
+                              require_RUnit_attached = FALSE,
+                              require_pkg_attached = TRUE,
+                              rngKind = "Mersenne-Twister",
+                              rngNormalKind = "Inversion") {
+  pkg <- "vtreat"
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::run_vtreat_tests")
-  pkg = "vtreat"
-  # TODO: pass on to wrapr version
   if(!requireNamespace("RUnit", quietly = TRUE)) {
     stop("run_packages_tests requires RUnit package")
   }
@@ -63,9 +65,7 @@ run_vtreat_tests <- function(...,
   test_suite <- RUnit::defineTestSuite(name = paste(pkg, "unit tests"),
                                        dirs = test_dirs,
                                        testFileRegexp = "^test_.+\\.R$",
-                                       testFuncRegexp = "^test_.+$",
-                                       rngKind = "Mersenne-Twister",
-                                       rngNormalKind = "Inversion")
+                                       testFuncRegexp = "^test_.+$")
   test_results <- RUnit::runTestSuite(test_suite,
                                       verbose = verbose,
                                       gcBeforeTest = FALSE)
@@ -89,3 +89,5 @@ run_vtreat_tests <- function(...,
   }
   invisible(test_results)
 }
+
+
