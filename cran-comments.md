@@ -50,11 +50,6 @@
     727#> Status: 1 NOTE
     Note is spurious.
     
-### Linux
-
-    R CMD check --as-cran vtreat_1.3.6.tar.gz 
-
-    WARNING is spurious, link is good.
 
  
 ## Downstream dependencies
