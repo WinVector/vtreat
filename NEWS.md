@@ -1,4 +1,8 @@
 
+# vtreat 1.3.7 2019/02/13
+
+ * Move to wrapr test runner.
+
 # vtreat 1.3.6 2019/02/09
 
  * Add patch_columns_into_frame().

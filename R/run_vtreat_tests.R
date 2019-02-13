@@ -36,58 +36,18 @@ run_vtreat_tests <- function(...,
                              require_pkg_attached = TRUE,
                              rngKind = "Mersenne-Twister",
                              rngNormalKind = "Inversion") {
-  pkg <- "vtreat"
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::run_vtreat_tests")
-  if(!requireNamespace("RUnit", quietly = TRUE)) {
-    stop("run_packages_tests requires RUnit package")
-  }
-  if(!requireNamespace(pkg, quietly = TRUE)) {
-    stop(paste("run_packages_tests requires", pkg, "package to test", pkg))
-  }
-  attached_packages <- .packages(all.available = FALSE)
-  if(require_RUnit_attached) {
-    if(!("RUnit" %in% attached_packages)) {
-      stop("run_package_tests requires RUnit to already be attached via library('RUnit')")
-    }
-  }
-  if(require_pkg_attached) {
-    if(!(pkg %in% attached_packages)) {
-      stop(paste0("run_package_tests requires ",
-                  pkg,
-                  " to already be attached via library('", pkg, "')"))
-    }
-  }
-  for(ptd in package_test_dirs) {
-    test_dirs <- c(test_dirs, system.file(ptd, package = pkg, mustWork = TRUE))
-  }
-  set.seed(2019)  # try to make things a bit more deterministic
-  print(paste("RUnit testing package", pkg, "version", utils::packageVersion(pkg)))
-  test_suite <- RUnit::defineTestSuite(name = paste(pkg, "unit tests"),
-                                       dirs = test_dirs,
-                                       testFileRegexp = "^test_.+\\.R$",
-                                       testFuncRegexp = "^test_.+$")
-  test_results <- RUnit::runTestSuite(test_suite,
-                                      verbose = verbose,
-                                      gcBeforeTest = FALSE)
-  RUnit::printTextProtocol(test_results,
-                           separateFailureList = TRUE,
-                           showDetails = FALSE)
-  test_errors <- RUnit::getErrors(test_results)
-  if(stop_on_issue) {
-    # stop if errors for R CMD CHECK
-    if(test_errors$nDeactivated>0) {
-      warning(paste("package", pkg, "has deactivated tests"))
-    }
-    if((test_errors$nFail>0) || (test_errors$nErr>0)) {
-      stop(paste("package", pkg, "had test failures/errors"))
-    }
-  }
-  if(stop_if_no_tests) {
-    if(test_errors$nTestFunc<=0) { # catch packge test problem
-      stop(paste("found no package", pkg, "RUnit tests"))
-    }
-  }
-  invisible(test_results)
+  pkg <- "vtreat"
+  wrapr::run_package_tests(pkg = pkg,
+                           verbose = verbose,
+                           package_test_dirs = package_test_dirs,
+                           test_dirs = test_dirs,
+                           stop_on_issue = stop_on_issue,
+                           stop_if_no_tests = stop_if_no_tests,
+                           require_RUnit_attached = require_RUnit_attached,
+                           require_pkg_attached = require_pkg_attached,
+                           rngKind = rngKind,
+                           rngNormalKind = rngNormalKind)
 }
 
 
