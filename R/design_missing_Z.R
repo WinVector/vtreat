@@ -149,11 +149,14 @@ prepare.simple_plan <- function(treatmentplan, dframe,
   res <- dframe
   for(pi in treatmentplan) {
     ci <- pi$col
+    res[[ci]] <- NULL
+  }
+  for(pi in treatmentplan) {
+    ci <- pi$col
     vi <- dframe[[ci]]
     if(is.null(vi)) {
       stop(paste("vtreat::prepare.simple_plan: column", ci, " must be in data.frame"))
     }
-    res[[ci]] <- NULL
     vi <- pi$f(vi, pi$args)
     res[[pi$nm]] <- vi
   }
