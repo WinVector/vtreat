@@ -11,10 +11,9 @@ value_variables_N(dframe, varlist, outcomename, ..., weights = c(),
   verbose = FALSE, parallelCluster = NULL, use_parallel = TRUE,
   customCoders = list(c.PiecewiseV.num = vtreat::solve_piecewisec,
   n.PiecewiseV.num = vtreat::solve_piecewise, c.knearest.num =
-  vtreat::square_windowc, n.knearest.num = vtreat::square_window,
-  c.spline.num = vtreat::spline_variablec, n.spline.num =
-  vtreat::spline_variable), codeRestriction = c("PiecewiseV", "knearest",
-  "spline", "clean", "isBAD", "catB", "catP"))
+  vtreat::square_windowc, n.knearest.num = vtreat::square_window),
+  codeRestriction = c("PiecewiseV", "knearest", "clean", "isBAD", "catB",
+  "catP"))
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}

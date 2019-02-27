@@ -62,12 +62,9 @@ value_variables_N <- function(dframe,varlist,
                               customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewisec,
                                                   'n.PiecewiseV.num' = vtreat::solve_piecewise,
                                                   'c.knearest.num' = vtreat::square_windowc,
-                                                  'n.knearest.num' = vtreat::square_window,
-                                                  'c.spline.num' = vtreat::spline_variablec,
-                                                  'n.spline.num' = vtreat::spline_variable),
+                                                  'n.knearest.num' = vtreat::square_window),
                               codeRestriction = c("PiecewiseV", 
                                                   "knearest",
-                                                  "spline",
                                                   "clean", "isBAD", "catB", "catP")) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_N")
   cfn <- mkCrossFrameNExperiment(
@@ -138,12 +135,9 @@ value_variables_C <- function(dframe,varlist,
                               customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewisec,
                                                   'n.PiecewiseV.num' = vtreat::solve_piecewise,
                                                   'c.knearest.num' = vtreat::square_windowc,
-                                                  'n.knearest.num' = vtreat::square_window,
-                                                  'c.spline.num' = vtreat::spline_variablec,
-                                                  'n.spline.num' = vtreat::spline_variable),
+                                                  'n.knearest.num' = vtreat::square_window),
                               codeRestriction = c("PiecewiseV", 
                                                   "knearest",
-                                                  "spline",
                                                   "clean", "isBAD", "catB", "catP")) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_C")
   cfc <- mkCrossFrameCExperiment(

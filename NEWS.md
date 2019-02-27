@@ -1,6 +1,10 @@
 
 # vtreat 1.3.7 2019/02/20
 
+ * Remove spline from default value variables.
+
+# vtreat 1.3.7 2019/02/20
+
  * Fix design_missingness_treatment() prepare.
  * Move to wrapr test runner.
 
