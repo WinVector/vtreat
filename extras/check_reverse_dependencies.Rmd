@@ -8,6 +8,7 @@ library("prrd")
 td <- tempdir()
 package = "vtreat"
 packageVersion(package)
+date()
 
 parallelCluster <- NULL
 # # parallel doesn't work due to https://github.com/r-lib/liteq/issues/22

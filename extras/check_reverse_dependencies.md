@@ -11,6 +11,12 @@ packageVersion(package)
     ## [1] '1.3.8'
 
 ``` r
+date()
+```
+
+    ## [1] "Sun Mar 31 09:45:18 2019"
+
+``` r
 parallelCluster <- NULL
 # # parallel doesn't work due to https://github.com/r-lib/liteq/issues/22
 #ncores <- parallel::detectCores()
@@ -27,7 +33,7 @@ setwd(td)
 print(td)
 ```
 
-    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//RtmpJSe559"
+    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//Rtmptax1bt"
 
 ``` r
 options(repos = c(CRAN="https://cloud.r-project.org"))
