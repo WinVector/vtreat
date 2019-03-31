@@ -113,7 +113,7 @@
       <h1>Grouping Example</h1>
                         <h4 class="author">Nina Zumel, Nate Sutton</h4>
             
-            <h4 class="date">2019-02-27</h4>
+            <h4 class="date">2019-03-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatGrouping.Rmd"><code>vignettes/vtreatGrouping.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatGrouping.Rmd</code></div>
@@ -156,13 +156,6 @@ d &lt;-<span class="st"> </span>datasets<span class="op">::</span>Theoph
 ##  Max.   :11.400  
 ## </code></pre>
 <p>We have twelve subjects, who each received a dose of the anti-asthma drug theophylline. The theophylline concentration in the patients’ blood was then measured at eleven points during the next 25 hours. Most of the patients got about the same dose, although the dose information reported in the dataset is normalized by weight.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(have_ggplot) {
-  <span class="kw">ggplot</span>(d, <span class="kw">aes</span>(<span class="dt">x=</span>Time, <span class="dt">y=</span>conc, <span class="dt">color=</span>Subject)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">"none"</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">"Theophylline concentrations over time"</span>)
-}</code></pre></div>
-<p><img src="vtreatGrouping_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 </div>
 <div id="partitioning-the-data-for-modeling" class="section level2">
 <h2 class="hasAnchor">
@@ -247,7 +240,6 @@ split &lt;-<span class="st"> </span><span class="kw">splitter</span>(<span class
 ##        0        1        2 
 ## 4.728864 5.305227 4.847273 
 ## [1] "Standard deviation of group means: 0.304395061237506"</code></pre>
-<p><img src="vtreatGrouping_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
 </div>
 <div id="group-preserving-y-stratified-partition" class="section level3">
 <h3 class="hasAnchor">
@@ -257,7 +249,6 @@ split &lt;-<span class="st"> </span><span class="kw">splitter</span>(<span class
 ##        1        2        3 
 ## 4.859091 5.040455 4.981818 
 ## [1] "Standard deviation of group means: 0.0925499641694611"</code></pre>
-<p><img src="vtreatGrouping_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 </div>
 </div>
   </div>
