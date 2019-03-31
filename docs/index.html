@@ -236,14 +236,14 @@ dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,
                                  <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 1.030137e-01 0.32099590                 2</span>
- <span class="co">#  2        x    x_catB  catB 1.125399e-05 0.99172381                 2</span>
- <span class="co">#  3        z         z clean 2.376018e-01 0.13176020                 0</span>
- <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span>
- <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span>
- <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span>
- <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span>
+ <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span>
+ <span class="co">#  1        x    x_catP  catP 0.285095342 0.09874390                 2</span>
+ <span class="co">#  2        x    x_catB  catB 0.117443640 0.28930668                 2</span>
+ <span class="co">#  3        z         z clean 0.237601767 0.13176020                 0</span>
+ <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span>
+ <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span>
+ <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span>
+ <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span>
 
 <span class="co"># help("prepare")</span>
 
@@ -277,15 +277,15 @@ dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN), <span class="st">'y'</span>,
                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 4.047085e-01 0.08994062                 2</span>
- <span class="co">#  2        x    x_catN  catN 2.822908e-01 0.17539581                 2</span>
- <span class="co">#  3        x    x_catD  catD 2.096931e-02 0.73225708                 2</span>
- <span class="co">#  4        z         z clean 2.880952e-01 0.17018920                 0</span>
- <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.13397460                 0</span>
- <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.13397460                 0</span>
- <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.20703125                 0</span>
- <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 0.99999998                 0</span>
+ <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
+ <span class="co">#  1        x    x_catP  catP 1.894619e-01 0.2810898                 2</span>
+ <span class="co">#  2        x    x_catN  catN 2.532154e-01 0.2036653                 2</span>
+ <span class="co">#  3        x    x_catD  catD 4.512437e-02 0.6135229                 2</span>
+ <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span>
+ <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
+ <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>
+ <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span>
+ <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span>
 dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)
 varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)
 <span class="co"># all input variables should be mean 0</span>
@@ -432,8 +432,7 @@ dTrainN <span class="op">%.&gt;%</span><span class="st"> </span>
 <a href="http://dl.acm.org/citation.cfm?id=507538">“A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems”</a> Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.</li>
 <li>
 <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">“Modeling Trick: Impact Coding of Categorical Variables with Many Levels”</a> Nina Zumel, Win-Vector blog, 2012.</li>
-<li>
-<a href="https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/">“Big Learning Made Easy – with Counts!”</a>, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
+<li>“Big Learning Made Easy – with Counts!”, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
 </ul>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">

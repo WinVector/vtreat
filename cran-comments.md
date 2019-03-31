@@ -14,7 +14,7 @@
 
 ## Downstream dependencies
 
-No declared reverse dependencies 2019/03/10.
+No declared reverse dependencies 2019/03/30 ( https://github.com/WinVector/vtreat/blob/master/extras/check_reverse_dependencies.md ).
 
      
 Zumel is not a mis-spelling.

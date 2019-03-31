@@ -195,17 +195,17 @@ dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.8 inspecting inputs Sun Mar 31 09:41:21 2019"
-## [1] "designing treatments Sun Mar 31 09:41:21 2019"
-## [1] " have initial level statistics Sun Mar 31 09:41:21 2019"
-## [1] " scoring treatments Sun Mar 31 09:41:21 2019"
-## [1] "have treatment plan Sun Mar 31 09:41:21 2019"
-## [1] "rescoring complex variables Sun Mar 31 09:41:21 2019"
-## [1] "done rescoring complex variables Sun Mar 31 09:41:21 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.8 inspecting inputs Sun Mar 31 09:51:29 2019"
+## [1] "designing treatments Sun Mar 31 09:51:29 2019"
+## [1] " have initial level statistics Sun Mar 31 09:51:29 2019"
+## [1] " scoring treatments Sun Mar 31 09:51:29 2019"
+## [1] "have treatment plan Sun Mar 31 09:51:29 2019"
+## [1] "rescoring complex variables Sun Mar 31 09:51:29 2019"
+## [1] "done rescoring complex variables Sun Mar 31 09:51:30 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC)</code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.11457614 0.3289524                 2
-## 2        x    x_catB  catB 0.12081050 0.3161341                 2
+## 1        x    x_catP  catP 0.24340634 0.1547700                 2
+## 2        x    x_catB  catB 0.05070201 0.5160763                 2
 ## 3        z         z clean 0.25792985 0.1429977                 0
 ## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
 ## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
@@ -274,17 +274,17 @@ dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.8 inspecting inputs Sun Mar 31 09:41:22 2019"
-## [1] "designing treatments Sun Mar 31 09:41:22 2019"
-## [1] " have initial level statistics Sun Mar 31 09:41:22 2019"
-## [1] " scoring treatments Sun Mar 31 09:41:22 2019"
-## [1] "have treatment plan Sun Mar 31 09:41:22 2019"
-## [1] "rescoring complex variables Sun Mar 31 09:41:22 2019"
-## [1] "done rescoring complex variables Sun Mar 31 09:41:22 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.3.8 inspecting inputs Sun Mar 31 09:51:30 2019"
+## [1] "designing treatments Sun Mar 31 09:51:30 2019"
+## [1] " have initial level statistics Sun Mar 31 09:51:30 2019"
+## [1] " scoring treatments Sun Mar 31 09:51:30 2019"
+## [1] "have treatment plan Sun Mar 31 09:51:30 2019"
+## [1] "rescoring complex variables Sun Mar 31 09:51:30 2019"
+## [1] "done rescoring complex variables Sun Mar 31 09:51:30 2019"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN)</code></pre></div>
 <pre><code>##   origName   varName  code         rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.075853018 0.5499714                 2
-## 2        x    x_catN  catN 0.220417468 0.2878285                 2
+## 1        x    x_catP  catP 0.156532606 0.3796474                 2
+## 2        x    x_catN  catN 0.045758227 0.6451033                 2
 ## 3        x    x_catD  catD 0.173611111 0.3524132                 2
 ## 4        z         z clean 0.336111111 0.1724763                 0
 ## 5        z   z_isBAD isBAD 0.222222222 0.2855909                 0
@@ -358,8 +358,7 @@ dTestNTreatedS &lt;-<span class="st"> </span><span class="kw"><a href="../refere
 <a href="http://dl.acm.org/citation.cfm?id=507538">“A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems”</a> Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.</li>
 <li>
 <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">“Modeling Trick: Impact Coding of Categorical Variables with Many Levels”</a> Nina Zumel, Win-Vector blog, 2012.</li>
-<li>
-<a href="https://blogs.technet.microsoft.com/machinelearning/2015/02/17/big-learning-made-easy-with-counts/">“Big Learning Made Easy – with Counts!”</a>, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
+<li>“Big Learning Made Easy – with Counts!”, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
 </ul>
 </div>
   </div>
