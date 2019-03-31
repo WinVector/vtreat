@@ -1,7 +1,8 @@
 
-# vtreat 1.3.8 2019/03/10
+# vtreat 1.3.8 2019/03/31
 
  * Remove spline from default value variables.
+ * Fix ggplot2 vignette dependence issue.
 
 # vtreat 1.3.7 2019/02/20
 

@@ -140,10 +140,6 @@ For example from `help(kWayStratifiedY)` we can see that the distribution of `y`
 
 ```{r warning=FALSE}
 library('vtreat')
-haveGGPlot2 <- requireNamespace("ggplot2",quietly=TRUE)
-if(haveGGPlot2) {
-  library('ggplot2')
-}
 ```
 
 ```{r}
@@ -176,20 +172,11 @@ d$simpleGroup <- vtreat::getSplitPlanAppLabels(nrow(d),pSimple)
 tapply(d$y,d$simpleGroup,mean)
 # standard error of mean(y)
 sd(tapply(d$y,d$simpleGroup,mean))
-if(haveGGPlot2) {
-  # plot the distribution of y in each fold
-  ggplot(data=d,aes(x=y,color=as.factor(simpleGroup))) + 
-    geom_density() + ggtitle('simple (unstratified) grouping')
-}
+
 # mean(y) for each fold, unstratified
 tapply(d$y,d$stratGroup,mean)
 # standard error of mean(y)
 sd(tapply(d$y,d$stratGroup,mean))
-if(haveGGPlot2) {
-  # plot the distribution of y in each fold
-  ggplot(data=d,aes(x=y,color=as.factor(stratGroup))) + 
-    geom_density() + ggtitle('y-stratified grouping')
-}
 ```
 
 Notice the increased similarity if distributions.
