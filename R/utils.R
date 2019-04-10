@@ -325,7 +325,14 @@ fancy_sub <- function(s_in) {
           "~" = "_tilde_",
           '"' = "_quote_",
           "," = "_comma_",
-          "?" = "_qmark_")
+          "?" = "_qmark_",
+          "/" = "_slash_",
+          "\\" = "_bslash_",
+          "|" = "_bar_",
+          "{" = "_obrace_",
+          "}" = "_cbrace_",
+          "[" = "_obrack_",
+          "]" = "_cbrack_")
   for(c in names(mp)) {
     s <- gsub(c, mp[[c]], s, fixed = TRUE)
   }
@@ -336,7 +343,7 @@ vtreat_make_names <- function(nms_in,
                               ...,
                               fancy_names = FALSE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat:::vtreat_make_names")
-  nms <- nms_in
+  nms <- as.character(nms_in)
   if(fancy_names) {
     nms <- fancy_sub(nms)
   }
