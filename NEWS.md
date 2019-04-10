@@ -1,6 +1,7 @@
 
-# vtreat 1.3.9 2019/04/09
+# vtreat 1.4.0 2019/04/09
 
+ * Fancy level and variable names.
  * More tests on odd level names (and collisions).
 
 # vtreat 1.3.8 2019/03/31

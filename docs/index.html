@@ -35,7 +35,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -122,9 +122,7 @@
 
 <p><a href="http://winvector.github.io/vtreat/">vtreat</a> is an <a href="https://cran.r-project.org">R</a> data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.</p>
 <p>For more detail please see here: <a href="https://arxiv.org/abs/1611.09477">arXiv:1611.09477 stat.AP</a> . There is also a series of articles recording the evolution of <code>vtreat</code> including some tutorials <a href="http://www.win-vector.com/blog/tag/vtreat/">here</a>.</p>
-<div class="figure">
-<img src="https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png">
-</div>
+<p><img src="https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png"></p>
 <p>(logo: Julie Mount, source: “The Harvest” by Boris Kustodiev 1914)</p>
 <p>Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are <em>common</em> data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.</p>
 <p>In particular vtreat emphasizes a concept called “y-aware pre-processing” and implements:</p>
@@ -204,123 +202,123 @@
 </ul>
 <p>Examples of current best practice using ‘vtreat’ (variable coding, train, test split) can be found <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">here</a> and <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">here</a>.</p>
 <p>Trivial example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"vtreat"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"vtreat"</span>)
- <span class="co">#  [1] '1.3.8'</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="st">'vtreat'</span>)
- <span class="co">#  </span>
- <span class="co">#  To cite package 'vtreat' in publications use:</span>
- <span class="co">#  </span>
- <span class="co">#    John Mount and Nina Zumel (2019). vtreat: A Statistically Sound</span>
- <span class="co">#    'data.frame' Processor/Conditioner.</span>
- <span class="co">#    https://github.com/WinVector/vtreat/,</span>
- <span class="co">#    https://winvector.github.io/vtreat/.</span>
- <span class="co">#  </span>
- <span class="co">#  A BibTeX entry for LaTeX users is</span>
- <span class="co">#  </span>
- <span class="co">#    @Manual{,</span>
- <span class="co">#      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},</span>
- <span class="co">#      author = {John Mount and Nina Zumel},</span>
- <span class="co">#      year = {2019},</span>
- <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span>
- <span class="co">#    }</span>
-
-<span class="co"># categorical example</span>
-dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),
-   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="ot">NA</span>, <span class="dv">6</span>, <span class="ot">NA</span>),
-   <span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))
-dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))
-
-<span class="co"># help("designTreatmentsC")</span>
-
-treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,
-                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 0.285095342 0.09874390                 2</span>
- <span class="co">#  2        x    x_catB  catB 0.117443640 0.28930668                 2</span>
- <span class="co">#  3        z         z clean 0.237601767 0.13176020                 0</span>
- <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span>
- <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span>
- <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span>
- <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span>
-
-<span class="co"># help("prepare")</span>
-
-dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC, dTrainC, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)
-varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainCTreated), <span class="st">'y'</span>)
-<span class="co"># all input variables should be mean 0</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainCTreated[, varsC, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean)
- <span class="co">#         x_catP        x_catB             z       z_isBAD      x_lev_NA </span>
- <span class="co">#   2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 </span>
- <span class="co">#      x_lev_x_a     x_lev_x_b </span>
- <span class="co">#  -6.345680e-17  1.189718e-17</span>
-<span class="co"># all non NA slopes should be 1</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsC, <span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})
- <span class="co">#      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a </span>
- <span class="co">#  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 </span>
- <span class="co">#   x_lev_x_b </span>
- <span class="co">#  0.24663035</span>
-dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC, dTestC, <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(dTestCTreated)
- <span class="co">#        x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b</span>
- <span class="co">#  1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472</span>
- <span class="co">#  2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179</span>
- <span class="co">#  3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472</span>
- <span class="co">#  4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># numeric example</span>
-dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),
-   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="ot">NA</span>, <span class="dv">7</span>, <span class="ot">NA</span>), <span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))
-dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))
-<span class="co"># help("designTreatmentsN")</span>
-treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN), <span class="st">'y'</span>,
-                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])
- <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span>
- <span class="co">#  1        x    x_catP  catP 1.894619e-01 0.2810898                 2</span>
- <span class="co">#  2        x    x_catN  catN 2.532154e-01 0.2036653                 2</span>
- <span class="co">#  3        x    x_catD  catD 4.512437e-02 0.6135229                 2</span>
- <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span>
- <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span>
- <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span>
- <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span>
- <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span>
-dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)
-varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)
-<span class="co"># all input variables should be mean 0</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainNTreated[, varsN, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean) 
- <span class="co">#         x_catP        x_catN        x_catD             z       z_isBAD </span>
- <span class="co">#   2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 </span>
- <span class="co">#       x_lev_NA     x_lev_x_a     x_lev_x_b </span>
- <span class="co">#   6.938894e-18  0.000000e+00  7.703720e-34</span>
-<span class="co"># all non NA slopes should be 1</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsN, <span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),
-   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) 
- <span class="co">#     x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a </span>
- <span class="co">#          1         1         1         1         1         1         1 </span>
- <span class="co">#  x_lev_x_b </span>
- <span class="co">#          1</span>
-dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN, dTestN, <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(dTestNTreated)
- <span class="co">#    x_catP x_catN      x_catD         z    z_isBAD   x_lev_NA x_lev_x_a</span>
- <span class="co">#  1 -0.250  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25</span>
- <span class="co">#  2  0.250   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25</span>
- <span class="co">#  3  0.625   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25</span>
- <span class="co">#  4  0.250   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25</span>
- <span class="co">#        x_lev_x_b</span>
- <span class="co">#  1 -2.266233e-17</span>
- <span class="co">#  2  6.798700e-17</span>
- <span class="co">#  3 -2.266233e-17</span>
- <span class="co">#  4 -2.266233e-17</span>
-
-<span class="co"># for large data sets you can consider designing the treatments on </span>
-<span class="co"># a subset like: d[sample(1:dim(d)[[1]], 1000), ]</span>
-
-<span class="co"># One can also use treatment plans as pipe targets.</span>
-dTrainN <span class="op">%.&gt;%</span><span class="st"> </span>
-<span class="st">  </span>treatmentsN <span class="op">%.&gt;%</span><span class="st"> </span>
-<span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(.)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"vtreat"</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"vtreat"</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"> <span class="co">#  [1] '1.4.0'</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="st">'vtreat'</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"> <span class="co">#  To cite package 'vtreat' in publications use:</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"> <span class="co">#    John Mount and Nina Zumel (2019). vtreat: A Statistically Sound</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"> <span class="co">#    'data.frame' Processor/Conditioner.</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"> <span class="co">#    https://github.com/WinVector/vtreat/,</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"> <span class="co">#    https://winvector.github.io/vtreat/.</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"> <span class="co">#  A BibTeX entry for LaTeX users is</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"> <span class="co">#  </span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"> <span class="co">#    @Manual{,</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"> <span class="co">#      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"> <span class="co">#      author = {John Mount and Nina Zumel},</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"> <span class="co">#      year = {2019},</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"> <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"> <span class="co">#    }</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co"># categorical example</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23">dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="ot">NA</span>, <span class="dv">6</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">   <span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co"># help("designTreatmentsC")</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb1-31" data-line-number="31">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
+<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 0.060049677 0.44862725                 2</span></a>
+<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 0.127625394 0.26932340                 2</span></a>
+<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z         z clean 0.237601767 0.13176020                 0</span></a>
+<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span></a>
+<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span></a>
+<a class="sourceLine" id="cb1-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb1-42" data-line-number="42"><span class="co"># help("prepare")</span></a>
+<a class="sourceLine" id="cb1-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb1-44" data-line-number="44">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC, dTrainC, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-45" data-line-number="45">varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainCTreated), <span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb1-46" data-line-number="46"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb1-47" data-line-number="47"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainCTreated[, varsC, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean)</a>
+<a class="sourceLine" id="cb1-48" data-line-number="48"> <span class="co">#         x_catP        x_catB             z       z_isBAD      x_lev_NA </span></a>
+<a class="sourceLine" id="cb1-49" data-line-number="49"> <span class="co">#   2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 </span></a>
+<a class="sourceLine" id="cb1-50" data-line-number="50"> <span class="co">#      x_lev_x_a     x_lev_x_b </span></a>
+<a class="sourceLine" id="cb1-51" data-line-number="51"> <span class="co">#  -6.345680e-17  1.189718e-17</span></a>
+<a class="sourceLine" id="cb1-52" data-line-number="52"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb1-53" data-line-number="53"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsC, <span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb1-54" data-line-number="54">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a>
+<a class="sourceLine" id="cb1-55" data-line-number="55"> <span class="co">#      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a </span></a>
+<a class="sourceLine" id="cb1-56" data-line-number="56"> <span class="co">#  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 </span></a>
+<a class="sourceLine" id="cb1-57" data-line-number="57"> <span class="co">#   x_lev_x_b </span></a>
+<a class="sourceLine" id="cb1-58" data-line-number="58"> <span class="co">#  0.24663035</span></a>
+<a class="sourceLine" id="cb1-59" data-line-number="59">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsC, dTestC, <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-60" data-line-number="60"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(dTestCTreated)</a>
+<a class="sourceLine" id="cb1-61" data-line-number="61"> <span class="co">#        x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b</span></a>
+<a class="sourceLine" id="cb1-62" data-line-number="62"> <span class="co">#  1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472</span></a>
+<a class="sourceLine" id="cb1-63" data-line-number="63"> <span class="co">#  2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179</span></a>
+<a class="sourceLine" id="cb1-64" data-line-number="64"> <span class="co">#  3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472</span></a>
+<a class="sourceLine" id="cb1-65" data-line-number="65"> <span class="co">#  4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># numeric example</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="ot">NA</span>, <span class="dv">7</span>, <span class="ot">NA</span>), <span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># help("designTreatmentsN")</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">treatmentsN =<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN), <span class="st">'y'</span>,</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 3.558824e-01 0.1184999                 2</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 3.132648e-02 0.6750039                 2</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 4.512437e-02 0.6135229                 2</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"> <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"> <span class="co">#  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"> <span class="co">#  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-19" data-line-number="19">varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainNTreated[, varsN, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean) </a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"> <span class="co">#         x_catP        x_catN        x_catD             z       z_isBAD </span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"> <span class="co">#   2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 </span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"> <span class="co">#       x_lev_NA     x_lev_x_a     x_lev_x_b </span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"> <span class="co">#   6.938894e-18  0.000000e+00  7.703720e-34</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsN, <span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb2-28" data-line-number="28">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"> <span class="co">#     x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a </span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"> <span class="co">#          1         1         1         1         1         1         1 </span></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"> <span class="co">#  x_lev_x_b </span></a>
+<a class="sourceLine" id="cb2-32" data-line-number="32"> <span class="co">#          1</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="reference/prepare.html">prepare</a></span>(treatmentsN, dTestN, <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(dTestNTreated)</a>
+<a class="sourceLine" id="cb2-35" data-line-number="35"> <span class="co">#    x_catP x_catN      x_catD         z    z_isBAD   x_lev_NA x_lev_x_a</span></a>
+<a class="sourceLine" id="cb2-36" data-line-number="36"> <span class="co">#  1 -0.250  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25</span></a>
+<a class="sourceLine" id="cb2-37" data-line-number="37"> <span class="co">#  2  0.250   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25</span></a>
+<a class="sourceLine" id="cb2-38" data-line-number="38"> <span class="co">#  3  0.625   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25</span></a>
+<a class="sourceLine" id="cb2-39" data-line-number="39"> <span class="co">#  4  0.250   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25</span></a>
+<a class="sourceLine" id="cb2-40" data-line-number="40"> <span class="co">#        x_lev_x_b</span></a>
+<a class="sourceLine" id="cb2-41" data-line-number="41"> <span class="co">#  1 -2.266233e-17</span></a>
+<a class="sourceLine" id="cb2-42" data-line-number="42"> <span class="co">#  2  6.798700e-17</span></a>
+<a class="sourceLine" id="cb2-43" data-line-number="43"> <span class="co">#  3 -2.266233e-17</span></a>
+<a class="sourceLine" id="cb2-44" data-line-number="44"> <span class="co">#  4 -2.266233e-17</span></a>
+<a class="sourceLine" id="cb2-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co"># for large data sets you can consider designing the treatments on </span></a>
+<a class="sourceLine" id="cb2-47" data-line-number="47"><span class="co"># a subset like: d[sample(1:dim(d)[[1]], 1000), ]</span></a>
+<a class="sourceLine" id="cb2-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb2-49" data-line-number="49"><span class="co"># One can also use treatment plans as pipe targets.</span></a>
+<a class="sourceLine" id="cb2-50" data-line-number="50">dTrainN <span class="op">%.&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-51" data-line-number="51"><span class="st">  </span>treatmentsN <span class="op">%.&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-52" data-line-number="52"><span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(.)</a></code></pre></div>
 <table class="table table">
 <thead><tr class="header">
 <th align="right">x_catP</th>
@@ -438,7 +436,7 @@ dTrainN <span class="op">%.&gt;%</span><span class="st"> </span>
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>To install, from inside <code>R</code> please run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"vtreat"</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
 </div>
 <div id="note" class="section level2">
 <h2 class="hasAnchor">

@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-03-31</h4>
+            <h4 class="date">2019-04-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -124,68 +124,68 @@
     
 <p>Example demonstrating “cross validated training frames” (or “cross frames”) in vtreat.</p>
 <p>Consider the following data frame. The outcome only depends on the “good” variables, not on the (high degree of freedom) “bad” variables. Modeling such a data set runs a high risk of over-fit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">22626</span>)
-
-mkData &lt;-<span class="st"> </span><span class="cf">function</span>(n) {
-  d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">xBad1=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),n,<span class="dt">replace=</span><span class="ot">TRUE</span>),
-                  <span class="dt">xBad2=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),n,<span class="dt">replace=</span><span class="ot">TRUE</span>),
-                  <span class="dt">xBad3=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),n,<span class="dt">replace=</span><span class="ot">TRUE</span>),
-                  <span class="dt">xGood1=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n),
-                  <span class="dt">xGood2=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n))
-  
-  <span class="co"># outcome only depends on "good" variables</span>
-  d<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d))<span class="op">+</span><span class="fl">0.2</span><span class="op">*</span>d<span class="op">$</span>xGood1 <span class="op">+</span><span class="st"> </span><span class="fl">0.3</span><span class="op">*</span>d<span class="op">$</span>xGood2<span class="op">&gt;</span><span class="fl">0.5</span>
-  <span class="co"># the random group used for splitting the data set, not a variable.</span>
-  d<span class="op">$</span>rgroup &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"cal"</span>,<span class="st">"train"</span>,<span class="st">"test"</span>),<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d),<span class="dt">replace=</span><span class="ot">TRUE</span>)  
-  d
-}
-
-d &lt;-<span class="st"> </span><span class="kw">mkData</span>(<span class="dv">2000</span>)
-
-<span class="co"># devtools::install_github("WinVector/WVPlots")</span>
-<span class="co"># library('WVPlots')</span>
-plotRes &lt;-<span class="st"> </span><span class="cf">function</span>(d,predName,yName,title) {
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(title)
-  tab &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">truth=</span>d[[yName]],<span class="dt">pred=</span>d[[predName]]<span class="op">&gt;</span><span class="fl">0.5</span>)
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(tab)
-  diag &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">vapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(tab))),
-                     <span class="cf">function</span>(i) tab[i,i],<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric</a></span>(<span class="dv">1</span>)))
-  acc &lt;-<span class="st"> </span>diag<span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(tab)
-<span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span>
-<span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span>
-<span class="co">#  }</span>
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'accuracy'</span>,acc))
-}</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">22626</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">mkData &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">xBad1=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),n,<span class="dt">replace=</span><span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">                  <span class="dt">xBad2=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),n,<span class="dt">replace=</span><span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">                  <span class="dt">xBad3=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'level'</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>,<span class="dt">sep=</span><span class="st">''</span>),n,<span class="dt">replace=</span><span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">                  <span class="dt">xGood1=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n),</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">                  <span class="dt">xGood2=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n))</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">  </a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">  <span class="co"># outcome only depends on "good" variables</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">  d<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d))<span class="op">+</span><span class="fl">0.2</span><span class="op">*</span>d<span class="op">$</span>xGood1 <span class="op">+</span><span class="st"> </span><span class="fl">0.3</span><span class="op">*</span>d<span class="op">$</span>xGood2<span class="op">&gt;</span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">  <span class="co"># the random group used for splitting the data set, not a variable.</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">  d<span class="op">$</span>rgroup &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"cal"</span>,<span class="st">"train"</span>,<span class="st">"test"</span>),<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d),<span class="dt">replace=</span><span class="ot">TRUE</span>)  </a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">  d</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">}</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">d &lt;-<span class="st"> </span><span class="kw">mkData</span>(<span class="dv">2000</span>)</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co"># devtools::install_github("WinVector/WVPlots")</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co"># library('WVPlots')</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">plotRes &lt;-<span class="st"> </span><span class="cf">function</span>(d,predName,yName,title) {</a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(title)</a>
+<a class="sourceLine" id="cb1-23" data-line-number="23">  tab &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">truth=</span>d[[yName]],<span class="dt">pred=</span>d[[predName]]<span class="op">&gt;</span><span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(tab)</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">  diag &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">vapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(tab))),</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">                     <span class="cf">function</span>(i) tab[i,i],<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric</a></span>(<span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb1-27" data-line-number="27">  acc &lt;-<span class="st"> </span>diag<span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(tab)</a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#  }</span></a>
+<a class="sourceLine" id="cb1-31" data-line-number="31">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'accuracy'</span>,acc))</a>
+<a class="sourceLine" id="cb1-32" data-line-number="32">}</a></code></pre></div>
 <div id="the-wrong-way" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-wrong-way" class="anchor"></a>The Wrong Way</h2>
 <p>Bad practice: use the same set of data to prepare variable encoding and train a model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">!=</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]
-dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]
-treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),
-                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,
-  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
-)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.8 inspecting inputs Sun Mar 31 09:51:32 2019"
-## [1] "designing treatments Sun Mar 31 09:51:32 2019"
-## [1] " have initial level statistics Sun Mar 31 09:51:32 2019"
-## [1] " scoring treatments Sun Mar 31 09:51:32 2019"
-## [1] "have treatment plan Sun Mar 31 09:51:32 2019"
-## [1] "rescoring complex variables Sun Mar 31 09:51:32 2019"
-## [1] "done rescoring complex variables Sun Mar 31 09:51:32 2019"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
-  <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
-)
-
-f &lt;-<span class="st"> </span>wrapr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/wrapr/topics/mk_formula">mk_formula</a></span>(<span class="st">"y"</span>, treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(f)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">!=</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dTrain,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:24:49 2019"
+## [1] "designing treatments Wed Apr 10 00:24:49 2019"
+## [1] " have initial level statistics Wed Apr 10 00:24:49 2019"
+## [1] " scoring treatments Wed Apr 10 00:24:49 2019"
+## [1] "have treatment plan Wed Apr 10 00:24:49 2019"
+## [1] "rescoring complex variables Wed Apr 10 00:24:49 2019"
+## [1] "done rescoring complex variables Wed Apr 10 00:24:50 2019"</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">f &lt;-<span class="st"> </span>wrapr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/wrapr/topics/mk_formula">mk_formula</a></span>(<span class="st">"y"</span>, treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(f)</a></code></pre></div>
 <pre><code>## y ~ xBad1_catP + xBad1_catB + xBad2_catP + xBad2_catB + xBad3_catP + 
 ##     xBad3_catB + xGood1 + xGood2
 ## &lt;environment: base&gt;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(f,
-          <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(f,</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">          <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a></code></pre></div>
 <pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(m1))  <span class="co"># notice low residual deviance</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(m1))  <span class="co"># notice low residual deviance</span></a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = f, family = binomial(link = "logit"), data = dTrainTreated)
@@ -215,17 +215,17 @@ f &lt;-<span class="st"> </span>wrapr<span class="op">::</span><span class="kw">
 ## AIC: 128.93
 ## 
 ## Number of Fisher Scoring iterations: 12</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
-<span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE   849   17
 ##   TRUE      7  459
 ## [1] "accuracy 0.981981981981982"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())
-dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
-<span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE
@@ -238,31 +238,31 @@ dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="
 <h2 class="hasAnchor">
 <a href="#the-right-way-a-calibration-set" class="anchor"></a>The Right Way: A Calibration Set</h2>
 <p>Now try a proper calibration/train/test split:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dCal &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'cal'</span>,,drop=<span class="ot">FALSE</span>]
-dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'train'</span>,,drop=<span class="ot">FALSE</span>]
-dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]
-
-<span class="co"># a nice heuristic, </span>
-<span class="co"># expect only a constant number of noise variables to sneak past</span>
-pruneSig &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(dTrain) 
-treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dCal,
-                                        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),
-                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,
-  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
-)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.8 inspecting inputs Sun Mar 31 09:51:32 2019"
-## [1] "designing treatments Sun Mar 31 09:51:32 2019"
-## [1] " have initial level statistics Sun Mar 31 09:51:32 2019"
-## [1] " scoring treatments Sun Mar 31 09:51:32 2019"
-## [1] "have treatment plan Sun Mar 31 09:51:33 2019"
-## [1] "rescoring complex variables Sun Mar 31 09:51:33 2019"
-## [1] "done rescoring complex variables Sun Mar 31 09:51:33 2019"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,
-  <span class="dt">pruneSig=</span>pruneSig)
-newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainTreated),<span class="st">'y'</span>)
-m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(newvars,<span class="dt">collapse=</span><span class="st">' + '</span>),<span class="dt">sep=</span><span class="st">' ~ '</span>),
-          <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(m1))  </code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">dCal &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'cal'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'train'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co"># a nice heuristic, </span></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co"># expect only a constant number of noise variables to sneak past</span></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">pruneSig &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(dTrain) </a>
+<a class="sourceLine" id="cb14-8" data-line-number="8">treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(dCal,</a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">                                        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
+<a class="sourceLine" id="cb14-12" data-line-number="12">)</a></code></pre></div>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:24:50 2019"
+## [1] "designing treatments Wed Apr 10 00:24:50 2019"
+## [1] " have initial level statistics Wed Apr 10 00:24:50 2019"
+## [1] " scoring treatments Wed Apr 10 00:24:50 2019"
+## [1] "have treatment plan Wed Apr 10 00:24:50 2019"
+## [1] "rescoring complex variables Wed Apr 10 00:24:50 2019"
+## [1] "done rescoring complex variables Wed Apr 10 00:24:50 2019"</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="dt">pruneSig=</span>pruneSig)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainTreated),<span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(newvars,<span class="dt">collapse=</span><span class="st">' + '</span>),<span class="dt">sep=</span><span class="st">' ~ '</span>),</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">          <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(m1))  </a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = paste("y", paste(newvars, collapse = " + "), sep = " ~ "), 
@@ -287,18 +287,18 @@ m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocument
 ## AIC: 777.92
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
-<span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE   377   41
 ##   TRUE    160   65
 ## [1] "accuracy 0.687402799377916"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,
-                                <span class="dt">pruneSig=</span>pruneSig)
-dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
-<span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">                                <span class="dt">pruneSig=</span>pruneSig)</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE
@@ -352,19 +352,19 @@ dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
 <p>Below is the example cross-run. The function <code>mkCrossFrameCExperiment</code> returns a treatment plan for use in preparing future data, and a cross-frame for use in fitting a model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">!=</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]
-dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]
-prep &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,
-           <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),
-           <span class="st">'y'</span>,<span class="ot">TRUE</span>,
-           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
-)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.8 start initial treatment design Sun Mar 31 09:51:33 2019"
-## [1] " start cross frame work Sun Mar 31 09:51:34 2019"
-## [1] " vtreat::mkCrossFrameCExperiment done Sun Mar 31 09:51:34 2019"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments
-
-knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">dTrain &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">!=</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">dTest &lt;-<span class="st"> </span>d[d<span class="op">$</span>rgroup<span class="op">==</span><span class="st">'test'</span>,,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">prep &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameCExperiment">mkCrossFrameCExperiment</a></span>(dTrain,</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">           <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span>),</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">           <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6">           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7">)</a></code></pre></div>
+<pre><code>## [1] "vtreat 1.4.0 start initial treatment design Wed Apr 10 00:24:51 2019"
+## [1] " start cross frame work Wed Apr 10 00:24:51 2019"
+## [1] " vtreat::mkCrossFrameCExperiment done Wed Apr 10 00:24:52 2019"</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
@@ -405,25 +405,25 @@ knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentat
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(prep<span class="op">$</span>crossFrame)</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(prep<span class="op">$</span>crossFrame)</a></code></pre></div>
 <pre><code>## [1] "xBad1_catP" "xBad1_catB" "xBad2_catP" "xBad2_catB" "xBad3_catP"
 ## [6] "xBad3_catB" "xGood1"     "xGood2"     "y"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can</span>
-<span class="co"># prune on our own.</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(pruneSig)</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="co"># prune on our own.</span></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(pruneSig)</a></code></pre></div>
 <pre><code>## [1] 0.1428571</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newvars &lt;-<span class="st"> </span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName[treatments<span class="op">$</span>scoreFrame<span class="op">$</span>sig<span class="op">&lt;=</span>pruneSig]
-<span class="co"># force in bad variables, to show we "belt and suspenders" deal with them</span>
-<span class="co"># in that things go well in the cross-frame even if they sneak past pruning</span>
-newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">union</a></span>(newvars,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"xBad1_catB"</span>,<span class="st">"xBad2_catB"</span>,<span class="st">"xBad3_catB"</span>)))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(newvars)</code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">newvars &lt;-<span class="st"> </span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName[treatments<span class="op">$</span>scoreFrame<span class="op">$</span>sig<span class="op">&lt;=</span>pruneSig]</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co"># force in bad variables, to show we "belt and suspenders" deal with them</span></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="co"># in that things go well in the cross-frame even if they sneak past pruning</span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">union</a></span>(newvars,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"xBad1_catB"</span>,<span class="st">"xBad2_catB"</span>,<span class="st">"xBad3_catB"</span>)))</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(newvars)</a></code></pre></div>
 <pre><code>## [1] "xBad1_catB" "xBad2_catB" "xBad3_catB" "xGood1"     "xGood2"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrainTreated &lt;-<span class="st"> </span>prep<span class="op">$</span>crossFrame</code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>prep<span class="op">$</span>crossFrame</a></code></pre></div>
 <p>We ensured the undesirable <code>xBad*_catB</code> variables back in to demonstrate that even if they sneak past a lose <code>pruneSig</code>, the crossframe lets the downstream model deal with them correctly. To ensure more consistent filtering of the complicated variables one can increase the <code>ncross</code> argument in <code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code>/<code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>.</p>
 <p>Now we fit the model to <em>the cross-frame</em> rather than to <code><a href="../reference/prepare.html">prepare(treatments, dTrain)</a></code> (the treated training data).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(newvars,<span class="dt">collapse=</span><span class="st">' + '</span>),<span class="dt">sep=</span><span class="st">' ~ '</span>),
-          <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(m1))  </code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(newvars,<span class="dt">collapse=</span><span class="st">' + '</span>),<span class="dt">sep=</span><span class="st">' ~ '</span>),</a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">          <span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(m1))  </a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = paste("y", paste(newvars, collapse = " + "), sep = " ~ "), 
@@ -451,17 +451,17 @@ newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdoc
 ## AIC: 1598.6
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)
-<span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb34-2" data-line-number="2"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
 ##   FALSE   775   91
 ##   TRUE    331  135
 ## [1] "accuracy 0.683183183183183"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,
-                                <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">varRestriction=</span>newvars)
-knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestTreated))</code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,</a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">                                <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">varRestriction=</span>newvars)</a>
+<a class="sourceLine" id="cb36-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestTreated))</a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">xBad1_catB</th>
@@ -522,8 +522,8 @@ knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentat
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)
-<span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE

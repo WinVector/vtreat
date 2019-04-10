@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       <h1>vtreat Variable Importance</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2019-03-31</h4>
+            <h4 class="date">2019-04-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/VariableImportance.Rmd"><code>vignettes/VariableImportance.Rmd</code></a></small>
       <div class="hidden name"><code>VariableImportance.Rmd</code></div>
@@ -130,23 +130,23 @@
 <p><code>vtreat</code> now includes a direct variable valuation system that works very well with complex numeric relationships. It is a function called <a href="https://winvector.github.io/vtreat/reference/value_variables_N.html"><code><a href="../reference/value_variables_N.html">vtreat::value_variables_N()</a></code></a> for numeric or regression problems and <a href="https://winvector.github.io/vtreat/reference/value_variables_C.html"><code><a href="../reference/value_variables_C.html">vtreat::value_variables_C()</a></code></a> for binomial classification problems. It works by fitting two transformed copies of each numeric variable to the outcome. One transform is a low frequency transform realized as an optimal <code>k</code>-segment linear model for a moderate choice of <code>k</code>. The other fit is a high-frequency trasnform realized as a <code>k</code>-nearest neighbor average for moderate choice of <code>k</code>. Some of the methodology is shown <a href="https://github.com/WinVector/vtreat/blob/master/extras/SegFitter.md">here</a>.</p>
 <p>We recommend using <code>vtreat::value_variables_*()</code> as an initial variable screen.</p>
 <p>Let’s demonstrate this using the data from the segment fitter example. In our case the value to be predicted (“<code>y</code>”) is a noisy copy of <code><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin(x)</a></code>. Let’s set up our example data:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1999</span>)
-d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dt">by =</span> <span class="fl">0.25</span>))
-d<span class="op">$</span>y_ideal &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin</a></span>(d<span class="op">$</span>x)
-d<span class="op">$</span>x_noise &lt;-<span class="st"> </span>d<span class="op">$</span>x[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample.int</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d), <span class="dt">replace =</span> <span class="ot">FALSE</span>)]
-d<span class="op">$</span>y &lt;-<span class="st"> </span>d<span class="op">$</span>y_ideal <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(d)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1999</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dt">by =</span> <span class="fl">0.25</span>))</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">d<span class="op">$</span>y_ideal &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin</a></span>(d<span class="op">$</span>x)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">d<span class="op">$</span>x_noise &lt;-<span class="st"> </span>d<span class="op">$</span>x[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample.int</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d), <span class="dt">replace =</span> <span class="ot">FALSE</span>)]</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">d<span class="op">$</span>y &lt;-<span class="st"> </span>d<span class="op">$</span>y_ideal <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d))</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(d)</a></code></pre></div>
 <pre><code>## [1] 61  4</code></pre>
 <p>Now a simple linear valuation of the the variables can be produced as follows.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cfe &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(
-  d, 
-  <span class="dt">varlist =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>), 
-  <span class="dt">outcomename =</span> <span class="st">"y"</span>)</code></pre></div>
-<pre><code>## [1] "vtreat 1.3.8 start initial treatment design Sun Mar 31 09:51:27 2019"
-## [1] " start cross frame work Sun Mar 31 09:51:27 2019"
-## [1] " vtreat::mkCrossFrameNExperiment done Sun Mar 31 09:51:27 2019"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sf &lt;-<span class="st"> </span>cfe<span class="op">$</span>treatments<span class="op">$</span>scoreFrame
-knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(sf[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">cfe &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/mkCrossFrameNExperiment">mkCrossFrameNExperiment</a></span>(</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">  d, </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">  <span class="dt">varlist =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>), </a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">  <span class="dt">outcomename =</span> <span class="st">"y"</span>)</a></code></pre></div>
+<pre><code>## [1] "vtreat 1.4.0 start initial treatment design Wed Apr 10 00:24:41 2019"
+## [1] " start cross frame work Wed Apr 10 00:24:41 2019"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Apr 10 00:24:41 2019"</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">sf &lt;-<span class="st"> </span>cfe<span class="op">$</span>treatments<span class="op">$</span>scoreFrame</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(sf[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
@@ -168,13 +168,13 @@ knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentat
 </table>
 <p>Notice the signal carrying variable did not score better (having a larger <code>r</code>-squared and a smaller (better) significance value) than the noise variable (that is unrelated to the outcome). This is because the relation between <code>x</code> and <code>y</code> is not linear.</p>
 <p>Now let’s try <code><a href="../reference/value_variables_N.html">vtreat::value_variables_N()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vf =<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/value_variables_N">value_variables_N</a></span>(
-  d, 
-  <span class="dt">varlist =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>),
-  <span class="dt">outcomename =</span> <span class="st">"y"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(vf) &lt;-<span class="st"> </span><span class="ot">NULL</span>
-
-knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(vf[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">vf =<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/value_variables_N">value_variables_N</a></span>(</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  d, </a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">  <span class="dt">varlist =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>),</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="dt">outcomename =</span> <span class="st">"y"</span>)</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(vf) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(vf[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">var</th>

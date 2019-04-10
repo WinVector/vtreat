@@ -300,48 +300,53 @@ catScore <- function(varName,x,yC,yTarget,weights,numberOfHiddenDegrees=0) {
              stringsAsFactors=FALSE)
 }
 
+char_fix_map <- c("!" = "_bang_",
+                  "@" = "_at_",
+                  "#" = "_hash_",
+                  "$" = "_dollar_",
+                  "%" = "_percent_",
+                  "^" = "_pow_",
+                  "&" = "_amp_",
+                  "*" = "_star_",
+                  "(" = "_oparen_",
+                  ")" = "_cparen_",
+                  "-" = "_minus_",
+                  "+" = "_plus_",
+                  "=" = "_eq_",
+                  "<" = "_lt_",
+                  ">" = "_gt_",
+                  ":" = "_colon_",
+                  ";" = "_semi_",
+                  "'" = "_tick_",
+                  "`" = "_btick_",
+                  "~" = "_tilde_",
+                  '"' = "_quote_",
+                  "," = "_comma_",
+                  "?" = "_qmark_",
+                  "/" = "_slash_",
+                  "\\" = "_bslash_",
+                  "|" = "_bar_",
+                  "{" = "_obrace_",
+                  "}" = "_cbrace_",
+                  "[" = "_obrack_",
+                  "]" = "_cbrack_")
+
 fancy_sub <- function(s_in) {
   s <- s_in
   # leaving _ and . as is at first step
-  mp <- c("!" = "_bang_",
-          "@" = "_at_",
-          "#" = "_hash_",
-          "$" = "_dollar_",
-          "%" = "_percent_",
-          "^" = "_pow_",
-          "&" = "_amp_",
-          "*" = "_star_",
-          "(" = "_oparen_",
-          ")" = "_cparen_",
-          "-" = "_minus_",
-          "+" = "_plus_",
-          "=" = "_eq_",
-          "<" = "_lt_",
-          ">" = "_gt_",
-          ":" = "_colon_",
-          ";" = "_semi_",
-          "'" = "_tick_",
-          "`" = "_btick_",
-          "~" = "_tilde_",
-          '"' = "_quote_",
-          "," = "_comma_",
-          "?" = "_qmark_",
-          "/" = "_slash_",
-          "\\" = "_bslash_",
-          "|" = "_bar_",
-          "{" = "_obrace_",
-          "}" = "_cbrace_",
-          "[" = "_obrack_",
-          "]" = "_cbrack_")
-  for(c in names(mp)) {
-    s <- gsub(c, mp[[c]], s, fixed = TRUE)
+  support <- paste(unique(s_in), collapse = '')
+  support <- strsplit(support, "")[[1]] # split down to chars
+  chars <- unique(support)
+  needs_work <- intersect(support, names(char_fix_map))
+  for(c in needs_work) {
+    s <- gsub(c, char_fix_map[[c]], s, fixed = TRUE)
   }
   s
 }
 
 vtreat_make_names <- function(nms_in,
                               ...,
-                              fancy_names = FALSE) {
+                              fancy_names = TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat:::vtreat_make_names")
   nms <- as.character(nms_in)
   if(fancy_names) {
@@ -349,7 +354,7 @@ vtreat_make_names <- function(nms_in,
   }
   nms <- gsub("[^[:alnum:]]+", "_", nms)
   nms <- make.names(nms, unique = TRUE, allow_ = TRUE)
-  nms <- gsub("[^[:alnum:]]+", "_", nms)
+  nms <- gsub(".", "_", nms, fixed = TRUE) # underbar to dot
   nms
 }
 
