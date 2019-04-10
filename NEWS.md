@@ -1,4 +1,8 @@
 
+# vtreat 1.3.9 2019/04/09
+
+ * More tests on odd level names (and collisions).
+
 # vtreat 1.3.8 2019/03/31
 
  * Remove spline from default value variables.
