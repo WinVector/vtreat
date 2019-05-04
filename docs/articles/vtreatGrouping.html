@@ -113,7 +113,7 @@
       <h1>Grouping Example</h1>
                         <h4 class="author">Nina Zumel, Nate Sutton</h4>
             
-            <h4 class="date">2019-04-10</h4>
+            <h4 class="date">2019-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatGrouping.Rmd"><code>vignettes/vtreatGrouping.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatGrouping.Rmd</code></div>
@@ -193,18 +193,18 @@
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>stratSplit))</a></code></pre></div>
 <pre><code>##        groupid
 ## Subject 1 2 3
-##      6  4 4 3
-##      7  4 6 1
-##      8  3 4 4
-##      11 1 5 5
-##      3  3 2 6
-##      2  5 2 4
-##      4  3 3 5
-##      9  5 4 2
+##      6  6 2 3
+##      7  2 8 1
+##      8  2 3 6
+##      11 4 3 4
+##      3  3 4 4
+##      2  4 3 4
+##      4  5 5 1
+##      9  6 3 2
 ##      12 3 4 4
-##      10 6 2 3
-##      1  2 5 4
-##      5  5 3 3</code></pre>
+##      10 1 2 8
+##      1  6 2 3
+##      5  2 5 4</code></pre>
 <p>We can see this partition didn’t preserve the <code>Subject</code> grouping.</p>
 <p>Finally, we can try <code>vtreat</code>’s group-preserving split, which also tries to <em>y</em>-stratify as much as possible (by stratifying on the mean <em>y</em> observation from each group).</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># stratify by patient and outcome</span></a>
@@ -218,15 +218,15 @@
 <a class="sourceLine" id="cb14-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>subjectSplit))</a></code></pre></div>
 <pre><code>##        groupid
 ## Subject  1  2  3
-##      6  11  0  0
-##      7   0  0 11
+##      6   0  0 11
+##      7  11  0  0
 ##      8   0 11  0
-##      11  0 11  0
-##      3  11  0  0
-##      2   0  0 11
-##      4   0 11  0
-##      9  11  0  0
-##      12  0  0 11
+##      11  0  0 11
+##      3   0 11  0
+##      2  11  0  0
+##      4   0  0 11
+##      9   0 11  0
+##      12 11  0  0
 ##      10 11  0  0
 ##      1   0 11  0
 ##      5   0  0 11</code></pre>
@@ -247,8 +247,8 @@
 <pre><code>## [1] "Group by patient, stratify on y"
 ## [1] "Group means:"
 ##        1        2        3 
-## 4.859091 5.040455 4.981818 
-## [1] "Standard deviation of group means: 0.0925499641694611"</code></pre>
+## 5.018864 5.172727 4.689773 
+## [1] "Standard deviation of group means: 0.246718442094266"</code></pre>
 </div>
 </div>
   </div>

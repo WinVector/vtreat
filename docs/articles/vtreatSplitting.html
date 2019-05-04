@@ -113,7 +113,7 @@
       <h1>vtreat splitting</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-04-10</h4>
+            <h4 class="date">2019-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSplitting.Rmd"><code>vignettes/vtreatSplitting.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSplitting.Rmd</code></div>
@@ -179,18 +179,18 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/kWayStratifiedY">kWayStratifiedY</a></span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="ot">NULL</span>,<span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ## [[1]]$train
-## [1] 2 3
+## [1] 1 3
 ## 
 ## [[1]]$app
-## [1] 1
+## [1] 2
 ## 
 ## 
 ## [[2]]
 ## [[2]]$train
-## [1] 1
+## [1] 2
 ## 
 ## [[2]]$app
-## [1] 3 2
+## [1] 1 3
 ## 
 ## 
 ## attr(,"splitmethod")
@@ -262,26 +262,26 @@
 ## overlap</code></pre>
 <pre><code>## [[1]]
 ## [[1]]$train
-## [1] 1 3 4 5
+## [1] 1 2 3 4
 ## 
 ## [[1]]$app
-## [1] 2
+## [1] 5
 ## 
 ## 
 ## [[2]]
 ## [[2]]$train
-## [1] 1 2 5
+## [1] 2 4 5
 ## 
 ## [[2]]$app
-## [1] 3 4
+## [1] 1 3
 ## 
 ## 
 ## [[3]]
 ## [[3]]$train
-## [1] 2 3 4
+## [1] 1 3 5
 ## 
 ## [[3]]$app
-## [1] 5 1
+## [1] 2 4
 ## 
 ## 
 ## attr(,"splitmethod")
@@ -329,18 +329,18 @@
 <a class="sourceLine" id="cb14-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co"># mean(y) for each fold, unstratified</span></a>
 <a class="sourceLine" id="cb14-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tapply">tapply</a></span>(d<span class="op">$</span>y,d<span class="op">$</span>simpleGroup,mean)</a></code></pre></div>
-<pre><code>##           1           2           3           4           5 
-## -0.14440301 -0.06823358  0.10381743  0.05709230  0.04536831</code></pre>
+<pre><code>##            1            2            3            4            5 
+## -0.059622525  0.068139081 -0.007774052  0.099774019 -0.106875074</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># standard error of mean(y)</span></a>
 <a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/sd">sd</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tapply">tapply</a></span>(d<span class="op">$</span>y,d<span class="op">$</span>simpleGroup,mean))</a></code></pre></div>
-<pre><code>## [1] 0.1019753</code></pre>
+<pre><code>## [1] 0.08606286</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># mean(y) for each fold, unstratified</span></a>
 <a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tapply">tapply</a></span>(d<span class="op">$</span>y,d<span class="op">$</span>stratGroup,mean)</a></code></pre></div>
 <pre><code>##            1            2            3            4            5 
-##  0.008582529 -0.018748598  0.004187757  0.006390630 -0.006770870</code></pre>
+##  0.008797500 -0.011530915 -0.010448401  0.009648950 -0.002825685</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># standard error of mean(y)</span></a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/sd">sd</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tapply">tapply</a></span>(d<span class="op">$</span>y,d<span class="op">$</span>stratGroup,mean))</a></code></pre></div>
-<pre><code>## [1] 0.01141606</code></pre>
+<pre><code>## [1] 0.01015539</code></pre>
 <p>Notice the increased similarity if distributions.</p>
 </div>
 </div>

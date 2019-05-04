@@ -113,7 +113,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-04-10</h4>
+            <h4 class="date">2019-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -195,22 +195,22 @@
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:24:44 2019"
-## [1] "designing treatments Wed Apr 10 00:24:44 2019"
-## [1] " have initial level statistics Wed Apr 10 00:24:44 2019"
-## [1] " scoring treatments Wed Apr 10 00:24:45 2019"
-## [1] "have treatment plan Wed Apr 10 00:24:45 2019"
-## [1] "rescoring complex variables Wed Apr 10 00:24:45 2019"
-## [1] "done rescoring complex variables Wed Apr 10 00:24:45 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sat May  4 08:16:18 2019"
+## [1] "designing treatments Sat May  4 08:16:18 2019"
+## [1] " have initial level statistics Sat May  4 08:16:18 2019"
+## [1] " scoring treatments Sat May  4 08:16:18 2019"
+## [1] "have treatment plan Sat May  4 08:16:18 2019"
+## [1] "rescoring complex variables Sat May  4 08:16:18 2019"
+## [1] "done rescoring complex variables Sat May  4 08:16:18 2019"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC)</a></code></pre></div>
-<pre><code>##   origName   varName  code        rsq        sig extraModelDegrees
-## 1        x    x_catP  catP 0.54085208 0.03392101                 2
-## 2        x    x_catB  catB 0.00000000 1.00000000                 2
-## 3        z         z clean 0.25792985 0.14299775                 0
-## 4        z   z_isBAD isBAD 0.19087450 0.20766228                 0
-## 5        x  x_lev_NA   lev 0.19087450 0.20766228                 0
-## 6        x x_lev_x_a   lev 0.08170417 0.40972582                 0
-## 7        x x_lev_x_b   lev 0.00000000 1.00000000                 0</code></pre>
+<pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.11457614 0.3289524                 2
+## 2        x    x_catB  catB 0.12081050 0.3161341                 2
+## 3        z         z clean 0.25792985 0.1429977                 0
+## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
+## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
+## 6        x x_lev_x_a   lev 0.08170417 0.4097258                 0
+## 7        x x_lev_x_b   lev 0.00000000 1.0000000                 0</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</a></code></pre></div>
 <pre><code>## [1] "vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')"</code></pre>
 <p>Here we demonstrate the optional scaling feature of <code><a href="../reference/prepare.html">prepare()</a></code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it re-scales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
@@ -274,18 +274,18 @@
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:24:45 2019"
-## [1] "designing treatments Wed Apr 10 00:24:45 2019"
-## [1] " have initial level statistics Wed Apr 10 00:24:45 2019"
-## [1] " scoring treatments Wed Apr 10 00:24:45 2019"
-## [1] "have treatment plan Wed Apr 10 00:24:45 2019"
-## [1] "rescoring complex variables Wed Apr 10 00:24:45 2019"
-## [1] "done rescoring complex variables Wed Apr 10 00:24:45 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sat May  4 08:16:18 2019"
+## [1] "designing treatments Sat May  4 08:16:18 2019"
+## [1] " have initial level statistics Sat May  4 08:16:18 2019"
+## [1] " scoring treatments Sat May  4 08:16:18 2019"
+## [1] "have treatment plan Sat May  4 08:16:18 2019"
+## [1] "rescoring complex variables Sat May  4 08:16:18 2019"
+## [1] "done rescoring complex variables Sat May  4 08:16:18 2019"</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN)</a></code></pre></div>
 <pre><code>##   origName   varName  code         rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.213674336 0.2963404                 2
-## 2        x    x_catN  catN 0.001432768 0.9357866                 2
-## 3        x    x_catD  catD 0.173611111 0.3524132                 2
+## 1        x    x_catP  catP 0.260416667 0.2419189                 2
+## 2        x    x_catN  catN 0.069728569 0.5671793                 2
+## 3        x    x_catD  catD 0.005613741 0.8731603                 2
 ## 4        z         z clean 0.336111111 0.1724763                 0
 ## 5        z   z_isBAD isBAD 0.222222222 0.2855909                 0
 ## 6        x  x_lev_NA   lev 0.222222222 0.2855909                 0
@@ -353,11 +353,11 @@
 <p>Related work:</p>
 <ul>
 <li>
-<em>Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences</em>, 2nd edition, 1983, Jacob Cohen, Patricia Cohen (called the concept “effects coded variables”).</li>
+<a href="https://www.jstor.org/stable/2683780">“A Transformation for Simplifying the Interpretation of Coefficients of Binary Variables in Regression Analysis”</a>, Robert E. Sweeney and Edwin F. Ulveling; The American Statistician, vol. 26, no. 5, pp. 30-32, 1972.</li>
 <li>
-<a href="http://dl.acm.org/citation.cfm?id=507538">“A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems”</a> Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.</li>
+<a href="http://dl.acm.org/citation.cfm?id=507538">“A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems”</a> Daniele Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.</li>
 <li>
-<a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">“Modeling Trick: Impact Coding of Categorical Variables with Many Levels”</a> Nina Zumel, Win-Vector blog, 2012.</li>
+<a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">“Modeling Trick: Impact Coding of Categorical Variables with Many Levels”</a> Nina Zumel; Win-Vector blog, 2012.</li>
 <li>“Big Learning Made Easy – with Counts!”, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
 </ul>
 </div>

@@ -146,7 +146,7 @@ head(dTestNTreatedS)
 
 Related work:
 
-  * _Applied Multiple Regression/Correlation Analysis for the Behavioral Sciences_, 2nd edition, 1983, Jacob Cohen, Patricia Cohen (called the concept “effects coded variables”).
-  * ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
-  * ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel, Win-Vector blog, 2012.
+  * ["A Transformation for Simplifying the Interpretation of Coefficients of Binary Variables in Regression Analysis"](https://www.jstor.org/stable/2683780), Robert E. Sweeney and Edwin F. Ulveling; The American Statistician, vol. 26, no. 5, pp. 30-32, 1972.
+  * ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
+  * ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel; Win-Vector blog, 2012.
   * "Big Learning Made Easy – with Counts!", Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.

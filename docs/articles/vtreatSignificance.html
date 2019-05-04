@@ -113,7 +113,7 @@
       <h1>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-04-10</h4>
+            <h4 class="date">2019-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -167,13 +167,13 @@
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(d,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:25:15 2019"
-## [1] "designing treatments Wed Apr 10 00:25:15 2019"
-## [1] " have initial level statistics Wed Apr 10 00:25:15 2019"
-## [1] " scoring treatments Wed Apr 10 00:25:15 2019"
-## [1] "have treatment plan Wed Apr 10 00:25:15 2019"
-## [1] "rescoring complex variables Wed Apr 10 00:25:15 2019"
-## [1] "done rescoring complex variables Wed Apr 10 00:25:15 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sat May  4 08:16:36 2019"
+## [1] "designing treatments Sat May  4 08:16:36 2019"
+## [1] " have initial level statistics Sat May  4 08:16:36 2019"
+## [1] " scoring treatments Sat May  4 08:16:37 2019"
+## [1] "have treatment plan Sat May  4 08:16:37 2019"
+## [1] "rescoring complex variables Sat May  4 08:16:37 2019"
+## [1] "done rescoring complex variables Sat May  4 08:16:37 2019"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Estimate effect significance (not coefficient significance).</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">  d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
@@ -190,10 +190,10 @@
 <a class="sourceLine" id="cb7-14" data-line-number="14">prepD &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatmentsC,d,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</a></code></pre></div>
 <p>vtreat produces good variable significances using out of sample simulation (cross frames).</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
-<pre><code>##              varName          rsq           sig extraModelDegrees
-## 1   catVarNoise_catB 0.0003794619  4.683998e-01               249
-## 2 catVarPerfect_catP 0.0007396777  3.113758e-01               473
-## 3 catVarPerfect_catB 0.6951868195 1.802669e-211               473</code></pre>
+<pre><code>##              varName         rsq           sig extraModelDegrees
+## 1   catVarNoise_catB 0.001071310  2.231012e-01               249
+## 2 catVarPerfect_catP 0.001512584  1.477140e-01               473
+## 3 catVarPerfect_catB 0.695865944 1.125597e-211               473</code></pre>
 <p>For categorical targets we have in the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes). For numeric targets the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
 <p>Signal carrying complex variables can score as significant, even those composed of rare levels.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y<span class="op">~</span>d<span class="op">$</span>catVarPerfect<span class="op">==</span><span class="st">'lev001T'</span>,<span class="dt">data=</span>d,<span class="dt">family=</span>binomial))</a></code></pre></div>

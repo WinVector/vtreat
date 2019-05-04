@@ -123,9 +123,7 @@ precautions to guard against the following real world data issues:
     We re-encode such variables as a family of indicator or dummy
     variables for common levels plus an additional [impact
     code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
-    (also called “effects coded” in Jacob Cohen, Patricia Cohen,
-    *Applied Multiple Regression/Correlation Analysis for the Behavioral
-    Sciences*, 2nd edition, 1983). This allows principled use (including
+    (also called “effects coded”). This allows principled use (including
     smoothing) of huge categorical variables (like zip-codes) when
     building models. This is critical for some libraries (such as
     ‘randomForest’, which has hard limits on the number of allowed
@@ -276,14 +274,14 @@ dTestC <- data.frame(x=c('a', 'b', 'c', NA), z=c(10, 20, 30, NA))
 treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
- #  2        x    x_catB  catB 1.142159e-05 0.99166241                 2
- #  3        z         z clean 2.376018e-01 0.13176020                 0
- #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
- #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
- #  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0
- #  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0
+ #    origName   varName  code         rsq        sig extraModelDegrees
+ #  1        x    x_catP  catP 0.057741424 0.45748159                 2
+ #  2        x    x_catB  catB 0.019483838 0.66603146                 2
+ #  3        z         z clean 0.237601767 0.13176020                 0
+ #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
+ #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
+ #  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0
+ #  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0
 
 # help("prepare")
 
@@ -321,9 +319,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 7.352941e-02 0.5159425                 2
- #  2        x    x_catN  catN 1.678556e-03 0.9232668                 2
- #  3        x    x_catD  catD 3.614228e-01 0.1149323                 2
+ #  1        x    x_catP  catP 3.558824e-01 0.1184999                 2
+ #  2        x    x_catN  catN 2.131202e-02 0.7301398                 2
+ #  3        x    x_catD  catD 4.512437e-02 0.6135229                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -379,17 +377,19 @@ dTrainN %.>%
 
 Related work:
 
-  - *Applied Multiple Regression/Correlation Analysis for the Behavioral
-    Sciences*, 2nd edition, 1983, Jacob Cohen, Patricia Cohen (called
-    the concept “effects coded variables”).
+  - [“A Transformation for Simplifying the Interpretation of
+    Coefficients of Binary Variables in Regression
+    Analysis”](https://www.jstor.org/stable/2683780), Robert E.
+    Sweeney and Edwin F. Ulveling; The American Statistician, vol. 26,
+    no. 5, pp. 30-32, 1972.
   - [“A preprocessing scheme for high-cardinality categorical attributes
     in classification and prediction
     problems”](http://dl.acm.org/citation.cfm?id=507538) Daniele
-    Micci-Barreca, ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001
+    Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001
     Pages 27-32.
   - [“Modeling Trick: Impact Coding of Categorical Variables with Many
     Levels”](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
-    Nina Zumel, Win-Vector blog, 2012.
+    Nina Zumel; Win-Vector blog, 2012.
   - “Big Learning Made Easy – with Counts\!”, Misha Bilenko, Cortana
     Intelligence and Machine Learning Blog, 2015.
 

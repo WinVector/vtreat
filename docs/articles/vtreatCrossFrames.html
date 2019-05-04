@@ -113,7 +113,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-04-10</h4>
+            <h4 class="date">2019-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -166,13 +166,13 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:24:49 2019"
-## [1] "designing treatments Wed Apr 10 00:24:49 2019"
-## [1] " have initial level statistics Wed Apr 10 00:24:49 2019"
-## [1] " scoring treatments Wed Apr 10 00:24:49 2019"
-## [1] "have treatment plan Wed Apr 10 00:24:49 2019"
-## [1] "rescoring complex variables Wed Apr 10 00:24:49 2019"
-## [1] "done rescoring complex variables Wed Apr 10 00:24:50 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sat May  4 08:16:20 2019"
+## [1] "designing treatments Sat May  4 08:16:20 2019"
+## [1] " have initial level statistics Sat May  4 08:16:20 2019"
+## [1] " scoring treatments Sat May  4 08:16:21 2019"
+## [1] "have treatment plan Sat May  4 08:16:21 2019"
+## [1] "rescoring complex variables Sat May  4 08:16:21 2019"
+## [1] "done rescoring complex variables Sat May  4 08:16:21 2019"</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">)</a>
@@ -191,47 +191,47 @@
 ## glm(formula = f, family = binomial(link = "logit"), data = dTrainTreated)
 ## 
 ## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -2.40374  -0.00038  -0.00001   0.00002   2.47736  
+##    Min      1Q  Median      3Q     Max  
+## -2.258   0.000   0.000   0.000   1.970  
 ## 
 ## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)    2.0555     1.6233   1.266  0.20543   
-## xBad1_catP  -134.1696   398.7304  -0.336  0.73650   
-## xBad1_catB     0.9509     0.3034   3.134  0.00173 **
-## xBad2_catP  -310.2310   386.8597  -0.802  0.42260   
-## xBad2_catB     0.9663     0.3178   3.041  0.00236 **
-## xBad3_catP  -635.5629   341.6498  -1.860  0.06285 . 
-## xBad3_catB     1.2120     0.4255   2.849  0.00439 **
-## xGood1         0.8381     0.2702   3.102  0.00192 **
-## xGood2         0.9379     0.3017   3.109  0.00188 **
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -6.5366     2.4568  -2.661 0.007801 ** 
+## xBad1_catP  1168.1918   645.3595   1.810 0.070274 .  
+## xBad1_catB     1.8573     0.7867   2.361 0.018228 *  
+## xBad2_catP   167.4370   389.0529   0.430 0.666926    
+## xBad2_catB     1.4484     0.5456   2.655 0.007936 ** 
+## xBad3_catP   545.7586   453.9221   1.202 0.229240    
+## xBad3_catB     2.5985     0.6799   3.822 0.000133 ***
+## xGood1         0.7846     0.3519   2.229 0.025792 *  
+## xGood2         0.2889     0.3102   0.931 0.351838    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 1724.55  on 1331  degrees of freedom
-## Residual deviance:  110.93  on 1323  degrees of freedom
-## AIC: 128.93
+##     Null deviance: 1662.745  on 1332  degrees of freedom
+## Residual deviance:   86.371  on 1324  degrees of freedom
+## AIC: 104.37
 ## 
-## Number of Fisher Scoring iterations: 12</code></pre>
+## Number of Fisher Scoring iterations: 13</code></pre>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   849   17
-##   TRUE      7  459
-## [1] "accuracy 0.981981981981982"</code></pre>
+##   FALSE   898   14
+##   TRUE      6  415
+## [1] "accuracy 0.984996249062266"</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw">plotRes</span>(dTest,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   281  193
-##   TRUE    119   75
-## [1] "accuracy 0.532934131736527"</code></pre>
+##   FALSE   356  119
+##   TRUE    147   45
+## [1] "accuracy 0.60119940029985"</code></pre>
 <p>Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice the downstream model (the <code>glm</code>) erroneously thinks the <code>xBad?_cat</code> variables are significant (due to the large number of degrees of freedom hidden from the downstream model by the <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact/effect coding</a>).</p>
 </div>
 <div id="the-right-way-a-calibration-set" class="section level2">
@@ -250,13 +250,13 @@
 <a class="sourceLine" id="cb14-10" data-line-number="10">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb14-11" data-line-number="11">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb14-12" data-line-number="12">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Wed Apr 10 00:24:50 2019"
-## [1] "designing treatments Wed Apr 10 00:24:50 2019"
-## [1] " have initial level statistics Wed Apr 10 00:24:50 2019"
-## [1] " scoring treatments Wed Apr 10 00:24:50 2019"
-## [1] "have treatment plan Wed Apr 10 00:24:50 2019"
-## [1] "rescoring complex variables Wed Apr 10 00:24:50 2019"
-## [1] "done rescoring complex variables Wed Apr 10 00:24:50 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sat May  4 08:16:21 2019"
+## [1] "designing treatments Sat May  4 08:16:21 2019"
+## [1] " have initial level statistics Sat May  4 08:16:21 2019"
+## [1] " scoring treatments Sat May  4 08:16:21 2019"
+## [1] "have treatment plan Sat May  4 08:16:21 2019"
+## [1] "rescoring complex variables Sat May  4 08:16:21 2019"
+## [1] "done rescoring complex variables Sat May  4 08:16:22 2019"</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="dt">pruneSig=</span>pruneSig)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainTreated),<span class="st">'y'</span>)</a>
@@ -269,22 +269,24 @@
 ##     family = binomial(link = "logit"), data = dTrainTreated)
 ## 
 ## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.5225  -0.9198  -0.6951   1.1703   2.2995  
+##    Min      1Q  Median      3Q     Max  
+## -1.856  -0.899  -0.686   1.195   2.218  
 ## 
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.69527    0.08873  -7.836 4.65e-15 ***
-## xGood1       0.39514    0.08537   4.629 3.68e-06 ***
-## xGood2       0.55134    0.09580   5.755 8.66e-09 ***
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -0.77344    0.16769  -4.612 3.98e-06 ***
+## xBad1_catP  -21.99731  108.37126  -0.203    0.839    
+## xBad2_catB    0.00254    0.01552   0.164    0.870    
+## xGood1        0.45161    0.08974   5.032 4.84e-07 ***
+## xGood2        0.54021    0.09028   5.984 2.18e-09 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 832.55  on 642  degrees of freedom
-## Residual deviance: 771.92  on 640  degrees of freedom
-## AIC: 777.92
+##     Null deviance: 860.31  on 677  degrees of freedom
+## Residual deviance: 798.35  on 673  degrees of freedom
+## AIC: 808.35
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
@@ -292,9 +294,9 @@
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   377   41
-##   TRUE    160   65
-## [1] "accuracy 0.687402799377916"</code></pre>
+##   FALSE   424   30
+##   TRUE    172   52
+## [1] "accuracy 0.702064896755162"</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">                                <span class="dt">pruneSig=</span>pruneSig)</a>
 <a class="sourceLine" id="cb20-3" data-line-number="3">dTest<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTestTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
@@ -302,9 +304,9 @@
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   425   49
-##   TRUE    150   44
-## [1] "accuracy 0.702095808383233"</code></pre>
+##   FALSE   436   39
+##   TRUE    154   38
+## [1] "accuracy 0.710644677661169"</code></pre>
 <p>Notice above that we now see training and test accuracies of 70%. We have defeated over-fit in two ways: training performance is closer to test performance, and test performance is better. Also we see that the model now properly considers the “bad” variables to be insignificant.</p>
 </div>
 <div id="another-right-way-cross-validation" class="section level2">
@@ -359,9 +361,9 @@
 <a class="sourceLine" id="cb22-5" data-line-number="5">           <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb22-6" data-line-number="6">           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></a>
 <a class="sourceLine" id="cb22-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 start initial treatment design Wed Apr 10 00:24:51 2019"
-## [1] " start cross frame work Wed Apr 10 00:24:51 2019"
-## [1] " vtreat::mkCrossFrameCExperiment done Wed Apr 10 00:24:52 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.0 start initial treatment design Sat May  4 08:16:22 2019"
+## [1] " start cross frame work Sat May  4 08:16:22 2019"
+## [1] " vtreat::mkCrossFrameCExperiment done Sat May  4 08:16:22 2019"</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments</a>
 <a class="sourceLine" id="cb24-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb24-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</a></code></pre></div>
@@ -373,27 +375,27 @@
 <tbody>
 <tr class="odd">
 <td align="left">xBad1_catP</td>
-<td align="right">0.8685784</td>
+<td align="right">0.8486902</td>
 </tr>
 <tr class="even">
 <td align="left">xBad1_catB</td>
-<td align="right">0.0942444</td>
+<td align="right">0.1386407</td>
 </tr>
 <tr class="odd">
 <td align="left">xBad2_catP</td>
-<td align="right">0.8558471</td>
+<td align="right">0.9320211</td>
 </tr>
 <tr class="even">
 <td align="left">xBad2_catB</td>
-<td align="right">0.1142775</td>
+<td align="right">0.7982378</td>
 </tr>
 <tr class="odd">
 <td align="left">xBad3_catP</td>
-<td align="right">0.6981315</td>
+<td align="right">0.8604189</td>
 </tr>
 <tr class="even">
 <td align="left">xBad3_catB</td>
-<td align="right">0.1103321</td>
+<td align="right">0.1007443</td>
 </tr>
 <tr class="odd">
 <td align="left">xGood1</td>
@@ -431,34 +433,34 @@
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -1.6624  -0.9170  -0.6663   1.1747   2.2971  
+## -1.6349  -0.8718  -0.6592   1.1632   2.2616  
 ## 
 ## Coefficients:
 ##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.687112   0.065340 -10.516  &lt; 2e-16 ***
-## xBad1_catB   0.007962   0.009466   0.841    0.400    
-## xBad2_catB  -0.014104   0.009579  -1.472    0.141    
-## xBad3_catB   0.014359   0.009331   1.539    0.124    
-## xGood1       0.405918   0.061888   6.559 5.42e-11 ***
-## xGood2       0.570827   0.064946   8.789  &lt; 2e-16 ***
+## (Intercept) -0.823469   0.069357 -11.873  &lt; 2e-16 ***
+## xBad1_catB  -0.027023   0.010167  -2.658  0.00786 ** 
+## xBad2_catB   0.007309   0.009871   0.740  0.45907    
+## xBad3_catB   0.031346   0.010194   3.075  0.00211 ** 
+## xGood1       0.390686   0.063926   6.111 9.87e-10 ***
+## xGood2       0.514013   0.064541   7.964 1.66e-15 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 1724.6  on 1331  degrees of freedom
-## Residual deviance: 1586.6  on 1326  degrees of freedom
-## AIC: 1598.6
+##     Null deviance: 1662.7  on 1332  degrees of freedom
+## Residual deviance: 1535.9  on 1327  degrees of freedom
+## AIC: 1547.9
 ## 
-## Number of Fisher Scoring iterations: 4</code></pre>
+## Number of Fisher Scoring iterations: 3</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">dTrain<span class="op">$</span>predM1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(m1,<span class="dt">newdata=</span>dTrainTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
 <a class="sourceLine" id="cb34-2" data-line-number="2"><span class="kw">plotRes</span>(dTrain,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span>)</a></code></pre></div>
 <pre><code>## [1] "model1 on train"
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   775   91
-##   TRUE    331  135
-## [1] "accuracy 0.683183183183183"</code></pre>
+##   FALSE   858   54
+##   TRUE    325   96
+## [1] "accuracy 0.715678919729932"</code></pre>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">dTestTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTest,</a>
 <a class="sourceLine" id="cb36-2" data-line-number="2">                                <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">varRestriction=</span>newvars)</a>
 <a class="sourceLine" id="cb36-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestTreated))</a></code></pre></div>
@@ -473,52 +475,52 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="right">0.773007</td>
+<td align="right">-0.3255386</td>
 <td align="right">0.0000000</td>
-<td align="right">0.6196992</td>
-<td align="right">-8.590741</td>
-<td align="right">0.4217559</td>
-<td align="right">0.3143976</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="right">-8.5907412</td>
-<td align="right">0.0000000</td>
-<td align="right">-9.283838</td>
-<td align="right">-1.6801750</td>
-<td align="right">-0.0767822</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="right">-9.6892868</td>
-<td align="right">0.0000000</td>
-<td align="right">9.830139</td>
-<td align="right">1.0637346</td>
-<td align="right">0.8217212</td>
+<td align="right">-1.5105399</td>
+<td align="right">-0.6111387</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
-<td align="right">9.8301395</td>
-<td align="right">-0.0733980</td>
-<td align="right">-8.590741</td>
-<td align="right">0.2954393</td>
-<td align="right">0.3517839</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="right">-9.2838384</td>
-<td align="right">-8.5907412</td>
 <td align="right">0.000000</td>
-<td align="right">0.9866599</td>
-<td align="right">0.3880777</td>
+<td align="right">-8.4374333</td>
+<td align="right">-9.1305305</td>
+<td align="right">-1.2629291</td>
+<td align="right">2.0045631</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="right">9.983447</td>
+<td align="right">0.7730070</td>
+<td align="right">0.0000000</td>
+<td align="right">0.1323056</td>
+<td align="right">-0.1780657</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
-<td align="right">0.6196992</td>
-<td align="right">9.8301395</td>
-<td align="right">9.830139</td>
-<td align="right">1.1893923</td>
-<td align="right">0.3922303</td>
-<td align="left">TRUE</td>
+<td align="right">0.773007</td>
+<td align="right">0.0000000</td>
+<td align="right">10.6765446</td>
+<td align="right">-1.8673372</td>
+<td align="right">1.3348230</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="right">-8.437433</td>
+<td align="right">0.0000000</td>
+<td align="right">-9.1305305</td>
+<td align="right">0.2635566</td>
+<td align="right">0.4006814</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="right">-9.535979</td>
+<td align="right">0.7730070</td>
+<td align="right">0.0799098</td>
+<td align="right">0.3260325</td>
+<td align="right">1.4338856</td>
+<td align="left">FALSE</td>
 </tr>
 </tbody>
 </table>
@@ -527,9 +529,9 @@
 <pre><code>## [1] "model1 on test"
 ##        pred
 ## truth   FALSE TRUE
-##   FALSE   421   53
-##   TRUE    145   49
-## [1] "accuracy 0.703592814371258"</code></pre>
+##   FALSE   438   37
+##   TRUE    163   29
+## [1] "accuracy 0.700149925037481"</code></pre>
 <p>We again get the better 70% test accuracy. And this is a more statistically efficient technique as we didn’t have to restrict some data to calibration.</p>
 <p>The model fit to the cross-frame behaves similarly to the model produced via the process <em>f(CalibrationData, TrainData)</em>. Notice that the <code>xBad*_catB</code> variables fail to achieve significance in the downstream <code>glm</code> model, allowing that model to give them small coefficients and even (if need be) prune them out. This is the point of using a cross frame as we see in the first example the <code>xBad*_catB</code> are hard to remove if they make it to standard (non-cross) frames as they are hiding a lot of degrees of freedom from downstream modeling procedures.</p>
 </div>
