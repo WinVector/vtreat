@@ -3,6 +3,15 @@ Custom Level Coding in vtreat
 Nina Zumel, John Mount
 2019-06-02
 
+(This article is an attempt to re-run [Custom Level Coding in
+vtreat](https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md),
+also
+[here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/)
+replacing [`lme4`](https://CRAN.R-project.org/package=lme4) with
+[`brms`](https://CRAN.R-project.org/package=brms) as suggested
+[here](https://twitter.com/smartin2018/status/1134919828077068288).
+Overall the substitution is no cheap.)
+
 One of the services that `vtreat` provides is *level coding* (what we
 sometimes call *impact coding*): converting the levels of a categorical
 variable to a meaningful and concise single numeric variable, rather
@@ -41,21 +50,35 @@ We also will not execute the examples to avoid adding additional
 requirements to the `vtreat` package. The executed version of this
 example is available here.
 
-We’ll implement our partial pooling encoders using the `lmer()`
-(multilevel linear regression) and `glmer()` (multilevel generalized
-linear regression) functions from the `lme4` package. For our example
-data, we’ll use radon levels by county for the state of Minnesota
-(Gelman and Hill, 2007. You can find the original data
+We’ll implement our partial pooling encoders using the multilevel linear
+regressionmultilevel generalized linear regression functions from the
+`brms` package. For our example data, we’ll use radon levels by county
+for the state of Minnesota (Gelman and Hill, 2007. You can find the
+original data
 [here](http://www.stat.columbia.edu/~gelman/arm/software/)).
 
 ## The Data: Radon levels in Minnesota
 
 ``` r
 library("vtreat")
-library("lme4")
+library("brms")
 ```
 
-    ## Loading required package: Matrix
+    ## Loading required package: Rcpp
+
+    ## Registered S3 methods overwritten by 'ggplot2':
+    ##   method         from 
+    ##   [.quosures     rlang
+    ##   c.quosures     rlang
+    ##   print.quosures rlang
+
+    ## Registered S3 method overwritten by 'xts':
+    ##   method     from
+    ##   as.zoo.xts zoo
+
+    ## Loading 'brms' package (version 2.9.0). Useful instructions
+    ## can be found by typing help('brms'). A more detailed introduction
+    ## to the package is available through vignette('brms_overview').
 
 ``` r
 library("dplyr")
@@ -74,26 +97,8 @@ library("dplyr")
 
 ``` r
 library("tidyr")
-```
-
-    ## 
-    ## Attaching package: 'tidyr'
-
-    ## The following object is masked from 'package:Matrix':
-    ## 
-    ##     expand
-
-``` r
 library("ggplot2")
-```
 
-    ## Registered S3 methods overwritten by 'ggplot2':
-    ##   method         from 
-    ##   [.quosures     rlang
-    ##   c.quosures     rlang
-    ##   print.quosures rlang
-
-``` r
 # example data
 
 srrs = read.table("srrs2.dat", header=TRUE, sep=",", stringsAsFactor=FALSE)
@@ -138,7 +143,7 @@ radonMN %>% group_by(county) %>%
   ggtitle("Distribution of county stats")
 ```
 
-![](CustomLevelCoders_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](CustomLevelCoders_brms_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 As the graph shows, the conditional mean of log radon activity by county
 ranges from nearly zero to about 3, and the conditional expectation of a
@@ -160,14 +165,14 @@ takes as input:
   - `v`: a string with the name of the categorical variable
   - `vcol`: the actual categorical column (assumed character)
   - `y`: the numerical outcome column
-  - `weights`: a column of row weights
+  - `weights`: a column of row weights (ignored by brm)
 
 The function should return a column of scores (the level codings). In
 keeping with how the `catN` and `catB` variables are calculated,
 `vtreat` encodes the custom scores as deviations from the grand mean of
 the returned column.
 
-For our example, the function builds a `lmer` model to predict `y` as a
+For our example, the function builds a `brms` model to predict `y` as a
 function of `vcol`, then returns the predictions on the training data.
 
 ``` r
@@ -176,15 +181,16 @@ function of `vcol`, then returns the predictions on the training data.
 # @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
-ppCoderN <- function(v, vcol, 
+ppCoderNb <- function(v, vcol, 
                      y, 
                      weights) {
   # regression case y ~ vcol
   d <- data.frame(x = vcol,
-                  y = y,
+                  y = as.numeric(y),
                   stringsAsFactors = FALSE)
-  m <- lmer(y ~ (1 | x), data=d, weights=weights)
-  predict(m, newdata=d)
+  m <- brm(y ~ (1 | x), data=d, cores=4, iter=2000)
+  z <- predict(m, newdata=d)
+  z[, "Estimate", drop = TRUE]
 }
 ```
 
@@ -201,15 +207,16 @@ creating the treatment plan.
 # @param y logical, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
-ppCoderC <- function(v, vcol, 
+ppCoderCb <- function(v, vcol, 
                      y, 
                      weights) {
   # classification case y ~ vcol
   d <- data.frame(x = vcol,
-                  y = y,
+                  y = as.numeric(y),
                   stringsAsFactors = FALSE)
-  m = glmer(y ~ (1 | x), data=d, weights=weights, family=binomial)
-  predict(m, newdata=d, type='link')
+  m = brm(y ~ (1 | x), data=d, family=binomial("logit"), cores=4, iter=2000)
+  z <- predict(m, newdata=d, type='link')
+  z[, "Estimate", drop = TRUE]
 }
 ```
 
@@ -225,8 +232,8 @@ the estimated grand mean. The`catN` and `catB` are centered in this way.
 Our example coders can be passed in as shown below.
 
 ``` r
-customCoders = list('n.poolN.center' = ppCoderN, 
-                    'c.poolC.center' = ppCoderC)
+customCoders = list('n.poolNb.center' = ppCoderNb, 
+                    'c.poolCb.center' = ppCoderCb)
 ```
 
 ## Using the Custom Coders
@@ -237,7 +244,7 @@ problem.
 ``` r
 # I only want to create the cleaned numeric variables, the isBAD variables,
 # and the level codings (not the indicator variables or catP, etc.)
-vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolN')
+vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolNb')
 
 treatplanN = designTreatmentsN(radonMN, 
                                varlist = c('county'),
@@ -245,17 +252,41 @@ treatplanN = designTreatmentsN(radonMN,
                                codeRestriction = vartypes_I_want,
                                customCoders = customCoders, 
                                verbose=FALSE)
+```
 
+    ## Compiling the C++ model
+
+    ## Start sampling
+
+    ## Compiling the C++ model
+
+    ## recompiling to avoid crashing R session
+
+    ## Start sampling
+
+    ## Compiling the C++ model
+
+    ## recompiling to avoid crashing R session
+
+    ## Start sampling
+
+    ## Compiling the C++ model
+
+    ## recompiling to avoid crashing R session
+
+    ## Start sampling
+
+``` r
 scoreFrame = treatplanN$scoreFrame
 scoreFrame %>% select(varName, sig, origName, code)
 ```
 
-    ##        varName          sig origName  code
-    ## 1 county_poolN 5.416387e-17   county poolN
-    ## 2  county_catN 6.794541e-15   county  catN
+    ##         varName          sig origName   code
+    ## 1 county_poolNb 3.496850e-20   county poolNb
+    ## 2   county_catN 1.477907e-18   county   catN
 
 Note that the treatment plan returns both the `catN` variable (default
-level encoding) and the pooled level encoding (`poolN`). You can
+level encoding) and the pooled level encoding (`poolNb`). You can
 restrict to just using one coding or the other using the
 `codeRestriction` argument in `prepare()`.
 
@@ -274,20 +305,20 @@ outframe = prepare(treatplanN, measframe)
 #
 # outframe = prepare(treatplanN, 
 #                    measframe,
-#                    codeRestriction = c('clean', 'isBAD', 'poolN'))
+#                    codeRestriction = c('clean', 'isBAD', 'poolNb'))
 
 
 gather(outframe, key=scoreType, value=score, 
-       county_poolN, county_catN) %>%
+       county_poolNb, county_catN) %>%
   ggplot(aes(x=score)) + 
   geom_density(adjust=0.5) + geom_rug(sides="b") + 
   facet_wrap(~scoreType, ncol=1, scale="free_y") + 
   ggtitle("Distribution of scores")
 ```
 
-![](CustomLevelCoders_files/figure-gfm/nex-1.png)<!-- -->
+![](CustomLevelCoders_brms_files/figure-gfm/nex-1.png)<!-- -->
 
-Notice that the `poolN` scores are “tucked in” compared to the `catN`
+Notice that the `poolNb` scores are “tucked in” compared to the `catN`
 encoding. In a later article, we’ll show that the counties with the most
 tucking in (or *shrinkage*) tend to be those with fewer measurements.
 
@@ -295,7 +326,7 @@ We can also code for the categorical problem.
 
 ``` r
 # For categorical problems, coding is catB
-vartypes_I_want = c('clean', 'isBAD', 'catB', 'poolC')
+vartypes_I_want = c('clean', 'isBAD', 'catB', 'poolCb')
 
 treatplanC = designTreatmentsC(radonMN, 
                                varlist = c('county'),
@@ -304,20 +335,112 @@ treatplanC = designTreatmentsC(radonMN,
                                codeRestriction = vartypes_I_want,
                                customCoders = customCoders, 
                                verbose=FALSE)
+```
 
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
+
+    ## Compiling the C++ model
+
+    ## Start sampling
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
+
+    ## Compiling the C++ model
+
+    ## recompiling to avoid crashing R session
+
+    ## Start sampling
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
+
+    ## Compiling the C++ model
+
+    ## recompiling to avoid crashing R session
+
+    ## Start sampling
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
+
+    ## Compiling the C++ model
+
+    ## recompiling to avoid crashing R session
+
+    ## Start sampling
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+    ## Using the maximum response value as the number of trials.
+
+    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
+    ## hand side of the model formula is deprecated.
+
+``` r
 outframe = prepare(treatplanC, measframe)
 
 gather(outframe, key=scoreType, value=linkscore, 
-       county_poolC, county_catB) %>%
+       county_poolCb, county_catB) %>%
   ggplot(aes(x=linkscore)) + 
   geom_density(adjust=0.5) + geom_rug(sides="b") + 
   facet_wrap(~scoreType, ncol=1, scale="free_y") + 
   ggtitle("Distribution of link scores")
 ```
 
-![](CustomLevelCoders_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](CustomLevelCoders_brms_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-Notice that the `poolC` link scores are even more tucked in compared to
+Notice that the `poolCb` link scores are even more tucked in compared to
 the `catB` link scores, and that the `catB` scores are multimodal. The
 smaller link scores means that the pooled model avoids estimates of
 conditional expectation close to either zero or one, because, again,
@@ -325,9 +448,9 @@ these estimates come from counties with few readings.
 
 ## Other Considerations
 
-For this example, we used the `lme4` package to create custom level
+For this example, we used the `brms` package to create custom level
 codings. Once calculated, `vtreat` stores the coding as a lookup table
-in the treatment plan. *This means `lme4` is not needed to prepare new
+in the treatment plan. *This means `brms` is not needed to prepare new
 data.* In general, using a treatment plan is not dependent on any
 special packages that might have been used to create it, so it can be
 shared with other users with no extra dependencies.
