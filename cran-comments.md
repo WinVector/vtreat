@@ -48,5 +48,5 @@
 No declared reverse dependencies ( https://github.com/WinVector/vtreat/blob/master/extras/check_reverse_dependencies.md ).
 
      
-Zumel is not a mis-spelling.
+Mount and Zumel are not mis-spellings.
 

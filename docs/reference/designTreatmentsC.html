@@ -67,7 +67,7 @@ using mkCrossFrameCExperiment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -280,11 +280,11 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
    <span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
 <span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.1 inspecting inputs Mon Jul  1 10:46:26 2019"
-#&gt; [1] "designing treatments Mon Jul  1 10:46:26 2019"
-#&gt; [1] " have initial level statistics Mon Jul  1 10:46:26 2019"
-#&gt; [1] " scoring treatments Mon Jul  1 10:46:26 2019"
-#&gt; [1] "have treatment plan Mon Jul  1 10:46:26 2019"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
+<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.2 inspecting inputs Mon Jul  1 12:51:43 2019"
+#&gt; [1] "designing treatments Mon Jul  1 12:51:43 2019"
+#&gt; [1] " have initial level statistics Mon Jul  1 12:51:43 2019"
+#&gt; [1] " scoring treatments Mon Jul  1 12:51:43 2019"
+#&gt; [1] "have treatment plan Mon Jul  1 12:51:43 2019"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
 <span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

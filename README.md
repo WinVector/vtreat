@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173314.svg)](https://doi.org/10.5281/zenodo.1173314)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 
 [vtreat](http://winvector.github.io/vtreat/) is an
@@ -244,7 +244,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.4.0'
+ #  [1] '1.4.1'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -275,8 +275,8 @@ treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.057741424 0.45748159                 2
- #  2        x    x_catB  catB 0.019483838 0.66603146                 2
+ #  1        x    x_catP  catP 0.059315943 0.45141252                 2
+ #  2        x    x_catB  catB 0.029824903 0.59334713                 2
  #  3        z         z clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -319,9 +319,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.558824e-01 0.1184999                 2
- #  2        x    x_catN  catN 2.131202e-02 0.7301398                 2
- #  3        x    x_catD  catD 4.512437e-02 0.6135229                 2
+ #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
+ #  2        x    x_catN  catN 1.088889e-01 0.4247287                 2
+ #  3        x    x_catD  catD 3.743113e-01 0.1069707                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
