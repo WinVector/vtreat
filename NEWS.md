@@ -1,4 +1,8 @@
 
+# vtreat 1.4.1 2019/07/01
+
+ * Fix eronious Cohen reference in documentation.
+ 
 # vtreat 1.4.0 2019/05/05
 
  * Fancy level and variable names.

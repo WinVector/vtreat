@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-05-05</h4>
+            <h4 class="date">2019-07-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -166,13 +166,13 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sun May  5 07:48:28 2019"
-## [1] "designing treatments Sun May  5 07:48:28 2019"
-## [1] " have initial level statistics Sun May  5 07:48:28 2019"
-## [1] " scoring treatments Sun May  5 07:48:28 2019"
-## [1] "have treatment plan Sun May  5 07:48:29 2019"
-## [1] "rescoring complex variables Sun May  5 07:48:29 2019"
-## [1] "done rescoring complex variables Sun May  5 07:48:29 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.1 inspecting inputs Mon Jul  1 10:46:50 2019"
+## [1] "designing treatments Mon Jul  1 10:46:50 2019"
+## [1] " have initial level statistics Mon Jul  1 10:46:50 2019"
+## [1] " scoring treatments Mon Jul  1 10:46:50 2019"
+## [1] "have treatment plan Mon Jul  1 10:46:50 2019"
+## [1] "rescoring complex variables Mon Jul  1 10:46:50 2019"
+## [1] "done rescoring complex variables Mon Jul  1 10:46:51 2019"</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">)</a>
@@ -250,13 +250,13 @@
 <a class="sourceLine" id="cb14-10" data-line-number="10">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb14-11" data-line-number="11">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb14-12" data-line-number="12">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 inspecting inputs Sun May  5 07:48:29 2019"
-## [1] "designing treatments Sun May  5 07:48:29 2019"
-## [1] " have initial level statistics Sun May  5 07:48:29 2019"
-## [1] " scoring treatments Sun May  5 07:48:29 2019"
-## [1] "have treatment plan Sun May  5 07:48:29 2019"
-## [1] "rescoring complex variables Sun May  5 07:48:29 2019"
-## [1] "done rescoring complex variables Sun May  5 07:48:29 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.1 inspecting inputs Mon Jul  1 10:46:51 2019"
+## [1] "designing treatments Mon Jul  1 10:46:51 2019"
+## [1] " have initial level statistics Mon Jul  1 10:46:51 2019"
+## [1] " scoring treatments Mon Jul  1 10:46:51 2019"
+## [1] "have treatment plan Mon Jul  1 10:46:51 2019"
+## [1] "rescoring complex variables Mon Jul  1 10:46:51 2019"
+## [1] "done rescoring complex variables Mon Jul  1 10:46:51 2019"</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/prepare">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="dt">pruneSig=</span>pruneSig)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainTreated),<span class="st">'y'</span>)</a>
@@ -361,9 +361,9 @@
 <a class="sourceLine" id="cb22-5" data-line-number="5">           <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb22-6" data-line-number="6">           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></a>
 <a class="sourceLine" id="cb22-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.0 start initial treatment design Sun May  5 07:48:30 2019"
-## [1] " start cross frame work Sun May  5 07:48:30 2019"
-## [1] " vtreat::mkCrossFrameCExperiment done Sun May  5 07:48:30 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.1 start initial treatment design Mon Jul  1 10:46:51 2019"
+## [1] " start cross frame work Mon Jul  1 10:46:52 2019"
+## [1] " vtreat::mkCrossFrameCExperiment done Mon Jul  1 10:46:52 2019"</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments</a>
 <a class="sourceLine" id="cb24-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb24-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</a></code></pre></div>
