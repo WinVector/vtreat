@@ -1,4 +1,8 @@
 
+# vtreat 1.4.3 2019/07/06
+
+ * More tests.
+ 
 # vtreat 1.4.2 2019/07/01
 
  * Fix eronious Cohen reference in documentation.

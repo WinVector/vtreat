@@ -1,11 +1,16 @@
 Constant Coding Leak
 ================
 John Mount, Win-Vector LLC
-2017-09-20
+2019-07-06
 
-We will show how in some situations using "more data in cross-validation" can be harmful.
+We will show how in some situations using “more data in
+cross-validation” can be harmful.
 
-Our example: an outcome (`y`) that is independent of a low-complexity categorical variable (`x`). We will combine this with a varaible that is a noisy constant and leave-one-out cross-validation (which is a deterministic procedure) to get a bad result (failing to notice over-fit).
+Our example: an outcome (`y`) that is independent of a low-complexity
+categorical variable (`x`). We will combine this with a variable that is
+a noisy constant and leave-one-out cross-validation (which is a
+deterministic procedure) to get a bad result (failing to notice
+over-fit).
 
 ``` r
 library("vtreat")
@@ -23,8 +28,12 @@ Introduce a deliberately bad custom coder.
 
 This coder is bad in several ways:
 
--   It is essentially returning a constant independent of the variable it claims to be encoding.
--   It's predictions are not consistent, it makes different predictions for the same value of the independent variable it claims to encode.
+  - It is essentially returning a constant independent of the variable
+    it claims to be encoding.
+  - It’s predictions are not consistent, it makes different predictions
+    for the same value of the independent variable it claims to encode.
+
+<!-- end list -->
 
 ``` r
 # @param v character scalar: variable name
@@ -44,7 +53,8 @@ badCoderN <- function(v, vcol,
 customCoders <- list('n.badCoderN' = badCoderN)
 ```
 
-`vtreat` correctly works on this example in the design/prepare pattern, and rejects the bad custom variable.
+`vtreat` correctly works on this example in the design/prepare pattern,
+and rejects the bad custom variable.
 
 ``` r
 treatplanN <- designTreatmentsN(d, 
@@ -59,8 +69,8 @@ t(treatplanN$scoreFrame)
     ##                   1            
     ## varName           "x_badCoderN"
     ## varMoves          "TRUE"       
-    ## rsq               "0.001342833"
-    ## sig               "0.7173809"  
+    ## rsq               "0.00163872" 
+    ## sig               "0.6892408"  
     ## needsSplit        "TRUE"       
     ## extraModelDegrees "1"          
     ## origName          "x"          
@@ -76,19 +86,20 @@ summary(lm(y ~ x_badCoderN, data= treatedD))
     ## lm(formula = y ~ x_badCoderN, data = treatedD)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.1822 -0.7879 -0.0334  0.6864  2.8753 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -3.00554 -0.74592 -0.01978  0.67265  2.98501 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)    574.7      520.1   1.105    0.272
-    ## x_badCoderN  -2936.2     2658.2  -1.105    0.272
+    ## (Intercept)    391.5      939.1   0.417    0.678
+    ## x_badCoderN  -1999.8     4799.8  -0.417    0.678
     ## 
-    ## Residual standard error: 1.114 on 98 degrees of freedom
-    ## Multiple R-squared:  0.0123, Adjusted R-squared:  0.002218 
-    ## F-statistic:  1.22 on 1 and 98 DF,  p-value: 0.272
+    ## Residual standard error: 1.12 on 98 degrees of freedom
+    ## Multiple R-squared:  0.001768,   Adjusted R-squared:  -0.008418 
+    ## F-statistic: 0.1736 on 1 and 98 DF,  p-value: 0.6779
 
-`vtreat` correctly works on this example in the cross-frame pattern, and rejects the bad custom variable.
+`vtreat` correctly works on this example in the cross-frame pattern, and
+rejects the bad custom variable.
 
 ``` r
 cfe <- mkCrossFrameNExperiment(d, 
@@ -96,14 +107,21 @@ cfe <- mkCrossFrameNExperiment(d,
                                outcomename = 'y',
                                codeRestriction = 'badCoderN',
                                customCoders = customCoders)
+```
+
+    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:17:20 2019"
+    ## [1] " start cross frame work Sat Jul  6 16:17:20 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:17:20 2019"
+
+``` r
 t(cfe$treatments$scoreFrame)
 ```
 
     ##                   1            
     ## varName           "x_badCoderN"
     ## varMoves          "TRUE"       
-    ## rsq               "0.0010101"  
-    ## sig               "0.7535938"  
+    ## rsq               "0.002231195"
+    ## sig               "0.6407308"  
     ## needsSplit        "TRUE"       
     ## extraModelDegrees "1"          
     ## origName          "x"          
@@ -118,19 +136,25 @@ summary(lm(y ~ x_badCoderN, data= cfe$crossFrame))
     ## lm(formula = y ~ x_badCoderN, data = cfe$crossFrame)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.0275 -0.7469 -0.0020  0.6375  2.9630 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -3.04022 -0.74222  0.05169  0.63005  2.95187 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   0.5804     1.1214   0.518    0.606
-    ## x_badCoderN  -1.9741     5.7165  -0.345    0.731
+    ## (Intercept)   0.5794     1.1269   0.514    0.608
+    ## x_badCoderN  -1.9688     5.7449  -0.343    0.733
     ## 
     ## Residual standard error: 1.121 on 98 degrees of freedom
-    ## Multiple R-squared:  0.001215,   Adjusted R-squared:  -0.008976 
-    ## F-statistic: 0.1193 on 1 and 98 DF,  p-value: 0.7306
+    ## Multiple R-squared:  0.001197,   Adjusted R-squared:  -0.008995 
+    ## F-statistic: 0.1174 on 1 and 98 DF,  p-value: 0.7326
 
-However, specifying `oneWayHoldout` as the cross-validation technique introduces sampling variation that is correlated with the outcome. This causes the value in the synthetic cross-frame (used both for calculating variable significances and returned to the use for further training) to have a spurious correlation with the outcome. The completely deterministic structure of leave-one-out holdout itself represents an information leak that poisons results.
+However, specifying `oneWayHoldout` as the cross-validation technique
+introduces sampling variation that is correlated with the outcome. This
+causes the value in the synthetic cross-frame (used both for calculating
+variable significances and returned to the use for further training) to
+have a spurious correlation with the outcome. The completely
+deterministic structure of leave-one-out holdout itself represents an
+information leak that poisons results.
 
 ``` r
 cfeBad <- mkCrossFrameNExperiment(d, 
@@ -139,17 +163,24 @@ cfeBad <- mkCrossFrameNExperiment(d,
                                   codeRestriction = 'badCoderN',
                                   customCoders = customCoders,
                                   splitFunction = oneWayHoldout)
+```
+
+    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:17:21 2019"
+    ## [1] " start cross frame work Sat Jul  6 16:17:21 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:17:21 2019"
+
+``` r
 t(cfeBad$treatments$scoreFrame)
 ```
 
-    ##                   1             
-    ## varName           "x_badCoderN" 
-    ## varMoves          "TRUE"        
-    ## rsq               "0.9999893"   
-    ## sig               "2.40545e-245"
-    ## needsSplit        "TRUE"        
-    ## extraModelDegrees "1"           
-    ## origName          "x"           
+    ##                   1              
+    ## varName           "x_badCoderN"  
+    ## varMoves          "TRUE"         
+    ## rsq               "0.9999862"    
+    ## sig               "5.105086e-240"
+    ## needsSplit        "TRUE"         
+    ## extraModelDegrees "1"            
+    ## origName          "x"            
     ## code              "badCoderN"
 
 ``` r
@@ -162,18 +193,18 @@ summary(lm(y ~ x_badCoderN, data= cfeBad$crossFrame))
     ## 
     ## Residuals:
     ##        Min         1Q     Median         3Q        Max 
-    ## -0.0113462 -0.0027342  0.0002138  0.0023608  0.0077726 
+    ## -0.0135012 -0.0028152 -0.0000517  0.0022441  0.0092467 
     ## 
     ## Coefficients:
     ##               Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  19.556211   0.006687    2925   <2e-16 ***
-    ## x_badCoderN -98.988384   0.034131   -2900   <2e-16 ***
+    ## (Intercept)  19.557657   0.007569    2584   <2e-16 ***
+    ## x_badCoderN -98.994795   0.038634   -2562   <2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.003827 on 98 degrees of freedom
+    ## Residual standard error: 0.004332 on 98 degrees of freedom
     ## Multiple R-squared:      1,  Adjusted R-squared:      1 
-    ## F-statistic: 8.411e+06 on 1 and 98 DF,  p-value: < 2.2e-16
+    ## F-statistic: 6.566e+06 on 1 and 98 DF,  p-value: < 2.2e-16
 
 ``` r
 treatedDbad <- prepare(cfeBad$treatments, d)
@@ -185,19 +216,21 @@ summary(lm(y ~ x_badCoderN, data= treatedDbad))
     ## lm(formula = y ~ x_badCoderN, data = treatedDbad)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.1822 -0.7879 -0.0334  0.6864  2.8753 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -3.00554 -0.74592 -0.01978  0.67265  2.98501 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)     2499       2262   1.105    0.272
-    ## x_badCoderN   -12780      11570  -1.105    0.272
+    ## (Intercept)  -322040     772954  -0.417    0.678
+    ## x_badCoderN  1646604    3952139   0.417    0.678
     ## 
-    ## Residual standard error: 1.114 on 98 degrees of freedom
-    ## Multiple R-squared:  0.0123, Adjusted R-squared:  0.002218 
-    ## F-statistic:  1.22 on 1 and 98 DF,  p-value: 0.272
+    ## Residual standard error: 1.12 on 98 degrees of freedom
+    ## Multiple R-squared:  0.001768,   Adjusted R-squared:  -0.008418 
+    ## F-statistic: 0.1736 on 1 and 98 DF,  p-value: 0.6779
 
-Notice the following non-deterministic (replacing copying data with sampling with replacement) variation of one-way-hold out does not have the same problem if we have enough data.
+Notice the following non-deterministic (replacing copying data with
+sampling with replacement) variation of one-way-hold out does not have
+the same problem if we have enough data.
 
 ``` r
 oneWayHoldoutR <- function(nRows,nSplits,dframe,y) {
@@ -220,14 +253,21 @@ cfeFX <- mkCrossFrameNExperiment(d,
                                   codeRestriction = 'badCoderN',
                                   customCoders = customCoders,
                                   splitFunction = oneWayHoldoutR)
+```
+
+    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:17:21 2019"
+    ## [1] " start cross frame work Sat Jul  6 16:17:22 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:17:22 2019"
+
+``` r
 t(cfeFX$treatments$scoreFrame)
 ```
 
     ##                   1            
     ## varName           "x_badCoderN"
     ## varMoves          "TRUE"       
-    ## rsq               "0.00183226" 
-    ## sig               "0.6723965"  
+    ## rsq               "0.001428575"
+    ## sig               "0.7088906"  
     ## needsSplit        "TRUE"       
     ## extraModelDegrees "1"          
     ## origName          "x"          
@@ -243,35 +283,90 @@ summary(lm(y ~ x_badCoderN, data= cfeFX$crossFrame))
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -3.04824 -0.63572 -0.02567  0.69015  3.06855 
+    ## -2.95999 -0.75536 -0.01014  0.66792  3.12289 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)   0.3124     0.1784   1.751    0.083 .
-    ## x_badCoderN  -0.6347     0.7524  -0.844    0.401  
+    ## (Intercept)   0.3388     0.1864   1.817   0.0722 .
+    ## x_badCoderN  -0.6858     0.7127  -0.962   0.3382  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.117 on 98 degrees of freedom
-    ## Multiple R-squared:  0.007209,   Adjusted R-squared:  -0.002921 
-    ## F-statistic: 0.7116 on 1 and 98 DF,  p-value: 0.401
+    ## Residual standard error: 1.116 on 98 degrees of freedom
+    ## Multiple R-squared:  0.009362,   Adjusted R-squared:  -0.0007462 
+    ## F-statistic: 0.9262 on 1 and 98 DF,  p-value: 0.3382
 
 What happened is:
 
--   The deterministic structure of leave-one-out cross validation introduces an information leak that copies a transform of the value of `y` into the bad coder. Essentially the leave-one-out cross validation is consuming a number of degrees of freedom equal to the number of different data sets its presents (one per data row).
--   The bad coder being a near constant means this leak is nearly the entirety of the bad coder signal.
--   On any data set other than the one-way-holdout cross-validation frame the bad coder is in fact a noisy constant (and not useful). The the bad coder is pure over-fit and any model that uses it is at risk of over-fit.
+  - The deterministic structure of leave-one-out cross validation
+    introduces an information leak that copies a transform of the value
+    of `y` into the bad coder. Essentially the leave-one-out cross
+    validation is consuming a number of degrees of freedom equal to the
+    number of different data sets its presents (one per data row).
+  - The bad coder had a design flow of returning a conditional mean,
+    instead of a conditional difference from the overall mean. The
+    actual `vtreat` impact/effects coders are careful to return the
+    difference from cross-validation segment mean (which would be zero
+    for all constant values).
+  - The bad coder being a near constant means this leak is nearly the
+    entirety of the bad coder signal.
+  - On any data set other than the one-way-holdout cross-validation
+    frame the bad coder is in fact a noisy constant (and not useful).
+    The the bad coder is pure over-fit and any model that uses it is at
+    risk of over-fit.
 
-In the failing example the value returned data-row `k` is essentially the mean of all rows except the `k`-th row due to the leave-one-out holdout. Call this estimate `e(k)` (the estimate assigned to the `k`-th row).
+In the failing example the value returned data-row `k` is essentially
+the mean of all rows except the `k`-th row due to the leave-one-out
+holdout. Call this estimate `e(k)` (the estimate assigned to the `k`-th
+row).
 
-The coding-estimate for the `k`-th row is essentially `(1/(n-1)) sum(i = 1, ...,n; i not k) y(i)` (where `n` is the number of training data rows, and `y(i)` is the `i`-th dependent value). That is the coder builds its coding of the `k`-th row by averaging all of the training dependent values it is allowed to see under the leave-1-out cross validation procedure. In an isolated sense its calculation of the `k`-th row is independent of `y(k)` as that value was not shown to the procedure at that time.
+The coding-estimate for the `k`-th row is essentially `(1/(n-1)) sum(i
+= 1, ...,n; i not k) y(i)` (where `n` is the number of training data
+rows, and `y(i)` is the `i`-th dependent value). That is the coder
+builds its coding of the `k`-th row by averaging all of the training
+dependent values it is allowed to see under the leave-1-out cross
+validation procedure. In an isolated sense its calculation of the `k`-th
+row is independent of `y(k)` as that value was not shown to the
+procedure at that time.
 
-However by algebra we have this estimate `e(k)` is also equal to `(n/(n-1)) mean(y) - y(k)/(n-1)`. So a step in the procedure that also knows `mean(y)` (such as say the `lm()` linear regression models shown above, and the variable significance procedures used to build the `scoreFrame`s) we know that `y(k) = sum(y) - (n-1) e(k)`. Or in vector form (`y` and `e` being the vectors, all other terms scalars): `y = sum(y) - (n-1) e`. Jointly for all rows the dependent variable `y` is a simple linear function of the estimates `e`, even though each estimate `e(k)` with no knowledge of the dependent value `y(k)` in the same row.
+However by algebra we have this estimate `e(k)` is also equal to
+`(n/(n-1)) mean(y) - y(k)/(n-1)`. So a step in the procedure that also
+knows `mean(y)` (such as say the `lm()` linear regression models shown
+above, and the variable significance procedures used to build the
+`scoreFrame`s) we know that `y(k) = sum(y) - (n-1) e(k)`. Or in vector
+form (`y` and `e` being the vectors, all other terms scalars): `y =
+sum(y) - (n-1) e`. Jointly for all rows the dependent variable `y` is a
+simple linear function of the estimates `e`, even though each estimate
+`e(k)` with no knowledge of the dependent value `y(k)` in the same row.
 
-Or: to an observer that knows `n` and `mean(y)` (and hence `sum(y)`) `e(k)` completely determines `y(k)` even though it was constructed without knowledge of `y(k)`.
+Or: to an observer that knows `n` and `mean(y)` (and hence `sum(y)`)
+`e(k)` completely determines `y(k)` even though it was constructed
+without knowledge of `y(k)`.
 
-This failing is because the common cross validation procedures are not [fully nested simulation](http://www.win-vector.com/blog/2017/01/a-theory-of-nested-cross-simulation/) in the sense that rows were not excluded from out final calculation (the estimation of significance, or final linear model). I did not correctly make the distinction when laying out the theory of notation in the previous article, but the idea is to maintain full exchangeability every step of the simulation must systematically exclude sets of rows: especially the last step if it is performing join over all rows calculations.
+This failing is because the common cross validation procedures are not
+[fully nested
+simulation](http://www.win-vector.com/blog/2017/01/a-theory-of-nested-cross-simulation/)
+in the sense that rows were not excluded from out final calculation (the
+estimation of significance, or final linear model). I did not correctly
+make the distinction when laying out the theory of notation in the
+previous article, but the idea is to maintain full exchangeability every
+step of the simulation must systematically exclude sets of rows:
+especially the last step if it is performing join over all rows
+calculations.
 
-*Fully* nested cross-simulation (where even the last step is under the cross-control and enumerating excluded sets of training rows) is likely too cumbersome (requiring more code coordination) and expensive (upping the size of the sets of rows we have to exclude) to force on implementers who are also unlikely to see any benefit in non-degenerate cases. The partially nested cross-simulation used in `vtreat` is likely a good practical compromise (though we may explore full-nesting for the score frame estimates, as that is a step completely under `vtreat` control).
+*Fully* nested cross-simulation (where even the last step is under the
+cross-control and enumerating excluded sets of training rows) is likely
+too cumbersome (requiring more code coordination) and expensive (upping
+the size of the sets of rows we have to exclude) to force on
+implementers who are also unlikely to see any benefit in non-degenerate
+cases. The partially nested cross-simulation used in `vtreat` is likely
+a good practical compromise (though we may explore full-nesting for the
+score frame estimates, as that is a step completely under `vtreat`
+control).
 
-The current `vtreat` procedures are very strong and fully up to the case of assisting in construction of best possible machine learning models. However in certain degenerate cases (near-constant encoding combined completely deterministic cross-validation; neither of which is a default behavior of `vtreat`) the cross validation system itself can introduce an information leak that promote over-fit.
+The current `vtreat` procedures are very strong and fully up to the case
+of assisting in construction of best possible machine learning models.
+However in certain degenerate cases (near-constant encoding combined
+completely deterministic cross-validation; neither of which is a default
+behavior of `vtreat`) the cross validation system itself can introduce
+an information leak that promotes over-fit.

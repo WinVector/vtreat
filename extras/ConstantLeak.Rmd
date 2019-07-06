@@ -9,7 +9,7 @@ We will show how in some situations using "more data in cross-validation" can be
 harmful.
 
 Our example: an outcome (`y`) that is independent of a low-complexity
-categorical variable (`x`).  We will combine this with a varaible that is a noisy
+categorical variable (`x`).  We will combine this with a variable that is a noisy
 constant and leave-one-out cross-validation (which is a deterministic procedure) to 
 get a bad result (failing to notice over-fit).
 
@@ -128,6 +128,7 @@ summary(lm(y ~ x_badCoderN, data= cfeFX$crossFrame))
 What happened is:
  
  * The deterministic structure of leave-one-out cross validation introduces an information leak that copies a transform of the value of `y` into the bad coder.  Essentially the leave-one-out cross validation is consuming a number of degrees of freedom equal to the number of different data sets its presents (one per data row).
+ * The bad coder had a design flow of returning a conditional mean, instead of a conditional difference from the overall mean.  The actual `vtreat` impact/effects coders are careful to return the difference from cross-validation segment mean (which would be zero for all constant values).
  * The bad coder being a near constant means this leak is nearly the entirety of the bad coder signal.
  * On any data set other than the one-way-holdout cross-validation frame the bad coder is in fact a noisy constant (and not useful). The the bad coder is pure over-fit and any model that uses it is at risk of over-fit.
 
@@ -143,5 +144,5 @@ This failing is because the common cross validation procedures are not [fully ne
 
 *Fully* nested cross-simulation (where even the last step is under the cross-control and enumerating excluded sets of training rows) is likely too cumbersome (requiring more code coordination) and expensive (upping the size of the sets of rows we have to exclude) to force on implementers who are also unlikely to see any benefit in non-degenerate cases.  The partially nested cross-simulation used in `vtreat` is likely a good practical compromise (though we may explore full-nesting for the score frame estimates, as that is a step completely under `vtreat` control).
 
-The current `vtreat` procedures are very strong and fully up to the case of assisting in construction of best possible machine learning models.  However in certain degenerate cases (near-constant encoding combined completely deterministic cross-validation; neither of which is a default behavior of `vtreat`) the cross validation system itself can introduce an information leak that promote over-fit.
+The current `vtreat` procedures are very strong and fully up to the case of assisting in construction of best possible machine learning models.  However in certain degenerate cases (near-constant encoding combined completely deterministic cross-validation; neither of which is a default behavior of `vtreat`) the cross validation system itself can introduce an information leak that promotes over-fit.
 
