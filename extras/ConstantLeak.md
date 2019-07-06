@@ -60,21 +60,16 @@ and rejects the bad custom variable.
 treatplanN <- designTreatmentsN(d, 
                                 varlist = c('x'),
                                 outcomename = 'y',
-                                codeRestriction = 'badCoderN',
                                 customCoders = customCoders, 
                                 verbose = FALSE)
-t(treatplanN$scoreFrame)
+knitr::kable(treatplanN$scoreFrame)
 ```
 
-    ##                   1            
-    ## varName           "x_badCoderN"
-    ## varMoves          "TRUE"       
-    ## rsq               "0.00163872" 
-    ## sig               "0.6892408"  
-    ## needsSplit        "TRUE"       
-    ## extraModelDegrees "1"          
-    ## origName          "x"          
-    ## code              "badCoderN"
+| varName      | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code      |
+| :----------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :-------- |
+| x\_badCoderN | TRUE     | 0.0016387 | 0.6892408 | TRUE       |                 1 | x        | badCoderN |
+| x\_lev\_x\_a | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
+| x\_lev\_x\_b | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
 
 ``` r
 treatedD <- prepare(treatplanN, d)
@@ -105,27 +100,22 @@ rejects the bad custom variable.
 cfe <- mkCrossFrameNExperiment(d, 
                                varlist = c('x'),
                                outcomename = 'y',
-                               codeRestriction = 'badCoderN',
                                customCoders = customCoders)
 ```
 
-    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:17:20 2019"
-    ## [1] " start cross frame work Sat Jul  6 16:17:20 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:17:20 2019"
+    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:28:28 2019"
+    ## [1] " start cross frame work Sat Jul  6 16:28:28 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:28:28 2019"
 
 ``` r
-t(cfe$treatments$scoreFrame)
+knitr::kable(cfe$treatments$scoreFrame)
 ```
 
-    ##                   1            
-    ## varName           "x_badCoderN"
-    ## varMoves          "TRUE"       
-    ## rsq               "0.002231195"
-    ## sig               "0.6407308"  
-    ## needsSplit        "TRUE"       
-    ## extraModelDegrees "1"          
-    ## origName          "x"          
-    ## code              "badCoderN"
+| varName      | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code      |
+| :----------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :-------- |
+| x\_badCoderN | TRUE     | 0.0022312 | 0.6407308 | TRUE       |                 1 | x        | badCoderN |
+| x\_lev\_x\_a | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
+| x\_lev\_x\_b | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
 
 ``` r
 summary(lm(y ~ x_badCoderN, data= cfe$crossFrame))
@@ -160,28 +150,23 @@ information leak that poisons results.
 cfeBad <- mkCrossFrameNExperiment(d, 
                                   varlist = c('x'),
                                   outcomename = 'y',
-                                  codeRestriction = 'badCoderN',
                                   customCoders = customCoders,
                                   splitFunction = oneWayHoldout)
 ```
 
-    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:17:21 2019"
-    ## [1] " start cross frame work Sat Jul  6 16:17:21 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:17:21 2019"
+    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:28:28 2019"
+    ## [1] " start cross frame work Sat Jul  6 16:28:29 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:28:30 2019"
 
 ``` r
-t(cfeBad$treatments$scoreFrame)
+knitr::kable(cfeBad$treatments$scoreFrame)
 ```
 
-    ##                   1              
-    ## varName           "x_badCoderN"  
-    ## varMoves          "TRUE"         
-    ## rsq               "0.9999862"    
-    ## sig               "5.105086e-240"
-    ## needsSplit        "TRUE"         
-    ## extraModelDegrees "1"            
-    ## origName          "x"            
-    ## code              "badCoderN"
+| varName      | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code      |
+| :----------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :-------- |
+| x\_badCoderN | TRUE     | 0.9999862 | 0.0000000 | TRUE       |                 1 | x        | badCoderN |
+| x\_lev\_x\_a | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
+| x\_lev\_x\_b | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
 
 ``` r
 summary(lm(y ~ x_badCoderN, data= cfeBad$crossFrame))
@@ -228,73 +213,10 @@ summary(lm(y ~ x_badCoderN, data= treatedDbad))
     ## Multiple R-squared:  0.001768,   Adjusted R-squared:  -0.008418 
     ## F-statistic: 0.1736 on 1 and 98 DF,  p-value: 0.6779
 
-Notice the following non-deterministic (replacing copying data with
-sampling with replacement) variation of one-way-hold out does not have
-the same problem if we have enough data.
-
-``` r
-oneWayHoldoutR <- function(nRows,nSplits,dframe,y) {
-  if(nRows<=1) {
-    return(NULL)
-  }
-  fullSeq <- seq_len(nRows)
-  evalSets <- lapply(as.list(fullSeq),
-                     function(appi) { 
-                       ui <- setdiff(fullSeq,appi)
-                       list(train=sample(ui, floor(length(ui)/2), replace=TRUE), app=appi)
-                     })
-  attr(evalSets,'splitmethod') <- 'oneway'
-  evalSets
-}
-
-cfeFX <- mkCrossFrameNExperiment(d, 
-                                  varlist = c('x'),
-                                  outcomename = 'y',
-                                  codeRestriction = 'badCoderN',
-                                  customCoders = customCoders,
-                                  splitFunction = oneWayHoldoutR)
-```
-
-    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:17:21 2019"
-    ## [1] " start cross frame work Sat Jul  6 16:17:22 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:17:22 2019"
-
-``` r
-t(cfeFX$treatments$scoreFrame)
-```
-
-    ##                   1            
-    ## varName           "x_badCoderN"
-    ## varMoves          "TRUE"       
-    ## rsq               "0.001428575"
-    ## sig               "0.7088906"  
-    ## needsSplit        "TRUE"       
-    ## extraModelDegrees "1"          
-    ## origName          "x"          
-    ## code              "badCoderN"
-
-``` r
-summary(lm(y ~ x_badCoderN, data= cfeFX$crossFrame))
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = y ~ x_badCoderN, data = cfeFX$crossFrame)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -2.95999 -0.75536 -0.01014  0.66792  3.12289 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)   0.3388     0.1864   1.817   0.0722 .
-    ## x_badCoderN  -0.6858     0.7127  -0.962   0.3382  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 1.116 on 98 degrees of freedom
-    ## Multiple R-squared:  0.009362,   Adjusted R-squared:  -0.0007462 
-    ## F-statistic: 0.9262 on 1 and 98 DF,  p-value: 0.3382
+Notice the bad coder was (falsely) reported as usable and (falsely)
+appears useful on the cross-frame (but not on a simple prepared frame).
+Also notice the normal coders such as impact (which was fully rejected
+by `vtreat`) and levels codes were properly rejected.
 
 What happened is:
 

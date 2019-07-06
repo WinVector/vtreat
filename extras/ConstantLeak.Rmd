@@ -56,10 +56,10 @@ customCoders <- list('n.badCoderN' = badCoderN)
 treatplanN <- designTreatmentsN(d, 
                                 varlist = c('x'),
                                 outcomename = 'y',
-                                codeRestriction = 'badCoderN',
                                 customCoders = customCoders, 
                                 verbose = FALSE)
-t(treatplanN$scoreFrame)
+knitr::kable(treatplanN$scoreFrame)
+
 treatedD <- prepare(treatplanN, d)
 summary(lm(y ~ x_badCoderN, data= treatedD))
 ```
@@ -70,9 +70,9 @@ summary(lm(y ~ x_badCoderN, data= treatedD))
 cfe <- mkCrossFrameNExperiment(d, 
                                varlist = c('x'),
                                outcomename = 'y',
-                               codeRestriction = 'badCoderN',
                                customCoders = customCoders)
-t(cfe$treatments$scoreFrame)
+knitr::kable(cfe$treatments$scoreFrame)
+
 summary(lm(y ~ x_badCoderN, data= cfe$crossFrame))
 ```
 
@@ -87,43 +87,17 @@ represents an information leak that poisons results.
 cfeBad <- mkCrossFrameNExperiment(d, 
                                   varlist = c('x'),
                                   outcomename = 'y',
-                                  codeRestriction = 'badCoderN',
                                   customCoders = customCoders,
                                   splitFunction = oneWayHoldout)
-t(cfeBad$treatments$scoreFrame)
+knitr::kable(cfeBad$treatments$scoreFrame)
+
 summary(lm(y ~ x_badCoderN, data= cfeBad$crossFrame))
+
 treatedDbad <- prepare(cfeBad$treatments, d)
 summary(lm(y ~ x_badCoderN, data= treatedDbad))
 ```
 
-Notice the following non-deterministic (replacing copying data with sampling with replacement) variation of one-way-hold out does not
-have the same problem if we have enough data.
-
-
-```{r crossHarmFX}
-oneWayHoldoutR <- function(nRows,nSplits,dframe,y) {
-  if(nRows<=1) {
-    return(NULL)
-  }
-  fullSeq <- seq_len(nRows)
-  evalSets <- lapply(as.list(fullSeq),
-                     function(appi) { 
-                       ui <- setdiff(fullSeq,appi)
-                       list(train=sample(ui, floor(length(ui)/2), replace=TRUE), app=appi)
-                     })
-  attr(evalSets,'splitmethod') <- 'oneway'
-  evalSets
-}
-
-cfeFX <- mkCrossFrameNExperiment(d, 
-                                  varlist = c('x'),
-                                  outcomename = 'y',
-                                  codeRestriction = 'badCoderN',
-                                  customCoders = customCoders,
-                                  splitFunction = oneWayHoldoutR)
-t(cfeFX$treatments$scoreFrame)
-summary(lm(y ~ x_badCoderN, data= cfeFX$crossFrame))
-```
+Notice the bad coder was (falsely) reported as usable and (falsely) appears useful on the cross-frame (but not on a simple prepared frame).  Also notice the normal coders such as impact (which was fully rejected by `vtreat`) and levels codes were properly rejected.
 
 What happened is:
  
