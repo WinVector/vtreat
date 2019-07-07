@@ -49,13 +49,12 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
   }
   if((!is.numeric(scores)) || (length(scores)!=length(vcol))) {
     scores <- rep(0.0, length(vcol))
-  } else {
-    if('center' %in% codeSeq) {
-      # shift scores to be mean zero with respect to weights
-      scores <- scores -  sum(scores*weights)/sum(weights)
-    }
   }
-  missingValueCode <- sum(scores * weights)/sum(weights)
+  if('center' %in% codeSeq) {
+    # shift scores to be mean zero with respect to weights
+    scores <- scores - .wmean(scores, weights)
+  }
+  missingValueCode <- .wmean(scores, weights)
   d <- data.frame(x = vcol,
                   pred = scores)
   # TODO: weighted version
@@ -155,11 +154,11 @@ makeCustomCoderNum <- function(customCode, coder, codeSeq,
     return(NULL)
   }
   cuts <- c(min(xNotNA), max(xNotNA))
-  if(sum(napositions)>0) {
-    missingValueCode <- .wmean(zoY[napositions], weights[napositions])
-  } else {
-    missingValueCode <- .wmean(yNotNa, wNotNa)
+  if('center' %in% codeSeq) {
+    # shift scores to be mean zero with respect to weights
+    yNotNa <- yNotNa - .wmean(yNotNa, wNotNa)
   }
+  missingValueCode <- .wmean(yNotNa, wNotNa)
   extraModelDegrees <- max(0,length(unique(xNotNA)))
   
   scores <- NULL
