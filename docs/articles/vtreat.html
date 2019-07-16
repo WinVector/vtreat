@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-07-01</h4>
+            <h4 class="date">2019-07-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -195,22 +195,22 @@
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.2 inspecting inputs Mon Jul  1 12:52:04 2019"
-## [1] "designing treatments Mon Jul  1 12:52:04 2019"
-## [1] " have initial level statistics Mon Jul  1 12:52:04 2019"
-## [1] " scoring treatments Mon Jul  1 12:52:04 2019"
-## [1] "have treatment plan Mon Jul  1 12:52:04 2019"
-## [1] "rescoring complex variables Mon Jul  1 12:52:04 2019"
-## [1] "done rescoring complex variables Mon Jul  1 12:52:04 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.3 inspecting inputs Tue Jul 16 09:44:56 2019"
+## [1] "designing treatments Tue Jul 16 09:44:56 2019"
+## [1] " have initial level statistics Tue Jul 16 09:44:56 2019"
+## [1] " scoring treatments Tue Jul 16 09:44:57 2019"
+## [1] "have treatment plan Tue Jul 16 09:44:57 2019"
+## [1] "rescoring complex variables Tue Jul 16 09:44:57 2019"
+## [1] "done rescoring complex variables Tue Jul 16 09:44:57 2019"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC)</a></code></pre></div>
-<pre><code>##   origName   varName  code        rsq        sig extraModelDegrees
-## 1        x    x_catP  catP 0.54085208 0.03392101                 2
-## 2        x    x_catB  catB 0.00000000 1.00000000                 2
-## 3        z         z clean 0.25792985 0.14299775                 0
-## 4        z   z_isBAD isBAD 0.19087450 0.20766228                 0
-## 5        x  x_lev_NA   lev 0.19087450 0.20766228                 0
-## 6        x x_lev_x_a   lev 0.08170417 0.40972582                 0
-## 7        x x_lev_x_b   lev 0.00000000 1.00000000                 0</code></pre>
+<pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.24340634 0.1547700                 2
+## 2        x    x_catB  catB 0.05070201 0.5160763                 2
+## 3        z         z clean 0.25792985 0.1429977                 0
+## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
+## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
+## 6        x x_lev_x_a   lev 0.08170417 0.4097258                 0
+## 7        x x_lev_x_b   lev 0.00000000 1.0000000                 0</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</a></code></pre></div>
 <pre><code>## [1] "vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')"</code></pre>
 <p>Here we demonstrate the optional scaling feature of <code><a href="../reference/prepare.html">prepare()</a></code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it re-scales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
@@ -274,13 +274,13 @@
 ## 3    c 30
 ## 4 &lt;NA&gt; NA</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.2 inspecting inputs Mon Jul  1 12:52:04 2019"
-## [1] "designing treatments Mon Jul  1 12:52:04 2019"
-## [1] " have initial level statistics Mon Jul  1 12:52:04 2019"
-## [1] " scoring treatments Mon Jul  1 12:52:04 2019"
-## [1] "have treatment plan Mon Jul  1 12:52:04 2019"
-## [1] "rescoring complex variables Mon Jul  1 12:52:04 2019"
-## [1] "done rescoring complex variables Mon Jul  1 12:52:04 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.3 inspecting inputs Tue Jul 16 09:44:57 2019"
+## [1] "designing treatments Tue Jul 16 09:44:57 2019"
+## [1] " have initial level statistics Tue Jul 16 09:44:57 2019"
+## [1] " scoring treatments Tue Jul 16 09:44:57 2019"
+## [1] "have treatment plan Tue Jul 16 09:44:57 2019"
+## [1] "rescoring complex variables Tue Jul 16 09:44:57 2019"
+## [1] "done rescoring complex variables Tue Jul 16 09:44:57 2019"</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN)</a></code></pre></div>
 <pre><code>##   origName   varName  code         rsq       sig extraModelDegrees
 ## 1        x    x_catP  catP 0.228077807 0.2784461                 2

@@ -1,5 +1,5 @@
 
-# vtreat 1.4.3 2019/07/06
+# vtreat 1.4.3 2019/07/16
 
  * Fix bug in custom coder NA path and let numeric coder center if wanted.
  * More tests.

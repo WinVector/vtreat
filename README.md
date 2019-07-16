@@ -244,7 +244,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.4.1'
+ #  [1] '1.4.3'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
