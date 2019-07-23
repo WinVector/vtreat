@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       <h1>Variable Types</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2019-07-16</h4>
+            <h4 class="date">2019-07-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatVariableTypes.Rmd"><code>vignettes/vtreatVariableTypes.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatVariableTypes.Rmd</code></div>
@@ -145,13 +145,13 @@
 <a class="sourceLine" id="cb1-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.3 inspecting inputs Tue Jul 16 09:45:20 2019"
-## [1] "designing treatments Tue Jul 16 09:45:20 2019"
-## [1] " have initial level statistics Tue Jul 16 09:45:20 2019"
-## [1] " scoring treatments Tue Jul 16 09:45:21 2019"
-## [1] "have treatment plan Tue Jul 16 09:45:21 2019"
-## [1] "rescoring complex variables Tue Jul 16 09:45:21 2019"
-## [1] "done rescoring complex variables Tue Jul 16 09:45:21 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.4 inspecting inputs Tue Jul 23 15:46:09 2019"
+## [1] "designing treatments Tue Jul 23 15:46:09 2019"
+## [1] " have initial level statistics Tue Jul 23 15:46:09 2019"
+## [1] " scoring treatments Tue Jul 23 15:46:09 2019"
+## [1] "have treatment plan Tue Jul 23 15:46:09 2019"
+## [1] "rescoring complex variables Tue Jul 23 15:46:09 2019"
+## [1] "done rescoring complex variables Tue Jul 23 15:46:09 2019"</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
 <pre><code>##   origName   varName  code        rsq        sig extraModelDegrees
@@ -199,23 +199,23 @@
 <a class="sourceLine" id="cb9-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),</a>
 <a class="sourceLine" id="cb9-4" data-line-number="4">   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb9-5" data-line-number="5">treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.3 inspecting inputs Tue Jul 16 09:45:21 2019"
-## [1] "designing treatments Tue Jul 16 09:45:21 2019"
-## [1] " have initial level statistics Tue Jul 16 09:45:21 2019"
-## [1] " scoring treatments Tue Jul 16 09:45:21 2019"
-## [1] "have treatment plan Tue Jul 16 09:45:21 2019"
-## [1] "rescoring complex variables Tue Jul 16 09:45:21 2019"
-## [1] "done rescoring complex variables Tue Jul 16 09:45:21 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.4 inspecting inputs Tue Jul 23 15:46:09 2019"
+## [1] "designing treatments Tue Jul 23 15:46:09 2019"
+## [1] " have initial level statistics Tue Jul 23 15:46:09 2019"
+## [1] " scoring treatments Tue Jul 23 15:46:09 2019"
+## [1] "have treatment plan Tue Jul 23 15:46:09 2019"
+## [1] "rescoring complex variables Tue Jul 23 15:46:09 2019"
+## [1] "done rescoring complex variables Tue Jul 23 15:46:09 2019"</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 4.385965e-01 0.1518345                 2
-## 2        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 3        x    x_catD  catD 1.111111e-01 0.5185185                 2
-## 4        z         z clean 3.045045e-01 0.2562868                 0
-## 5        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
-## 6        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 7        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
-## 8        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.1538462 0.4418233                 2
+## 2        x    x_catN  catN 0.1131222 0.5145190                 2
+## 3        x    x_catD  catD 0.1111111 0.5185185                 2
+## 4        z         z clean 0.3045045 0.2562868                 0
+## 5        z   z_isBAD isBAD 0.2000000 0.3739010                 0
+## 6        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 7        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 8        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>The treatment of numeric targets is similar to that of categorical targets. In the numeric case the possible derived variable types are:</p>
 <ul>
 <li>
@@ -243,11 +243,11 @@
 <a class="sourceLine" id="cb13-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),</a>
 <a class="sourceLine" id="cb13-4" data-line-number="4">   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb13-5" data-line-number="5">treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainZ))</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.3 inspecting inputs Tue Jul 16 09:45:21 2019"
-## [1] "designing treatments Tue Jul 16 09:45:21 2019"
-## [1] " have initial level statistics Tue Jul 16 09:45:21 2019"
-## [1] " scoring treatments Tue Jul 16 09:45:21 2019"
-## [1] "have treatment plan Tue Jul 16 09:45:21 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.4 inspecting inputs Tue Jul 23 15:46:09 2019"
+## [1] "designing treatments Tue Jul 23 15:46:09 2019"
+## [1] " have initial level statistics Tue Jul 23 15:46:09 2019"
+## [1] " scoring treatments Tue Jul 23 15:46:09 2019"
+## [1] "have treatment plan Tue Jul 23 15:46:09 2019"</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -285,13 +285,13 @@
 <a class="sourceLine" id="cb17-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb17-12" data-line-number="12"><span class="co"># no catP or catD variables</span></a>
 <a class="sourceLine" id="cb17-13" data-line-number="13"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
-<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1131222 0.5145190                 2
-## 2        z         z clean 0.3045045 0.2562868                 0
-## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
-## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
-## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
+## 1        x    x_catN  catN 1.110223e-16 1.0000000                 2
+## 2        z         z clean 3.045045e-01 0.2562868                 0
+## 3        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
+## 4        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
+## 5        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
 <p>Conversely, even if you have created a treatment plan for a particular type of variable, you may subsequently decide not to use it. For example, perhaps you only want to use indicator variables and not the <code>catN</code> variable for modeling. You can use <code>codeRestriction</code> in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">dTreated =<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, </a>
 <a class="sourceLine" id="cb19-2" data-line-number="2">                   <span class="dt">codeRestriction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'lev'</span>,<span class="st">'clean'</span>, <span class="st">'isBAD'</span>))</a>
