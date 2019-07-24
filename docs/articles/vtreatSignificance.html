@@ -167,13 +167,13 @@
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/designTreatmentsC">designTreatmentsC</a></span>(d,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.4 inspecting inputs Wed Jul 24 07:44:37 2019"
-## [1] "designing treatments Wed Jul 24 07:44:37 2019"
-## [1] " have initial level statistics Wed Jul 24 07:44:37 2019"
-## [1] " scoring treatments Wed Jul 24 07:44:37 2019"
-## [1] "have treatment plan Wed Jul 24 07:44:37 2019"
-## [1] "rescoring complex variables Wed Jul 24 07:44:37 2019"
-## [1] "done rescoring complex variables Wed Jul 24 07:44:37 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.4 inspecting inputs Wed Jul 24 14:15:46 2019"
+## [1] "designing treatments Wed Jul 24 14:15:46 2019"
+## [1] " have initial level statistics Wed Jul 24 14:15:46 2019"
+## [1] " scoring treatments Wed Jul 24 14:15:46 2019"
+## [1] "have treatment plan Wed Jul 24 14:15:46 2019"
+## [1] "rescoring complex variables Wed Jul 24 14:15:46 2019"
+## [1] "done rescoring complex variables Wed Jul 24 14:15:47 2019"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Estimate effect significance (not coefficient significance).</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">  d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
