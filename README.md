@@ -15,9 +15,9 @@ stat.AP](https://arxiv.org/abs/1611.09477) . There is also a series of
 articles recording the evolution of `vtreat` including some tutorials
 [here](http://www.win-vector.com/blog/tag/vtreat/).
 
-‘vtreat’ is supplied by [Win-Vector LLC](http://www.win-vector.com)
+`vtreat` is supplied by [Win-Vector LLC](http://www.win-vector.com)
 under a GPL-2 | GPL-3 license, without warranty. We are also developing
-a [Python version of ‘vtreat’](https://github.com/WinVector/pyvtreat).
+a [Python version of `vtreat`](https://github.com/WinVector/pyvtreat).
 
 ![](https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png)
 
@@ -101,22 +101,22 @@ To help explain the methods we have prepared some documentation:
 
 Data treatments are “y-aware” (use distribution relations between
 independent variables and the dependent variable). For binary
-classification use ‘designTreatmentsC()’ and for numeric regression use
-‘designTreatmentsN()’.
+classification use `designTreatmentsC()` and for numeric regression use
+`designTreatmentsN()`.
 
-After the design step, ‘prepare()’ should be used as you would use
-model.matrix. ‘prepare()’ treated variables are all numeric and never
+After the design step, `prepare()` should be used as you would use
+model.matrix. `prepare()` treated variables are all numeric and never
 take the value NA or +-Inf (so are very safe to use in modeling).
 
 In application we suggest splitting your data into three sets: one for
 building vtreat encodings, one for training models using these
 encodings, and one for test and model evaluation.
 
-The purpose of ‘vtreat’ library is to reliably prepare data for
+The purpose of `vtreat` library is to reliably prepare data for
 supervised machine learning. We try to leave as much as possible to the
 machine learning algorithms themselves, but cover most of the truly
 necessary typically ignored precautions. The library is designed to
-produce a ‘data.frame’ that is entirely numeric and takes common
+produce a `data.frame` that is entirely numeric and takes common
 precautions to guard against the following real world data issues:
 
   - Categorical variables with very many levels.
@@ -127,14 +127,14 @@ precautions to guard against the following real world data issues:
     (also called “effects coded”). This allows principled use (including
     smoothing) of huge categorical variables (like zip-codes) when
     building models. This is critical for some libraries (such as
-    ‘randomForest’, which has hard limits on the number of allowed
+    `randomForest`, which has hard limits on the number of allowed
     levels).
 
   - Rare categorical levels.
     
     Levels that do not occur often during training tend not to have
     reliable effect estimates and contribute to over-fit. vtreat helps
-    with 2 precautions in this case. First the ‘rareLevel’ argument
+    with 2 precautions in this case. First the `rareLevel` argument
     suppresses levels with this count our below from modeling, except
     possibly through a grouped contribution. Also with enough data
     vtreat attempts to estimate out of sample performance of derived
@@ -161,7 +161,7 @@ precautions to guard against the following real world data issues:
     Variables with these issues are re-coded as two columns. The first
     column is clean copy of the variable (with missing/invalid values
     replaced with either zero or the grand mean, depending on the user
-    chose of the ‘scale’ parameter). The second column is a dummy or
+    chose of the `scale` parameter). The second column is a dummy or
     indicator that marks if the replacement has been performed. This is
     simpler than imputation of missing values, and allows the downstream
     model to attempt to use missingness as a useful signal (which it
@@ -197,24 +197,24 @@ the steps taught in chapters 4 and 6 of [*Practical Data Science with R*
 [very short
 worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we
 think for understanding it is *essential* to work all the steps by hand
-as we did in the book). The idea is: ‘data.frame’s prepared with the
-’vtreat’ library are somewhat safe to train on as some precaution has
+as we did in the book). The idea is: `data.frame`s prepared with the
+`vtreat` library are somewhat safe to train on as some precaution has
 been taken against all of the above issues. Also of interest are the
-‘vtreat’ variable significances (help in initial variable pruning, a
+`vtreat` variable significances (help in initial variable pruning, a
 necessity when there are a large number of columns) and
-‘vtreat::prepare(scale=TRUE)’ which re-encodes all variables into
-effect units making them suitable for y-aware dimension reduction
-(variable clustering, or principal component analysis) and for geometry
-sensitive machine learning techniques (k-means, knn, linear SVM, and
-more). You may want to do more than the ‘vtreat’ library does (such as
-Bayesian imputation, variable clustering, and more) but you certainly do
-not want to do less.
+`vtreat::prepare(scale=TRUE)` which re-encodes all variables into effect
+units making them suitable for y-aware dimension reduction (variable
+clustering, or principal component analysis) and for geometry sensitive
+machine learning techniques (k-means, knn, linear SVM, and more). You
+may want to do more than the `vtreat` library does (such as Bayesian
+imputation, variable clustering, and more) but you certainly do not want
+to do less.
 
 There have been a number of recent substantial improvements to the
 library, including:
 
   - Out of sample scoring.
-  - Ability to use ‘parallel’.
+  - Ability to use `parallel`.
   - More general calculation of effect sizes and significances.
 
 Some of our related articles (which should make clear some of our
@@ -235,7 +235,7 @@ motivations, and design decisions):
   - [How do you know if your data has
     signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
 
-Examples of current best practice using ‘vtreat’ (variable coding,
+Examples of current best practice using `vtreat` (variable coding,
 train, test split) can be found
 [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)
 and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
@@ -320,9 +320,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.137255e-01 0.1487686                 2
- #  2        x    x_catN  catN 2.536663e-02 0.7063823                 2
- #  3        x    x_catD  catD 1.620332e-01 0.3228162                 2
+ #  1        x    x_catP  catP 1.764706e-01 0.3001022                 2
+ #  2        x    x_catN  catN 3.533569e-03 0.8888051                 2
+ #  3        x    x_catD  catD 3.743113e-01 0.1069707                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
