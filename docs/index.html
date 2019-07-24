@@ -122,6 +122,7 @@
 
 <p><a href="http://winvector.github.io/vtreat/">vtreat</a> is an <a href="https://cran.r-project.org">R</a> data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.</p>
 <p>For more detail please see here: <a href="https://arxiv.org/abs/1611.09477">arXiv:1611.09477 stat.AP</a> . There is also a series of articles recording the evolution of <code>vtreat</code> including some tutorials <a href="http://www.win-vector.com/blog/tag/vtreat/">here</a>.</p>
+<p>‘vtreat’ is supplied by <a href="http://www.win-vector.com">Win-Vector LLC</a> under a GPL-2 | GPL-3 license, without warranty. We are also developing a <a href="https://github.com/WinVector/pyvtreat">Python version of ‘vtreat’</a>.</p>
 <p><img src="https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png"></p>
 <p>(logo: Julie Mount, source: “The Harvest” by Boris Kustodiev 1914)</p>
 <p>Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are <em>common</em> data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.</p>
@@ -151,7 +152,6 @@
 <p>Data treatments are “y-aware” (use distribution relations between independent variables and the dependent variable). For binary classification use ‘designTreatmentsC()’ and for numeric regression use ‘designTreatmentsN()’.</p>
 <p>After the design step, ‘prepare()’ should be used as you would use model.matrix. ‘prepare()’ treated variables are all numeric and never take the value NA or +-Inf (so are very safe to use in modeling).</p>
 <p>In application we suggest splitting your data into three sets: one for building vtreat encodings, one for training models using these encodings, and one for test and model evaluation.</p>
-<p>‘vtreat’ is supplied by <a href="http://www.win-vector.com">Win-Vector LLC</a> under a GPL-3 license, without warranty.</p>
 <p>The purpose of ‘vtreat’ library is to reliably prepare data for supervised machine learning. We try to leave as much as possible to the machine learning algorithms themselves, but cover most of the truly necessary typically ignored precautions. The library is designed to produce a ‘data.frame’ that is entirely numeric and takes common precautions to guard against the following real world data issues:</p>
 <ul>
 <li>
@@ -235,8 +235,8 @@
 <a class="sourceLine" id="cb1-31" data-line-number="31">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-32" data-line-number="32"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
 <a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 1.559780e-01 0.22202097                 2</span></a>
-<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 1.177202e-05 0.99153548                 2</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 1.030137e-01 0.32099590                 2</span></a>
+<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 1.125399e-05 0.99172381                 2</span></a>
 <a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z         z clean 2.376018e-01 0.13176020                 0</span></a>
 <a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span></a>
 <a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span></a>
@@ -276,9 +276,9 @@
 <a class="sourceLine" id="cb2-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
 <a class="sourceLine" id="cb2-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 1.894619e-01 0.2810898                 2</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 2.532154e-01 0.2036653                 2</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 4.512437e-02 0.6135229                 2</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 1.304740e-01 0.3793327                 2</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 1.262238e-01 0.3877835                 2</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 3.657626e-01 0.1121995                 2</span></a>
 <a class="sourceLine" id="cb2-13" data-line-number="13"> <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
 <a class="sourceLine" id="cb2-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>

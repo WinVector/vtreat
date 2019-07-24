@@ -15,6 +15,10 @@ stat.AP](https://arxiv.org/abs/1611.09477) . There is also a series of
 articles recording the evolution of `vtreat` including some tutorials
 [here](http://www.win-vector.com/blog/tag/vtreat/).
 
+‘vtreat’ is supplied by [Win-Vector LLC](http://www.win-vector.com)
+under a GPL-2 | GPL-3 license, without warranty. We are also developing
+a [Python version of ‘vtreat’](https://github.com/WinVector/pyvtreat).
+
 ![](https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png)
 
 (logo: Julie Mount, source: “The Harvest” by Boris Kustodiev 1914)
@@ -107,9 +111,6 @@ take the value NA or +-Inf (so are very safe to use in modeling).
 In application we suggest splitting your data into three sets: one for
 building vtreat encodings, one for training models using these
 encodings, and one for test and model evaluation.
-
-‘vtreat’ is supplied by [Win-Vector LLC](http://www.win-vector.com)
-under a GPL-3 license, without warranty.
 
 The purpose of ‘vtreat’ library is to reliably prepare data for
 supervised machine learning. We try to leave as much as possible to the
@@ -244,7 +245,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.4.3'
+ #  [1] '1.4.4'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -274,14 +275,14 @@ dTestC <- data.frame(x=c('a', 'b', 'c', NA), z=c(10, 20, 30, NA))
 treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.059315943 0.45141252                 2
- #  2        x    x_catB  catB 0.029824903 0.59334713                 2
- #  3        z         z clean 0.237601767 0.13176020                 0
- #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
- #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
- #  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0
- #  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0
+ #    origName   varName  code          rsq        sig extraModelDegrees
+ #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
+ #  2        x    x_catB  catB 1.177202e-05 0.99153548                 2
+ #  3        z         z clean 2.376018e-01 0.13176020                 0
+ #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
+ #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
+ #  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0
+ #  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0
 
 # help("prepare")
 
@@ -319,9 +320,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
- #  2        x    x_catN  catN 1.088889e-01 0.4247287                 2
- #  3        x    x_catD  catD 3.743113e-01 0.1069707                 2
+ #  1        x    x_catP  catP 3.137255e-01 0.1487686                 2
+ #  2        x    x_catN  catN 2.536663e-02 0.7063823                 2
+ #  3        x    x_catD  catD 1.620332e-01 0.3228162                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
