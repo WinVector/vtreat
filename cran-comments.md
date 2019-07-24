@@ -6,26 +6,7 @@
 
 ### OSX
 
-    R CMD check --as-cran vtreat_1.4.3.tar.gz
-    * using R version 3.6.0 (2019-04-26)
-    * using platform: x86_64-apple-darwin15.6.0 (64-bit)
-    * using session charset: UTF-8
-    * using option ‘--as-cran’
-    * checking for file ‘vtreat/DESCRIPTION’ ... OK
-    * checking extension type ... Package
-    * this is package ‘vtreat’ version ‘1.4.3’
-    * checking CRAN incoming feasibility ... NOTE
-    Maintainer: ‘John Mount <jmount@win-vector.com>’
-    Found the following (possibly) invalid URLs:
-      URL: https://www.jstor.org/stable/2683780
-        From: inst/doc/vtreat.html
-        Status: 403
-        Message: Forbidden
-    * checking top-level files ... WARNING
-    Conversion of ‘README.md’ failed:
-    pandoc: Could not fetch https://www.r-pkg.org/badges/version/vtreat
-    TlsException (HandshakeFailed (Error_Protocol ("expecting server hello, got alert : [(AlertLevel_Fatal,HandshakeFailure)]",True,HandshakeFailure)))
-    Status: 1 WARNING, 1 NOTE
+    R CMD check --as-cran vtreat_1.4.4.tar.gz
     WARNING and NOTE are spurious, URLs https://www.jstor.org/stable/2683780 and https://www.jstor.org/stable/2683780 are correct and working.
 
 ### Windows
