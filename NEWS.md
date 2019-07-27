@@ -1,5 +1,5 @@
 
-# vtreat 1.4.4 2019/07/25
+# vtreat 1.4.4 2019/07/27
 
  * Adjust license to GPL-2 | GPL-3 
  * Some doc updates.
