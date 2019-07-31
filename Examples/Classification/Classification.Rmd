@@ -1,0 +1,86 @@
+---
+title: "Classification"
+output: github_document
+---
+
+Attache packages.
+
+```{r}
+library(ggplot2)
+library(WVPlots)
+library(xgboost)
+library(vtreat)
+library(wrapr)
+```
+
+Generate example data.
+
+```{r}
+d <- data.frame(x = 0.1*(0:499))
+d$y <- sin(d$x) + 0.1*rnorm(n = nrow(d))
+d$xc <- paste0('level_', 5*round(d$y/5, digits = 1))
+d$yc <- d$y>0.5
+d$yn <- as.numeric(d$yc)
+head(d)
+```
+
+```{r}
+mean(d$yc)
+```
+
+```{r}
+WVPlots::ScatterHist(d, xvar = "x", yvar = "yn", title = "example data")
+```
+
+
+Build a classification model.
+
+```{r}
+cfe <- mkCrossFrameCExperiment(d, varlist = c('x', 'xc'), outcomename = 'yc', outcometarget = TRUE)
+```
+
+```{r}
+d_prepared = cfe$crossFrame
+d_prepared$yn = d$yn
+head(d_prepared)
+```
+
+```{r}
+cfe$treatments$scoreFrame
+```
+
+Loot at `xc_catB`.
+
+```{r}
+ROCPlot(d_prepared, xvar = 'xc_catB', truthVar = 'yc', truthTarget = TRUE, title = "xc_catB")
+```
+
+```{r}
+DoubleDensityPlot(d_prepared, xvar = 'xc_catB', truthVar = 'yc', title = "xc_catB")
+```
+
+```{r}
+ggplot(d_prepared, aes(x=x)) +
+  geom_line(aes(y=yn), color='blue') +
+  geom_point(aes(y=xc_catB), color='orange') + 
+  ylab('xc_catB')
+```
+
+
+Lot at `xc_catP`.
+
+```{r}
+ROCPlot(d_prepared, xvar = 'xc_catP', truthVar = 'yc', truthTarget = TRUE, title = "xc_catP")
+```
+
+```{r}
+DoubleDensityPlot(d_prepared, xvar = 'xc_catP', truthVar = 'yc', title = "xc_catP")
+```
+
+
+```{r}
+ggplot(d_prepared, aes(x=x)) +
+  geom_line(aes(y=yn), color='blue') +
+  geom_point(aes(y=xc_catP), color='orange') + 
+  ylab('xc_catP')
+```
