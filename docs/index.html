@@ -182,7 +182,8 @@
 <p>It is a dirty secret that even popular machine learning techniques need some variable pruning (when exposed to very wide data frames, see <a href="http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a> and <a href="https://www.youtube.com/watch?v=X_Rn3EOEjGE">here</a>). We make the necessary effect size estimates and significances easily available and supply initial variable pruning.</p>
 </li>
 </ul>
-<p>The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of <a href="http://practicaldatascience.com/"><em>Practical Data Science with R</em> (Zumel, Mount; Manning 2014)</a> into a <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">very short worksheet</a> (though we think for understanding it is <em>essential</em> to work all the steps by hand as we did in the book). The idea is: <code>data.frame</code>s prepared with the <code>vtreat</code> library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the <code>vtreat</code> variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and <code><a href="reference/prepare.html">vtreat::prepare(scale=TRUE)</a></code> which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the <code>vtreat</code> library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less.</p>
+<p>The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of <a href="http://practicaldatascience.com/"><em>Practical Data Science with R</em> (Zumel, Mount; Manning 2014)</a> into a <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">very short worksheet</a> (though we think for understanding it is <em>essential</em> to work all the steps by hand as we did in the book). The 2nd edition of <em>Practical Data Science with R</em> covers using <code>vtreat</code> in <code>R</code> in chapter 8 “Advanced Data Preparation.”</p>
+<p>The idea is: <code>data.frame</code>s prepared with the <code>vtreat</code> library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the <code>vtreat</code> variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and <code><a href="reference/prepare.html">vtreat::prepare(scale=TRUE)</a></code> which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the <code>vtreat</code> library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less.</p>
 <p>There have been a number of recent substantial improvements to the library, including:</p>
 <ul>
 <li>Out of sample scoring.</li>
@@ -203,7 +204,7 @@
 <p>Trivial example:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"vtreat"</span>)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"vtreat"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"> <span class="co">#  [1] '1.4.4'</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"> <span class="co">#  [1] '1.4.5'</span></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="st">'vtreat'</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"> <span class="co">#  </span></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6"> <span class="co">#  To cite package 'vtreat' in publications use:</span></a>
@@ -233,14 +234,14 @@
 <a class="sourceLine" id="cb1-30" data-line-number="30">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb1-31" data-line-number="31">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-32" data-line-number="32"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 0.130498074 0.26400089                 2</span></a>
-<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 0.030345745 0.59013918                 2</span></a>
-<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z         z clean 0.237601767 0.13176020                 0</span></a>
-<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span></a>
-<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span></a>
-<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span></a>
-<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 1.559780e-01 0.22202097                 2</span></a>
+<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 1.177202e-05 0.99153548                 2</span></a>
+<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z         z clean 2.376018e-01 0.13176020                 0</span></a>
+<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span></a>
+<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span></a>
 <a class="sourceLine" id="cb1-41" data-line-number="41"></a>
 <a class="sourceLine" id="cb1-42" data-line-number="42"><span class="co"># help("prepare")</span></a>
 <a class="sourceLine" id="cb1-43" data-line-number="43"></a>
@@ -275,9 +276,9 @@
 <a class="sourceLine" id="cb2-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
 <a class="sourceLine" id="cb2-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 3.700306e-01 0.1095637                 2</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 1.088889e-01 0.4247287                 2</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 3.743113e-01 0.1069707                 2</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 7.352941e-02 0.5159425                 2</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 1.678556e-03 0.9232668                 2</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 3.614228e-01 0.1149323                 2</span></a>
 <a class="sourceLine" id="cb2-13" data-line-number="13"> <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
 <a class="sourceLine" id="cb2-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>

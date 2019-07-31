@@ -205,7 +205,10 @@ the steps taught in chapters 4 and 6 of [*Practical Data Science with R*
 [very short
 worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we
 think for understanding it is *essential* to work all the steps by hand
-as we did in the book). The idea is: `data.frame`s prepared with the
+as we did in the book). The 2nd edition of *Practical Data Science with R* covers
+using `vtreat` in `R` in chapter 8 "Advanced Data Preparation."
+
+The idea is: `data.frame`s prepared with the
 `vtreat` library are somewhat safe to train on as some precaution has
 been taken against all of the above issues. Also of interest are the
 `vtreat` variable significances (help in initial variable pruning, a
