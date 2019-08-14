@@ -5,16 +5,45 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 
-`vtreat` is data processor/conditioner that prepares real-world data for
-supervised machine learning in a statistically sound manner. It is
-available as an [`R` package](https://github.com/WinVector/vtreat), and
-also as a [`Python`/`Pandas`
-package](https://github.com/WinVector/pyvtreat).
+`vtreat` is a `data.frame` processor/conditioner that prepares
+real-world data for supervised machine learning or predictive modeling
+in a statistically sound manner.
+
+`vtreat` takes an input `data.frame` that has a specified column called
+“the outcome variable” (or “y”) that is the quantity to be predicted
+(and must not have missing values). Other input columns are possible
+explanatory variables (typically numeric or categorical/string-valued,
+these columns may have missing values) that the user later wants to use
+to predict “y”. In practice such an input `data.frame` may not be
+immediately suitable for machine learning procedures that often expect
+only numeric explanatory variables, and may not tolerate missing value.
+
+To solve this, `vtreat` builds a transformed `data.frame` where all
+explanatory variable columns have been transformed into a number of
+numeric explanatory variable columns, without missing values. The
+`vtreat` implementation produces derived numeric columns that capture
+most of the information relating the explanatory columns to the
+specified “y” or dependent/outcome column through a number of numeric
+transforms (indicator variables, impact codes, prevalence codes, and
+more). This transformed `data.frame` is suitable for a wide range of
+supervised learning methods from linear regression, through gradient
+boosted machines.
+
+The idea is: you can take a `data.frame` of messy real world data and
+easily, faithfully, reliably, and repeatably prepare it for machine
+learning using documented methods using `vtreat`. Incorporating `vtreat`
+into your machine learning workflow lets you quickly work with very
+diverse structured data.
 
 For more detail please see here: [arXiv:1611.09477
-stat.AP](https://arxiv.org/abs/1611.09477) . There is also a series of
-articles recording the evolution of `vtreat` including some tutorials
-[here](http://www.win-vector.com/blog/tag/vtreat/).
+stat.AP](https://arxiv.org/abs/1611.09477) (the documentation describes
+the `R` version, however all of the examples can be found worked in
+`Python`
+[here](https://github.com/WinVector/pyvtreat/tree/master/Examples/vtreat_paper1)).
+
+`vtreat` is available as an [`R`
+package](https://github.com/WinVector/vtreat), and also as a
+[`Python`/`Pandas` package](https://github.com/WinVector/vtreat).
 
 ![](https://github.com/WinVector/vtreat/raw/master/tools/vtreat.png)
 
@@ -321,8 +350,8 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
  #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
- #  2        x    x_catN  catN 1.088889e-01 0.4247287                 2
- #  3        x    x_catD  catD 3.743113e-01 0.1069707                 2
+ #  2        x    x_catN  catN 2.606061e-01 0.1961166                 2
+ #  3        x    x_catD  catD 6.666667e-02 0.5369633                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
