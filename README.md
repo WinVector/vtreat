@@ -16,7 +16,7 @@ explanatory variables (typically numeric or categorical/string-valued,
 these columns may have missing values) that the user later wants to use
 to predict “y”. In practice such an input `data.frame` may not be
 immediately suitable for machine learning procedures that often expect
-only numeric explanatory variables, and may not tolerate missing value.
+only numeric explanatory variables, and may not tolerate missing values.
 
 To solve this, `vtreat` builds a transformed `data.frame` where all
 explanatory variable columns have been transformed into a number of
@@ -273,16 +273,16 @@ Trivial example:
 
 ``` r
 library("vtreat")
+ #  Warning: package 'vtreat' was built under R version 3.5.2
 packageVersion("vtreat")
- #  [1] '1.4.5'
+ #  [1] '1.4.4'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
  #  
  #    John Mount and Nina Zumel (2019). vtreat: A Statistically Sound
- #    'data.frame' Processor/Conditioner.
- #    https://github.com/WinVector/vtreat/,
- #    https://winvector.github.io/vtreat/.
+ #    'data.frame' Processor/Conditioner. R package version 1.4.4.
+ #    https://CRAN.R-project.org/package=vtreat
  #  
  #  A BibTeX entry for LaTeX users is
  #  
@@ -290,7 +290,8 @@ citation('vtreat')
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
  #      year = {2019},
- #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
+ #      note = {R package version 1.4.4},
+ #      url = {https://CRAN.R-project.org/package=vtreat},
  #    }
 
 # categorical example
@@ -305,8 +306,8 @@ treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.130498074 0.26400089                 2
- #  2        x    x_catB  catB 0.030345745 0.59013918                 2
+ #  1        x    x_catP  catP 0.111456141 0.30194137                 2
+ #  2        x    x_catB  catB 0.033761011 0.56994212                 2
  #  3        z         z clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -349,9 +350,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
- #  2        x    x_catN  catN 2.606061e-01 0.1961166                 2
- #  3        x    x_catD  catD 6.666667e-02 0.5369633                 2
+ #  1        x    x_catP  catP 1.304740e-01 0.3793327                 2
+ #  2        x    x_catN  catN 1.262238e-01 0.3877835                 2
+ #  3        x    x_catD  catD 3.657626e-01 0.1121995                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
