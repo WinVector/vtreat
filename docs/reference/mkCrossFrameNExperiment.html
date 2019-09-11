@@ -8,11 +8,13 @@
 
 <title>Run a numeric cross frame experiment. — mkCrossFrameNExperiment • vtreat</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -30,14 +32,15 @@
 
 
 
-<meta property="og:title" content="Run a numeric cross frame experiment. — mkCrossFrameNExperiment" />
 
+<meta property="og:title" content="Run a numeric cross frame experiment. — mkCrossFrameNExperiment" />
 <meta property="og:description" content="Builds a designTreatmentsN treatment plan and a data frame prepared 
 from dframe that is &quot;cross&quot; in the sense each row is treated using a treatment
 plan built from a subset of dframe disjoint from the given row.
 The goal is to try to and supply a method of breaking nested model bias other than splitting
 into calibration, training, test sets." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -131,7 +134,6 @@ into calibration, training, test sets." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
@@ -154,13 +156,11 @@ into calibration, training, test sets." />
     </div>
 
     <div class="ref-description">
-    
     <p>Builds a <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code> treatment plan and a data frame prepared 
 from <code>dframe</code> that is "cross" in the sense each row is treated using a treatment
 plan built from a subset of dframe disjoint from the given row.
 The goal is to try to and supply a method of breaking nested model bias other than splitting
 into calibration, training, test sets.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>mkCrossFrameNExperiment</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>outcomename</span>, <span class='no'>...</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(),
@@ -169,7 +169,7 @@ into calibration, training, test sets.</p>
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -254,15 +254,13 @@ into calibration, training, test sets.</p>
       <td><p>logical, if TRUE use parallel methods.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>treatment plan (for use with prepare)</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='designTreatmentsC.html'>designTreatmentsC</a></code>, <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code>, <code><a href='prepare.treatmentplan.html'>prepare.treatmentplan</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -277,20 +275,17 @@ into calibration, training, test sets.</p>
 <span class='no'>d</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span> + <span class='no'>del</span>[<span class='no'>d</span>$<span class='no'>zip2</span>]
 <span class='no'>d</span>$<span class='no'>yc</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>$<span class='no'>y</span><span class='kw'>&gt;=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/mean'>mean</a></span>(<span class='no'>d</span>$<span class='no'>y</span>)
 <span class='no'>cN</span> <span class='kw'>&lt;-</span> <span class='fu'>mkCrossFrameNExperiment</span>(<span class='no'>d</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>'zip'</span>,<span class='st'>'zip2'</span>),<span class='st'>'y'</span>,
-   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.5 start initial treatment design Wed Jul 31 09:52:53 2019"
-#&gt; [1] " start cross frame work Wed Jul 31 09:52:54 2019"
-#&gt; [1] " vtreat::mkCrossFrameNExperiment done Wed Jul 31 09:52:55 2019"</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] -0.00466822</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.3018094</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
+   <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>rareSig</span><span class='kw'>=</span><span class='fl'>0.9</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.5 start initial treatment design Wed Sep 11 08:19:19 2019"
+#&gt; [1] " start cross frame work Wed Sep 11 08:19:20 2019"
+#&gt; [1] " vtreat::mkCrossFrameNExperiment done Wed Sep 11 08:19:20 2019"</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip_catN</span>)  <span class='co'># poor</span></div><div class='output co'>#&gt; [1] -0.00466822</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span>(<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>y</span>,<span class='no'>cN</span>$<span class='no'>crossFrame</span>$<span class='no'>zip2_catN</span>) <span class='co'># better</span></div><div class='output co'>#&gt; [1] 0.3018094</div><div class='input'><span class='no'>treatments</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>treatments</span>
 <span class='no'>dTrainV</span> <span class='kw'>&lt;-</span> <span class='no'>cN</span>$<span class='no'>crossFrame</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -1,5 +1,5 @@
 
-# vtreat 1.4.5 2019/07/31
+# vtreat 1.4.5 2019/09/11
 
  * Some doc updates.
 

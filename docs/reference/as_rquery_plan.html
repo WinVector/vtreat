@@ -8,11 +8,13 @@
 
 <title>Convert vtreatment plans into a sequence of rquery operations. — as_rquery_plan • vtreat</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -30,10 +32,11 @@
 
 
 
-<meta property="og:title" content="Convert vtreatment plans into a sequence of rquery operations. — as_rquery_plan" />
 
+<meta property="og:title" content="Convert vtreatment plans into a sequence of rquery operations. — as_rquery_plan" />
 <meta property="og:description" content="Convert vtreatment plans into a sequence of rquery operations." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -127,7 +130,6 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
@@ -150,13 +152,11 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Convert vtreatment plans into a sequence of rquery operations.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>as_rquery_plan</span>(<span class='no'>treatmentplans</span>, <span class='no'>...</span>, <span class='kw'>var_restriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -173,15 +173,13 @@
       <td><p>character, if not null restrict to producing these variables.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>list(optree_generator (ordered list of functions), temp_tables (named list of tables))</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='rquery_prepare.html'>rquery_prepare</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -215,13 +213,13 @@
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rquery/topics/rq_remove_table'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/DBI/topics/dbDisconnect'>dbDisconnect</a></span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.4.5 inspecting inputs Wed Jul 31 09:52:44 2019"
-#&gt; [1] "designing treatments Wed Jul 31 09:52:44 2019"
-#&gt; [1] " have initial level statistics Wed Jul 31 09:52:44 2019"
-#&gt; [1] " scoring treatments Wed Jul 31 09:52:44 2019"
-#&gt; [1] "have treatment plan Wed Jul 31 09:52:44 2019"
-#&gt; [1] "rescoring complex variables Wed Jul 31 09:52:44 2019"
-#&gt; [1] "done rescoring complex variables Wed Jul 31 09:52:44 2019"
+}</div><div class='output co'>#&gt; [1] "vtreat 1.4.5 inspecting inputs Wed Sep 11 08:19:11 2019"
+#&gt; [1] "designing treatments Wed Sep 11 08:19:11 2019"
+#&gt; [1] " have initial level statistics Wed Sep 11 08:19:11 2019"
+#&gt; [1] " scoring treatments Wed Sep 11 08:19:11 2019"
+#&gt; [1] "have treatment plan Wed Sep 11 08:19:11 2019"
+#&gt; [1] "rescoring complex variables Wed Sep 11 08:19:11 2019"
+#&gt; [1] "done rescoring complex variables Wed Sep 11 08:19:11 2019"
 #&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
 #&gt; 1 0.5000000 -0.6930972 1.0       0        0         1         0 FALSE
 #&gt; 2 0.5000000 -0.6930972 2.0       0        0         1         0 FALSE
@@ -273,11 +271,8 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

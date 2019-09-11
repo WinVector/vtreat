@@ -113,7 +113,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-07-31</h4>
+            <h4 class="date">2019-09-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -122,254 +122,337 @@
 
     
     
-<p>‘vtreat’ is a data.frame processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner. A formal article on the method can be found here: <a href="https://arxiv.org/abs/1611.09477">arXiv:1611.09477 stat.AP</a>.</p>
-<p>A ‘vtreat’ clean data frame:</p>
+<p><code>vtreat</code> is a <code>data.frame</code> processor/conditioner that prepares real-world data for supervised machine learning or predictive modeling in a statistically sound manner.</p>
+<p><code>vtreat</code> takes an input <code>data.frame</code> that has a specified column called “the outcome variable” (or “y”) that is the quantity to be predicted (and must not have missing values). Other input columns are possible explanatory variables (typically numeric or categorical/string-valued, these columns may have missing values) that the user later wants to use to predict “y”. In practice such an input <code>data.frame</code> may not be immediately suitable for machine learning procedures that often expect only numeric explanatory variables, and may not tolerate missing value.</p>
+<p>To solve this, <code>vtreat</code> builds a transformed <code>data.frame</code> where all explanatory variable columns have been transformed into a number of numeric explanatory variable columns, without missing values. The <code>vtreat</code> implementation produces derived numeric columns that capture most of the information relating the explanatory columns to the specified “y” or dependent/outcome column through a number of numeric transforms (indicator variables, impact codes, prevalence codes, and more). This transformed <code>data.frame</code> is suitable for a wide range of supervised learning methods from linear regression, through gradient boosted machines.</p>
+<p>The idea is: you can take a <code>data.frame</code> of messy real world data and easily, faithfully, reliably, and repeatably prepare it for machine learning using documented methods using <code>vtreat</code>. Incorporating <code>vtreat</code> into your machine learning workflow lets you quickly work with very diverse structured data.</p>
+<p>For more detail please see here: <a href="https://arxiv.org/abs/1611.09477">arXiv:1611.09477 stat.AP</a> (the documentation describes the <code>R</code> version, however all of the examples can be found worked in <code>Python</code> <a href="https://github.com/WinVector/pyvtreat/tree/master/Examples/vtreat_paper1">here</a>).</p>
+<p><code>vtreat</code> is available as an <a href="https://github.com/WinVector/vtreat"><code>R</code> package</a>, and also as a <a href="https://github.com/WinVector/vtreat"><code>Python</code>/<code>Pandas</code> package</a>.</p>
+<p>Even with modern machine learning techniques (random forests, support vector machines, neural nets, gradient boosted trees, and so on) or standard statistical methods (regression, generalized regression, generalized additive models) there are <em>common</em> data issues that can cause modeling to fail. vtreat deals with a number of these in a principled and automated fashion.</p>
+<p>In particular vtreat emphasizes a concept called “y-aware pre-processing” and implements:</p>
 <ul>
-<li>Only has numeric columns (other than the outcome).</li>
-<li>Has no Infinite/NA/NaN in the effective variable columns.</li>
+<li>Treatment of missing values through safe replacement plus indicator column (a simple but very powerful method when combined with downstream machine learning algorithms).</li>
+<li>Treatment of novel levels (new values of categorical variable seen during test or application, but not seen during training) through sub-models (or impact/effects coding of pooled rare events).</li>
+<li>Explicit coding of categorical variable levels as new indicator variables (with optional suppression of non-significant indicators).</li>
+<li>Treatment of categorical variables with very large numbers of levels through sub-models (again <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact/effects coding</a>).</li>
+<li>(optional) User specified significance pruning on levels coded into effects/impact sub-models.</li>
+<li>Correct treatment of nested models or sub-models through data split (see <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">here</a>) or through the generation of “cross validated” data frames (see <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">here</a>); these are issues similar to what is required to build statistically efficient stacked models or super-learners).</li>
+<li>Safe processing of “wide data” (data with very many variables, often driving common machine learning algorithms to over-fit) through <a href="https://winvector.github.io/vtreat/articles/vtreatSignificance.html">out of sample per-variable significance estimates and user controllable pruning</a> (something we have lectured on previously <a href="https://github.com/WinVector/WinVector.github.io/tree/master/DS">here</a> and <a href="http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a>).</li>
+<li>Collaring/Winsorizing of unexpected out of range numeric inputs.</li>
+<li>(optional) Conversion of all variables into effects (or “y-scale”) units (through the optional <code>scale</code> argument to <code><a href="../reference/prepare.html">vtreat::prepare()</a></code>, using some of the ideas discussed <a href="http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/">here</a>). This allows correct/sensible application of principal component analysis pre-processing in a machine learning context.</li>
+<li>Joining in additional training distribution data (which can be useful in analysis, called “catP” and “catD”).</li>
 </ul>
-<p>To achieve this a number of techniques are used. Principally:</p>
+<p>The idea is: even with a sophisticated machine learning algorithm there are <em>many</em> ways messy real world data can defeat the modeling process, and vtreat helps with at least ten of them. We emphasize: these problems are already in your data, you simply build better and more reliable models if you attempt to mitigate them. Automated processing is no substitute for actually looking at the data, but vtreat supplies efficient, reliable, documented, and tested implementations of many of the commonly needed transforms.</p>
+<p>To help explain the methods we have prepared some documentation:</p>
 <ul>
-<li><a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">Impact coding</a></li>
-<li><a href="http://www.win-vector.com/blog/2014/12/a-comment-on-preparing-data-for-classifiers/">Encoding category levels as indicators</a></li>
+<li>The <a href="https://winvector.github.io/vtreat/index.html">vtreat package overall</a>.</li>
+<li><a href="http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf">Preparing data for analysis using R white-paper</a></li>
+<li>The <a href="https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html">types of new variables</a> introduced by vtreat processing (including how to limit down to domain appropriate variable types).</li>
+<li>Statistically sound treatment of the nested modeling issue introduced by any sort of pre-processing (such as vtreat itself): <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">nested over-fit issues</a> and a general <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">cross-frame solution</a>.</li>
+<li>
+<a href="https://winvector.github.io/vtreat/articles/vtreatSignificance.html">Principled ways to pick significance based pruning levels</a>.</li>
 </ul>
-<p>For more details see: <a href="http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/">the ‘vtreat’ article</a> and <a href="http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/">update</a>.</p>
-<p>The use pattern is:</p>
-<ol style="list-style-type: decimal">
-<li>Use <code><a href="../reference/designTreatmentsC.html">designTreatmentsC()</a></code> or <code><a href="../reference/designTreatmentsN.html">designTreatmentsN()</a></code> to design a treatment plan</li>
-<li>Use the returned structure with <code><a href="../reference/prepare.html">prepare()</a></code> to apply the plan to data frames.</li>
-</ol>
-<p>The main feature of ‘vtreat’ is that all data preparation is “y-aware”: it uses the relations of effective variables to the dependent or outcome variable to encode the effective variables.</p>
-<p>The structure returned from <code><a href="../reference/designTreatmentsN.html">designTreatmentsN()</a></code> or <code><a href="../reference/designTreatmentsC.html">designTreatmentsC()</a></code> includes a list of “treatments”: objects that encapsulate the transformation process from the original variables to the new “clean” variables.</p>
-<p>In addition to the treatment objects <code><a href="../reference/designTreatmentsC.html">designTreatmentsC()</a></code> and <code><a href="../reference/designTreatmentsN.html">designTreatmentsN()</a></code> also return a data frame named <code>scoreFrame</code> which contains columns:</p>
-<ul>
-<li>
-<code>varName</code>: name of new variable</li>
-<li>
-<code>origName</code>: name of original variable that the variable was derived from (can repeat).</li>
-<li>
-<code>code</code>: what time of treatment was performed to create the derived variable (useful for filtering).</li>
-<li>
-<code>varMoves</code>: logical TRUE if the variable varied during training; only variables that move will be in the treated frame.</li>
-<li>
-<code>sig</code>: linear significance of regressing derived variable against a 0/1 indicator target for numeric targets, logistic regression significance otherwise.</li>
-<li>
-<code>needsSplit</code>: is the variable a sub model and require out of sample scoring.</li>
-</ul>
-<p>In all cases we have two undesirable upward biases on the scores:</p>
-<ul>
-<li>The treated variables view the training data during construction (for setting of NA values, missing values, levels, and more). So this gives an upward bias when trying to measure treated variable utility on training data. Until the data set is at least 1000 good rows we ignore this effect. After 1000 rows we design variables on a pseudo-randomly chosen 80% of the rows and score on the complimentary 20% of the rows.</li>
-<li>The scoring procedure itself involves a fit (linear regression for regression or logistic regression for classification). In each of these cases we would like the scoring itself to only be evaluated on variables constructed on held-out data. This is simulated through a cross-validation procedure.</li>
-</ul>
-<p>‘vtreat’ uses a number of cross-training and jackknife style procedures to try to mitigate these effects. The suggested best practice (if you have enough data) is to split your data randomly into at least the following disjoint data sets:</p>
+<p>Data treatments are “y-aware” (use distribution relations between independent variables and the dependent variable). For binary classification use <code><a href="../reference/designTreatmentsC.html">designTreatmentsC()</a></code> and for numeric regression use <code><a href="../reference/designTreatmentsN.html">designTreatmentsN()</a></code>.</p>
+<p>After the design step, <code><a href="../reference/prepare.html">prepare()</a></code> should be used as you would use model.matrix. <code><a href="../reference/prepare.html">prepare()</a></code> treated variables are all numeric and never take the value NA or +-Inf (so are very safe to use in modeling).</p>
+<p>In application we suggest splitting your data into three sets: one for building vtreat encodings, one for training models using these encodings, and one for test and model evaluation.</p>
+<p>The purpose of <code>vtreat</code> library is to reliably prepare data for supervised machine learning. We try to leave as much as possible to the machine learning algorithms themselves, but cover most of the truly necessary typically ignored precautions. The library is designed to produce a <code>data.frame</code> that is entirely numeric and takes common precautions to guard against the following real world data issues:</p>
 <ul>
 <li>
-<strong>Encoding Calibration</strong> : a data set used for the <code><a href="../reference/designTreatmentsC.html">designTreatmentsC()</a></code> or <code><a href="../reference/designTreatmentsN.html">designTreatmentsN()</a></code> step and not used again for training or test.</li>
+<p>Categorical variables with very many levels.</p>
+<p>We re-encode such variables as a family of indicator or dummy variables for common levels plus an additional <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact code</a> (also called “effects coded”). This allows principled use (including smoothing) of huge categorical variables (like zip-codes) when building models. This is critical for some libraries (such as <code>randomForest</code>, which has hard limits on the number of allowed levels).</p>
+</li>
 <li>
-<strong>Training</strong> : a data set used (after <code><a href="../reference/prepare.html">prepare()</a></code>) for training your model.</li>
+<p>Rare categorical levels.</p>
+<p>Levels that do not occur often during training tend not to have reliable effect estimates and contribute to over-fit. vtreat helps with 2 precautions in this case. First the <code>rareLevel</code> argument suppresses levels with this count our below from modeling, except possibly through a grouped contribution. Also with enough data vtreat attempts to estimate out of sample performance of derived variables. Finally we suggest users reserve a portion of data for vtreat design, separate from any data used in additional training, calibration, or testing.</p>
+</li>
 <li>
-<strong>Test</strong> : a data set used (after <code><a href="../reference/prepare.html">prepare()</a></code>) for estimating your model’s out of training performance.</li>
+<p>Novel categorical levels.</p>
+<p>A common problem in deploying a classifier to production is: new levels (levels not seen during training) encountered during model application. We deal with this by encoding categorical variables in a possibly redundant manner: reserving a dummy variable for all levels (not the more common all but a reference level scheme). This is in fact the correct representation for regularized modeling techniques and lets us code novel levels as all dummies simultaneously zero (which is a reasonable thing to try). This encoding while limited is cheaper than the fully Bayesian solution of computing a weighted sum over previously seen levels during model application.</p>
+</li>
+<li>
+<p>Missing/invalid values NA, NaN, +-Inf.</p>
+<p>Variables with these issues are re-coded as two columns. The first column is clean copy of the variable (with missing/invalid values replaced with either zero or the grand mean, depending on the user chose of the <code>scale</code> parameter). The second column is a dummy or indicator that marks if the replacement has been performed. This is simpler than imputation of missing values, and allows the downstream model to attempt to use missingness as a useful signal (which it often is in industrial data).</p>
+</li>
+<li>
+<p>Extreme values.</p>
+<p>Variables can be restricted to stay in ranges seen during training. This can defend against some run-away classifier issues during model application.</p>
+</li>
+<li>
+<p>Constant and near-constant variables.</p>
+<p>Variables that “don’t vary” or “nearly don’t vary” are suppressed.</p>
+</li>
+<li>
+<p>Need for estimated single-variable model effect sizes and significances.</p>
+<p>It is a dirty secret that even popular machine learning techniques need some variable pruning (when exposed to very wide data frames, see <a href="http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a> and <a href="https://www.youtube.com/watch?v=X_Rn3EOEjGE">here</a>). We make the necessary effect size estimates and significances easily available and supply initial variable pruning.</p>
+</li>
 </ul>
-<p>Taking the extra step to perform the <code><a href="../reference/designTreatmentsC.html">designTreatmentsC()</a></code> or <code><a href="../reference/designTreatmentsN.html">designTreatmentsN()</a></code> on data disjoint from training makes the training data more exchangeable with test and avoids the issue that ‘vtreat’ may be hiding a large number of degrees of freedom in variables it derives from large categoricals.</p>
-<p>Some trivial execution examples (not demonstrating any cal/train/test split) are given below. Variables that do not move during hold-out testing are considered “not to move.”</p>
-<hr>
-<div id="a-categorical-outcome-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-categorical-outcome-example" class="anchor"></a>A Categorical Outcome Example</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(vtreat)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTrainC)</a></code></pre></div>
-<pre><code>##      x  z     y
-## 1    a  1 FALSE
-## 2    a  2 FALSE
-## 3    a  3  TRUE
-## 4    b  4 FALSE
-## 5    b NA  TRUE
-## 6 &lt;NA&gt;  6  TRUE</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestC)</a></code></pre></div>
-<pre><code>##      x  z
-## 1    a 10
-## 2    b 20
-## 3    c 30
-## 4 &lt;NA&gt; NA</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.5 inspecting inputs Wed Jul 31 09:53:10 2019"
-## [1] "designing treatments Wed Jul 31 09:53:10 2019"
-## [1] " have initial level statistics Wed Jul 31 09:53:10 2019"
-## [1] " scoring treatments Wed Jul 31 09:53:10 2019"
-## [1] "have treatment plan Wed Jul 31 09:53:10 2019"
-## [1] "rescoring complex variables Wed Jul 31 09:53:10 2019"
-## [1] "done rescoring complex variables Wed Jul 31 09:53:10 2019"</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC)</a></code></pre></div>
-<pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.24340634 0.1547700                 2
-## 2        x    x_catB  catB 0.05070201 0.5160763                 2
-## 3        z         z clean 0.25792985 0.1429977                 0
-## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
-## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
-## 6        x x_lev_x_a   lev 0.08170417 0.4097258                 0
-## 7        x x_lev_x_b   lev 0.00000000 1.0000000                 0</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>treatments[[<span class="dv">1</span>]])</a></code></pre></div>
-<pre><code>## [1] "vtreat 'Categoric Indicators'('x'(integer,factor)-&gt;character-&gt;'x_lev_NA','x_lev_x_a','x_lev_x_b')"</code></pre>
-<p>Here we demonstrate the optional scaling feature of <code><a href="../reference/prepare.html">prepare()</a></code>, which scales and centers all significant variables to mean 0, and slope 1 with respect to y: In other words, it re-scales the variables to “y-units”. This is useful for downstream principal components analysis. Note: variables perfectly uncorrelated with y necessarily have slope 0 and can’t be “scaled” to slope 1, however for the same reason these variables will be insignificant and can be pruned by pruneSig.</p>
-<p><code>scale=FALSE</code> by default.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC,dTrainC,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTrainCTreated)</a></code></pre></div>
-<pre><code>##       x_catP    x_catB          z   z_isBAD  x_lev_NA  x_lev_x_a x_lev_x_b
-## 1 -0.9396225 -1.894112 -2.2158976 -3.161922 -3.161922 -0.6931472         0
-## 2 -0.9396225 -1.894112 -1.2086714 -3.161922 -3.161922 -0.6931472         0
-## 3 -0.9396225 -1.894112 -0.2014452 -3.161922 -3.161922 -0.6931472         0
-## 4  0.4698112 -1.196414  0.8057809 -3.161922 -3.161922  0.6931472         0
-## 5  0.4698112 -1.196414  0.0000000 15.809611 -3.161922  0.6931472         0
-## 6  1.8792449  8.075166  2.8202333 -3.161922 15.809611  0.6931472         0
-##       y
-## 1 FALSE
-## 2 FALSE
-## 3  TRUE
-## 4 FALSE
-## 5  TRUE
-## 6  TRUE</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainCTreated),<span class="st">'y'</span>)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainCTreated[,varsC,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean)</a></code></pre></div>
-<pre><code>##       x_catP       x_catB            z      z_isBAD     x_lev_NA 
-## 3.700743e-16 7.401487e-17 7.408715e-17 2.220446e-16 0.000000e+00 
-##    x_lev_x_a    x_lev_x_b 
-## 0.000000e+00 0.000000e+00</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># all slopes should be 1 for variables with dTrainCTreated$scoreFrame$sig&lt;1</span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsC,<span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),<span class="dt">family=</span>binomial,</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a></code></pre></div>
-<pre><code>##    x_catP    x_catB         z   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
-##         1         1         1         1         1         1        NA</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC,dTestC,<span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestCTreated)</a></code></pre></div>
-<pre><code>##       x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a x_lev_x_b
-## 1 -0.9396225 -1.894112  6.849138 -3.161922 -3.161922 -0.6931472         0
-## 2  0.4698112 -1.196414 16.921400 -3.161922 -3.161922  0.6931472         0
-## 3  2.5839618 -1.196414 26.993662 -3.161922 -3.161922  0.6931472         0
-## 4  1.8792449  8.075166  0.000000 15.809611 15.809611  0.6931472         0</code></pre>
-<hr>
-</div>
-<div id="a-numeric-outcome-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-numeric-outcome-example" class="anchor"></a>A Numeric Outcome Example</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># numeric example</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb19-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="ot">NA</span>,<span class="dv">7</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTrainN)</a></code></pre></div>
-<pre><code>##   x  z y
-## 1 a  1 0
-## 2 a  2 0
-## 3 a  3 0
-## 4 a  4 1
-## 5 b  5 0
-## 6 b NA 1</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="ot">NA</span>),<span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="ot">NA</span>))</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestN)</a></code></pre></div>
-<pre><code>##      x  z
-## 1    a 10
-## 2    b 20
-## 3    c 30
-## 4 &lt;NA&gt; NA</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.5 inspecting inputs Wed Jul 31 09:53:10 2019"
-## [1] "designing treatments Wed Jul 31 09:53:10 2019"
-## [1] " have initial level statistics Wed Jul 31 09:53:10 2019"
-## [1] " scoring treatments Wed Jul 31 09:53:11 2019"
-## [1] "have treatment plan Wed Jul 31 09:53:11 2019"
-## [1] "rescoring complex variables Wed Jul 31 09:53:11 2019"
-## [1] "done rescoring complex variables Wed Jul 31 09:53:11 2019"</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN)</a></code></pre></div>
-<pre><code>##   origName   varName  code         rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.440104167 0.1042469                 2
-## 2        x    x_catN  catN 0.010258994 0.8289310                 2
-## 3        x    x_catD  catD 0.005613741 0.8731603                 2
-## 4        z         z clean 0.336111111 0.1724763                 0
-## 5        z   z_isBAD isBAD 0.222222222 0.2855909                 0
-## 6        x  x_lev_NA   lev 0.222222222 0.2855909                 0
-## 7        x x_lev_x_a   lev 0.173611111 0.3524132                 0
-## 8        x x_lev_x_b   lev 0.008333333 0.8456711                 0</code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTrainN,</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">                          <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTrainNTreated)</a></code></pre></div>
-<pre><code>##   x_catP      x_catN     x_catD           z    z_isBAD   x_lev_NA
-## 1   -0.2 -0.17857143 -0.1785714 -0.41904762 -0.0952381 -0.0952381
-## 2   -0.2 -0.17857143 -0.1785714 -0.26190476 -0.0952381 -0.0952381
-## 3   -0.2 -0.17857143 -0.1785714 -0.10476190 -0.0952381 -0.0952381
-## 4   -0.2 -0.17857143 -0.1785714  0.05238095 -0.0952381 -0.0952381
-## 5    0.2  0.07142857  0.2380952  0.20952381 -0.0952381 -0.0952381
-## 6    0.2  0.07142857  0.2380952  0.00000000  0.5714286 -0.0952381
-##    x_lev_x_a   x_lev_x_b y
-## 1 -0.1785714 -0.02857143 0
-## 2 -0.1785714 -0.02857143 0
-## 3 -0.1785714 -0.02857143 0
-## 4 -0.1785714 -0.02857143 1
-## 5  0.2380952  0.07142857 0
-## 6  0.2380952  0.07142857 1</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainNTreated),<span class="st">'y'</span>)</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
-<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainNTreated[,varsN,<span class="dt">drop=</span><span class="ot">FALSE</span>],mean) </a></code></pre></div>
+<p>The above are all awful things that often lurk in real world data. Automating these steps ensures they are easy enough that you actually perform them and leaves the analyst time to look for additional data issues. For example this allowed us to essentially automate a number of the steps taught in chapters 4 and 6 of <a href="http://practicaldatascience.com/"><em>Practical Data Science with R</em> (Zumel, Mount; Manning 2014)</a> into a <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">very short worksheet</a> (though we think for understanding it is <em>essential</em> to work all the steps by hand as we did in the book). The 2nd edition of <em>Practical Data Science with R</em> covers using <code>vtreat</code> in <code>R</code> in chapter 8 “Advanced Data Preparation.”</p>
+<p>The idea is: <code>data.frame</code>s prepared with the <code>vtreat</code> library are somewhat safe to train on as some precaution has been taken against all of the above issues. Also of interest are the <code>vtreat</code> variable significances (help in initial variable pruning, a necessity when there are a large number of columns) and <code><a href="../reference/prepare.html">vtreat::prepare(scale=TRUE)</a></code> which re-encodes all variables into effect units making them suitable for y-aware dimension reduction (variable clustering, or principal component analysis) and for geometry sensitive machine learning techniques (k-means, knn, linear SVM, and more). You may want to do more than the <code>vtreat</code> library does (such as Bayesian imputation, variable clustering, and more) but you certainly do not want to do less.</p>
+<p>There have been a number of recent substantial improvements to the library, including:</p>
+<ul>
+<li>Out of sample scoring.</li>
+<li>Ability to use <code>parallel</code>.</li>
+<li>More general calculation of effect sizes and significances.</li>
+</ul>
+<p>Some of our related articles (which should make clear some of our motivations, and design decisions):</p>
+<ul>
+<li><a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">Modeling trick: impact coding of categorical variables with many levels</a></li>
+<li><a href="http://www.win-vector.com/blog/2012/08/a-bit-more-on-impact-coding/">A bit more on impact coding</a></li>
+<li><a href="http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/">vtreat: designing a package for variable treatment</a></li>
+<li><a href="http://www.win-vector.com/blog/2014/12/a-comment-on-preparing-data-for-classifiers/">A comment on preparing data for classifiers</a></li>
+<li><a href="http://www.slideshare.net/ChesterChen/vtreat">Nina Zumel presenting on vtreat</a></li>
+<li><a href="http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/">What is new in the vtreat library?</a></li>
+<li><a href="http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/">How do you know if your data has signal?</a></li>
+</ul>
+<p>Examples of current best practice using <code>vtreat</code> (variable coding, train, test split) can be found <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">here</a> and <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">here</a>.</p>
+<p>Trivial example:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"vtreat"</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
+<pre><code>## [1] '1.4.5'</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="st">'vtreat'</span>)</a></code></pre></div>
+<pre><code>## 
+## To cite package 'vtreat' in publications use:
+## 
+##   John Mount and Nina Zumel (2019). vtreat: A Statistically Sound
+##   'data.frame' Processor/Conditioner.
+##   https://github.com/WinVector/vtreat/,
+##   https://winvector.github.io/vtreat/.
+## 
+## A BibTeX entry for LaTeX users is
+## 
+##   @Manual{,
+##     title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
+##     author = {John Mount and Nina Zumel},
+##     year = {2019},
+##     note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
+##   }</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># categorical example</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="ot">NA</span>, <span class="dv">6</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">   <span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># help("designTreatmentsC")</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
+<pre><code>##   origName   varName  code         rsq        sig extraModelDegrees
+## 1        x    x_catP  catP 0.060049677 0.44862725                 2
+## 2        x    x_catB  catB 0.127625394 0.26932340                 2
+## 3        z         z clean 0.237601767 0.13176020                 0
+## 4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
+## 5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
+## 6        x x_lev_x_a   lev 0.130005705 0.26490379                 0
+## 7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># help("prepare")</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC, dTrainC, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainCTreated), <span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainCTreated[, varsC, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean)</a></code></pre></div>
+<pre><code>##        x_catP        x_catB             z       z_isBAD      x_lev_NA 
+##  2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 
+##     x_lev_x_a     x_lev_x_b 
+## -6.345680e-17  1.189718e-17</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsC, <span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a></code></pre></div>
+<pre><code>##     x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a 
+## 0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 
+##  x_lev_x_b 
+## 0.24663035</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC, dTestC, <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(dTestCTreated)</a></code></pre></div>
+<pre><code>##       x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b
+## 1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472
+## 2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179
+## 3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472
+## 4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># numeric example</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="ot">NA</span>, <span class="dv">7</span>, <span class="ot">NA</span>), <span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co"># help("designTreatmentsN")</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN), <span class="st">'y'</span>,</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
+<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 2.105263e-01 0.2528101                 2
+## 2        x    x_catN  catN 4.310345e-03 0.8772535                 2
+## 3        x    x_catD  catD 2.302479e-01 0.2288609                 2
+## 4        z         z clean 2.880952e-01 0.1701892                 0
+## 5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
+## 6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
+## 7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0
+## 8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dTrainNTreated[, varsN, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean) </a></code></pre></div>
 <pre><code>##        x_catP        x_catN        x_catD             z       z_isBAD 
-## -5.551115e-17 -3.965082e-18 -9.515810e-17  4.757324e-17 -3.967986e-18 
+##  2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 
 ##      x_lev_NA     x_lev_x_a     x_lev_x_b 
-## -3.965082e-18  0.000000e+00 -2.974054e-18</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># all slopes should be 1 for variables with treatmentsN$scoreFrame$sig&lt;1</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsN,<span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>,c,<span class="dt">sep=</span><span class="st">'~'</span>),</a>
-<a class="sourceLine" id="cb31-3" data-line-number="3">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a></code></pre></div>
+##  6.938894e-18  0.000000e+00  7.703720e-34</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(varsN, <span class="cf">function</span>(c) { <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/lm">lm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a></code></pre></div>
 <pre><code>##    x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a 
 ##         1         1         1         1         1         1         1 
 ## x_lev_x_b 
 ##         1</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># prepared frame</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">                         <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestNTreated)</a></code></pre></div>
-<pre><code>##       x_catP      x_catN    x_catD         z z_isBAD x_lev_NA x_lev_x_a
-## 1 0.57142857 -0.17857143 0.5000000 10.000000       0        0         1
-## 2 0.28571429  0.07142857 0.7071068 20.000000       0        0         0
-## 3 0.07142857  0.00000000 0.7071068 30.000000       0        0         0
-## 4 0.14285714  0.57142857 0.7071068  3.666667       1        1         0
-##   x_lev_x_b
-## 1         0
-## 2         1
-## 3         0
-## 4         0</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># scaled prepared frame</span></a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">dTestNTreatedS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN,dTestN,</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3">                         <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),<span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb35-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dTestNTreatedS)</a></code></pre></div>
-<pre><code>##   x_catP        x_catN     x_catD         z    z_isBAD   x_lev_NA
-## 1   -0.2 -1.785714e-01 -0.1785714 0.9952381 -0.0952381 -0.0952381
-## 2    0.2  7.142857e-02  0.2380952 2.5666667 -0.0952381 -0.0952381
-## 3    0.5 -1.586033e-17  0.2380952 4.1380952 -0.0952381 -0.0952381
-## 4    0.4  5.714286e-01  0.2380952 0.0000000  0.5714286  0.5714286
-##    x_lev_x_a   x_lev_x_b
-## 1 -0.1785714 -0.02857143
-## 2  0.2380952  0.07142857
-## 3  0.2380952 -0.02857143
-## 4  0.2380952 -0.02857143</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTestN, <span class="dt">pruneSig=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(dTestNTreated)</a></code></pre></div>
+<pre><code>##   x_catP x_catN      x_catD         z    z_isBAD   x_lev_NA x_lev_x_a
+## 1 -0.250  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25
+## 2  0.250   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25
+## 3  0.625   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25
+## 4  0.250   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25
+##       x_lev_x_b
+## 1 -2.266233e-17
+## 2  6.798700e-17
+## 3 -2.266233e-17
+## 4 -2.266233e-17</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># for large data sets you can consider designing the treatments on </span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="co"># a subset like: d[sample(1:dim(d)[[1]], 1000), ]</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="co"># One can also use treatment plans as pipe targets.</span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">dTrainN <span class="op">%.&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6"><span class="st">  </span>treatmentsN <span class="op">%.&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(.)</a></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">x_catP</th>
+<th align="right">x_catN</th>
+<th align="right">x_catD</th>
+<th align="right">z</th>
+<th align="right">z_isBAD</th>
+<th align="right">x_lev_NA</th>
+<th align="right">x_lev_x_a</th>
+<th align="right">x_lev_x_b</th>
+<th align="right">y</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.50</td>
+<td align="right">-0.25</td>
+<td align="right">0.5000000</td>
+<td align="right">1.000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">0.50</td>
+<td align="right">-0.25</td>
+<td align="right">0.5000000</td>
+<td align="right">2.000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.50</td>
+<td align="right">-0.25</td>
+<td align="right">0.5000000</td>
+<td align="right">3.000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">0.50</td>
+<td align="right">-0.25</td>
+<td align="right">0.5000000</td>
+<td align="right">4.000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">0.25</td>
+<td align="right">0.00</td>
+<td align="right">0.7071068</td>
+<td align="right">5.000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">0.25</td>
+<td align="right">0.00</td>
+<td align="right">0.7071068</td>
+<td align="right">3.666667</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">0.25</td>
+<td align="right">0.50</td>
+<td align="right">0.0000000</td>
+<td align="right">7.000000</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">0.25</td>
+<td align="right">0.50</td>
+<td align="right">0.0000000</td>
+<td align="right">3.666667</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
 <p>Related work:</p>
 <ul>
-<li>
-<a href="https://www.jstor.org/stable/2683780">“A Transformation for Simplifying the Interpretation of Coefficients of Binary Variables in Regression Analysis”</a>, Robert E. Sweeney and Edwin F. Ulveling; The American Statistician, vol. 26, no. 5, pp. 30-32, 1972.</li>
+<li>Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation Analysis For The Behav- ioral Sciences. 2 edition. Lawrence Erlbaum Associates, Inc. ISBN 0-89859-268-2.</li>
 <li>
 <a href="http://dl.acm.org/citation.cfm?id=507538">“A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems”</a> Daniele Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.</li>
 <li>
 <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">“Modeling Trick: Impact Coding of Categorical Variables with Many Levels”</a> Nina Zumel; Win-Vector blog, 2012.</li>
 <li>“Big Learning Made Easy – with Counts!”, Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.</li>
 </ul>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>To install, from inside <code>R</code> please run:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
+</div>
+<div id="note" class="section level2">
+<h2 class="hasAnchor">
+<a href="#note" class="anchor"></a>Note</h2>
+<p>Note: <code>vtreat</code> is meant only for “tame names”, that is: variables and column names that are also valid <em>simple</em> (without quotes) <code>R</code> variables names.</p>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#a-categorical-outcome-example">A Categorical Outcome Example</a></li>
-      <li><a href="#a-numeric-outcome-example">A Numeric Outcome Example</a></li>
+<li><a href="#installation">Installation</a></li>
+      <li><a href="#note">Note</a></li>
       </ul>
 </div>
       </div>
