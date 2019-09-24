@@ -3,8 +3,10 @@ title: "Classification"
 output: github_document
 ---
 
-# Using vtreat with Classification Problems
+# Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
 
+Nina Zumel and John Mount
+September 2019
 
 Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md) ([pre-rendered](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md)).
 
@@ -24,14 +26,14 @@ Generate example data.
 
 * `y` is a noisy sinusoidal function of the variable `x`
 * `yc` is the output to be predicted: : whether `y` is > 0.5. 
-* Input `xc` is a categorical variable that represents a discretization of `y`, along some `NaN`s
+* Input `xc` is a categorical variable that represents a discretization of `y`, along some `NA`s
 * Input `x2` is a pure noise variable with no relationship to the output
 
 ```{r}
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d['x']) + 0.1*rnorm(n = nrows)
-    d[4:10, 'x'] = NA                # introduce NAs
+    d[4:10, 'x'] = NA                  # introduce NAs
     d['xc'] = paste0('level_', 5*round(d$y/5, 1))
     d['x2'] = rnorm(n = nrows)
     d[d['xc']=='level_-1', 'xc'] = NA  # introduce a NA level
@@ -50,7 +52,7 @@ d %.>%
 ### Some quick data exploration
 
 
-Check how many levels `xc` has, and their disribution (including `NaN`)
+Check how many levels `xc` has, and their disribution (including `NA`)
 
 ```{r}
 unique(d['xc'])
@@ -76,7 +78,7 @@ ggplot(d, aes(x=x, y=as.numeric(yc))) +
 
 ## Build a transform appropriate for classification problems.
 
-Now that we have the data, we want to treat it prior to modeling: we want training data where all the input variables are numeric and have no missing values or `NaN`s.
+Now that we have the data, we want to treat it prior to modeling: we want training data where all the input variables are numeric and have no missing values or `NA`s.
 
 First create the data treatment transform design object, in this case a treatment for a binomial classification problem.
 
@@ -107,14 +109,14 @@ knitr::kable(score_frame)
 
 Note that the variable `xc` has been converted to multiple variables: 
 
-* an indicator variable for each possible level (`xc_lev_level_*`)
+* an indicator variable for each possible level (`xc_lev_*`)
 * the value of a (cross-validated) one-variable model for `yc` as a function of `xc` (`xc_catB`)
 * a variable that returns how prevalent this particular value of `xc` is in the training data (`xc_catP`)
-* a variable indicating when `xc` was `NaN` in the original data (`xc_lev_NA` for categorical variables, `x_isBAD` for continuous variables).
+* a variable indicating when `xc` was `NA` in the original data (`xc_lev_NA` for categorical variables, `x_isBAD` for continuous variables).
 
 Any or all of these new variables are available for downstream modeling.
 
-The `recommended` column indicates which variables are non constant (`varMoves` == True) and have a significance value smaller than `1/nrow(score_frame)`. See the section *Deriving the Default Threholds* below for the reasoning behind such a default threshold. Recommended columns are intended as advice about which variables appear to be most likely to be useful in a downstream model. This advice attempts to be conservative, to reduce the possibility of mistakenly eliminating variables that may in fact be useful (although, obviously, it can still mistakenly eliminate variables that have a real but non-linear relationship to the output, as is the case with `x`, in  our example).
+The `recommended` column indicates which variables are non constant (`varMoves` == TRUE) and have a significance value smaller than `1/nrow(score_frame)`. See the section *Deriving the Default Threholds* below for the reasoning behind such a default threshold. Recommended columns are intended as advice about which variables appear to be most likely to be useful in a downstream model. This advice attempts to be conservative, to reduce the possibility of mistakenly eliminating variables that may in fact be useful (although, obviously, it can still mistakenly eliminate variables that have a real but non-linear relationship to the output, as is the case with `x`, in  our example).
 
 Let's look at the variables that are and are not recommended:
 
@@ -227,24 +229,22 @@ suppressPackageStartupMessages(library(printr))
 help("mkCrossFrameCExperiment")
 ```
 
-**coders**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
+Some parameters of note include:
 
-**filter_to_recommended**: When True, prepared data only includes variables marked as "recommended" in score frame. When False, prepared data includes all variables. See the Example below.
+**customCoders**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
 
-**indicator_min_fraction**: For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `indicator_min_fraction` of the time. A consequence of this is that 1/`indicator_min_fraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `indicator_min_fraction = 0`
+**minFraction**: For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
 
-**cross_validation_plan**: The cross validation method used by `vtreat`. Most people won't have to change this. *TODO: make some examples of OrderedCrossPlan and StratifiedCrossPlan to link to here*
+**splitFunction**: The cross validation method used by `vtreat`. Most people won't have to change this.
 
-**cross_validation_k**: The number of folds to use for cross-validation
+**ncross**: The number of folds to use for cross-validation
 
-**user_transforms**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/UserCoders/UserCoders.ipynb) for an example of applying a GAM transform to input variables.
-
-**sparse_indicators**: When True, use a (Pandas) sparse representation for indicator variables. This representation is compatible with `sklearn`; however, it may not be compatible with other modeling packages. When False, use a dense representation.
+**customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
 
 ## Types of prepared variables
 
-**clean**: Produced from numerical variables: a clean numerical variable with no `NaNs` or missing values
+**clean**: Produced from numerical variables: a clean numerical variable with no `NAs` or missing values
 
 **lev**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
 
@@ -294,3 +294,19 @@ Imagine that you have a pure noise dataset, where none of the *n* inputs are rel
 This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we developed the R version of `vtreat`.
 
 As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship  to the output may fail to pass the threshold. So it may make sense for the data scientist to filter (or not) as they will.
+
+The variables can be appraised in a non-linear fasion as follows:
+
+```{r}
+d %.>%
+  value_variables_C(dframe = .,
+                  varlist = setdiff(colnames(.), c('y', 'yc')), 
+                  outcomename = 'yc',
+                  outcometarget = TRUE) %.>%
+  knitr::kable(.)
+```
+
+
+
+More on non-linear variable scoring can be found [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).
+
