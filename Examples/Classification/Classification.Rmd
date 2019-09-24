@@ -6,6 +6,8 @@ output: github_document
 # Using vtreat with Classification Problems
 
 
+Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md) ([pre-rendered](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md)).
+
 ## Preliminaries
 
 
