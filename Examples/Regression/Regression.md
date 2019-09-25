@@ -45,14 +45,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|          x |           y | xc          |          x2 |
-| ---------: | ----------: | :---------- | ----------: |
-| \-0.108996 | \-0.0574472 | level\_0    | \-1.2146403 |
-| \-1.942013 | \-0.7880678 | NA          |   0.8473818 |
-| \-1.604480 | \-0.8829876 | NA          | \-1.1320916 |
-|         NA | \-0.5308607 | level\_-0.5 |   0.6155707 |
-|         NA |   0.4796438 | level\_0.5  | \-0.6380502 |
-|         NA | \-0.6684030 | level\_-0.5 |   0.0152671 |
+|           x |           y | xc          |          x2 |
+| ----------: | ----------: | :---------- | ----------: |
+|   0.8874806 |   0.6350279 | level\_0.5  | \-1.3849242 |
+| \-5.7839870 |   0.3729836 | level\_0.5  | \-0.5279594 |
+| \-0.3893439 | \-0.4528255 | level\_-0.5 | \-0.4418292 |
+|          NA |   0.1370330 | level\_0    | \-1.1140941 |
+|          NA | \-1.0377147 | NA          | \-0.5639892 |
+|          NA |   0.4019627 | level\_0.5  |   0.0674960 |
 
 ### Some quick data exploration
 
@@ -63,11 +63,11 @@ unique(d['xc'])
 ```
 
     ##            xc
-    ## 1     level_0
-    ## 2        <NA>
-    ## 4  level_-0.5
-    ## 5   level_0.5
-    ## 18    level_1
+    ## 1   level_0.5
+    ## 3  level_-0.5
+    ## 4     level_0
+    ## 5        <NA>
+    ## 11    level_1
 
 ``` r
 table(d$xc, useNA = 'always')
@@ -75,7 +75,7 @@ table(d$xc, useNA = 'always')
 
     ## 
     ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##        102         83         86        119        110
+    ##        105         85         92        100        118
 
 Find the mean value of `y`
 
@@ -83,7 +83,7 @@ Find the mean value of `y`
 mean(d[['y']])
 ```
 
-    ## [1] 0.003644412
+    ## [1] -0.04549049
 
 Plot of `y` versus `x`.
 
@@ -113,9 +113,9 @@ transform_design = vtreat::mkCrossFrameNExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 08:32:00 2019"
-    ## [1] " start cross frame work Wed Sep 25 08:32:00 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Sep 25 08:32:00 2019"
+    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 09:07:43 2019"
+    ## [1] " start cross frame work Wed Sep 25 09:07:44 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Sep 25 09:07:44 2019"
 
 ``` r
 transform <- transform_design$treatments
@@ -145,17 +145,17 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0063226 | 0.0756718 | FALSE      |                 0 | x        | clean | TRUE        |
-| x\_isBAD                       | TRUE     | 0.0027628 | 0.2407147 | FALSE      |                 0 | x        | isBAD | FALSE       |
-| xc\_catP                       | TRUE     | 0.0050321 | 0.1131391 | TRUE       |                 4 | xc       | catP  | FALSE       |
-| xc\_catN                       | TRUE     | 0.9664960 | 0.0000000 | TRUE       |                 4 | xc       | catN  | TRUE        |
-| xc\_catD                       | TRUE     | 0.0128980 | 0.0110422 | TRUE       |                 4 | xc       | catD  | TRUE        |
-| x2                             | TRUE     | 0.0004279 | 0.6444716 | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.4687717 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1363393 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.0000623 | 0.8602880 | FALSE      |                 0 | xc       | lev   | FALSE       |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1147696 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5213946 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0000197 | 0.9210809 | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0003799 | 0.6637219 | FALSE      |                 0 | x        | isBAD | FALSE       |
+| xc\_catP                       | TRUE     | 0.4148798 | 0.0000000 | TRUE       |                 4 | xc       | catP  | TRUE        |
+| xc\_catN                       | TRUE     | 0.9641304 | 0.0000000 | TRUE       |                 4 | xc       | catN  | TRUE        |
+| xc\_catD                       | TRUE     | 0.0003666 | 0.6692882 | TRUE       |                 4 | xc       | catD  | FALSE       |
+| x2                             | TRUE     | 0.0000732 | 0.8486876 | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.4896825 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1131350 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.0006946 | 0.5565782 | FALSE      |                 0 | xc       | lev   | FALSE       |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1467186 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4754742 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
 
 Notice that the variable `xc` has been converted to multiple variables:
 
@@ -192,9 +192,8 @@ score_frame[score_frame[['recommended']], 'varName', drop = FALSE]  %.>%
 
 |    | varName                        |
 | -- | :----------------------------- |
-| 1  | x                              |
+| 3  | xc\_catP                       |
 | 4  | xc\_catN                       |
-| 5  | xc\_catD                       |
 | 7  | xc\_lev\_NA                    |
 | 8  | xc\_lev\_x\_level\_minus\_0\_5 |
 | 10 | xc\_lev\_x\_level\_0\_5        |
@@ -208,40 +207,29 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
 
 |   | varName              |
 | - | :------------------- |
+| 1 | x                    |
 | 2 | x\_isBAD             |
-| 3 | xc\_catP             |
+| 5 | xc\_catD             |
 | 6 | x2                   |
 | 9 | xc\_lev\_x\_level\_0 |
 
 Let’s look at the top of `d_prepared`. Notice that the new treated data
-frame included only recommended variables (along with
-    `y`).
+frame included only recommended variables (along with `y`).
 
 ``` r
-head(d_prepared)
+d_prepared %.>%
+  head(.) %.>%
+  knitr::kable(.)
 ```
 
-    ##             x x_isBAD   xc_catP      xc_catN   xc_catD          x2
-    ## 1 -0.10899603       0 0.1681682 -0.009845557 0.1522322 -1.21464030
-    ## 2 -1.94201325       0 0.2192192 -0.922236782 0.1100821  0.84738179
-    ## 3 -1.60448008       0 0.2215569 -0.922573559 0.1096481 -1.13209163
-    ## 4  0.04876132       1 0.2042042 -0.523070574 0.1507950  0.61557066
-    ## 5 -0.07632554       1 0.1741742  0.529823273 0.1449899 -0.63805019
-    ## 6  0.04876132       1 0.2042042 -0.523070574 0.1507950  0.01526706
-    ##   xc_lev_NA xc_lev_x_level_minus_0_5 xc_lev_x_level_0 xc_lev_x_level_0_5
-    ## 1         0                        0                1                  0
-    ## 2         1                        0                0                  0
-    ## 3         1                        0                0                  0
-    ## 4         0                        1                0                  0
-    ## 5         0                        0                0                  1
-    ## 6         0                        1                0                  0
-    ##   xc_lev_x_level_1           y
-    ## 1                0 -0.05744715
-    ## 2                0 -0.78806777
-    ## 3                0 -0.88298756
-    ## 4                0 -0.53086074
-    ## 5                0  0.47964379
-    ## 6                0 -0.66840298
+|           x | x\_isBAD |  xc\_catP |    xc\_catN |  xc\_catD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | --------: | ----------: | --------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   0.8874806 |        0 | 0.1801802 |   0.5681512 | 0.1445858 | \-1.3849242 |           0 |                              0 |                    0 |                       1 |                    0 |   0.6350279 |
+| \-5.7839870 |        0 | 0.1861862 |   0.5667146 | 0.1498272 | \-0.5279594 |           0 |                              0 |                    0 |                       1 |                    0 |   0.3729836 |
+| \-0.3893439 |        0 | 0.2102102 | \-0.4539324 | 0.1502173 | \-0.4418292 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4528255 |
+|   0.0510312 |        1 | 0.1741742 |   0.0427601 | 0.1469373 | \-1.1140941 |           0 |                              0 |                    1 |                       0 |                    0 |   0.1370330 |
+|   0.0510312 |        1 | 0.2342342 | \-0.8842138 | 0.1128997 | \-0.5639892 |           1 |                              0 |                    0 |                       0 |                    0 | \-1.0377147 |
+|   0.0665971 |        1 | 0.1856287 |   0.5638280 | 0.1502348 |   0.0674960 |           0 |                              0 |                    0 |                       1 |                    0 |   0.4019627 |
 
 This is `vtreat`’s default behavior; to include all variables in the
 prepared data, set the parameter `filter_to_recommended` to False, as we
@@ -258,30 +246,29 @@ treated training data.
 Let’s look at the relationship between `xc_catN` and `y` (actually
 `y_centered`, a centered version of `y`).
 
-\#%%
+``` r
+d_prepared['y_centered'] <- d_prepared$y - mean(d_prepared$y)
 
-import matplotlib.pyplot
+WVPlots::ScatterHist(
+  d_prepared, 
+  xvar = 'xc_catN',
+  yvar = 'y_centered',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between xc_catN and y')
+```
 
-d\_prepared\[‘y\_centered’\] = d\_prepared.y - d\_prepared.y.mean()
-
-ax = seaborn.scatterplot(x = ‘xc\_catN’, y = ‘y\_centered’, data =
-d\_prepared) \# add the line “x = y”
-matplotlib.pyplot.plot(d\_prepared.xc\_catN, d\_prepared.xc\_catN,
-color=“darkgray”) ax.set\_title(‘Relationship between xc\_catN and y’)
-plt.show()
-
-\#%% md
+![](Regression_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 This indicates that `xc_catN` is strongly predictive of the outcome.
 Note that the score frame also reported the Pearson correlation between
-`xc_catN` and `y`, which is fairly
-large.
+`xc_catN` and `y`, which is fairly large.
 
-\#%%
+``` r
+score_frame[score_frame$varName == 'xc_catN', ]$rsq
+```
 
-transform.score\_frame\_.PearsonR\[transform.score\_frame\_.variable==‘xc\_catN’\]
-
-\#%% md
+    ## [1] 0.9641304
 
 Note also that the impact code values are jittered; this is because
 `d_prepared` is a “cross-frame”: that is, the result of a
@@ -292,16 +279,24 @@ only one value of impact code for each (common) level of `xc`. We can
 see this by applying the transform to the data frame `d` as if it were
 new data.
 
-\#%%
+``` r
+# jittered
+summary(d_prepared$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
+```
 
-dtmp = transform.transform(d) dtmp\[‘y\_centered’\] = dtmp.y -
-dtmp.y.mean() ax = seaborn.scatterplot(x = ‘xc\_catN’, y =
-‘y\_centered’, data = dtmp) \# add the line “x = y”
-matplotlib.pyplot.plot(d\_prepared.xc\_catN, dtmp.xc\_catN,
-color=“darkgray”) ax.set\_title(‘Relationship between xc\_catN and y’)
-plt.show()
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##  0.9660  0.9660  0.9682  0.9681  0.9700  0.9700
 
-\#%% md
+``` r
+dtmp = prepare(transform, d)
+dtmp['y_centered'] = dtmp$y - mean(dtmp$y)
+
+# constante
+summary(dtmp$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##  0.9681  0.9681  0.9681  0.9681  0.9681  0.9681
 
 Variables of type `impact_code` are useful when dealing with categorical
 variables with a very large number of possible levels. For example, a
@@ -310,184 +305,291 @@ categorical variable with 10,000 possible values potentially converts to
 methods. Using a single numerical variable of type `impact_code` may be
 a preferable alternative.
 
-\#%% md
-
 ## Using the Prepared Data in a Model
 
 Of course, what we really want to do with the prepared training data is
 to fit a model jointly with all the (recommended) variables. Let’s try
 fitting a linear regression model to `d_prepared`.
 
-\#%%
+``` r
+model_vars <- score_frame$varName[score_frame$recommended]
+f <- wrapr::mk_formula('y', model_vars)
 
-import sklearn.linear\_model import seaborn import sklearn.metrics
-
-not\_variables = \[‘y’, ‘y\_centered’, ‘prediction’\] model\_vars = \[v
-for v in d\_prepared.columns if v not in set(not\_variables)\]
-
-fitter = sklearn.linear\_model.LinearRegression()
-fitter.fit(d\_prepared\[model\_vars\], d\_prepared\[‘y’\])
+model = lm(f, data = d_prepared)
 
 # now predict
+d_prepared['prediction'] = predict(
+  model,
+  newdata = d_prepared)
 
-d\_prepared\[‘prediction’\] = fitter.predict(d\_prepared\[model\_vars\])
+# look at the fit (on the training data)
+WVPlots::ScatterHist(
+  d_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
+```
 
-# get R-squared
-
-r2 = sklearn.metrics.r2\_score(y\_true=d\_prepared.y,
-y\_pred=d\_prepared.prediction)
-
-title = ‘Prediction vs. outcome (training data); R-sqr =
-{:04.2f}’.format(r2)
-
-# compare the predictions to the outcome (on the training data)
-
-ax = seaborn.scatterplot(x=‘prediction’, y=‘y’, data=d\_prepared)
-matplotlib.pyplot.plot(d\_prepared.prediction, d\_prepared.prediction,
-color=“darkgray”) ax.set\_title(title) plt.show()
-
-\#%% md
+![](Regression_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 Now apply the model to new data.
 
-\#%%
-
+``` r
 # create the new data
-
-dtest = make\_data(450)
+dtest <- make_data(450)
 
 # prepare the new data with vtreat
-
-dtest\_prepared = transform.transform(dtest)
+dtest_prepared = prepare(transform, dtest)
 
 # apply the model to the prepared data
+dtest_prepared['prediction'] = predict(
+  model,
+  newdata = dtest_prepared)
 
-dtest\_prepared\[‘prediction’\] =
-fitter.predict(dtest\_prepared\[model\_vars\])
+# compare the predictions to the outcome (on the test data)
+WVPlots::ScatterHist(
+  dtest_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
+```
 
-# get R-squared
+![](Regression_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
-r2 = sklearn.metrics.r2\_score(y\_true=dtest\_prepared.y,
-y\_pred=dtest\_prepared.prediction)
+``` r
+# get r-squared
+sigr::wrapFTest(dtest_prepared, 
+                predictionColumnName = 'prediction',
+                yColumnName = 'y',
+                nParameters = length(model_vars) + 1)
+```
 
-title = ‘Prediction vs. outcome (test data); R-sqr =
-{:04.2f}’.format(r2)
+    ## [1] "F Test summary: (R2=0.9652, F(7,442)=1750, p<1e-05)."
 
-# compare the predictions to the outcome (on the training data)
-
-ax = seaborn.scatterplot(x=‘prediction’, y=‘y’, data=dtest\_prepared)
-matplotlib.pyplot.plot(dtest\_prepared.prediction,
-dtest\_prepared.prediction, color=“darkgray”) ax.set\_title(title)
-plt.show()
-
-\#%% md
-
-## Parameters for `NumericOutcomeTreatment`
+## Parameters for `mkCrossFrameNExperiment`
 
 We’ve tried to set the defaults for all parameters so that `vtreat` is
 usable out of the box for most applications.
 
-\#%%
+``` r
+suppressPackageStartupMessages(library(printr))
+help("mkCrossFrameNExperiment")
+```
 
-vtreat.vtreat\_parameters()
+    ## Run a numeric cross frame experiment.
+    ## 
+    ## Description:
+    ## 
+    ##      Builds a 'designTreatmentsN' treatment plan and a data frame
+    ##      prepared from 'dframe' that is "cross" in the sense each row is
+    ##      treated using a treatment plan built from a subset of dframe
+    ##      disjoint from the given row. The goal is to try to and supply a
+    ##      method of breaking nested model bias other than splitting into
+    ##      calibration, training, test sets.
+    ## 
+    ## Usage:
+    ## 
+    ##      mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
+    ##        minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
+    ##        collarProb = 0, codeRestriction = NULL, customCoders = NULL,
+    ##        scale = FALSE, doCollar = FALSE, splitFunction = NULL,
+    ##        ncross = 3, forceSplit = FALSE, verbose = TRUE,
+    ##        parallelCluster = NULL, use_parallel = TRUE)
+    ##      
+    ## Arguments:
+    ## 
+    ##   dframe: Data frame to learn treatments from (training data), must
+    ##           have at least 1 row.
+    ## 
+    ##  varlist: Names of columns to treat (effective variables).
+    ## 
+    ## outcomename: Name of column holding outcome variable.
+    ##           dframe[[outcomename]] must be only finite non-missing values
+    ##           and there must be a cut such that dframe[[outcomename]] is
+    ##           both above the cut at least twice and below the cut at least
+    ##           twice.
+    ## 
+    ##      ...: no additional arguments, declared to forced named binding of
+    ##           later arguments
+    ## 
+    ##  weights: optional training weights for each row
+    ## 
+    ## minFraction: optional minimum frequency a categorical level must have
+    ##           to be converted to an indicator column.
+    ## 
+    ## smFactor: optional smoothing factor for impact coding models.
+    ## 
+    ## rareCount: optional integer, allow levels with this count or below to
+    ##           be pooled into a shared rare-level.  Defaults to 0 or off.
+    ## 
+    ##  rareSig: optional numeric, suppress levels from pooling at this
+    ##           significance value greater.  Defaults to NULL or off.
+    ## 
+    ## collarProb: what fraction of the data (pseudo-probability) to collar
+    ##           data at if doCollar is set during 'prepare.treatmentplan'.
+    ## 
+    ## codeRestriction: what types of variables to produce (character array of
+    ##           level codes, NULL means no restriction).
+    ## 
+    ## customCoders: map from code names to custom categorical variable
+    ##           encoding functions (please see <URL:
+    ##           https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md>).
+    ## 
+    ##    scale: optional if TRUE replace numeric variables with regression
+    ##           ("move to outcome-scale").
+    ## 
+    ## doCollar: optional if TRUE collar numeric variables by cutting off
+    ##           after a tail-probability specified by collarProb during
+    ##           treatment design.
+    ## 
+    ## splitFunction: (optional) see vtreat::buildEvalSets .
+    ## 
+    ##   ncross: optional scalar>=2 number of cross-validation rounds to
+    ##           design.
+    ## 
+    ## forceSplit: logical, if TRUE force cross-validated significance
+    ##           calculations on all variables.
+    ## 
+    ##  verbose: if TRUE print progress.
+    ## 
+    ## parallelCluster: (optional) a cluster object created by package
+    ##           parallel or package snow.
+    ## 
+    ## use_parallel: logical, if TRUE use parallel methods.
+    ## 
+    ## Value:
+    ## 
+    ##      treatment plan (for use with prepare)
+    ## 
+    ## See Also:
+    ## 
+    ##      'designTreatmentsC', 'designTreatmentsN', 'prepare.treatmentplan'
+    ## 
+    ## Examples:
+    ## 
+    ##      set.seed(23525)
+    ##      zip <- paste('z',1:100)
+    ##      N <- 200
+    ##      d <- data.frame(zip=sample(zip,N,replace=TRUE),
+    ##                      zip2=sample(zip,N,replace=TRUE),
+    ##                      y=runif(N))
+    ##      del <- runif(length(zip))
+    ##      names(del) <- zip
+    ##      d$y <- d$y + del[d$zip2]
+    ##      d$yc <- d$y>=mean(d$y)
+    ##      cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
+    ##         rareCount=2,rareSig=0.9)
+    ##      cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
+    ##      cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
+    ##      treatments <- cN$treatments
+    ##      dTrainV <- cN$crossFrame
 
-\#%% md
+Some parameters of note include:
 
-**use\_hierarchical\_estimate:**: When True, uses hierarchical smoothing
-when estimating `impact_code` variables; when False, uses unsmoothed
-linear regression.
-
-**coders**: The types of synthetic variables that `vtreat` will
+**codeRestriction**: The types of synthetic variables that `vtreat` will
 (potentially) produce. See *Types of prepared variables* below.
 
-**filter\_to\_recommended**: When True, prepared data only includes
-variables marked as “recommended” in score frame. When False, prepared
-data includes all variables. See the Example below.
+**minFraction**: For categorical variables, indicator variables (type
+`indicator_code`) are only produced for levels that are present at least
+`minFraction` of the time. A consequence of this is that 1/`minFraction`
+is the maximum number of indicators that will be produced for a given
+categorical variable. To make sure that *all* possible indicator
+variables are produced, set `minFraction = 0`
 
-**indicator\_min\_fraction**: For categorical variables, indicator
-variables (type `indicator_code`) are only produced for levels that are
-present at least `indicator_min_fraction` of the time. A consequence of
-this is that 1/`indicator_min_fraction` is the maximum number of
-indicators that will be produced for a given categorical variable. To
-make sure that *all* possible indicator variables are produced, set
-`indicator_min_fraction = 0`
+**splitFunction**: The cross validation method used by `vtreat`. Most
+people won’t have to change this.
 
-**cross\_validation\_plan**: The cross validation method used by
-`vtreat`. Most people won’t have to change this. *TODO: make some
-examples of OrderedCrossPlan and StratifiedCrossPlan to link to here*
+**ncross**: The number of folds to use for cross-validation
 
-**cross\_validation\_k**: The number of folds to use for
-cross-validation
-
-**user\_transforms**: For passing in user-defined transforms for custom
-data preparation. Won’t be needed in most situations, but see
-[here](https://github.com/WinVector/pyvtreat/blob/master/Examples/UserCoders/UserCoders.ipynb)
+**customCoders**: For passing in user-defined transforms for custom data
+preparation. Won’t be needed in most situations, but see
+[here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/)
 for an example of applying a GAM transform to input variables.
-
-### Example: Use all variables to model, not just recommended
-
-\#%%
-
-transform\_all = vtreat.NumericOutcomeTreatment( outcome\_name=‘y’, \#
-outcome variable params = vtreat.vtreat\_parameters({
-‘filter\_to\_recommended’: False }) )
-
-transform\_all.fit\_transform(d, d\[‘y’\]).columns
-
-\#%%
-
-transform\_all.score\_frame\_
-
-\#%% md
-
-Note that the prepared data produced by `fit_transform()` includes all
-the variables, including those that were not marked as “recommended”.
 
 ## Types of prepared variables
 
-**clean\_copy**: Produced from numerical variables: a clean numerical
-variable with no `NaNs` or missing values
+**clean**: Produced from numerical variables: a clean numerical variable
+with no `NAs` or missing values
 
-**indicator\_code**: Produced from categorical variables, one for each
-(common) level: for each level of the variable, indicates if that level
-was “on”
+**lev**: Produced from categorical variables, one for each (common)
+level: for each level of the variable, indicates if that level was “on”
 
-**prevalence\_code**: Produced from categorical variables: indicates how
-often each level of the variable was “on”
+**catP**: Produced from categorical variables: indicates how often each
+level of the variable was “on”
 
-**deviation\_code**: Produced from categorical variables: standard
-deviation of outcome conditioned on levels of the variable
+**catN**: Produced from categorical variables: score from a
+one-dimensional model of the centered output as a function of the
+explanatory variable
 
-**impact\_code**: Produced from categorical variables: score from a
-one-dimensional model of the output as a function of the variable
+**catD**: Produced from categorical variables: deviantion of outcome as
+a function of the explanatory variable
 
-**missing\_indicator**: Produced for both numerical and categorical
-variables: an indicator variable that marks when the original variable
-was missing or `NaN`
+**is\_BAD**: Produced for both numerical and categorical variables: an
+indicator variable that marks when the original variable was missing or
+`NaN`.
 
-**logit\_code**: not used by `NumericOutcomeTreatment`
+More on the coding types can be found
+[here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
 
 ### Example: Produce only a subset of variable types
 
 In this example, suppose you only want to use indicators and continuous
 variables in your model; in other words, you only want to use variables
-of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and
-no `impact_code`, `deviance_code`, or `prevalence_code` variables.
+of types (`clean`, `is_BAD`, and `lev`), and no `catN`, `deviance_code`,
+`catP`, or `catD` variables.
 
-\#%%
+``` r
+transform_design_thin = vtreat::mkCrossFrameNExperiment(
+    dframe = d,                                    # data to learn transform from
+    varlist = setdiff(colnames(d), c('y', 'y_centered')),  # columns to transform
+    outcomename = 'y',                             # outcome variable
+    codeRestriction = c('lev',                     # transforms we want
+                        'clean',
+                        'isBAD')
+)
+```
 
-transform\_thin = vtreat.NumericOutcomeTreatment( outcome\_name=‘y’, \#
-outcome variable params = vtreat.vtreat\_parameters({
-‘filter\_to\_recommended’: False, ‘coders’: {‘clean\_copy’,
-‘missing\_indicator’, ‘indicator\_code’, } }) )
+    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 09:07:47 2019"
+    ## [1] " start cross frame work Wed Sep 25 09:07:47 2019"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Sep 25 09:07:47 2019"
 
-transform\_thin.fit\_transform(d, d\[‘y’\]).head()
+``` r
+transform_thin <- transform_design_thin$treatments
+d_prepared_thin <- transform_design_thin$crossFrame
+score_frame_thin <- transform_thin$scoreFrame
 
-\#%%
+d_prepared_thin %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
 
-transform\_thin.score\_frame\_
+|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   0.8874806 |        0 | \-1.3849242 |           0 |                              0 |                    0 |                       1 |                    0 |   0.6350279 |
+| \-5.7839870 |        0 | \-0.5279594 |           0 |                              0 |                    0 |                       1 |                    0 |   0.3729836 |
+| \-0.3893439 |        0 | \-0.4418292 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4528255 |
+|   0.3186866 |        1 | \-1.1140941 |           0 |                              0 |                    1 |                       0 |                    0 |   0.1370330 |
+|   0.0525151 |        1 | \-0.5639892 |           1 |                              0 |                    0 |                       0 |                    0 | \-1.0377147 |
+|   0.0525151 |        1 |   0.0674960 |           0 |                              0 |                    0 |                       1 |                    0 |   0.4019627 |
 
-\#%% md
+``` r
+knitr::kable(score_frame_thin)
+```
+
+| varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  |
+| :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- |
+| x                              | TRUE     | 0.0000197 | 0.9210809 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     | 0.0003799 | 0.6637219 | FALSE      |                 0 | x        | isBAD |
+| x2                             | TRUE     | 0.0000732 | 0.8486876 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     | 0.4896825 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1131350 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.0006946 | 0.5565782 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1467186 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4754742 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
 
 ## Deriving the Default Thresholds
 
@@ -512,22 +614,6 @@ of *1/n* on your variables should allow only one irrelevant variable
 through, in expectation (along with all the relevant variables). Hence,
 *1/n* used to be our recommended threshold, when we developed the R
 version of `vtreat`.
-
-We noticed, however, that this biases the filtering against numerical
-variables, since there are at most two derived variables (of types
-*clean\_copy* and *missing\_indicator* for every numerical variable in
-the original data. Categorical variables, on the other hand, are
-expanded to many derived variables: several indicators (one for every
-common level), plus a *logit\_code* and a *prevalence\_code*. So we now
-reweight the thresholds.
-
-Suppose you have a (treated) data set with *ntreat* different types of
-`vtreat` variables (`clean_copy`, `indicator_code`, etc). There are *nT*
-variables of type *T*. Then the default threshold for all the variables
-of type *T* is *1/(ntreat nT)*. This reweighting helps to reduce the
-bias against any particular type of variable. The heuristic is still
-that the set of recommended variables will allow at most one noise
-variable into the set of candidate variables.
 
 As noted above, because `vtreat` estimates variable significances using
 linear methods by default, some variables with a non-linear relationship

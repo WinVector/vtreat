@@ -231,7 +231,7 @@ help("mkCrossFrameCExperiment")
 
 Some parameters of note include:
 
-**customCoders**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
+**codeRestriction**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
 
 **minFraction**: For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
 

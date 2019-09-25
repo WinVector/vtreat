@@ -132,7 +132,9 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
 Let's look at the top of `d_prepared`. Notice that the new treated data frame included only recommended variables (along with `y`).
 
 ```{r}
-head(d_prepared)
+d_prepared %.>%
+  head(.) %.>%
+  knitr::kable(.)
 ```
 
 This is `vtreat`'s default behavior; to include all variables in the prepared data, set the parameter `filter_to_recommended` to False, as we show later, in the *Parameters for `NumericOutcomeTreatment`* section below.
@@ -143,194 +145,167 @@ Variables of type `impact_code` are the outputs of a one-variable hierarchical l
 
 Let's look at the relationship between `xc_catN` and `y` (actually `y_centered`, a centered version of `y`). 
 
-#%%
+```{r}
+d_prepared['y_centered'] <- d_prepared$y - mean(d_prepared$y)
 
-import matplotlib.pyplot
-
-d_prepared['y_centered'] = d_prepared.y - d_prepared.y.mean()
-
-ax = seaborn.scatterplot(x = 'xc_catN', y = 'y_centered', data = d_prepared)
-# add the line "x = y"
-matplotlib.pyplot.plot(d_prepared.xc_catN, d_prepared.xc_catN, color="darkgray")
-ax.set_title('Relationship between xc_catN and y')
-plt.show()
-
-#%% md
+WVPlots::ScatterHist(
+  d_prepared, 
+  xvar = 'xc_catN',
+  yvar = 'y_centered',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between xc_catN and y')
+```
 
 This indicates that `xc_catN` is strongly predictive of the outcome. Note that the score frame also reported the Pearson correlation between `xc_catN` and `y`, which is fairly large.
 
-#%%
-
-transform.score_frame_.PearsonR[transform.score_frame_.variable=='xc_catN']
-
-#%% md
+```{r}
+score_frame[score_frame$varName == 'xc_catN', ]$rsq
+```
 
 Note also that the impact code values are jittered; this is because `d_prepared` is a "cross-frame": that is, the result of a cross-validated estimation process. Hence, the impact coding of `xc` is a function of both the value of `xc` and the cross-validation fold of the datum's row. When `transform` is applied to new data, there will be only one value of impact code for each (common) level of `xc`. We can see this by applying the transform to the data frame `d` as if it were new data.
 
 
-#%%
+```{r}
+# jittered
+summary(d_prepared$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 
-dtmp = transform.transform(d)
-dtmp['y_centered'] = dtmp.y - dtmp.y.mean()
-ax = seaborn.scatterplot(x = 'xc_catN', y = 'y_centered', data = dtmp)
-# add the line "x = y"
-matplotlib.pyplot.plot(d_prepared.xc_catN, dtmp.xc_catN, color="darkgray")
-ax.set_title('Relationship between xc_catN and y')
-plt.show()
+dtmp = prepare(transform, d)
+dtmp['y_centered'] = dtmp$y - mean(dtmp$y)
 
-#%% md
+# constante
+summary(dtmp$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
+```
 
 Variables of type `impact_code` are useful when dealing with categorical variables with a very large number of possible levels. For example, a categorical variable with 10,000 possible values potentially converts to 10,000 indicator variables, which may be unwieldy for some modeling methods. Using a single numerical variable of type `impact_code` may be a preferable alternative.
-
-#%% md
 
 ## Using the Prepared Data in a Model
 
 Of course, what we really want to do with the prepared training data is to fit a model jointly with all the (recommended) variables. 
 Let's try fitting a linear regression model to `d_prepared`.
 
-#%%
 
-import sklearn.linear_model
-import seaborn
-import sklearn.metrics
+```{r}
+model_vars <- score_frame$varName[score_frame$recommended]
+f <- wrapr::mk_formula('y', model_vars)
 
-not_variables = ['y', 'y_centered', 'prediction']
-model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
-
-fitter = sklearn.linear_model.LinearRegression()
-fitter.fit(d_prepared[model_vars], d_prepared['y'])
+model = lm(f, data = d_prepared)
 
 # now predict
-d_prepared['prediction'] = fitter.predict(d_prepared[model_vars])
+d_prepared['prediction'] = predict(
+  model,
+  newdata = d_prepared)
 
-# get R-squared
-r2 = sklearn.metrics.r2_score(y_true=d_prepared.y, y_pred=d_prepared.prediction)
+# look at the fit (on the training data)
+WVPlots::ScatterHist(
+  d_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
+```
 
-title = 'Prediction vs. outcome (training data); R-sqr = {:04.2f}'.format(r2)
 
-# compare the predictions to the outcome (on the training data)
-ax = seaborn.scatterplot(x='prediction', y='y', data=d_prepared)
-matplotlib.pyplot.plot(d_prepared.prediction, d_prepared.prediction, color="darkgray")
-ax.set_title(title)
-plt.show()
-
-#%% md
 
 Now apply the model to new data.
 
-#%%
-
+```{r}
 # create the new data
-dtest = make_data(450)
+dtest <- make_data(450)
 
 # prepare the new data with vtreat
-dtest_prepared = transform.transform(dtest)
+dtest_prepared = prepare(transform, dtest)
 
 # apply the model to the prepared data
-dtest_prepared['prediction'] = fitter.predict(dtest_prepared[model_vars])
+dtest_prepared['prediction'] = predict(
+  model,
+  newdata = dtest_prepared)
 
-# get R-squared
-r2 = sklearn.metrics.r2_score(y_true=dtest_prepared.y, y_pred=dtest_prepared.prediction)
+# compare the predictions to the outcome (on the test data)
+WVPlots::ScatterHist(
+  dtest_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
 
-title = 'Prediction vs. outcome (test data); R-sqr = {:04.2f}'.format(r2)
+# get r-squared
+sigr::wrapFTest(dtest_prepared, 
+                predictionColumnName = 'prediction',
+                yColumnName = 'y',
+                nParameters = length(model_vars) + 1)
+```
 
-# compare the predictions to the outcome (on the training data)
-ax = seaborn.scatterplot(x='prediction', y='y', data=dtest_prepared)
-matplotlib.pyplot.plot(dtest_prepared.prediction, dtest_prepared.prediction, color="darkgray")
-ax.set_title(title)
-plt.show()
-
-#%% md
-
-## Parameters for `NumericOutcomeTreatment`
+## Parameters for `mkCrossFrameNExperiment`
 
 We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications.
 
 
-#%%
+```{r}
+suppressPackageStartupMessages(library(printr))
+help("mkCrossFrameNExperiment")
+```
 
-vtreat.vtreat_parameters()
+Some parameters of note include:
 
-#%% md
+**codeRestriction**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
 
-**use_hierarchical_estimate:**: When True, uses hierarchical smoothing when estimating `impact_code` variables; when False, uses unsmoothed linear regression.
+**minFraction**: For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
 
-**coders**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
+**splitFunction**: The cross validation method used by `vtreat`. Most people won't have to change this.
 
-**filter_to_recommended**: When True, prepared data only includes variables marked as "recommended" in score frame. When False, prepared data includes all variables. See the Example below.
+**ncross**: The number of folds to use for cross-validation
 
-**indicator_min_fraction**: For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `indicator_min_fraction` of the time. A consequence of this is that 1/`indicator_min_fraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `indicator_min_fraction = 0`
+**customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
-**cross_validation_plan**: The cross validation method used by `vtreat`. Most people won't have to change this. *TODO: make some examples of OrderedCrossPlan and StratifiedCrossPlan to link to here*
-
-**cross_validation_k**: The number of folds to use for cross-validation
-
-**user_transforms**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/UserCoders/UserCoders.ipynb) for an example of applying a GAM transform to input variables.
-
-
-### Example: Use all variables to model, not just recommended
-
-#%%
-
-transform_all = vtreat.NumericOutcomeTreatment(
-    outcome_name='y',    # outcome variable
-    params = vtreat.vtreat_parameters({
-        'filter_to_recommended': False
-    })
-)  
-
-transform_all.fit_transform(d, d['y']).columns
-
-#%%
-
-transform_all.score_frame_
-
-#%% md
-
-Note that the prepared data produced by `fit_transform()` includes all the variables, including those that were not marked as "recommended". 
 
 ## Types of prepared variables
 
-**clean_copy**: Produced from numerical variables: a clean numerical variable with no `NaNs` or missing values
+**clean**: Produced from numerical variables: a clean numerical variable with no `NAs` or missing values
 
-**indicator_code**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
+**lev**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
 
-**prevalence_code**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
 
-**deviation_code**: Produced from categorical variables: standard deviation of outcome conditioned on levels of the variable
+**catN**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the explanatory variable
 
-**impact_code**: Produced from categorical variables: score from a one-dimensional model of the output as a function of the variable
+**catD**: Produced from categorical variables: deviantion of outcome as a function of the explanatory variable
 
-**missing_indicator**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or  `NaN`
+**is_BAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
-**logit_code**: not used by `NumericOutcomeTreatment`
+More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
+
 
 ### Example: Produce only a subset of variable types
 
 In this example, suppose you only want to use indicators and continuous variables in your model; 
-in other words, you only want to use variables of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and no `impact_code`, `deviance_code`, or `prevalence_code` variables.
+in other words, you only want to use variables of types (`clean`, `is_BAD`, and `lev`), and no `catN`, `deviance_code`, `catP`, or `catD` variables.
 
-#%%
 
-transform_thin = vtreat.NumericOutcomeTreatment(
-    outcome_name='y',    # outcome variable
-    params = vtreat.vtreat_parameters({
-        'filter_to_recommended': False,
-        'coders': {'clean_copy',
-                   'missing_indicator',
-                   'indicator_code',
-                  }
-    })
+```{r}
+transform_design_thin = vtreat::mkCrossFrameNExperiment(
+    dframe = d,                                    # data to learn transform from
+    varlist = setdiff(colnames(d), c('y', 'y_centered')),  # columns to transform
+    outcomename = 'y',                             # outcome variable
+    codeRestriction = c('lev',                     # transforms we want
+                        'clean',
+                        'isBAD')
 )
 
-transform_thin.fit_transform(d, d['y']).head()
+transform_thin <- transform_design_thin$treatments
+d_prepared_thin <- transform_design_thin$crossFrame
+score_frame_thin <- transform_thin$scoreFrame
 
-#%%
+d_prepared_thin %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
 
-transform_thin.score_frame_
-
-#%% md
+```{r}
+knitr::kable(score_frame_thin)
+```
 
 ## Deriving the Default Thresholds
 
@@ -339,11 +314,6 @@ While machine learning algorithms are generally tolerant to a reasonable number 
 Imagine that you have a pure noise dataset, where none of the *n* inputs are related to the output. If you treat each variable as a one-variable model for the output, and look at the significances of each model, these significance-values will be uniformly distributed in the range [0:1]. You want to pick a weakest possible significance threshold that eliminates as many noise variables as possible. A moment's thought should convince you that a threshold of *1/n* allows only one variable through, in expectation. 
 
 This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we developed the R version of `vtreat`.
-
-We noticed, however, that this biases the filtering against numerical variables, since there are at most two derived variables (of types *clean_copy* and *missing_indicator* for every numerical variable in the original data. Categorical variables, on the other hand, are expanded to many derived variables: several indicators (one for every common level), plus a *logit_code* and a *prevalence_code*. So we now reweight the thresholds. 
-
-Suppose you have a (treated) data set with *ntreat* different types of `vtreat` variables (`clean_copy`, `indicator_code`, etc).
-There are *nT* variables of type *T*. Then the default threshold for all the variables of type *T* is *1/(ntreat nT)*. This reweighting  helps to reduce the bias against any particular type of variable. The heuristic is still that the set of recommended variables will allow at most one noise variable into the set of candidate variables.
 
 As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship  to the output may fail to pass the threshold. Setting the `filter_to_recommended` parameter to False will keep all derived variables in the treated frame, for the data scientist to filter (or not) as they will.
 
