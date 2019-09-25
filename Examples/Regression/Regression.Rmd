@@ -51,7 +51,7 @@ d %.>%
 ### Some quick data exploration
 
 
-Check how many levels `xc` has, and their disribution (including `NaN`)
+Check how many levels `xc` has, and their distribution (including `NaN`)
 
 
 ```{r}
@@ -119,7 +119,7 @@ Notice that the variable `xc` has been converted to multiple variables:
 
 Any or all of these new variables are available for downstream modeling.
 
-The `recommended` column indicates which variables are non constant (`has_range` == True) and have a significance value smaller than `default_threshold`. See the section *Deriving the Default Threholds* below for the reasoning behind the default thresholds. Recommended columns are intended as advice about which variables appear to be most likely to be useful in a downstream model. This advice is attempts to be conservative, to reduce the possibility of mistakenly eliminating variables that may in fact be useful (although, obviously, it can still mistakenly eliminate variables that have a real but non-linear relationship to the output).
+The `recommended` column indicates which variables are non constant (`has_range` == True) and have a significance value smaller than `default_threshold`. See the section *Deriving the Default Thresholds* below for the reasoning behind the default thresholds. Recommended columns are intended as advice about which variables appear to be most likely to be useful in a downstream model. This advice is attempts to be conservative, to reduce the possibility of mistakenly eliminating variables that may in fact be useful (although, obviously, it can still mistakenly eliminate variables that have a real but non-linear relationship to the output).
 
 Let's look at the recommended and not recommended variables:
 
@@ -180,7 +180,7 @@ summary(d_prepared$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 dtmp = prepare(transform, d)
 dtmp['y_centered'] = dtmp$y - mean(dtmp$y)
 
-# constante
+# constant
 summary(dtmp$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 ```
 
@@ -278,7 +278,7 @@ Some parameters of note include:
 
 **catN**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the explanatory variable
 
-**catD**: Produced from categorical variables: deviantion of outcome as a function of the explanatory variable
+**catD**: Produced from categorical variables: deviation of outcome as a function of the explanatory variable
 
 **is_BAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
@@ -323,4 +323,18 @@ Imagine that you have a pure noise dataset, where none of the *n* inputs are rel
 This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we developed the R version of `vtreat`.
 
 As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship  to the output may fail to pass the threshold. Setting the `filter_to_recommended` parameter to False will keep all derived variables in the treated frame, for the data scientist to filter (or not) as they will.
+
+## Conclusion
+
+In all cases (classification, regression, unsupervised, and multinomial classification) the intent is that `vtreat` transforms are essentially one liners.
+
+The preparation commands are organized as follows:
+
+ * **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+ * **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+ * **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+ * **Multinomial classification**: [`R` multinomial classification example](https://winvector.github.io/vtreat/articles/MultiClassVtreat.html), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.ipynb).
+
+These current revisions of the examples are designed to be small, yet complete.  So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
+
 
