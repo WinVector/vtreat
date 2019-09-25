@@ -58,14 +58,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|          x |           y | xc         |          x2 | yc    |
-| ---------: | ----------: | :--------- | ----------: | :---- |
-| \-1.270178 | \-0.9314156 | NA         | \-1.0308166 | FALSE |
-| \-4.925928 |   0.9215372 | level\_1   | \-0.0553537 | TRUE  |
-|   3.884977 | \-0.7502183 | NA         |   0.3450284 | FALSE |
-|         NA | \-0.8487328 | NA         | \-0.7881728 | FALSE |
-|         NA |   0.6528488 | level\_0.5 | \-0.5718407 | TRUE  |
-|         NA |   0.8168634 | level\_1   |   0.8513331 | TRUE  |
+|           x |           y | xc          |          x2 | yc    |
+| ----------: | ----------: | :---------- | ----------: | :---- |
+| \-4.5325665 |   0.9409934 | level\_1    |   0.1279106 | TRUE  |
+|   0.3972045 |   0.2914886 | level\_0.5  | \-1.2295279 | FALSE |
+|   2.5159518 |   0.5892973 | level\_0.5  |   0.5436041 | TRUE  |
+|          NA | \-0.3246397 | level\_-0.5 |   0.0974359 | FALSE |
+|          NA |   0.8390121 | level\_1    | \-2.2596369 | TRUE  |
+|          NA |   0.8120103 | level\_1    | \-1.1249269 | TRUE  |
 
 ### Some quick data exploration
 
@@ -75,20 +75,24 @@ Check how many levels `xc` has, and their disribution (including `NA`)
 unique(d['xc'])
 ```
 
-    ##            xc
-    ## 1        <NA>
-    ## 2     level_1
-    ## 5   level_0.5
-    ## 8     level_0
-    ## 24 level_-0.5
+    ##             xc
+    ## 1      level_1
+    ## 2    level_0.5
+    ## 4   level_-0.5
+    ## 8         <NA>
+    ## 14     level_0
+    ## 147 level_-1.5
+    ## 326  level_1.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##        107         75         78        122        118
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1  level_1.5 
+    ##        105          1         68         97        110          1 
+    ##       <NA> 
+    ##        118
 
 Find the mean value of `yc`
 
@@ -96,7 +100,7 @@ Find the mean value of `yc`
 mean(d[['yc']])
 ```
 
-    ## [1] 0.336
+    ## [1] 0.328
 
 Plot of `yc` versus `x`.
 
@@ -130,9 +134,9 @@ transform_design = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Tue Sep 24 08:38:53 2019"
-    ## [1] " start cross frame work Tue Sep 24 08:38:53 2019"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Sep 24 08:38:53 2019"
+    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 08:32:11 2019"
+    ## [1] " start cross frame work Wed Sep 25 08:32:11 2019"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Sep 25 08:32:12 2019"
 
 ``` r
 transform <- transform_design$treatments
@@ -159,16 +163,16 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0007181 | 0.4983697 | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0025786 | 0.1995027 | FALSE      |                 0 | x        | isBAD | FALSE       |
-| xc\_catP                       | TRUE     | 0.0362263 | 0.0000015 | TRUE       |                 4 | xc       | catP  | TRUE        |
-| xc\_catB                       | TRUE     | 0.8324228 | 0.0000000 | TRUE       |                 4 | xc       | catB  | TRUE        |
-| x2                             | TRUE     | 0.0004630 | 0.5866882 | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1791110 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1595204 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1064434 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0394899 | 0.0000005 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5614680 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0000005 | 0.9860514 | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0027957 | 0.1835095 | FALSE      |                 0 | x        | isBAD | FALSE       |
+| xc\_catP                       | TRUE     | 0.0137924 | 0.0031350 | TRUE       |                 6 | xc       | catP  | TRUE        |
+| xc\_catB                       | TRUE     | 0.7809127 | 0.0000000 | TRUE       |                 6 | xc       | catB  | TRUE        |
+| x2                             | TRUE     | 0.0003709 | 0.6280784 | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.1751835 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1526450 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.0934941 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0390610 | 0.0000007 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.5042530 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 
@@ -235,12 +239,12 @@ d_prepared %.>%
 
 |           x | x\_isBAD |  xc\_catP |     xc\_catB |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
 | ----------: | -------: | --------: | -----------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-| \-1.2701781 |        0 | 0.2342342 | \-12.8873871 | \-1.0308166 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-4.9259282 |        0 | 0.2492492 |   14.3223289 | \-0.0553537 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
-|   3.8849774 |        0 | 0.2432432 | \-12.9116440 |   0.3450284 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|   0.0795752 |        1 | 0.2305389 | \-12.8833726 | \-0.7881728 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|   0.5675136 |        1 | 0.1531532 |    0.8898562 | \-0.5718407 |           0 |                              0 |                    0 |                       1 |                    0 | TRUE  |
-|   0.5675136 |        1 | 0.2492492 |   14.3223289 |   0.8513331 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-4.5325665 |        0 | 0.2215569 |   14.2255720 |   0.1279106 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   0.3972045 |        0 | 0.1951952 |    0.9365201 | \-1.2295279 |           0 |                              0 |                    0 |                       1 |                    0 | FALSE |
+|   2.5159518 |        0 | 0.1981982 |    0.8416582 |   0.5436041 |           0 |                              0 |                    0 |                       1 |                    0 | TRUE  |
+|   0.2500975 |        1 | 0.2072072 | \-12.7241506 |   0.0974359 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|   0.0960973 |        1 | 0.2215569 |   14.2255720 | \-2.2596369 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   0.2500975 |        1 | 0.2222222 |   14.2347045 | \-1.1249269 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
 
 ## A Closer Look at `catB` variables
 
@@ -303,12 +307,7 @@ d_prepared['prediction'] = predict(
   model,
   newdata = d_prepared, 
   type = 'response')
-```
 
-    ## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
-    ## == : prediction from a rank-deficient fit may be misleading
-
-``` r
 # look at the ROC curve (on the training data)
 WVPlots::ROCPlot(
   frame = d_prepared,
@@ -334,12 +333,7 @@ dtest_prepared['prediction'] = predict(
   model,
   newdata = dtest_prepared,
   type = 'response')
-```
 
-    ## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
-    ## == : prediction from a rank-deficient fit may be misleading
-
-``` r
 WVPlots::ROCPlot(
   frame = dtest_prepared,
   xvar = 'prediction',
@@ -537,9 +531,9 @@ transform_design_thin = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Tue Sep 24 08:38:55 2019"
-    ## [1] " start cross frame work Tue Sep 24 08:38:55 2019"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Sep 24 08:38:56 2019"
+    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 08:32:14 2019"
+    ## [1] " start cross frame work Wed Sep 25 08:32:14 2019"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Sep 25 08:32:14 2019"
 
 ``` r
 transform_thin <- transform_design_thin$treatments
@@ -553,12 +547,12 @@ d_prepared_thin %.>%
 
 |           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
 | ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-| \-1.2701781 |        0 | \-1.0308166 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-4.9259282 |        0 | \-0.0553537 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
-|   3.8849774 |        0 |   0.3450284 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-0.0018304 |        1 | \-0.7881728 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|   0.1206378 |        1 | \-0.5718407 |           0 |                              0 |                    0 |                       1 |                    0 | TRUE  |
-|   0.4675504 |        1 |   0.8513331 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-4.5325665 |        0 |   0.1279106 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   0.3972045 |        0 | \-1.2295279 |           0 |                              0 |                    0 |                       1 |                    0 | FALSE |
+|   2.5159518 |        0 |   0.5436041 |           0 |                              0 |                    0 |                       1 |                    0 | TRUE  |
+|   0.2105435 |        1 |   0.0974359 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|   0.2082178 |        1 | \-2.2596369 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   0.2105435 |        1 | \-1.1249269 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
 
 ``` r
 knitr::kable(score_frame_thin)
@@ -566,14 +560,14 @@ knitr::kable(score_frame_thin)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- |
-| x                              | TRUE     | 0.0007181 | 0.4983697 | FALSE      |                 0 | x        | clean |
-| x\_isBAD                       | TRUE     | 0.0025786 | 0.1995027 | FALSE      |                 0 | x        | isBAD |
-| x2                             | TRUE     | 0.0004630 | 0.5866882 | FALSE      |                 0 | x2       | clean |
-| xc\_lev\_NA                    | TRUE     | 0.1791110 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1595204 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1064434 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0394899 | 0.0000005 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5614680 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| x                              | TRUE     | 0.0000005 | 0.9860514 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     | 0.0027957 | 0.1835095 | FALSE      |                 0 | x        | isBAD |
+| x2                             | TRUE     | 0.0003709 | 0.6280784 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     | 0.1751835 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1526450 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.0934941 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0390610 | 0.0000007 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.5042530 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
 
 ## Deriving the Default Thresholds
 
@@ -613,11 +607,11 @@ d %.>%
   knitr::kable(.)
 ```
 
-|    |          rsq | count |       sig | var |
-| -- | -----------: | ----: | --------: | :-- |
-| x  | 0.0025785542 |     2 | 0.3990054 | x   |
-| x2 | 0.0004629868 |     3 | 1.0000000 | x2  |
-| xc | 0.8318184971 |     2 | 0.0000000 | xc  |
+|    |         rsq | count |       sig | var |
+| -- | ----------: | ----: | --------: | :-- |
+| x  | 0.002795672 |     2 | 0.3670190 | x   |
+| x2 | 0.006665711 |     3 | 0.1200095 | x2  |
+| xc | 0.782509463 |     2 | 0.0000000 | xc  |
 
 More on non-linear variable scoring can be found
 [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).
