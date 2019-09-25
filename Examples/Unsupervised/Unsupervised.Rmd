@@ -131,24 +131,21 @@ Of course, what we really want to do with the prepared training data is to model
 
 Let's start with an unsupervised analysis: clustering.
 
-```
+```{r}
 # don't use y to cluster
-not_variables = ['y']
-model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
+not_variables <- c('y')
+model_vars <- setdiff(colnames(d_prepared), not_variables)
 
-import sklearn.cluster
+clusters = kmeans(d_prepared[, model_vars, drop = FALSE], centers = 5)
 
-d_prepared['clusterID'] = sklearn.cluster.KMeans(n_clusters = 5).fit_predict(d_prepared[model_vars])
-d_prepared.clusterID
+d_prepared['clusterID'] <- clusters$cluster
+head(d_prepared$clusterID)
 
-# colorbrewer Dark2 palette
-mypalette = ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e']
-ax = seaborn.scatterplot(x = "x", y = "y", hue="clusterID", 
-                    data = d_prepared, 
-                    palette=mypalette, 
-                    legend=False)
-ax.set_title("y as a function of x, points colored by (unsupervised) clusterID")
-plt.show()
+ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
+  geom_point() +
+  ggtitle('y as a function of x, points colored by (unsupervised) clusterID') +
+  theme(legend.position="none") +
+  scale_colour_brewer(palette = "Dark2")
 ```
 
 
@@ -156,56 +153,58 @@ plt.show()
 
 Since in this case we have an outcome variable, `y`, we can try fitting a linear regression model to `d_prepared`.
 
-```
-import sklearn.linear_model
-import seaborn
-import sklearn.metrics
-import matplotlib.pyplot
 
-not_variables = ['y', 'prediction', 'clusterID']
-model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
-fitter = sklearn.linear_model.LinearRegression()
-fitter.fit(d_prepared[model_vars], d_prepared['y'])
-print(fitter.intercept_)
-{model_vars[i]: fitter.coef_[i] for i in range(len(model_vars))}
+```{r}
+f <- wrapr::mk_formula('y', model_vars)
+
+model = lm(f, data = d_prepared)
 
 # now predict
-d_prepared['prediction'] = fitter.predict(d_prepared[model_vars])
+d_prepared['prediction'] = predict(
+  model,
+  newdata = d_prepared)
 
-# get R-squared
-r2 = sklearn.metrics.r2_score(y_true=d_prepared.y, y_pred=d_prepared.prediction)
-
-title = 'Prediction vs. outcome (training data); R-sqr = {:04.2f}'.format(r2)
-
-# compare the predictions to the outcome (on the training data)
-ax = seaborn.scatterplot(x='prediction', y='y', data=d_prepared)
-matplotlib.pyplot.plot(d_prepared.prediction, d_prepared.prediction, color="darkgray")
-ax.set_title(title)
-plt.show()
+# look at the fit (on the training data)
+WVPlots::ScatterHist(
+  d_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
 ```
+
 
 Now apply the model to new data.
 
-```
+
+```{r}
 # create the new data
-dtest = make_data(450)
+dtest <- make_data(450)
 
 # prepare the new data with vtreat
-dtest_prepared = transform.transform(dtest)
+dtest_prepared = prepare(transform, dtest)
+dtest_prepared$y = dtest$y
 
 # apply the model to the prepared data
-dtest_prepared['prediction'] = fitter.predict(dtest_prepared[model_vars])
+dtest_prepared['prediction'] = predict(
+  model,
+  newdata = dtest_prepared)
 
-# get R-squared
-r2 = sklearn.metrics.r2_score(y_true=dtest_prepared.y, y_pred=dtest_prepared.prediction)
+# compare the predictions to the outcome (on the test data)
+WVPlots::ScatterHist(
+  dtest_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
 
-title = 'Prediction vs. outcome (test data); R-sqr = {:04.2f}'.format(r2)
-
-# compare the predictions to the outcome (on the training data)
-ax = seaborn.scatterplot(x='prediction', y='y', data=dtest_prepared)
-matplotlib.pyplot.plot(dtest_prepared.prediction, dtest_prepared.prediction, color="darkgray")
-ax.set_title(title)
-plt.show()
+# get r-squared
+sigr::wrapFTest(dtest_prepared, 
+                predictionColumnName = 'prediction',
+                yColumnName = 'y',
+                nParameters = length(model_vars) + 1)
 ```
 
 ## Parameters for `UnsupervisedTreatment`
@@ -247,31 +246,29 @@ In unsupervised situations, this may only be desirable when there are an unworka
 
 ## Types of prepared variables
 
-**clean_copy**: Produced from numerical variables: a clean numerical variable with no `NaNs` or missing values
+**clean**: Produced from numerical variables: a clean numerical variable with no `NaNs` or missing values
 
-**indicator_code**: Produced from categorical variables, one for each level: for each level of the variable, indicates if that level was "on"
+**lev**: Produced from categorical variables, one for each level: for each level of the variable, indicates if that level was "on"
 
-**prevalence_code**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
 
-**missing_indicator**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or  `NaN`
+**isBAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or  `NaN`
 
 ### Example: Produce only a subset of variable types
 
 In this example, suppose you only want to use indicators and continuous variables in your model; 
-in other words, you only want to use variables of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and no `prevalence_code` variables.
+in other words, you only want to use variables of types (`clean`, `isBAD`, and `lev`), and no `catP` variables.
 
+```{r}
+transform_thin = vtreat::designTreatmentsZ(
+    dframe = d,                              # data to learn transform from
+    varlist = setdiff(colnames(d), c('y')),  # columns to transform
+    codeRestriction = c('clean', 'lev', 'isBAD'))
+score_frame_thin = transform_thin$scoreFrame
+knitr::kable(score_frame_thin)
 ```
-transform_thin = vtreat.UnsupervisedTreatment(
-    cols_to_copy = ['y'],          # columns to "carry along" but not treat as input variables
-    params = vtreat.unsupervised_parameters({
-         'coders': {'clean_copy',
-                    'missing_indicator',
-                    'indicator_code',
-                   }
-    })
-)  
 
-transform_thin.fit_transform(d) # fit the transform
-transform_thin.score_frame_
-```
+## Conclusion
+
+In all cases (classification, regression, unsupervised, and multinomial) the intent is that `vtreat` transforms are essentially one liners.
 

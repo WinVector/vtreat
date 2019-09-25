@@ -54,14 +54,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|           x |           y | xc          |          x2 | x3 |
-| ----------: | ----------: | :---------- | ----------: | -: |
-| \-2.6019523 | \-0.6040076 | level\_-0.5 | \-0.7692852 |  1 |
-|   0.3775947 |   0.2689662 | level\_0.5  |   0.2447184 |  1 |
-|  12.3090071 | \-0.0795553 | level\_0    |   0.0974461 |  1 |
-|          NA |   0.0929637 | level\_0    | \-0.6694792 |  1 |
-|          NA |   0.4272080 | level\_0.5  | \-0.6826362 |  1 |
-|          NA |   0.7376567 | level\_0.5  | \-0.8274254 |  1 |
+|          x |           y | xc          |          x2 | x3 |
+| ---------: | ----------: | :---------- | ----------: | -: |
+| \-7.028441 | \-0.7337325 | level\_-0.5 |   0.9621643 |  1 |
+|   5.321237 | \-0.9066416 | NA          |   0.3703058 |  1 |
+|  10.830518 | \-0.8705397 | NA          |   0.7307484 |  1 |
+|         NA | \-0.6274791 | level\_-0.5 |   1.4423675 |  1 |
+|         NA | \-0.5437713 | level\_-0.5 |   0.9085770 |  1 |
+|         NA |   0.6757727 | level\_0.5  | \-1.1372787 |  1 |
 
 ### Some quick data exploration
 
@@ -73,10 +73,10 @@ unique(d['xc'])
 
     ##            xc
     ## 1  level_-0.5
-    ## 2   level_0.5
-    ## 3     level_0
-    ## 10    level_1
-    ## 12       <NA>
+    ## 2        <NA>
+    ## 6   level_0.5
+    ## 9     level_1
+    ## 11    level_0
 
 ``` r
 table(d$xc, useNA = 'always')
@@ -84,7 +84,7 @@ table(d$xc, useNA = 'always')
 
     ## 
     ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##         94         95         98        104        109
+    ##        100         79        112         93        116
 
 ## Build a transform appropriate for unsupervised (or non-y-aware) problems.
 
@@ -118,11 +118,11 @@ transform = vtreat::designTreatmentsZ(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 inspecting inputs Wed Sep 25 10:01:07 2019"
-    ## [1] "designing treatments Wed Sep 25 10:01:07 2019"
-    ## [1] " have initial level statistics Wed Sep 25 10:01:07 2019"
-    ## [1] " scoring treatments Wed Sep 25 10:01:07 2019"
-    ## [1] "have treatment plan Wed Sep 25 10:01:07 2019"
+    ## [1] "vtreat 1.4.6 inspecting inputs Wed Sep 25 10:40:26 2019"
+    ## [1] "designing treatments Wed Sep 25 10:40:26 2019"
+    ## [1] " have initial level statistics Wed Sep 25 10:40:26 2019"
+    ## [1] " scoring treatments Wed Sep 25 10:40:26 2019"
+    ## [1] "have treatment plan Wed Sep 25 10:40:26 2019"
 
 ``` r
 score_frame = transform$scoreFrame
@@ -184,12 +184,12 @@ d_prepared %.>%
 
 |           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
 | ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
-| \-2.6019523 |        0 |    0.188 | \-0.7692852 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.6040076 |
-|   0.3775947 |        0 |    0.196 |   0.2447184 |           0 |                              0 |                    0 |                       1 |                    0 |   0.2689662 |
-|  12.3090071 |        0 |    0.190 |   0.0974461 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.0795553 |
-|   0.1475432 |        1 |    0.190 | \-0.6694792 |           0 |                              0 |                    1 |                       0 |                    0 |   0.0929637 |
-|   0.1475432 |        1 |    0.196 | \-0.6826362 |           0 |                              0 |                    0 |                       1 |                    0 |   0.4272080 |
-|   0.1475432 |        1 |    0.196 | \-0.8274254 |           0 |                              0 |                    0 |                       1 |                    0 |   0.7376567 |
+| \-7.0284405 |        0 |    0.200 |   0.9621643 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.7337325 |
+|   5.3212367 |        0 |    0.232 |   0.3703058 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.9066416 |
+|  10.8305183 |        0 |    0.232 |   0.7307484 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.8705397 |
+|   0.0681987 |        1 |    0.200 |   1.4423675 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.6274791 |
+|   0.0681987 |        1 |    0.200 |   0.9085770 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.5437713 |
+|   0.0681987 |        1 |    0.224 | \-1.1372787 |           0 |                              0 |                    0 |                       1 |                    0 |   0.6757727 |
 
 ## Using the Prepared Data to Model
 
@@ -200,76 +200,102 @@ to model.
 
 Let’s start with an unsupervised analysis: clustering.
 
-    # don't use y to cluster
-    not_variables = ['y']
-    model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
-    
-    import sklearn.cluster
-    
-    d_prepared['clusterID'] = sklearn.cluster.KMeans(n_clusters = 5).fit_predict(d_prepared[model_vars])
-    d_prepared.clusterID
-    
-    # colorbrewer Dark2 palette
-    mypalette = ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e']
-    ax = seaborn.scatterplot(x = "x", y = "y", hue="clusterID", 
-                        data = d_prepared, 
-                        palette=mypalette, 
-                        legend=False)
-    ax.set_title("y as a function of x, points colored by (unsupervised) clusterID")
-    plt.show()
+``` r
+# don't use y to cluster
+not_variables <- c('y')
+model_vars <- setdiff(colnames(d_prepared), not_variables)
+
+clusters = kmeans(d_prepared[, model_vars, drop = FALSE], centers = 5)
+
+d_prepared['clusterID'] <- clusters$cluster
+head(d_prepared$clusterID)
+```
+
+    ## [1] 2 4 1 3 3 3
+
+``` r
+ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
+  geom_point() +
+  ggtitle('y as a function of x, points colored by (unsupervised) clusterID') +
+  theme(legend.position="none") +
+  scale_colour_brewer(palette = "Dark2")
+```
+
+![](Unsupervised_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ### Supervised modeling with non-y-aware variables
 
 Since in this case we have an outcome variable, `y`, we can try fitting
 a linear regression model to `d_prepared`.
 
-    import sklearn.linear_model
-    import seaborn
-    import sklearn.metrics
-    import matplotlib.pyplot
-    
-    not_variables = ['y', 'prediction', 'clusterID']
-    model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
-    fitter = sklearn.linear_model.LinearRegression()
-    fitter.fit(d_prepared[model_vars], d_prepared['y'])
-    print(fitter.intercept_)
-    {model_vars[i]: fitter.coef_[i] for i in range(len(model_vars))}
-    
-    # now predict
-    d_prepared['prediction'] = fitter.predict(d_prepared[model_vars])
-    
-    # get R-squared
-    r2 = sklearn.metrics.r2_score(y_true=d_prepared.y, y_pred=d_prepared.prediction)
-    
-    title = 'Prediction vs. outcome (training data); R-sqr = {:04.2f}'.format(r2)
-    
-    # compare the predictions to the outcome (on the training data)
-    ax = seaborn.scatterplot(x='prediction', y='y', data=d_prepared)
-    matplotlib.pyplot.plot(d_prepared.prediction, d_prepared.prediction, color="darkgray")
-    ax.set_title(title)
-    plt.show()
+``` r
+f <- wrapr::mk_formula('y', model_vars)
+
+model = lm(f, data = d_prepared)
+
+# now predict
+d_prepared['prediction'] = predict(
+  model,
+  newdata = d_prepared)
+```
+
+    ## Warning in predict.lm(model, newdata = d_prepared): prediction from a rank-
+    ## deficient fit may be misleading
+
+``` r
+# look at the fit (on the training data)
+WVPlots::ScatterHist(
+  d_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
+```
+
+![](Unsupervised_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Now apply the model to new data.
 
-    # create the new data
-    dtest = make_data(450)
-    
-    # prepare the new data with vtreat
-    dtest_prepared = transform.transform(dtest)
-    
-    # apply the model to the prepared data
-    dtest_prepared['prediction'] = fitter.predict(dtest_prepared[model_vars])
-    
-    # get R-squared
-    r2 = sklearn.metrics.r2_score(y_true=dtest_prepared.y, y_pred=dtest_prepared.prediction)
-    
-    title = 'Prediction vs. outcome (test data); R-sqr = {:04.2f}'.format(r2)
-    
-    # compare the predictions to the outcome (on the training data)
-    ax = seaborn.scatterplot(x='prediction', y='y', data=dtest_prepared)
-    matplotlib.pyplot.plot(dtest_prepared.prediction, dtest_prepared.prediction, color="darkgray")
-    ax.set_title(title)
-    plt.show()
+``` r
+# create the new data
+dtest <- make_data(450)
+
+# prepare the new data with vtreat
+dtest_prepared = prepare(transform, dtest)
+dtest_prepared$y = dtest$y
+
+# apply the model to the prepared data
+dtest_prepared['prediction'] = predict(
+  model,
+  newdata = dtest_prepared)
+```
+
+    ## Warning in predict.lm(model, newdata = dtest_prepared): prediction from a
+    ## rank-deficient fit may be misleading
+
+``` r
+# compare the predictions to the outcome (on the test data)
+WVPlots::ScatterHist(
+  dtest_prepared, 
+  xvar = 'prediction',
+  yvar = 'y',
+  smoothmethod = 'identity',
+  estimate_sig = TRUE,
+  title = 'Relationship between prediction and y')
+```
+
+![](Unsupervised_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+# get r-squared
+sigr::wrapFTest(dtest_prepared, 
+                predictionColumnName = 'prediction',
+                yColumnName = 'y',
+                nParameters = length(model_vars) + 1)
+```
+
+    ## [1] "F Test summary: (R2=0.8874, F(10,439)=346.1, p<1e-05)."
 
 ## Parameters for `UnsupervisedTreatment`
 
@@ -328,35 +354,55 @@ variables produced by `NumericOutputTreatment`,
 
 ## Types of prepared variables
 
-**clean\_copy**: Produced from numerical variables: a clean numerical
-variable with no `NaNs` or missing values
+**clean**: Produced from numerical variables: a clean numerical variable
+with no `NaNs` or missing values
 
-**indicator\_code**: Produced from categorical variables, one for each
-level: for each level of the variable, indicates if that level was “on”
+**lev**: Produced from categorical variables, one for each level: for
+each level of the variable, indicates if that level was “on”
 
-**prevalence\_code**: Produced from categorical variables: indicates how
-often each level of the variable was “on”
+**catP**: Produced from categorical variables: indicates how often each
+level of the variable was “on”
 
-**missing\_indicator**: Produced for both numerical and categorical
-variables: an indicator variable that marks when the original variable
-was missing or `NaN`
+**isBAD**: Produced for both numerical and categorical variables: an
+indicator variable that marks when the original variable was missing or
+`NaN`
 
 ### Example: Produce only a subset of variable types
 
 In this example, suppose you only want to use indicators and continuous
 variables in your model; in other words, you only want to use variables
-of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and
-no `prevalence_code` variables.
+of types (`clean`, `isBAD`, and `lev`), and no `catP` variables.
 
-    transform_thin = vtreat.UnsupervisedTreatment(
-        cols_to_copy = ['y'],          # columns to "carry along" but not treat as input variables
-        params = vtreat.unsupervised_parameters({
-             'coders': {'clean_copy',
-                        'missing_indicator',
-                        'indicator_code',
-                       }
-        })
-    )  
-    
-    transform_thin.fit_transform(d) # fit the transform
-    transform_thin.score_frame_
+``` r
+transform_thin = vtreat::designTreatmentsZ(
+    dframe = d,                              # data to learn transform from
+    varlist = setdiff(colnames(d), c('y')),  # columns to transform
+    codeRestriction = c('clean', 'lev', 'isBAD'))
+```
+
+    ## [1] "vtreat 1.4.6 inspecting inputs Wed Sep 25 10:40:29 2019"
+    ## [1] "designing treatments Wed Sep 25 10:40:29 2019"
+    ## [1] " have initial level statistics Wed Sep 25 10:40:29 2019"
+    ## [1] " scoring treatments Wed Sep 25 10:40:29 2019"
+    ## [1] "have treatment plan Wed Sep 25 10:40:29 2019"
+
+``` r
+score_frame_thin = transform_thin$scoreFrame
+knitr::kable(score_frame_thin)
+```
+
+| varName                        | varMoves | rsq | sig | needsSplit | extraModelDegrees | origName | code  |
+| :----------------------------- | :------- | --: | --: | :--------- | ----------------: | :------- | :---- |
+| x                              | TRUE     |   0 |   1 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     |   0 |   1 | FALSE      |                 0 | x        | isBAD |
+| x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+
+## Conclusion
+
+In all cases (classification, regression, unsupervised, and multinomial)
+the intent is that `vtreat` transforms are essentially one liners.
