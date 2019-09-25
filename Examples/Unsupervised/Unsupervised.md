@@ -13,17 +13,16 @@ can be found
 
 ## Preliminaries
 
-\#%% md
-
 Load modules/packages.
 
-\#%%
+``` r
+library(vtreat)
+suppressPackageStartupMessages(library(ggplot2))
+library(WVPlots)
+library(rqdatatable)
+```
 
-import pkg\_resources import pandas import numpy import numpy.random
-import seaborn import matplotlib.pyplot as plt import vtreat import
-vtreat.util import wvpy.util
-
-\#%% md
+    ## Loading required package: rquery
 
 Generate example data.
 
@@ -34,36 +33,58 @@ Generate example data.
     output
   - Input `x3` is a constant variable
 
-\#%%
+<!-- end list -->
 
-def make\_data(nrows): d = pandas.DataFrame({‘x’:\[0.1\*i for i in
-range(500)\]}) d\[‘y’\] = numpy.sin(d\[‘x’\]) + 0.01*d\[‘x’\] +
-0.1*numpy.random.normal(size=d.shape\[0\]) d\[‘xc’\] = \[‘level\_’ +
-str(5\*numpy.round(yi/5, 1)) for yi in d\[‘y’\]\] d\[‘x2’\] =
-numpy.random.normal(size=d.shape\[0\]) d\[‘x3’\] = 1
-d.loc\[d\[‘xc’\]==‘level\_-1.0’, ‘xc’\] = numpy.nan \# introduce a
-nan level return d
+``` r
+make_data <- function(nrows) {
+    d <- data.frame(x = 5*rnorm(nrows))
+    d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)
+    d[4:10, 'x'] = NA                  # introduce NAs
+    d['xc'] = paste0('level_', 5*round(d$y/5, 1))
+    d['x2'] = rnorm(n = nrows)
+    d['x3'] = 1
+    d[d['xc']=='level_-1', 'xc'] = NA  # introduce a NA level
+    return(d)
+}
 
-d = make\_data(500)
+d = make_data(500)
 
-d.head()
+d %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
 
-\#%% md
+|           x |           y | xc          |          x2 | x3 |
+| ----------: | ----------: | :---------- | ----------: | -: |
+| \-2.6019523 | \-0.6040076 | level\_-0.5 | \-0.7692852 |  1 |
+|   0.3775947 |   0.2689662 | level\_0.5  |   0.2447184 |  1 |
+|  12.3090071 | \-0.0795553 | level\_0    |   0.0974461 |  1 |
+|          NA |   0.0929637 | level\_0    | \-0.6694792 |  1 |
+|          NA |   0.4272080 | level\_0.5  | \-0.6826362 |  1 |
+|          NA |   0.7376567 | level\_0.5  | \-0.8274254 |  1 |
 
 ### Some quick data exploration
 
 Check how many levels `xc` has, and their disribution (including `NaN`)
 
-\#%%
+``` r
+unique(d['xc'])
+```
 
-d\[‘xc’\].unique()
+    ##            xc
+    ## 1  level_-0.5
+    ## 2   level_0.5
+    ## 3     level_0
+    ## 10    level_1
+    ## 12       <NA>
 
-\#%%
+``` r
+table(d$xc, useNA = 'always')
+```
 
-d\[‘xc’\].value\_counts(dropna=False)
-
-\#%%
-md
+    ## 
+    ## level_-0.5    level_0  level_0.5    level_1       <NA> 
+    ##         94         95         98        104        109
 
 ## Build a transform appropriate for unsupervised (or non-y-aware) problems.
 
@@ -90,21 +111,30 @@ are numeric and have no missing values or `NaN`s.
 First create the data treatment transform object, in this case a
 treatment for an unsupervised problem.
 
-\#%%
+``` r
+transform = vtreat::designTreatmentsZ(
+    dframe = d,                              # data to learn transform from
+    varlist = setdiff(colnames(d), c('y'))   # columns to transform
+)
+```
 
-transform = vtreat.UnsupervisedTreatment( cols\_to\_copy = \[‘y’\], \#
-columns to “carry along” but not treat as input variables )
+    ## [1] "vtreat 1.4.6 inspecting inputs Wed Sep 25 10:01:07 2019"
+    ## [1] "designing treatments Wed Sep 25 10:01:07 2019"
+    ## [1] " have initial level statistics Wed Sep 25 10:01:07 2019"
+    ## [1] " scoring treatments Wed Sep 25 10:01:07 2019"
+    ## [1] "have treatment plan Wed Sep 25 10:01:07 2019"
 
-\#%% md
+``` r
+score_frame = transform$scoreFrame
+```
 
 Use the training data `d` to fit the transform and the return a treated
 training set: completely numeric, with no missing values.
 
-\#%%
-
-d\_prepared = transform.fit\_transform(d)
-
-\#%% md
+``` r
+d_prepared = prepare(transform, d)
+d_prepared$y = d$y
+```
 
 Now examine the score frame, which gives information about each new
 variable, including its type and which original variable it is derived
@@ -113,36 +143,53 @@ from. Some of the columns of the score frame (`y_aware`, `PearsonR`,
 case; those columns are used by the Regression and Classification
 transforms.
 
-\#%%
+``` r
+knitr::kable(score_frame)
+```
 
-transform.score\_frame\_
-
-\#%% md
+| varName                        | varMoves | rsq | sig | needsSplit | extraModelDegrees | origName | code  |
+| :----------------------------- | :------- | --: | --: | :--------- | ----------------: | :------- | :---- |
+| x                              | TRUE     |   0 |   1 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     |   0 |   1 | FALSE      |                 0 | x        | isBAD |
+| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 4 | xc       | catP  |
+| x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 
 Notice that the variable `xc` has been converted to multiple variables:
 
   - an indicator variable for each possible level, including `NA` or
-    missing (`xc_lev_level_*`)
+    missing (`xc_lev*`)
   - a variable indicating when `xc` was `NaN` in the original data
-    (`xc_is_bad`)
+    (`xd_isBAD`)
   - a variable that returns how prevalent this particular value of `xc`
-    is in the training data (`xc_prevalence_code`)
+    is in the training data (`xc_catP`)
 
 Any or all of these new variables are available for downstream modeling.
 
 Also note that the variable `x3` did not show up in the score frame, as
 it had no range (didn’t vary), so the unsupervised treatment dropped it.
 
-\#%% md
-
 Let’s look at the top of `d_prepared`, which includes all the new
 variables, plus `y` (and excluding `x3`).
 
-\#%%
+``` r
+d_prepared %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
 
-d\_prepared.head()
-
-\#%% md
+|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+| \-2.6019523 |        0 |    0.188 | \-0.7692852 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.6040076 |
+|   0.3775947 |        0 |    0.196 |   0.2447184 |           0 |                              0 |                    0 |                       1 |                    0 |   0.2689662 |
+|  12.3090071 |        0 |    0.190 |   0.0974461 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.0795553 |
+|   0.1475432 |        1 |    0.190 | \-0.6694792 |           0 |                              0 |                    1 |                       0 |                    0 |   0.0929637 |
+|   0.1475432 |        1 |    0.196 | \-0.6826362 |           0 |                              0 |                    0 |                       1 |                    0 |   0.4272080 |
+|   0.1475432 |        1 |    0.196 | \-0.8274254 |           0 |                              0 |                    0 |                       1 |                    0 |   0.7376567 |
 
 ## Using the Prepared Data to Model
 
@@ -153,100 +200,76 @@ to model.
 
 Let’s start with an unsupervised analysis: clustering.
 
-\#%%
-
-# don’t use y to cluster
-
-not\_variables = \[‘y’\] model\_vars = \[v for v in d\_prepared.columns
-if v not in set(not\_variables)\]
-
-import sklearn.cluster
-
-d\_prepared\[‘clusterID’\] = sklearn.cluster.KMeans(n\_clusters =
-5).fit\_predict(d\_prepared\[model\_vars\]) d\_prepared.clusterID
-
-# colorbrewer Dark2 palette
-
-mypalette = \[‘\#1b9e77’, ‘\#d95f02’, ‘\#7570b3’, ‘\#e7298a’,
-‘\#66a61e’\] ax = seaborn.scatterplot(x = “x”, y = “y”,
-hue=“clusterID”, data = d\_prepared, palette=mypalette, legend=False)
-ax.set\_title(“y as a function of x, points colored by (unsupervised)
-clusterID”) plt.show()
-
-\#%% md
+    # don't use y to cluster
+    not_variables = ['y']
+    model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
+    
+    import sklearn.cluster
+    
+    d_prepared['clusterID'] = sklearn.cluster.KMeans(n_clusters = 5).fit_predict(d_prepared[model_vars])
+    d_prepared.clusterID
+    
+    # colorbrewer Dark2 palette
+    mypalette = ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e']
+    ax = seaborn.scatterplot(x = "x", y = "y", hue="clusterID", 
+                        data = d_prepared, 
+                        palette=mypalette, 
+                        legend=False)
+    ax.set_title("y as a function of x, points colored by (unsupervised) clusterID")
+    plt.show()
 
 ### Supervised modeling with non-y-aware variables
 
 Since in this case we have an outcome variable, `y`, we can try fitting
 a linear regression model to `d_prepared`.
 
-\#%%
-
-import sklearn.linear\_model import seaborn import sklearn.metrics
-import matplotlib.pyplot
-
-not\_variables = \[‘y’, ‘prediction’, ‘clusterID’\] model\_vars = \[v
-for v in d\_prepared.columns if v not in set(not\_variables)\] fitter =
-sklearn.linear\_model.LinearRegression()
-fitter.fit(d\_prepared\[model\_vars\], d\_prepared\[‘y’\])
-print(fitter.intercept\_) {model\_vars\[i\]: fitter.coef\_\[i\] for i in
-range(len(model\_vars))}
-
-\#%%
-
-# now predict
-
-d\_prepared\[‘prediction’\] = fitter.predict(d\_prepared\[model\_vars\])
-
-# get R-squared
-
-r2 = sklearn.metrics.r2\_score(y\_true=d\_prepared.y,
-y\_pred=d\_prepared.prediction)
-
-title = ‘Prediction vs. outcome (training data); R-sqr =
-{:04.2f}’.format(r2)
-
-# compare the predictions to the outcome (on the training data)
-
-ax = seaborn.scatterplot(x=‘prediction’, y=‘y’, data=d\_prepared)
-matplotlib.pyplot.plot(d\_prepared.prediction, d\_prepared.prediction,
-color=“darkgray”) ax.set\_title(title) plt.show()
-
-\#%% md
+    import sklearn.linear_model
+    import seaborn
+    import sklearn.metrics
+    import matplotlib.pyplot
+    
+    not_variables = ['y', 'prediction', 'clusterID']
+    model_vars = [v for v in d_prepared.columns if v not in set(not_variables)]
+    fitter = sklearn.linear_model.LinearRegression()
+    fitter.fit(d_prepared[model_vars], d_prepared['y'])
+    print(fitter.intercept_)
+    {model_vars[i]: fitter.coef_[i] for i in range(len(model_vars))}
+    
+    # now predict
+    d_prepared['prediction'] = fitter.predict(d_prepared[model_vars])
+    
+    # get R-squared
+    r2 = sklearn.metrics.r2_score(y_true=d_prepared.y, y_pred=d_prepared.prediction)
+    
+    title = 'Prediction vs. outcome (training data); R-sqr = {:04.2f}'.format(r2)
+    
+    # compare the predictions to the outcome (on the training data)
+    ax = seaborn.scatterplot(x='prediction', y='y', data=d_prepared)
+    matplotlib.pyplot.plot(d_prepared.prediction, d_prepared.prediction, color="darkgray")
+    ax.set_title(title)
+    plt.show()
 
 Now apply the model to new data.
 
-\#%%
-
-# create the new data
-
-dtest = make\_data(450)
-
-# prepare the new data with vtreat
-
-dtest\_prepared = transform.transform(dtest)
-
-# apply the model to the prepared data
-
-dtest\_prepared\[‘prediction’\] =
-fitter.predict(dtest\_prepared\[model\_vars\])
-
-# get R-squared
-
-r2 = sklearn.metrics.r2\_score(y\_true=dtest\_prepared.y,
-y\_pred=dtest\_prepared.prediction)
-
-title = ‘Prediction vs. outcome (test data); R-sqr =
-{:04.2f}’.format(r2)
-
-# compare the predictions to the outcome (on the training data)
-
-ax = seaborn.scatterplot(x=‘prediction’, y=‘y’, data=dtest\_prepared)
-matplotlib.pyplot.plot(dtest\_prepared.prediction,
-dtest\_prepared.prediction, color=“darkgray”) ax.set\_title(title)
-plt.show()
-
-\#%% md
+    # create the new data
+    dtest = make_data(450)
+    
+    # prepare the new data with vtreat
+    dtest_prepared = transform.transform(dtest)
+    
+    # apply the model to the prepared data
+    dtest_prepared['prediction'] = fitter.predict(dtest_prepared[model_vars])
+    
+    # get R-squared
+    r2 = sklearn.metrics.r2_score(y_true=dtest_prepared.y, y_pred=dtest_prepared.prediction)
+    
+    title = 'Prediction vs. outcome (test data); R-sqr = {:04.2f}'.format(r2)
+    
+    # compare the predictions to the outcome (on the training data)
+    ax = seaborn.scatterplot(x='prediction', y='y', data=dtest_prepared)
+    matplotlib.pyplot.plot(dtest_prepared.prediction, dtest_prepared.prediction, color="darkgray")
+    ax.set_title(title)
+    plt.show()
 
 ## Parameters for `UnsupervisedTreatment`
 
@@ -256,11 +279,7 @@ object for unsupervised treatment defines a different set of parameters
 than the parameter object for supervised treatments
 (`vtreat.vtreat_parameters`).
 
-\#%%
-
-vtreat.unsupervised\_parameters()
-
-\#%% md
+    vtreat.unsupervised_parameters()
 
 **coders**: The types of synthetic variables that `vtreat` will
 (potentially) produce. See *Types of prepared variables* below.
@@ -285,24 +304,18 @@ packages. When False, use a dense representation.
 
 ### Example: Restrict the number of indicator variables
 
-\#%%
-
-# calculate the prevalence of each level by hand
-
-d\[‘xc’\].value\_counts(dropna=False)/d.shape\[0\]
-
-\#%%
-
-transform\_common = vtreat.UnsupervisedTreatment( cols\_to\_copy =
-\[‘y’\], \# columns to “carry along” but not treat as input
-variables params = vtreat.unsupervised\_parameters({
-‘indicator\_min\_fraction’: 0.2 \# only make indicators for levels
-that show up more than 20% of the time }) )
-
-transform\_common.fit\_transform(d) \# fit the transform
-transform\_common.score\_frame\_ \# examine the score frame
-
-\#%% md
+    # calculate the prevalence of each level by hand
+    d['xc'].value_counts(dropna=False)/d.shape[0]
+    
+    transform_common = vtreat.UnsupervisedTreatment(
+        cols_to_copy = ['y'],          # columns to "carry along" but not treat as input variables
+        params = vtreat.unsupervised_parameters({
+            'indicator_min_fraction': 0.2 # only make indicators for levels that show up more than 20% of the time
+        })
+    )  
+    
+    transform_common.fit_transform(d) # fit the transform
+    transform_common.score_frame_     # examine the score frame
 
 In this case, the unsupervised treatment only created levels for the two
 most common levels, which are both present more than 20% of the time.
@@ -335,12 +348,15 @@ variables in your model; in other words, you only want to use variables
 of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and
 no `prevalence_code` variables.
 
-\#%%
-
-transform\_thin = vtreat.UnsupervisedTreatment( cols\_to\_copy =
-\[‘y’\], \# columns to “carry along” but not treat as input
-variables params = vtreat.unsupervised\_parameters({ ‘coders’:
-{‘clean\_copy’, ‘missing\_indicator’, ‘indicator\_code’, } }) )
-
-transform\_thin.fit\_transform(d) \# fit the transform
-transform\_thin.score\_frame\_
+    transform_thin = vtreat.UnsupervisedTreatment(
+        cols_to_copy = ['y'],          # columns to "carry along" but not treat as input variables
+        params = vtreat.unsupervised_parameters({
+             'coders': {'clean_copy',
+                        'missing_indicator',
+                        'indicator_code',
+                       }
+        })
+    )  
+    
+    transform_thin.fit_transform(d) # fit the transform
+    transform_thin.score_frame_
