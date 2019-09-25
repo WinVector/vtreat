@@ -6,6 +6,13 @@ output: github_document
 
 # Using vtreat with Regression Problems
 
+
+Nina Zumel and John Mount
+September 2019
+
+Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+
+
 ## Preliminaries
 
 Load modules/packages.

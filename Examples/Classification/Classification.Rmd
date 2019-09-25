@@ -8,7 +8,7 @@ output: github_document
 Nina Zumel and John Mount
 September 2019
 
-Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md) ([pre-rendered](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md)).
+Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
 
 ## Preliminaries
 
