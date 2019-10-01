@@ -226,7 +226,7 @@ We've tried to set the defaults for all parameters so that `vtreat` is usable ou
 
 ```{r}
 suppressPackageStartupMessages(library(printr))
-help("mkCrossFrameCExperiment")
+help("mkCrossFrameMExperiment")
 ```
 
 Some parameters of note include:
