@@ -23,10 +23,10 @@ Depends:
 Imports:
     stats,
     parallel,
-    wrapr (>= 1.8.8)
+    wrapr (>= 1.9.0)
 Suggests:
-    rquery (>= 1.3.6),
-    rqdatatable (>= 1.1.9),
+    rquery (>= 1.3.8),
+    rqdatatable (>= 1.2.2),
     isotone,
     lme4,
     knitr,

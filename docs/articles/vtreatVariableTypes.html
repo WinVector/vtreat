@@ -145,18 +145,18 @@
 <a class="sourceLine" id="cb1-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>),</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainC),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:37:33 2019"
-## [1] "designing treatments Tue Oct  1 10:37:33 2019"
-## [1] " have initial level statistics Tue Oct  1 10:37:33 2019"
-## [1] " scoring treatments Tue Oct  1 10:37:33 2019"
-## [1] "have treatment plan Tue Oct  1 10:37:33 2019"
-## [1] "rescoring complex variables Tue Oct  1 10:37:33 2019"
-## [1] "done rescoring complex variables Tue Oct  1 10:37:33 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:48:00 2019"
+## [1] "designing treatments Tue Oct  1 10:48:00 2019"
+## [1] " have initial level statistics Tue Oct  1 10:48:00 2019"
+## [1] " scoring treatments Tue Oct  1 10:48:00 2019"
+## [1] "have treatment plan Tue Oct  1 10:48:00 2019"
+## [1] "rescoring complex variables Tue Oct  1 10:48:00 2019"
+## [1] "done rescoring complex variables Tue Oct  1 10:48:00 2019"</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">scoreColsToPrint &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.24340634 0.1547700                 2
-## 2        x    x_catB  catB 0.05070201 0.5160763                 2
+## 1        x    x_catP  catP 0.11457614 0.3289524                 2
+## 2        x    x_catB  catB 0.12081050 0.3161341                 2
 ## 3        z         z clean 0.25792985 0.1429977                 0
 ## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
 ## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
@@ -172,7 +172,7 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Map significances back to original variables</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/aggregate">aggregate</a></span>(sig<span class="op">~</span>origName,<span class="dt">data=</span>treatmentsC<span class="op">$</span>scoreFrame,<span class="dt">FUN=</span>min)</a></code></pre></div>
 <pre><code>##   origName       sig
-## 1        x 0.1547700
+## 1        x 0.2076623
 ## 2        z 0.1429977</code></pre>
 <p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
 <p>Essentially a derived variable name is built by concatenating an original variable name and a treatment type (also recorded in the <code>code</code> column for convenience). The codes give the different ‘vtreat’ variable types (or really meanings, as all derived variables are numeric).</p>
@@ -199,23 +199,23 @@
 <a class="sourceLine" id="cb9-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),<span class="dt">y=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>)),</a>
 <a class="sourceLine" id="cb9-4" data-line-number="4">   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb9-5" data-line-number="5">treatmentsN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainN),<span class="st">'y'</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:37:33 2019"
-## [1] "designing treatments Tue Oct  1 10:37:33 2019"
-## [1] " have initial level statistics Tue Oct  1 10:37:33 2019"
-## [1] " scoring treatments Tue Oct  1 10:37:33 2019"
-## [1] "have treatment plan Tue Oct  1 10:37:33 2019"
-## [1] "rescoring complex variables Tue Oct  1 10:37:33 2019"
-## [1] "done rescoring complex variables Tue Oct  1 10:37:33 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:48:00 2019"
+## [1] "designing treatments Tue Oct  1 10:48:00 2019"
+## [1] " have initial level statistics Tue Oct  1 10:48:00 2019"
+## [1] " scoring treatments Tue Oct  1 10:48:00 2019"
+## [1] "have treatment plan Tue Oct  1 10:48:00 2019"
+## [1] "rescoring complex variables Tue Oct  1 10:48:00 2019"
+## [1] "done rescoring complex variables Tue Oct  1 10:48:00 2019"</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 4.385965e-01 0.1518345                 2
-## 2        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 3        x    x_catD  catD 1.111111e-01 0.5185185                 2
-## 4        z         z clean 3.045045e-01 0.2562868                 0
-## 5        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
-## 6        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 7        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
-## 8        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.2857143 0.2745766                 2
+## 2        x    x_catN  catN 0.1052632 0.5304117                 2
+## 3        x    x_catD  catD 0.1111111 0.5185185                 2
+## 4        z         z clean 0.3045045 0.2562868                 0
+## 5        z   z_isBAD isBAD 0.2000000 0.3739010                 0
+## 6        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 7        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 8        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>The treatment of numeric targets is similar to that of categorical targets. In the numeric case the possible derived variable types are:</p>
 <ul>
 <li>
@@ -243,11 +243,11 @@
 <a class="sourceLine" id="cb13-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="ot">NA</span>,<span class="dv">6</span>),</a>
 <a class="sourceLine" id="cb13-4" data-line-number="4">   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb13-5" data-line-number="5">treatmentsZ &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(dTrainZ,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dTrainZ))</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:37:33 2019"
-## [1] "designing treatments Tue Oct  1 10:37:33 2019"
-## [1] " have initial level statistics Tue Oct  1 10:37:33 2019"
-## [1] " scoring treatments Tue Oct  1 10:37:33 2019"
-## [1] "have treatment plan Tue Oct  1 10:37:33 2019"</code></pre>
+<pre><code>## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:48:00 2019"
+## [1] "designing treatments Tue Oct  1 10:48:00 2019"
+## [1] " have initial level statistics Tue Oct  1 10:48:00 2019"
+## [1] " scoring treatments Tue Oct  1 10:48:00 2019"
+## [1] "have treatment plan Tue Oct  1 10:48:00 2019"</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsZ<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -286,7 +286,7 @@
 <a class="sourceLine" id="cb17-12" data-line-number="12"><span class="co"># no catP or catD variables</span></a>
 <a class="sourceLine" id="cb17-13" data-line-number="13"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1052632 0.5304117                 2
+## 1        x    x_catN  catN 0.1131222 0.5145190                 2
 ## 2        z         z clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
@@ -331,13 +331,13 @@
 <a class="sourceLine" id="cb21-8" data-line-number="8">                                                      <span class="st">'isBAD'</span>),</a>
 <a class="sourceLine" id="cb21-9" data-line-number="9">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb21-10" data-line-number="10"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[,scoreColsToPrint])</a></code></pre></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 2        z         z clean 3.045045e-01 0.2562868                 0
-## 3        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
-## 4        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 5        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
-## 6        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x    x_catN  catN 0.1052632 0.5304117                 2
+## 2        z         z clean 0.3045045 0.2562868                 0
+## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
+## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">pruneSig &lt;-<span class="st"> </span><span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span></a>
 <a class="sourceLine" id="cb23-2" data-line-number="2">vScoreFrame &lt;-<span class="st"> </span>treatmentsN<span class="op">$</span>scoreFrame</a>
 <a class="sourceLine" id="cb23-3" data-line-number="3">varsToUse &lt;-<span class="st"> </span>vScoreFrame<span class="op">$</span>varName[(vScoreFrame<span class="op">$</span>sig<span class="op">&lt;=</span>pruneSig)]</a>
