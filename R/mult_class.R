@@ -141,6 +141,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
   # build an overall cross-frame for training
   dy <- data.frame(y = as.character(d[[y_name]]),
                    stringsAsFactors = FALSE)
+  colnames(dy) = y_name
   cbind_args <- c(list(prepare(treatments_0, d)),
                   lapply(cfe_list, function(cfei) cfei$cross_frame_i),
                   list(dy),

@@ -1,4 +1,12 @@
 
+# vtreat 1.4.7 2019/10/30
+
+ * fix wrong y-name in multinomial cross frame.
+ 
+# vtreat 1.4.6 2019/09/23
+
+ * Some doc updates.
+ 
 # vtreat 1.4.5 2019/09/11
 
  * Some doc updates.
