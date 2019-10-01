@@ -25,7 +25,7 @@ library(WVPlots)
 Generate example data. 
 
 * `y` is a noisy sinusoidal function of the variable `x`
-* `yc` is the output to be predicted: : whether `y` is > 0.5. 
+* `yc` is the output to be predicted: whether `y` is > 0.5. 
 * Input `xc` is a categorical variable that represents a discretization of `y`, along some `NA`s
 * Input `x2` is a pure noise variable with no relationship to the output
 
