@@ -57,14 +57,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|           x |           y | xc          |          x2 | yc    |
-| ----------: | ----------: | :---------- | ----------: | :---- |
-| \-5.5370909 |   0.7023252 | level\_0.5  |   0.7204125 | TRUE  |
-| \-0.2063422 | \-0.3777739 | level\_-0.5 | \-1.9125861 | FALSE |
-| \-5.9531988 |   0.2227856 | level\_0    |   0.3508520 | FALSE |
-|          NA | \-0.8678375 | NA          | \-1.3867980 | FALSE |
-|          NA | \-0.4388978 | level\_-0.5 | \-0.5273053 | FALSE |
-|          NA |   0.9653770 | level\_1    | \-0.4401035 | TRUE  |
+|          x |           y | xc          |          x2 | yc    |
+| ---------: | ----------: | :---------- | ----------: | :---- |
+|   5.056160 | \-0.9028167 | NA          | \-0.1645032 | FALSE |
+|   4.789823 | \-0.9502319 | NA          | \-0.2265898 | FALSE |
+| \-4.271389 |   0.9028105 | level\_1    | \-0.6266256 | TRUE  |
+|         NA | \-0.9433723 | NA          |   0.6496684 | FALSE |
+|         NA |   0.2097377 | level\_0    |   1.8360521 | FALSE |
+|         NA | \-0.6894584 | level\_-0.5 | \-1.3347530 | FALSE |
 
 ### Some quick data exploration
 
@@ -74,24 +74,20 @@ Check how many levels `xc` has, and their distribution (including `NA`)
 unique(d['xc'])
 ```
 
-    ##             xc
-    ## 1    level_0.5
-    ## 2   level_-0.5
-    ## 3      level_0
-    ## 4         <NA>
-    ## 6      level_1
-    ## 335  level_1.5
-    ## 433 level_-1.5
+    ##           xc
+    ## 1       <NA>
+    ## 3    level_1
+    ## 5    level_0
+    ## 6 level_-0.5
+    ## 9  level_0.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1  level_1.5 
-    ##        105          1         73         84        113          1 
-    ##       <NA> 
-    ##        123
+    ## level_-0.5    level_0  level_0.5    level_1       <NA> 
+    ##         92         91        105        102        110
 
 Find the mean value of `yc`
 
@@ -99,7 +95,7 @@ Find the mean value of `yc`
 mean(d[['yc']])
 ```
 
-    ## [1] 0.33
+    ## [1] 0.318
 
 Plot of `yc` versus `x`.
 
@@ -133,9 +129,9 @@ transform_design = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 16:04:17 2019"
-    ## [1] " start cross frame work Wed Sep 25 16:04:18 2019"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Sep 25 16:04:18 2019"
+    ## [1] "vtreat 1.4.6 start initial treatment design Mon Sep 30 18:08:08 2019"
+    ## [1] " start cross frame work Mon Sep 30 18:08:09 2019"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Mon Sep 30 18:08:09 2019"
 
 ``` r
 transform <- transform_design$treatments
@@ -162,16 +158,16 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0013755 | 0.3503226 | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0001018 | 0.7994693 | FALSE      |                 0 | x        | isBAD | FALSE       |
-| xc\_catP                       | TRUE     | 0.0012616 | 0.3710748 | TRUE       |                 6 | xc       | catP  | FALSE       |
-| xc\_catB                       | TRUE     | 0.8174404 | 0.0000000 | TRUE       |                 6 | xc       | catB  | TRUE        |
-| x2                             | TRUE     | 0.0000158 | 0.9201857 | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1851534 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1534857 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1016427 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0520960 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5183945 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0000152 | 0.9222208 | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0000556 | 0.8520676 | FALSE      |                 0 | x        | isBAD | FALSE       |
+| xc\_catP                       | TRUE     | 0.0445390 | 0.0000001 | TRUE       |                 4 | xc       | catP  | TRUE        |
+| xc\_catB                       | TRUE     | 0.7677278 | 0.0000000 | TRUE       |                 4 | xc       | catB  | TRUE        |
+| x2                             | TRUE     | 0.0004742 | 0.5860437 | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.1568183 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1275469 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1259700 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0468856 | 0.0000001 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4771525 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 
@@ -207,6 +203,7 @@ score_frame[score_frame[['recommended']], 'varName', drop = FALSE]  %.>%
 
 |    | varName                        |
 | -- | :----------------------------- |
+| 3  | xc\_catP                       |
 | 4  | xc\_catB                       |
 | 6  | xc\_lev\_NA                    |
 | 7  | xc\_lev\_x\_level\_minus\_0\_5 |
@@ -224,7 +221,6 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
 | - | :------- |
 | 1 | x        |
 | 2 | x\_isBAD |
-| 3 | xc\_catP |
 | 5 | x2       |
 
 Notice that `d_prepared` only includes derived variables and the outcome
@@ -236,14 +232,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD |  xc\_catP |     xc\_catB |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
-| ----------: | -------: | --------: | -----------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-| \-5.5370909 |        0 | 0.1591592 |    0.9723931 |   0.7204125 |           0 |                              0 |                    0 |                       1 |                    0 | TRUE  |
-| \-0.2063422 |        0 | 0.1981982 | \-12.6933057 | \-1.9125861 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
-| \-5.9531988 |        0 | 0.1556886 | \-12.4504208 |   0.3508520 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
-|   0.8312861 |        1 | 0.2762763 | \-13.0254391 | \-1.3867980 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|   0.5084314 |        1 | 0.2132132 | \-12.7663307 | \-0.5273053 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
-|   0.6209905 |        1 | 0.2215569 |   14.2255720 | \-0.4401035 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|           x | x\_isBAD |  xc\_catP |   xc\_catB |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
+| ----------: | -------: | --------: | ---------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
+|   5.0561599 |        0 | 0.2155689 | \-12.73489 | \-0.1645032 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+|   4.7898226 |        0 | 0.2312312 | \-12.77876 | \-0.2265898 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+| \-4.2713892 |        0 | 0.2155689 |   14.23913 | \-0.6266256 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-0.2373362 |        1 | 0.2312312 | \-12.77876 |   0.6496684 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+| \-0.0918263 |        1 | 0.1741742 | \-12.50927 |   1.8360521 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
+|   0.4196983 |        1 | 0.1766467 | \-12.53576 | \-1.3347530 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
 
 ## A Closer Look at `catB` variables
 
@@ -306,7 +302,12 @@ d_prepared['prediction'] = predict(
   model,
   newdata = d_prepared, 
   type = 'response')
+```
 
+    ## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+    ## == : prediction from a rank-deficient fit may be misleading
+
+``` r
 # look at the ROC curve (on the training data)
 WVPlots::ROCPlot(
   frame = d_prepared,
@@ -332,7 +333,12 @@ dtest_prepared['prediction'] = predict(
   model,
   newdata = dtest_prepared,
   type = 'response')
+```
 
+    ## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+    ## == : prediction from a rank-deficient fit may be misleading
+
+``` r
 WVPlots::ROCPlot(
   frame = dtest_prepared,
   xvar = 'prediction',
@@ -530,9 +536,9 @@ transform_design_thin = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Wed Sep 25 16:04:22 2019"
-    ## [1] " start cross frame work Wed Sep 25 16:04:22 2019"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Sep 25 16:04:22 2019"
+    ## [1] "vtreat 1.4.6 start initial treatment design Mon Sep 30 18:08:12 2019"
+    ## [1] " start cross frame work Mon Sep 30 18:08:12 2019"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Mon Sep 30 18:08:12 2019"
 
 ``` r
 transform_thin <- transform_design_thin$treatments
@@ -546,12 +552,12 @@ d_prepared_thin %.>%
 
 |           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
 | ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-| \-5.5370909 |        0 |   0.7204125 |           0 |                              0 |                    0 |                       1 |                    0 | TRUE  |
-| \-0.2063422 |        0 | \-1.9125861 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
-| \-5.9531988 |        0 |   0.3508520 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
-|   0.5667007 |        1 | \-1.3867980 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|   0.5667007 |        1 | \-0.5273053 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
-|   0.5667007 |        1 | \-0.4401035 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   5.0561599 |        0 | \-0.1645032 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+|   4.7898226 |        0 | \-0.2265898 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+| \-4.2713892 |        0 | \-0.6266256 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   0.2139389 |        1 |   0.6496684 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+|   0.0006999 |        1 |   1.8360521 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
+|   0.2139389 |        1 | \-1.3347530 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
 
 ``` r
 knitr::kable(score_frame_thin)
@@ -559,14 +565,14 @@ knitr::kable(score_frame_thin)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- |
-| x                              | TRUE     | 0.0013755 | 0.3503226 | FALSE      |                 0 | x        | clean |
-| x\_isBAD                       | TRUE     | 0.0001018 | 0.7994693 | FALSE      |                 0 | x        | isBAD |
-| x2                             | TRUE     | 0.0000158 | 0.9201857 | FALSE      |                 0 | x2       | clean |
-| xc\_lev\_NA                    | TRUE     | 0.1851534 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1534857 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1016427 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0520960 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5183945 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| x                              | TRUE     | 0.0000152 | 0.9222208 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     | 0.0000556 | 0.8520676 | FALSE      |                 0 | x        | isBAD |
+| x2                             | TRUE     | 0.0004742 | 0.5860437 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     | 0.1568183 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1275469 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1259700 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0468856 | 0.0000001 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4771525 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
 
 ## Deriving the Default Thresholds
 
@@ -608,9 +614,9 @@ d %.>%
 
 |    |          rsq | count |       sig | var |
 | -- | -----------: | ----: | --------: | :-- |
-| x  | 0.0013754615 |     2 | 0.7006452 | x   |
-| x2 | 0.0006850872 |     3 | 1.0000000 | x2  |
-| xc | 0.8149454209 |     2 | 0.0000000 | xc  |
+| x  | 5.560884e-05 |     2 | 1.0000000 | x   |
+| x2 | 9.888469e-03 |     3 | 0.0386779 | x2  |
+| xc | 7.673399e-01 |     2 | 0.0000000 | xc  |
 
 More on non-linear variable scoring can be found
 [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).
@@ -638,7 +644,7 @@ The preparation commands are organized as follows:
   - **Multinomial classification**: [`R` multinomial classification
     example](https://winvector.github.io/vtreat/articles/MultiClassVtreat.html),
     [`Python` multinomial classification
-    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.ipynb).
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 These current revisions of the examples are designed to be small, yet
 complete. So as a set they have some overlap, but the user can rely
