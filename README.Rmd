@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 
 
-`vtreat` is a `data.frame` processor/conditioner that prepares
+`vtreat` is a `data.frame` processor/conditioner (available [for `R`](https://github.com/WinVector/vtreat), and [for `Python`](https://github.com/WinVector/pyvtreat)) that prepares
 real-world data for supervised machine learning or predictive modeling
 in a statistically sound manner.
 
@@ -50,6 +50,20 @@ easily, faithfully, reliably, and repeatably prepare it for machine
 learning using documented methods using `vtreat`.  Incorporating
 `vtreat` into your machine learning workflow lets you quickly work
 with very diverse structured data.
+
+In all cases (classification, regression, unsupervised, and multinomial classification) the intent is that `vtreat` transforms are essentially one liners.
+
+The preparation commands are organized as follows:
+
+ * **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+ * **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+ * **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+ * **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+ 
+In all cases: variable preperation is intended to be a "one liner."
+
+These current revisions of the examples are designed to be small, yet complete.  So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
+
 
 For more detail please see here: [arXiv:1611.09477
 stat.AP](https://arxiv.org/abs/1611.09477) (the documentation describes the `R` version,
@@ -349,8 +363,7 @@ dTrainN %.>%
 
 Related work:
 
-  * Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation Analysis For The Behav-
-ioral Sciences. 2 edition. Lawrence Erlbaum Associates, Inc. ISBN 0-89859-268-2.
+  * Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation Analysis For The Behavioral Sciences. 2 edition. Lawrence Erlbaum Associates, Inc. ISBN 0-89859-268-2.
   * ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
   * ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel; Win-Vector blog, 2012.
   * "Big Learning Made Easy – with Counts!", Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.

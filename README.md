@@ -5,7 +5,9 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 
-`vtreat` is a `data.frame` processor/conditioner that prepares
+`vtreat` is a `data.frame` processor/conditioner (available [for
+`R`](https://github.com/WinVector/vtreat), and [for
+`Python`](https://github.com/WinVector/pyvtreat)) that prepares
 real-world data for supervised machine learning or predictive modeling
 in a statistically sound manner.
 
@@ -34,6 +36,35 @@ easily, faithfully, reliably, and repeatably prepare it for machine
 learning using documented methods using `vtreat`. Incorporating `vtreat`
 into your machine learning workflow lets you quickly work with very
 diverse structured data.
+
+In all cases (classification, regression, unsupervised, and multinomial
+classification) the intent is that `vtreat` transforms are essentially
+one liners.
+
+The preparation commands are organized as follows:
+
+  - **Regression**: [`R` regression
+    example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md),
+    [`Python` regression
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+  - **Classification**: [`R` classification
+    example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md),
+    [`Python` classification
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+  - **Unsupervised tasks**: [`R` unsupervised
+    example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md),
+    [`Python` unsupervised
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+  - **Multinomial classification**: [`R` multinomial classification
+    example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md),
+    [`Python` multinomial classification
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+
+In all cases: variable preperation is intended to be a “one liner.”
+
+These current revisions of the examples are designed to be small, yet
+complete. So as a set they have some overlap, but the user can rely
+mostly on a single example for a single task type.
 
 For more detail please see here: [arXiv:1611.09477
 stat.AP](https://arxiv.org/abs/1611.09477) (the documentation describes
@@ -274,7 +305,7 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.4.6'
+ #  [1] '1.4.7'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -306,7 +337,7 @@ treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
  #  1        x    x_catP  catP 0.111456141 0.30194137                 2
- #  2        x    x_catB  catB 0.033761011 0.56994212                 2
+ #  2        x    x_catB  catB 0.115273608 0.29380616                 2
  #  3        z         z clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -349,9 +380,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 2.197309e-01 0.2413478                 2
- #  2        x    x_catN  catN 7.286735e-02 0.5179131                 2
- #  3        x    x_catD  catD 2.227248e-01 0.2377286                 2
+ #  1        x    x_catP  catP 2.500000e-01 0.2070312                 2
+ #  2        x    x_catN  catN 3.282051e-01 0.1377186                 2
+ #  3        x    x_catD  catD 3.743113e-01 0.1069707                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -408,7 +439,7 @@ dTrainN %.>%
 Related work:
 
   - Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation
-    Analysis For The Behav- ioral Sciences. 2 edition. Lawrence Erlbaum
+    Analysis For The Behavioral Sciences. 2 edition. Lawrence Erlbaum
     Associates, Inc. ISBN 0-89859-268-2.
   - [“A preprocessing scheme for high-cardinality categorical attributes
     in classification and prediction

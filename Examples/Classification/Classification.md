@@ -57,14 +57,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|           x |           y | xc         |          x2 | yc    |
-| ----------: | ----------: | :--------- | ----------: | :---- |
-|  \-2.122548 | \-1.0446710 | NA         |   0.3002379 | FALSE |
-|  \-1.136845 | \-0.9440433 | NA         |   1.4030651 | FALSE |
-| \-13.754592 | \-0.9933703 | NA         | \-1.7280032 | FALSE |
-|          NA |   0.2994114 | level\_0.5 |   0.2330100 | FALSE |
-|          NA |   0.9676303 | level\_1   |   1.4113837 | TRUE  |
-|          NA | \-1.0426818 | NA         | \-1.4058841 | FALSE |
+|          x |           y | xc          |          x2 | yc    |
+| ---------: | ----------: | :---------- | ----------: | :---- |
+| \-2.620747 | \-0.4162074 | level\_-0.5 | \-0.6604022 | FALSE |
+|  10.714563 | \-0.7431123 | level\_-0.5 | \-0.2577693 | FALSE |
+|   4.138288 | \-0.7402798 | level\_-0.5 |   0.5093482 | FALSE |
+|         NA |   0.9386129 | level\_1    |   2.5480866 | TRUE  |
+|         NA |   1.0942563 | level\_1    |   1.1413150 | TRUE  |
+|         NA |   0.1037898 | level\_0    |   0.8132199 | FALSE |
 
 ### Some quick data exploration
 
@@ -74,12 +74,12 @@ Check how many levels `xc` has, and their distribution (including `NA`)
 unique(d['xc'])
 ```
 
-    ##            xc
-    ## 1        <NA>
-    ## 4   level_0.5
-    ## 5     level_1
-    ## 10 level_-0.5
-    ## 21    level_0
+    ##           xc
+    ## 1 level_-0.5
+    ## 4    level_1
+    ## 6    level_0
+    ## 7  level_0.5
+    ## 8       <NA>
 
 ``` r
 table(d$xc, useNA = 'always')
@@ -87,7 +87,7 @@ table(d$xc, useNA = 'always')
 
     ## 
     ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##        100         81         99        110        110
+    ##         89         86         96        102        127
 
 Find the mean value of `yc`
 
@@ -95,7 +95,7 @@ Find the mean value of `yc`
 mean(d[['yc']])
 ```
 
-    ## [1] 0.334
+    ## [1] 0.326
 
 Plot of `yc` versus `x`.
 
@@ -129,9 +129,9 @@ transform_design = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Tue Oct  1 09:24:49 2019"
-    ## [1] " start cross frame work Tue Oct  1 09:24:50 2019"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Oct  1 09:24:50 2019"
+    ## [1] "vtreat 1.4.7 start initial treatment design Tue Oct  1 10:35:47 2019"
+    ## [1] " start cross frame work Tue Oct  1 10:35:47 2019"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Oct  1 10:35:47 2019"
 
 ``` r
 transform <- transform_design$treatments
@@ -158,16 +158,16 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0030354 | 0.1643761 | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0001199 | 0.7822639 | FALSE      |                 0 | x        | isBAD | FALSE       |
-| xc\_catP                       | TRUE     | 0.0949475 | 0.0000000 | TRUE       |                 4 | xc       | catP  | TRUE        |
-| xc\_catB                       | TRUE     | 0.7876284 | 0.0000000 | TRUE       |                 4 | xc       | catB  | TRUE        |
-| x2                             | TRUE     | 0.0001352 | 0.7691562 | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1638829 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1466265 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1153603 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0484106 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4906180 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0000588 | 0.8472121 | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0070953 | 0.0343077 | FALSE      |                 0 | x        | isBAD | TRUE        |
+| xc\_catP                       | TRUE     | 0.0075139 | 0.0294077 | TRUE       |                 4 | xc       | catP  | TRUE        |
+| xc\_catB                       | TRUE     | 0.7988184 | 0.0000000 | TRUE       |                 4 | xc       | catB  | TRUE        |
+| x2                             | TRUE     | 0.0031878 | 0.1560070 | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.1903343 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1255315 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1207530 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0773074 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4599270 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 
@@ -203,6 +203,7 @@ score_frame[score_frame[['recommended']], 'varName', drop = FALSE]  %.>%
 
 |    | varName                        |
 | -- | :----------------------------- |
+| 2  | x\_isBAD                       |
 | 3  | xc\_catP                       |
 | 4  | xc\_catB                       |
 | 6  | xc\_lev\_NA                    |
@@ -217,11 +218,10 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
   knitr::kable(.)
 ```
 
-|   | varName  |
-| - | :------- |
-| 1 | x        |
-| 2 | x\_isBAD |
-| 5 | x2       |
+|   | varName |
+| - | :------ |
+| 1 | x       |
+| 5 | x2      |
 
 Notice that `d_prepared` only includes derived variables and the outcome
 `y`:
@@ -232,14 +232,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|            x | x\_isBAD |  xc\_catP |     xc\_catB |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
-| -----------: | -------: | --------: | -----------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-|  \-2.1225484 |        0 | 0.2192192 | \-12.8076545 |   0.3002379 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|  \-1.1368447 |        0 | 0.2192192 | \-12.8076545 |   1.4030651 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-13.7545920 |        0 | 0.2192192 | \-12.8076545 | \-1.7280032 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|  \-0.1672197 |        1 | 0.1921922 |    0.8811984 |   0.2330100 |           0 |                              0 |                    0 |                       1 |                    0 | FALSE |
-|  \-0.2144698 |        1 | 0.2245509 |   14.2120079 |   1.4113837 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
-|  \-0.1864206 |        1 | 0.2192192 | \-12.8076545 | \-1.4058841 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+|           x | x\_isBAD |  xc\_catP |   xc\_catB |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
+| ----------: | -------: | --------: | ---------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
+| \-2.6207469 |        0 | 0.1856287 | \-12.61272 | \-0.6604022 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|  10.7145633 |        0 | 0.1831832 | \-12.60092 | \-0.2577693 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|   4.1382878 |        0 | 0.1831832 | \-12.60092 |   0.5093482 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+| \-0.5287519 |        1 | 0.2132132 |   14.20699 |   2.5480866 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-0.5759212 |        1 | 0.2042042 |   14.15015 |   1.1413150 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-0.3783658 |        1 | 0.1766467 | \-12.56313 |   0.8132199 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
 
 ## A Closer Look at `catB` variables
 
@@ -536,9 +536,9 @@ transform_design_thin = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 start initial treatment design Tue Oct  1 09:24:52 2019"
-    ## [1] " start cross frame work Tue Oct  1 09:24:52 2019"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Oct  1 09:24:52 2019"
+    ## [1] "vtreat 1.4.7 start initial treatment design Tue Oct  1 10:35:50 2019"
+    ## [1] " start cross frame work Tue Oct  1 10:35:50 2019"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Oct  1 10:35:50 2019"
 
 ``` r
 transform_thin <- transform_design_thin$treatments
@@ -550,14 +550,14 @@ d_prepared_thin %.>%
   knitr::kable(.)
 ```
 
-|            x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
-| -----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-|  \-2.1225484 |        0 |   0.3002379 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|  \-1.1368447 |        0 |   1.4030651 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-13.7545920 |        0 | \-1.7280032 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-|    0.0788889 |        1 |   0.2330100 |           0 |                              0 |                    0 |                       1 |                    0 | FALSE |
-|  \-0.5073737 |        1 |   1.4113837 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
-|  \-0.5073737 |        1 | \-1.4058841 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
+| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
+| \-2.6207469 |        0 | \-0.6604022 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|  10.7145633 |        0 | \-0.2577693 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|   4.1382878 |        0 |   0.5093482 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+| \-0.4528789 |        1 |   2.5480866 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-0.4528789 |        1 |   1.1413150 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+| \-0.5602661 |        1 |   0.8132199 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
 
 ``` r
 knitr::kable(score_frame_thin)
@@ -565,14 +565,14 @@ knitr::kable(score_frame_thin)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- |
-| x                              | TRUE     | 0.0030354 | 0.1643761 | FALSE      |                 0 | x        | clean |
-| x\_isBAD                       | TRUE     | 0.0001199 | 0.7822639 | FALSE      |                 0 | x        | isBAD |
-| x2                             | TRUE     | 0.0001352 | 0.7691562 | FALSE      |                 0 | x2       | clean |
-| xc\_lev\_NA                    | TRUE     | 0.1638829 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1466265 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1153603 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0484106 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4906180 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| x                              | TRUE     | 0.0000588 | 0.8472121 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     | 0.0070953 | 0.0343077 | FALSE      |                 0 | x        | isBAD |
+| x2                             | TRUE     | 0.0031878 | 0.1560070 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     | 0.1903343 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1255315 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1207530 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0773074 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4599270 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
 
 ## Deriving the Default Thresholds
 
@@ -614,9 +614,9 @@ d %.>%
 
 |    |         rsq | count |       sig | var |
 | -- | ----------: | ----: | --------: | :-- |
-| x  | 0.003035439 |     2 | 0.3287521 | x   |
-| x2 | 0.002713971 |     3 | 0.5657186 | x2  |
-| xc | 0.785956769 |     2 | 0.0000000 | xc  |
+| x  | 0.007095258 |     2 | 0.0686153 | x   |
+| x2 | 0.007484178 |     3 | 0.0891902 | x2  |
+| xc | 0.800235926 |     2 | 0.0000000 | xc  |
 
 More on non-linear variable scoring can be found
 [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).
@@ -642,7 +642,7 @@ The preparation commands are organized as follows:
     [`Python` unsupervised
     example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
   - **Multinomial classification**: [`R` multinomial classification
-    example](https://winvector.github.io/vtreat/articles/MultiClassVtreat.html),
+    example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md),
     [`Python` multinomial classification
     example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 

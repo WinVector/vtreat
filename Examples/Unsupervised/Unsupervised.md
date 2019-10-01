@@ -56,12 +56,12 @@ d %.>%
 
 |          x |           y | xc          |          x2 | x3 |
 | ---------: | ----------: | :---------- | ----------: | -: |
-| \-4.999713 |   0.9064479 | level\_1    |   1.3270498 |  1 |
-|   3.225616 |   0.0473331 | level\_0    |   1.6290077 |  1 |
-|   4.053245 | \-0.7765242 | NA          |   1.0895882 |  1 |
-|         NA | \-0.9561485 | NA          |   0.3181171 |  1 |
-|         NA | \-0.7704597 | NA          |   0.8464342 |  1 |
-|         NA | \-0.4229342 | level\_-0.5 | \-0.0254498 |  1 |
+|   2.869921 |   0.2050366 | level\_0    | \-2.1165106 |  1 |
+| \-7.800579 | \-1.0655070 | NA          |   0.8836485 |  1 |
+| \-3.987771 |   0.9476780 | level\_1    |   1.9157663 |  1 |
+|         NA | \-0.2492630 | level\_0    |   0.9493477 |  1 |
+|         NA | \-0.6926920 | level\_-0.5 |   0.4461547 |  1 |
+|         NA |   0.2191380 | level\_0    | \-1.1675057 |  1 |
 
 ### Some quick data exploration
 
@@ -71,24 +71,20 @@ Check how many levels `xc` has, and their distribution (including `NaN`)
 unique(d['xc'])
 ```
 
-    ##             xc
-    ## 1      level_1
-    ## 2      level_0
-    ## 3         <NA>
-    ## 6   level_-0.5
-    ## 13   level_0.5
-    ## 120  level_1.5
-    ## 439 level_-1.5
+    ##           xc
+    ## 1    level_0
+    ## 2       <NA>
+    ## 3    level_1
+    ## 5 level_-0.5
+    ## 9  level_0.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1  level_1.5 
-    ##         98          1         71        105        120          1 
-    ##       <NA> 
-    ##        104
+    ## level_-0.5    level_0  level_0.5    level_1       <NA> 
+    ##         98         72         89        115        126
 
 ## Build a transform appropriate for unsupervised (or non-y-aware) problems.
 
@@ -122,11 +118,11 @@ transform = vtreat::designTreatmentsZ(
 )
 ```
 
-    ## [1] "vtreat 1.4.6 inspecting inputs Mon Sep 30 18:08:58 2019"
-    ## [1] "designing treatments Mon Sep 30 18:08:58 2019"
-    ## [1] " have initial level statistics Mon Sep 30 18:08:58 2019"
-    ## [1] " scoring treatments Mon Sep 30 18:08:58 2019"
-    ## [1] "have treatment plan Mon Sep 30 18:08:58 2019"
+    ## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:35:37 2019"
+    ## [1] "designing treatments Tue Oct  1 10:35:37 2019"
+    ## [1] " have initial level statistics Tue Oct  1 10:35:37 2019"
+    ## [1] " scoring treatments Tue Oct  1 10:35:37 2019"
+    ## [1] "have treatment plan Tue Oct  1 10:35:37 2019"
 
 ``` r
 score_frame = transform$scoreFrame
@@ -155,15 +151,13 @@ knitr::kable(score_frame)
 | :----------------------------- | :------- | --: | --: | :--------- | ----------------: | :------- | :---- |
 | x                              | TRUE     |   0 |   1 | FALSE      |                 0 | x        | clean |
 | x\_isBAD                       | TRUE     |   0 |   1 | FALSE      |                 0 | x        | isBAD |
-| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 6 | xc       | catP  |
+| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 4 | xc       | catP  |
 | x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
 | xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_minus\_1\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_1           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_1\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 
 Notice that the variable `xc` has been converted to multiple variables:
 
@@ -188,14 +182,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_minus\_1\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | xc\_lev\_x\_level\_1\_5 |           y |
-| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------------------: | ----------: |
-| \-4.9997131 |        0 |    0.240 |   1.3270498 |           0 |                              0 |                              0 |                    0 |                       0 |                    1 |                       0 |   0.9064479 |
-|   3.2256159 |        0 |    0.142 |   1.6290077 |           0 |                              0 |                              0 |                    1 |                       0 |                    0 |                       0 |   0.0473331 |
-|   4.0532453 |        0 |    0.208 |   1.0895882 |           1 |                              0 |                              0 |                    0 |                       0 |                    0 |                       0 | \-0.7765242 |
-|   0.3126407 |        1 |    0.208 |   0.3181171 |           1 |                              0 |                              0 |                    0 |                       0 |                    0 |                       0 | \-0.9561485 |
-|   0.3126407 |        1 |    0.208 |   0.8464342 |           1 |                              0 |                              0 |                    0 |                       0 |                    0 |                       0 | \-0.7704597 |
-|   0.3126407 |        1 |    0.196 | \-0.0254498 |           0 |                              1 |                              0 |                    0 |                       0 |                    0 |                       0 | \-0.4229342 |
+|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   2.8699211 |        0 |    0.144 | \-2.1165106 |           0 |                              0 |                    1 |                       0 |                    0 |   0.2050366 |
+| \-7.8005789 |        0 |    0.252 |   0.8836485 |           1 |                              0 |                    0 |                       0 |                    0 | \-1.0655070 |
+| \-3.9877706 |        0 |    0.230 |   1.9157663 |           0 |                              0 |                    0 |                       0 |                    1 |   0.9476780 |
+| \-0.3877845 |        1 |    0.144 |   0.9493477 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.2492630 |
+| \-0.3877845 |        1 |    0.196 |   0.4461547 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.6926920 |
+| \-0.3877845 |        1 |    0.144 | \-1.1675057 |           0 |                              0 |                    1 |                       0 |                    0 |   0.2191380 |
 
 ## Using the Prepared Data to Model
 
@@ -217,7 +211,7 @@ d_prepared['clusterID'] <- clusters$cluster
 head(d_prepared$clusterID)
 ```
 
-    ## [1] 1 3 3 4 4 4
+    ## [1] 1 3 4 2 2 2
 
 ``` r
 ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
@@ -301,7 +295,7 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-    ## [1] "F Test summary: (R2=0.9685, F(12,437)=1120, p<1e-05)."
+    ## [1] "F Test summary: (R2=0.965, F(10,439)=1212, p<1e-05)."
 
 ## Parameters for `UnsupervisedTreatment`
 
@@ -386,11 +380,11 @@ transform_thin = vtreat::designTreatmentsZ(
     codeRestriction = c('clean', 'lev', 'isBAD'))
 ```
 
-    ## [1] "vtreat 1.4.6 inspecting inputs Mon Sep 30 18:09:02 2019"
-    ## [1] "designing treatments Mon Sep 30 18:09:02 2019"
-    ## [1] " have initial level statistics Mon Sep 30 18:09:02 2019"
-    ## [1] " scoring treatments Mon Sep 30 18:09:02 2019"
-    ## [1] "have treatment plan Mon Sep 30 18:09:02 2019"
+    ## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:35:40 2019"
+    ## [1] "designing treatments Tue Oct  1 10:35:40 2019"
+    ## [1] " have initial level statistics Tue Oct  1 10:35:40 2019"
+    ## [1] " scoring treatments Tue Oct  1 10:35:40 2019"
+    ## [1] "have treatment plan Tue Oct  1 10:35:40 2019"
 
 ``` r
 score_frame_thin = transform_thin$scoreFrame
@@ -404,11 +398,9 @@ knitr::kable(score_frame_thin)
 | x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
 | xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_minus\_1\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_1           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_1\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 
 ## Conclusion
 
@@ -431,7 +423,7 @@ The preparation commands are organized as follows:
     [`Python` unsupervised
     example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
   - **Multinomial classification**: [`R` multinomial classification
-    example](https://winvector.github.io/vtreat/articles/MultiClassVtreat.html),
+    example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md),
     [`Python` multinomial classification
     example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
