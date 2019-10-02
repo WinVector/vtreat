@@ -29,10 +29,11 @@ center_scale <- function(d,
   for(ni in names(center)) {
     d[[ni]] <- d[[ni]] - center[[ni]]
   }
+    
   for(ni in names(scale)) {
     si <- scale[[ni]]
-    if((length(si)==1) && (!is.na(si)) && (!is.infinite(si)) && (si!=0.0)) {
-      d[[ni]] <- d[[ni]]/scale[[ni]]
+    if(all(is.finite(si), si!=0.0)) {
+      d[[ni]] <- d[[ni]] / scale[[ni]]
     }
   }
   d
