@@ -1,5 +1,9 @@
 
-# vtreat 1.4.7 2019/10/30
+# vtreat 1.4.7 2019/10/02
+
+ * Center/scale improvement from nfultz.
+
+# vtreat 1.4.7 2019/10/01
 
  * fix wrong y-name in multinomial cross frame.
  

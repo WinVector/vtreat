@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.8</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2019-10-01</h4>
+            <h4 class="date">2019-10-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -208,7 +208,7 @@
 <p>Trivial example:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"vtreat"</span>)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
-<pre><code>## [1] '1.4.7'</code></pre>
+<pre><code>## [1] '1.4.8'</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="st">'vtreat'</span>)</a></code></pre></div>
 <pre><code>## 
 ## To cite package 'vtreat' in publications use:
@@ -238,8 +238,8 @@
 <a class="sourceLine" id="cb5-10" data-line-number="10">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb5-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code          rsq        sig extraModelDegrees
-## 1        x    x_catP  catP 1.559780e-01 0.22202097                 2
-## 2        x    x_catB  catB 1.177202e-05 0.99153548                 2
+## 1        x    x_catP  catP 1.030137e-01 0.32099590                 2
+## 2        x    x_catB  catB 1.125399e-05 0.99172381                 2
 ## 3        z         z clean 2.376018e-01 0.13176020                 0
 ## 4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
 ## 5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
@@ -278,9 +278,9 @@
 <a class="sourceLine" id="cb13-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb13-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 2.105263e-01 0.2528101                 2
-## 2        x    x_catN  catN 4.310345e-03 0.8772535                 2
-## 3        x    x_catD  catD 2.302479e-01 0.2288609                 2
+## 1        x    x_catP  catP 1.764706e-01 0.3001022                 2
+## 2        x    x_catN  catN 3.533569e-03 0.8888051                 2
+## 3        x    x_catD  catD 3.743113e-01 0.1069707                 2
 ## 4        z         z clean 2.880952e-01 0.1701892                 0
 ## 5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 ## 6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
