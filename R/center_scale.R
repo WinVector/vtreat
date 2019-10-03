@@ -26,11 +26,11 @@
 center_scale <- function(d, 
                          center,
                          scale) {
-  for(ni in names(center)) {
+  for(ni in intersect(names(center), names(d))) {
     d[[ni]] <- d[[ni]] - center[[ni]]
   }
     
-  for(ni in names(scale)) {
+  for(ni in intersect(names(scale), names(d))) {
     si <- scale[[ni]]
     if(all(is.finite(si), si!=0.0)) {
       d[[ni]] <- d[[ni]] / scale[[ni]]
