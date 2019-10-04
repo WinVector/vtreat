@@ -1,6 +1,16 @@
 CustomizedCrossPlan
 ================
 
+Nina Zumel, John Mount October
+2019
+
+[These](https://github.com/WinVector/vtreat/blob/master/Examples/CustomizedCrossPlan/CustomizedCrossPlan.md)
+are notes on controlling the cross-validation plan in the [`R` version
+of `vtreat`](https://github.com/WinVector/vtreat), for notes on the
+[`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat),
+please see
+[here](https://github.com/WinVector/pyvtreat/blob/master/Examples/CustomizedCrossPlan/CustomizedCrossPlan.md).
+
 # Using Custom Cross-Validation Plans with `vtreat`
 
 By default, `R` `vtreat` uses a `y`-stratified randomized k-way cross
@@ -195,3 +205,8 @@ folds.
 
 More notes on controlling `vtreat` cross-validation can be found
 [here](https://winvector.github.io/vtreat/articles/vtreatSplitting.html).
+
+Note: it is important to *not* use leave-one-out cross-validation when
+using nested or stacked modeling concepts (such as seen in `vtreat`), we
+have some notes on this
+[here](https://github.com/WinVector/vtreat/blob/master/extras/ConstantLeak.md).

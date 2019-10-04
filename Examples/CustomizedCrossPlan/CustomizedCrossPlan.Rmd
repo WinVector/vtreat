@@ -3,6 +3,10 @@ title: "CustomizedCrossPlan"
 output: github_document
 ---
 
+Nina Zumel, John Mount
+October 2019
+
+[These](https://github.com/WinVector/vtreat/blob/master/Examples/CustomizedCrossPlan/CustomizedCrossPlan.md) are notes on controlling the cross-validation plan in the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), for notes on the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat), please see [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/CustomizedCrossPlan/CustomizedCrossPlan.md).
 
 # Using Custom Cross-Validation Plans with `vtreat`
 
@@ -141,4 +145,7 @@ Another benefit of explicit cross-validation plans is that one can use the same 
 ### Other predefined cross-validation schemes
 
 More notes on controlling `vtreat` cross-validation can be found [here](https://winvector.github.io/vtreat/articles/vtreatSplitting.html).
+
+Note: it is important to *not* use leave-one-out cross-validation when using nested or stacked modeling concepts (such as seen in `vtreat`), we have some notes on this [here](https://github.com/WinVector/vtreat/blob/master/extras/ConstantLeak.md).
+
 
