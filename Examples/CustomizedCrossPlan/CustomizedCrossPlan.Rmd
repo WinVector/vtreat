@@ -1,0 +1,144 @@
+---
+title: "CustomizedCrossPlan"
+output: github_document
+---
+
+
+# Using Custom Cross-Validation Plans with `vtreat`
+
+By default, `R` `vtreat` uses a `y`-stratified randomized k-way cross validation when creating and evaluating complex synthetic variables. This will work well for the majority of applications. However, there may be times when you need a more specialized cross validation scheme for your modeling projects. In this document, we'll show how to replace the cross validation scheme in `vtreat`.
+
+```{r}
+library(wrapr)
+library(rqdatatable)
+library(vtreat)
+```
+
+## Example: Highly Unbalanced Class Outcomes
+
+As an example, suppose you have data where the target class of interest is relatively rare; in this case about 5%:
+
+```{r}
+n_row <- 1000
+
+set.seed(2019)
+
+d <- data.frame(
+    x = rnorm(n = n_row),
+    y = rbinom(n = n_row, size = 1, prob = 0.05)
+)
+
+summary(d)
+```
+
+First, try preparing this data using `vtreat`. 
+
+```{r}
+
+#
+# create the treatment plan
+#
+
+k <- 5 # number of cross-val folds
+treatment_unstratified <- mkCrossFrameCExperiment(
+  d,
+  varlist = 'x',
+  outcomename = 'y',
+  outcometarget = 1,
+  ncross = k,
+  splitFunction = kWayCrossValidation,
+  verbose = FALSE)
+
+# prepare the training data
+prepared_unstratified = treatment_unstratified$crossFrame
+```
+
+Let's look at the distribution  of the target outcome in each of the cross-validation groups:
+
+```{r}
+
+# convenience function to mark the cross-validation group of each row
+label_rows <- function(d, cross_plan, label_column = 'group') {
+    d[label_column] = 0
+    for(i in 1:length(cross_plan)) {
+        app = cross_plan[[i]][['app']]
+        d[app, label_column] = i
+    }
+    return(d)
+}
+            
+# label the rows            
+prepared_unstratified <- label_rows(prepared_unstratified, treatment_unstratified$evalSets)
+# print(head(prepared_unstratified))
+
+# get some summary statistics on the data
+summarize_by_group <- local_td(prepared_unstratified) %.>%
+    project(.,
+      sum %:=% sum(y),
+      mean %:=% mean(y),
+      size %:=% n(),
+    groupby='group')
+
+unstratified_summary <- prepared_unstratified %.>% summarize_by_group
+unstratified_summary <- as.data.frame(unstratified_summary)
+
+knitr::kable(unstratified_summary)
+```
+
+```{r}
+
+# standard deviation of target prevalence per cross-val fold
+std_unstratified = sd(unstratified_summary[['mean']])
+std_unstratified 
+```
+
+The target prevalence in the cross validation groups can vary fairly widely with respect to the "true" prevalence of 0.05; this may adversely affect the resulting synthetic variables in the treated data. For situations like this where the target outcome is rare, you may want to stratify the cross-validation sampling to preserve the target prevalence as much as possible. 
+
+## Passing in a Stratified Sampler
+
+In this situation, `vtreat` has an alternative cross-validation sampler called `kWayStratifiedY` that can be passed in as follows:
+
+```{r} 
+treatment_stratified <- mkCrossFrameCExperiment(
+  d,
+  varlist = 'x',
+  outcomename = 'y',
+  outcometarget = 1,
+  ncross = k,
+  splitFunction = kWayStratifiedY,
+  verbose = FALSE)
+
+# prepare the training data
+prepared_stratified = treatment_stratified$crossFrame
+
+# examine the target prevalence
+prepared_stratified = label_rows(prepared_stratified, treatment_stratified$evalSets)
+
+stratified_summary <- prepared_stratified %.>% summarize_by_group
+stratified_summary <- as.data.frame(stratified_summary)
+
+knitr::kable(stratified_summary)
+```
+
+```{r}
+# standard deviation of target prevalence
+std_stratified = sd(stratified_summary[['mean']])
+std_stratified
+```
+
+The target prevalence in the stratified cross-validation groups are much closer to the true target prevalence, and the variation (standard deviation) of the target prevalence across groups has been substantially reduced.
+
+```{r}
+std_unstratified/std_stratified
+```
+
+## Other cross-validation schemes
+
+If you want to cross-validate under another scheme--for example, stratifying on the prevalences on an input class--you can write your own custom cross-validation scheme and pass it into `vtreat` in a similar fashion as above. Your cross-validation scheme must have the same signature as `vtreat`'s [`kWayCrossValidation`](https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R#L146).
+
+Another benefit of explicit cross-validation plans is that one can use the same cross-validation plan for both the variable design and later modeling steps. This can limit data leaks across the cross-validation folds.
+
+### Other predefined cross-validation schemes
+
+More notes on controlling `vtreat` cross-validation can be found [here](https://winvector.github.io/vtreat/articles/vtreatSplitting.html).
+
