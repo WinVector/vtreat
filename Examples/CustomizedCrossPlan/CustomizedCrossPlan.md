@@ -13,12 +13,16 @@ please see
 
 # Using Custom Cross-Validation Plans with `vtreat`
 
+First, try preparing this data using `vtreat`.
+
 By default, `R` `vtreat` uses a `y`-stratified randomized k-way cross
 validation when creating and evaluating complex synthetic variables.
-This will work well for the majority of applications. However, there may
-be times when you need a more specialized cross validation scheme for
-your modeling projects. In this document, we’ll show how to replace the
-cross validation scheme in `vtreat`.
+
+Here we start with a simple `k`-way cross validation plan. This will
+work well for the majority of applications. However, there may be times
+when you need a more specialized cross validation scheme for your
+modeling projects. In this document, we’ll show how to replace the cross
+validation scheme in `vtreat`.
 
 ``` r
 library(wrapr)
