@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multi Class vtreat • vtreat</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Multi Class vtreat">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -107,13 +108,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Multi Class vtreat</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2019-10-02</h4>
+            <h4 class="date">2019-10-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/MultiClassVtreat.Rmd"><code>vignettes/MultiClassVtreat.Rmd</code></a></small>
       <div class="hidden name"><code>MultiClassVtreat.Rmd</code></div>
@@ -125,26 +127,26 @@
 <p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a> can now effectively prepare data for multi-class classification or multinomial modeling.</p>
 <p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code></a> and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html"><code><a href="../reference/prepare.multinomial_plan.html">prepare.multinomial_plan()</a></code></a>) are now part of <code>vtreat</code>.</p>
 <p>Let’s work a specific example: trying to model multi-class <code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># create example data</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">326346</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">sym_bonuses &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(sym_bonuses) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">sym_bonuses3 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(sym_bonuses3) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(sym_bonuses3)))</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">326346</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">sym_bonuses &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sym_bonuses) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">sym_bonuses3 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sym_bonuses3) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(sym_bonuses3)))</a>
 <a class="sourceLine" id="cb2-7" data-line-number="7">n_row &lt;-<span class="st"> </span><span class="dv">1000</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">  <span class="dt">x1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n_row),</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">  <span class="dt">x2 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(sym_bonuses), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">  <span class="dt">x3 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sample">sample</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(sym_bonuses3), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">d &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">  <span class="dt">x1 =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n_row),</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">  <span class="dt">x2 =</span> <span class="kw"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sym_bonuses), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">  <span class="dt">x3 =</span> <span class="kw"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sym_bonuses3), n_row, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
 <a class="sourceLine" id="cb2-12" data-line-number="12">  <span class="dt">y =</span> <span class="st">"NoInfo"</span>,</a>
 <a class="sourceLine" id="cb2-13" data-line-number="13">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb2-14" data-line-number="14">d<span class="op">$</span>y[sym_bonuses[d<span class="op">$</span>x2] <span class="op">&gt;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="st">      </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">pmax</a></span>(d<span class="op">$</span>x1, sym_bonuses3[d<span class="op">$</span>x3], <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n_row))] &lt;-<span class="st"> "Large1"</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="st">      </span><span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">pmax</a></span>(d<span class="op">$</span>x1, sym_bonuses3[d<span class="op">$</span>x3], <span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n_row))] &lt;-<span class="st"> "Large1"</span></a>
 <a class="sourceLine" id="cb2-16" data-line-number="16">d<span class="op">$</span>y[sym_bonuses3[d<span class="op">$</span>x3] <span class="op">&gt;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="st">      </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">pmax</a></span>(sym_bonuses[d<span class="op">$</span>x2], d<span class="op">$</span>x1, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n_row))] &lt;-<span class="st"> "Large2"</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="st">      </span><span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">pmax</a></span>(sym_bonuses[d<span class="op">$</span>x2], d<span class="op">$</span>x1, <span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n_row))] &lt;-<span class="st"> "Large2"</span></a>
 <a class="sourceLine" id="cb2-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(d))</a></code></pre></div>
+<a class="sourceLine" id="cb2-19" data-line-number="19">knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(d))</a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x1</th>
@@ -193,14 +195,14 @@
 </table>
 <p>We define the problem controls and use <code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> to build both a cross-frame and a treatment plan.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># define problem</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">vars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">vars &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>)</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">y_name &lt;-<span class="st"> "y"</span></a>
 <a class="sourceLine" id="cb3-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co"># build the multi-class cross frame and treatments</span></a>
 <a class="sourceLine" id="cb3-6" data-line-number="6">cfe_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment</a></span>(d, vars, y_name)</a></code></pre></div>
 <p>The cross-frame is the entity safest for training on (unless you have made separate data split for the treatment design step). It uses cross-validation to reduce nested model bias. Some notes on this issue are available <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">here</a>, and <a href="https://github.com/WinVector/vtreat/blob/master/extras/vtreat.pdf">here</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># look at the data we would train models on</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(cfe_m<span class="op">$</span>cross_frame)</a></code></pre></div>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(cfe_m<span class="op">$</span>cross_frame)</a></code></pre></div>
 <pre><code>## 'data.frame':    1000 obs. of  16 variables:
 ##  $ x1            : num  0.818 0.587 -0.671 0.103 -0.318 ...
 ##  $ x2_catP       : num  0.333 0.334 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 ...
@@ -224,7 +226,7 @@
 <a class="sourceLine" id="cb6-3" data-line-number="3"><span class="cf">for</span>(vi <span class="cf">in</span> vars) {</a>
 <a class="sourceLine" id="cb6-4" data-line-number="4">  d[[vi]][[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
 <a class="sourceLine" id="cb6-5" data-line-number="5">}</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(cfe_m<span class="op">$</span>treat_m, d))</a></code></pre></div>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="kw"><a href="../reference/prepare.html">prepare</a></span>(cfe_m<span class="op">$</span>treat_m, d))</a></code></pre></div>
 <pre><code>## 'data.frame':    1000 obs. of  16 variables:
 ##  $ x1            : num  0.0205 0.5867 -0.6712 0.1033 -0.3182 ...
 ##  $ x2_catP       : num  0.0005 0.334 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 ...
@@ -244,9 +246,9 @@
 ##  $ y             : chr  "NoInfo" "NoInfo" "Large2" "Large1" ...</code></pre>
 <p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
 <p>We also have per-outcome variable importance.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(</a>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">  cfe_m<span class="op">$</span>score_frame[, </a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">                    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span>), </a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">                    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span>), </a>
 <a class="sourceLine" id="cb8-4" data-line-number="4">                    <span class="dt">drop =</span> <span class="ot">FALSE</span>])</a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -457,12 +459,12 @@
 </tbody>
 </table>
 <p>One can relate these per-target and per-treatment performances back to original columns by aggregating.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tapply">tapply</a></span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>rsq, </a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>rsq, </a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">       cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, </a>
 <a class="sourceLine" id="cb9-3" data-line-number="3">       max)</a></code></pre></div>
 <pre><code>##         x1         x2         x3 
 ## 0.04276746 0.26811298 0.93103329</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tapply">tapply</a></span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, </a>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, </a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">       cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, </a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">       min)</a></code></pre></div>
 <pre><code>##            x1            x2            x3 
@@ -476,17 +478,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

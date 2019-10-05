@@ -378,7 +378,8 @@ install.packages("vtreat")
 ```
 
 
-
 ## Note
+
+Notes on controlling `vtreat`'s cross-validation plans can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/CustomizedCrossPlan/CustomizedCrossPlan.md).
 
 Note: `vtreat` is meant only for "tame names", that is: variables and column names that are also valid *simple* (without quotes) `R` variables names.

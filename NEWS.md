@@ -1,7 +1,8 @@
 
-# vtreat 1.4.7 2019/10/02
+# vtreat 1.4.8 2019/10/04
 
  * Center/scale improvement from nfultz.
+ * Documentation updates.
 
 # vtreat 1.4.7 2019/10/01
 
