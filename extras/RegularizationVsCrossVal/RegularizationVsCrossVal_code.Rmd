@@ -1,0 +1,288 @@
+---
+title: "Code for 'When Cross-Validation is More Powerful than Regularization'"
+author: "Nina Zumel"
+date: "10/31/2019"
+output: github_document
+---
+
+Code to run examples for the Win-Vector blog article "When Cross-Validation is More Powerful than Regularization".
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+Convenience functions.
+
+```{r}
+# function to calculate the rmse
+rmse = function(ypred, y) {
+  resid = y - ypred
+  sqrt(mean(resid^2))
+}
+
+# function to calculate R-squared
+rsquared = function(ypred, y) {
+  null_variance = sum((y - mean(y))^2)
+  resid_variance = sum((y - ypred)^2)
+  1 - (resid_variance/null_variance)
+}
+
+compare_models = function(predframe) {
+  predictions = setdiff(colnames(predframe), "y")
+  data.frame(# pred_type = predictions,
+             rmse = vapply(predframe[,predictions, drop=FALSE], 
+                           FUN = function(p) rmse(p, predframe$y),
+                           numeric(1)),
+             rsquared = vapply(predframe[,predictions,drop=FALSE],
+                               FUN = function(p) rsquared(p, predframe$y),
+                               numeric(1))
+  )
+}
+
+```
+
+
+## A simple example
+
+Set up the data and split into training and test sets.
+
+```{r}
+set.seed(3453421)
+
+Ndata = 500
+
+nnoise = 100
+nsig = 10
+
+noise_levels = paste0("n_", sprintf('%02d', 1:nnoise))
+signal_levels = paste0("s_", sprintf('%02d', 1:nsig))
+
+sig_amps = 2*runif(1:nsig, min=-1, max=1)
+names(sig_amps) = signal_levels
+sig_amps = sig_amps - mean(sig_amps) # mean zero
+
+x_s = sample(signal_levels, Ndata, replace=TRUE)
+x_n = sample(noise_levels, Ndata, replace=TRUE)
+
+y  = sig_amps[x_s]  + rnorm(Ndata) # a function of x_s but not x_n 
+df = data.frame(x_s=x_s, x_n=x_n, y=y, stringsAsFactors=FALSE)
+
+library(zeallot)
+c(dtest, dtrain) %<-%  split(df, runif(Ndata) < 0.5)  # false comes first
+
+
+head(dtrain)
+
+# for later - a frame to hold the test set predictions
+pframe = data.frame(y = dtest$y)
+```
+
+
+## The naive way
+
+For this simple example, you might try representing each variable as the expected value of `y - mean(y)` in the training data, conditioned on the variable's level. So the ith "coefficient" of the one-variable model would be given by:
+
+$$
+v_i = E[y | x = s_i] - E[y]
+$$
+
+Where $s_i$ is the $i$th level. 
+
+"Fit" the one-variable model for `x_s`.
+
+```{r message=FALSE}
+# build the maps of expected values
+library(rqdatatable)  # yes, you can use dplyr or base instead...
+library(wrapr)
+
+xs_means = dtrain %.>% 
+  extend(., delta := y - mean(y)) %.>%
+  project(.,
+          meany := mean(y),
+          coeff := mean(delta),
+          groupby = 'x_s') %.>% 
+  order_rows(.,
+             'x_s') %.>%
+  as.data.frame(.) 
+ 
+xs_means
+```
+
+"Fit" the one-variable model for `x_n` and treat or "prepare" the data (we are using terminology that is consistent with `vtreat`).
+
+```{r}
+
+xn_means = dtrain %.>% 
+  extend(., delta := y - mean(y)) %.>%
+  project(.,
+          meany := mean(delta),
+          groupby = 'x_n') %.>% 
+  order_rows(.,
+             'x_n') %.>%
+  as.data.frame(.) 
+
+# the maps that convert categorical levels to numerical values
+xs_map = with(xs_means, x_s := coeff)
+xn_map = with(xn_means, x_n := meany)
+
+prepare_manually = function(coefmap, xcol) {
+  treated = coefmap[xcol]
+  ifelse(is.na(treated), 0, treated)
+}
+
+
+# "prepare" the data
+dtrain_treated = dtrain
+dtrain_treated$vs = prepare_manually(xs_map, dtrain$x_s)
+dtrain_treated$vn = prepare_manually(xn_map, dtrain$x_n)
+
+head(dtrain_treated)
+```
+
+Now fit a linear model for `y` as a function of `vs` and `vn`.
+
+```{r echo = TRUE}
+model_raw = lm(y ~ vs + vn,
+               data=dtrain_treated)
+summary(model_raw)
+```
+
+Apply the naive model to the test data.
+
+```{r}
+# apply to test data
+dtest_treated = dtest  
+dtest_treated$vs = prepare_manually(xs_map, dtest$x_s)
+dtest_treated$vn = prepare_manually(xn_map, dtest$x_n)
+
+pframe$ypred_naive = predict(model_raw, newdata=dtest_treated)
+
+# look at the predictions on holdout data
+compare_models(pframe) %.>% knitr::kable(.)
+```
+
+
+## The right way: cross-validation
+
+Let's fit the correct nested model, using `vtreat`.
+
+```{r echo=TRUE}
+
+library(vtreat)
+library(wrapr)
+xframeResults = mkCrossFrameNExperiment(dtrain, qc(x_s, x_n), "y",
+                                         codeRestriction = qc(catN), 
+                                         verbose = FALSE)
+# the plan uses the one-variable models to treat data
+treatmentPlan = xframeResults$treatments
+# the cross-frame
+dtrain_treated = xframeResults$crossFrame
+
+head(dtrain_treated)
+
+variables = setdiff(colnames(dtrain_treated), "y")
+
+model_X = lm(mk_formula("y", variables), 
+             data=dtrain_treated)
+summary(model_X)
+```
+
+We can compare the performance of this model to the naive model on holdout data.
+
+```{r}
+dtest_treated = prepare(treatmentPlan, dtest)
+pframe$ypred_crossval = predict(model_X, newdata=dtest_treated)
+
+compare_models(pframe)  %.>% knitr::kable(.)
+
+```
+
+The correct model has a much smaller root-mean-squared error and a much larger R-squared than the naive model when applied to new data.
+
+## An attempted alternative: regularized models.
+
+For a one-variable model, L2-regularization is simply Laplace smoothing. Again, we'll represent each "coefficient" of the one-variable model as the Laplace smoothed value minus the grand mean.
+
+$$
+v_i = \sum\nolimits_{x_j = s_i} y_i/(\text{count}_i + \lambda) - E[y_i]
+$$
+
+Where $\text{count}_i$ is the frequency of $s_i$ in the training data, and $\lambda$ is the smoothing parameter (usually 1). If $\lambda = 1$ then the first term on the right is just adding one to the frequency of the level and then taking the "adjusted conditional mean" of `y`.
+
+"Fit" a regularized model to `x_s`.
+
+```{r}
+
+# build the coefficients
+lambda = 1
+ 
+xs_regmap = dtrain %.>% 
+  extend(., grandmean = mean(y)) %.>%
+  project(.,
+          sum_y := sum(y),
+          count_y := n(),
+          grandmean := mean(grandmean), # pseudo-aggregator
+          groupby = 'x_s') %.>% 
+  extend(.,
+          vs := (sum_y/(count_y  + lambda)) - grandmean
+         ) %.>%
+  order_rows(.,
+             'x_s') %.>%
+  as.data.frame(.) 
+
+xs_regmap
+
+```
+
+"Fit" a regularized model to `x_m`. Apply the one variable models for `x_s` and `x_n` to the data.
+
+```{r}
+xn_regmap = dtrain %.>% 
+  extend(., grandmean = mean(y)) %.>%
+  project(.,
+          sum_y := sum(y),
+          count_y := n(),
+          grandmean := mean(grandmean), # pseudo-aggregator
+          groupby = 'x_n') %.>% 
+  extend(.,
+          vn := (sum_y/(count_y  + lambda)) - grandmean
+         ) %.>%
+  order_rows(.,
+             'x_n') %.>%
+  as.data.frame(.) 
+
+# the maps that convert categorical levels to numerical values
+vs_map = xs_regmap$x_s :=  xs_regmap$vs
+vn_map = xn_regmap$x_n :=  xn_regmap$vn
+
+# "prepare" the data
+dtrain_treated = dtrain
+dtrain_treated$vs = prepare_manually(vs_map, dtrain$x_s)
+dtrain_treated$vn = prepare_manually(vn_map, dtrain$x_n)
+
+head(dtrain_treated)
+```
+
+Now fit the overall model:
+
+```{r}
+model_reg = lm(y ~ vs + vn, data=dtrain_treated)
+summary(model_reg)
+```
+
+Comparing the performance of the three models on holdout data.
+
+```{r}
+# apply to test data
+dtest_treated = dtest 
+dtest_treated$vs = prepare_manually(vs_map, dtest$x_s)
+dtest_treated$vn = prepare_manually(vn_map, dtest$x_n)
+
+pframe$ypred_reg = predict(model_reg, newdata=dtest_treated)
+
+# compare the predictions of each model
+compare_models(pframe) %.>% knitr::kable(.)
+```
+
+
