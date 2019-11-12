@@ -231,7 +231,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
 }
 
 
-.varDesignerW <- function(argv,
+.varDesignerW <- function(...,
+                          argv,
                           zoY,
                           zC,
                           zTarget,
@@ -248,6 +249,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                           nRows,
                           yMoves,
                           codeRestictionWasNULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), ".varDesignerW")
   v <- argv$v
   vcolOrig <- argv$vcolOrig
   vcol <- argv$vcol
@@ -292,7 +294,14 @@ mkVtreatListWorker <- function(scale,doCollar) {
         }
         ti = NULL
         if(codeRestictionWasNULL || ('clean' %in% codeRestriction)) {
-          ti <- .mkPassThrough(v,vcol,zoY,zC,zTarget,weights,collarProb,catScaling)
+          ti <- .mkPassThrough(origVarName = v,
+                               xcol = vcol,
+                               ycol = zoY,
+                               zC = zC,
+                               zTarget = zTarget,
+                               weights = weights,
+                               collarProb = collarProb,
+                               catScaling = catScaling)
           acceptTreatment(ti)
         }
         if(codeRestictionWasNULL || ('isBAD' %in% codeRestriction)) {
@@ -364,7 +373,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
 
 # design a treatment for a single variable
 # bind a bunch of variables, so we pass exactly what we need to sub-processes
-.mkVarDesigner <- function(zoY,
+.mkVarDesigner <- function(..., 
+                           zoY,
                            zC,zTarget,
                            weights,
                            minFraction,smFactor,rareCount,rareSig,
@@ -372,6 +382,7 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            codeRestriction, customCoders,
                            catScaling,
                            verbose) {
+  wrapr::stop_if_dot_args(substitute(list(...)), ".mkVarDesigner")
   force(zoY)
   force(zC)
   force(zTarget)
@@ -587,14 +598,14 @@ mkVtreatListWorker <- function(scale,doCollar) {
     print(paste(" have initial level statistics", date()))
   }
   # build the treatments we will return to the user
-  worker <- .mkVarDesigner(zoY,
-                           zC,zTarget,
-                           weights,
-                           minFraction,smFactor,rareCount,rareSig,
-                           collarProb,
-                           codeRestriction, customCoders,
-                           catScaling,
-                           verbose)
+  worker <- .mkVarDesigner(zoY = zoY,
+                           zC = zC, zTarget = zTarget,
+                           weights = weights,
+                           minFraction = minFraction, smFactor = smFactor, rareCount = rareCount, rareSig = rareSig,
+                           collarProb = collarProb,
+                           codeRestriction = codeRestriction, customCoders = customCoders,
+                           catScaling = catScaling,
+                           verbose = verbose)
   treatments <- plapply(workList, worker,
                         parallelCluster = parallelCluster,
                         use_parallel = use_parallel)

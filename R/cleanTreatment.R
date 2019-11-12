@@ -30,7 +30,9 @@ as_rquery.vtreat_pass_through <- function(tstep,
 }
 
 
-.mkPassThrough <- function(origVarName,xcol,ycol,zC,zTarget,weights,collarProb,catScaling) {
+.mkPassThrough <- function(...,
+                           origVarName, xcol, ycol, zC, zTarget, weights, collarProb, catScaling) {
+  wrapr::stop_if_dot_args(substitute(list(...)), ".mkPassThrough")
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)
