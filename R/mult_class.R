@@ -26,6 +26,8 @@
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return list(cross_frame, treatments_0, treatments_m)
 #' 
 #' @seealso \code{\link{prepare.multinomial_plan}}
@@ -47,7 +49,8 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
                                     y_dependent_treatments = c("catB"),
                                     verbose=FALSE,
                                     parallelCluster=NULL,
-                                    use_parallel = TRUE) {
+                                    use_parallel = TRUE,
+                                    missingness_imputation = NULL, imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameMExperiment")
   y_levels <- sort(unique(as.character(d[[y_name]])))
   y_l_names <- vtreat_make_names(y_levels)
@@ -64,7 +67,8 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
                                     customCoders=customCoders,
                                     verbose= verbose,
                                     parallelCluster=parallelCluster,
-                                    use_parallel = use_parallel)
+                                    use_parallel = use_parallel,
+                                    missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   # score them
   tf_0 <- prepare(treatments_0, d,
                   extracols = y_name,
@@ -121,7 +125,8 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
         catScaling=catScaling,
         verbose= verbose,
         parallelCluster=parallelCluster,
-        use_parallel = use_parallel)
+        use_parallel = use_parallel,
+        missingness_imputation = missingness_imputation, imputation_map = imputation_map)
       cross_frame_i = cfe$crossFrame
       cross_frame_i[[y_name]] <- NULL
       colnames(cross_frame_i) <- paste0(y_l_names[[y_target]], 

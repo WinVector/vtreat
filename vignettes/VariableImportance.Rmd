@@ -55,7 +55,6 @@ vf = vtreat::value_variables_N(
   d, 
   varlist = c("x", "x_noise"),
   outcomename = "y")
-rownames(vf) <- NULL
 
 knitr::kable(vf[, c("var", "rsq", "sig")])
 ```

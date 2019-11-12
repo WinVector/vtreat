@@ -131,9 +131,24 @@ plapply <- function(workList, worker,
   return(max(v)>min(v))
 }
 
-# weighted mean
-# assumes non-zero lists of clean entries, weights all >0
-.wmean <- function(x,weights) {
+
+#' Compute weighted mean
+#' 
+#' Compute the weighted mean of x.
+#' 
+#' @param x numeric vector without NA to compute mean of
+#' @param weights weights vector (or NULL)
+#' @return weighted mean
+#' 
+#' @keywords internal
+#' 
+#' @examples 
+#' 
+#' .wmean(c(1, 2, 3))
+#' 
+#' @export
+#' 
+.wmean <- function(x, weights = NULL) {
   if(is.null(weights)) {
     return(mean(x))
   }

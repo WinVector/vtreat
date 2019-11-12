@@ -15,6 +15,7 @@ variable_values <- function(sf) {
   res <- cbind(res, data.frame(sig = tapply(sf$sig, sf$origName, min)))
   res$sig <- pmin(1, res$sig*res$count) # Bonforroni correction
   res$var <- rownames(res)
+  rownames(res) <- NULL
   res
 }
 
@@ -42,6 +43,8 @@ variable_values <- function(sf) {
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @param customCoders additional coders to use for variable importance estimate.
 #' @param codeRestriction codes to restrict to for variable importance estimate.
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return table of variable valuations
 #' 
 #' @export
@@ -65,7 +68,9 @@ value_variables_N <- function(dframe,varlist,
                                                   'n.knearest.num' = vtreat::square_window),
                               codeRestriction = c("PiecewiseV", 
                                                   "knearest",
-                                                  "clean", "isBAD", "catB", "catP")) {
+                                                  "clean", "isBAD", "catB", "catP"),
+                              missingness_imputation = NULL,
+                              imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_N")
   cfn <- mkCrossFrameNExperiment(
     dframe= dframe,
@@ -82,7 +87,8 @@ value_variables_N <- function(dframe,varlist,
     forceSplit=forceSplit,
     verbose= verbose,
     parallelCluster=parallelCluster,
-    use_parallel = use_parallel)
+    use_parallel = use_parallel,
+    missingness_imputation = missingness_imputation, imputation_map=imputation_map)
   variable_values(cfn$treatments$scoreFrame)
 }
 
@@ -113,6 +119,8 @@ value_variables_N <- function(dframe,varlist,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @param customCoders additional coders to use for variable importance estimate.
 #' @param codeRestriction codes to restrict to for variable importance estimate.
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return table of variable valuations
 #' 
 #' 
@@ -138,7 +146,9 @@ value_variables_C <- function(dframe,varlist,
                                                   'n.knearest.num' = vtreat::square_window),
                               codeRestriction = c("PiecewiseV", 
                                                   "knearest",
-                                                  "clean", "isBAD", "catB", "catP")) {
+                                                  "clean", "isBAD", "catB", "catP"),
+                              missingness_imputation = NULL,
+                              imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::value_variables_C")
   cfc <- mkCrossFrameCExperiment(
     dframe= dframe,
@@ -157,7 +167,8 @@ value_variables_C <- function(dframe,varlist,
     catScaling=catScaling,
     verbose= verbose,
     parallelCluster=parallelCluster,
-    use_parallel = use_parallel)
+    use_parallel = use_parallel,
+    missingness_imputation = missingness_imputation, imputation_map=imputation_map)
   variable_values(cfc$treatments$scoreFrame)
 }
   

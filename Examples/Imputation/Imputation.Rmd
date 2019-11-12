@@ -1,0 +1,141 @@
+---
+title: "Imputation"
+output: github_document
+---
+
+## Changing the missing value imputation in vtreat
+
+For this example, we will use the UnsupervisedTreatment, but the same parameters can be used with the other treatment plans as well.
+
+### A simple data example
+
+Here we create a simple data set where the inputs have missing values.
+
+```{r}
+library(vtreat)
+```
+
+
+```{r}
+d = data.frame(
+    "x" = c(0, 1, 1000, NA),
+    "w" = c(3, 6, NA, 100),
+    "y" = c(0, 0, 1, 1)
+)
+
+knitr::kable(d)
+```
+
+Some of the summary statistics of `d`. We're primarily interested in the inputs `x` and `w`.
+
+```{r}
+summary(d)
+```
+
+### The default missing value imputation
+
+By default, vtreat fills in missing values with the mean value of the column, and adds an advisory *_is_bad column to mark the location of the original missing values.
+
+```{r}
+treatments <- designTreatmentsZ(d, 
+                                varlist = c('x', 'w'), 
+                                verbose = FALSE)
+d_treated <- prepare(treatments, 
+                     d)
+d_treated$y <- d$y
+knitr::kable(d_treated)
+```
+
+
+### Changing the imputation strategy
+
+If you do not want to use the mean to fill in missing values, you can change the imputation function using the parameter missingness_imputation. Here, we fill in missing values with the median.
+
+```{r}
+median2 <- function(x, wts) {
+  median(x)
+}
+
+treatments <- designTreatmentsZ(d, 
+                                varlist = c('x', 'w'), 
+                                verbose = FALSE,
+                                missingness_imputation = median2)
+d_treated <- prepare(treatments, 
+                     d)
+d_treated$y <- d$y
+knitr::kable(d_treated)
+```
+
+
+You can also use a constant value instead of a function. Here we replace missing values with the value -1.
+
+```{r}
+treatments <- designTreatmentsZ(d, 
+                                varlist = c('x', 'w'), 
+                                verbose = FALSE,
+                                missingness_imputation = -1)
+d_treated <- prepare(treatments, 
+                     d)
+d_treated$y <- d$y
+knitr::kable(d_treated)
+```
+
+
+### Changing the imputation strategy per column
+
+You can control the imputation strategy per column via the map imputation_map. Any column not named in the imputation map will use the imputation strategy specified by the missingness_imputation parameter (which is the mean by default).
+
+Here we use the maximum value to fill in the missing values for `x` and the value `0` to fill in the missing values for `w`.
+
+```{r}
+max2 <- function(x, wts) {
+  max(x)
+}
+
+treatments <- designTreatmentsZ(d, 
+                                varlist = c('x', 'w'), 
+                                verbose = FALSE,
+                                imputation_map = list(
+                                  x = max2,
+                                  w = 0
+                                ))
+d_treated <- prepare(treatments, 
+                     d)
+d_treated$y <- d$y
+knitr::kable(d_treated)
+```
+
+
+
+
+If we don't specify a column, `vtreat` looks at` missingness_imputation` (in this case, `-1`).
+
+```{r}
+treatments <- designTreatmentsZ(d, 
+                                varlist = c('x', 'w'), 
+                                verbose = FALSE,
+                                missingness_imputation = -1,
+                                imputation_map = list(
+                                  x = max2
+                                ))
+d_treated <- prepare(treatments, 
+                     d)
+d_treated$y <- d$y
+knitr::kable(d_treated)
+```
+
+
+If `missingness_imputation` is not specified, vtreat uses a weighted mean.
+
+```{r}
+treatments <- designTreatmentsZ(d, 
+                                varlist = c('x', 'w'), 
+                                verbose = FALSE,
+                                imputation_map = list(
+                                  x = max2
+                                ))
+d_treated <- prepare(treatments, 
+                     d)
+d_treated$y <- d$y
+knitr::kable(d_treated)
+```

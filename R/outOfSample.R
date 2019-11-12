@@ -518,7 +518,8 @@ buildEvalSets <- function(nRows,...,
   catScaling,
   parallelCluster = NULL,
   use_parallel = TRUE,
-  verbose = FALSE) {
+  verbose = FALSE,
+  missingness_imputation, imputation_map) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::.mkCrossFrame")
   dsub <- dframe[,c(varlist,outcomename),drop=FALSE]
   # build a carve-up plan
@@ -558,7 +559,8 @@ buildEvalSets <- function(nRows,...,
       catScaling = catScaling,
       verbose = verbose,
       parallelCluster = parallelCluster,
-      use_parallel = use_parallel)
+      use_parallel = use_parallel,
+      missingness_imputation = missingness_imputation, imputation_map = imputation_map)
     fi <- .vtreatList(ti,dsubiEval,newVarsS,
                       scale = scale,
                       doCollar = doCollar,

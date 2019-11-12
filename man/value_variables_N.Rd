@@ -13,7 +13,7 @@ value_variables_N(dframe, varlist, outcomename, ..., weights = c(),
   n.PiecewiseV.num = vtreat::solve_piecewise, c.knearest.num =
   vtreat::square_windowc, n.knearest.num = vtreat::square_window),
   codeRestriction = c("PiecewiseV", "knearest", "clean", "isBAD", "catB",
-  "catP"))
+  "catP"), missingness_imputation = NULL, imputation_map = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -55,6 +55,10 @@ value_variables_N(dframe, varlist, outcomename, ..., weights = c(),
 \item{customCoders}{additional coders to use for variable importance estimate.}
 
 \item{codeRestriction}{codes to restrict to for variable importance estimate.}
+
+\item{missingness_imputation}{function of signature f(values: numeric, weights: numeric), simple missing value imputer.}
+
+\item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \value{
 table of variable valuations

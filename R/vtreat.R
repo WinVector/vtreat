@@ -146,6 +146,8 @@ print.treatmentplan <- function(x, ...) {
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsN}}, \code{\link{designTreatmentsZ}}, \code{\link{mkCrossFrameCExperiment}}
 #' @examples
@@ -174,7 +176,8 @@ designTreatmentsC <- function(dframe,varlist,
                               catScaling=TRUE,
                               verbose=TRUE,
                               parallelCluster=NULL,
-                              use_parallel= TRUE) {
+                              use_parallel= TRUE,
+                              missingness_imputation = NULL, imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsC")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!(outcomename %in% colnames(dframe))) {
@@ -208,7 +211,8 @@ designTreatmentsC <- function(dframe,varlist,
     catScaling = catScaling,
     verbose = verbose,
     parallelCluster = parallelCluster,
-    use_parallel = use_parallel)
+    use_parallel = use_parallel,
+    missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments$outcomeTarget <- outcometarget
   treatments$outcomeType <- 'Binary'
   treatments
@@ -255,6 +259,8 @@ designTreatmentsC <- function(dframe,varlist,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (when parallel cluster is set).
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsZ}}, \code{\link{mkCrossFrameNExperiment}}
 #' @examples
@@ -280,7 +286,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
                               forceSplit=FALSE,
                               verbose=TRUE,
                               parallelCluster=NULL,
-                              use_parallel= TRUE) {
+                              use_parallel= TRUE,
+                              missingness_imputation = NULL, imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsN")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!(outcomename %in% colnames(dframe))) {
@@ -315,7 +322,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
     catScaling = catScaling,
     verbose = verbose,
     parallelCluster = parallelCluster,
-    use_parallel = use_parallel)
+    use_parallel = use_parallel,
+    missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments$outcomeType <- 'Numeric'
   treatments
 }
@@ -350,6 +358,8 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods (if parallel cluster is set).
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}} 
 #' @examples
@@ -374,7 +384,8 @@ designTreatmentsZ <- function(dframe,varlist,
                               customCoders=NULL,
                               verbose=TRUE,
                               parallelCluster=NULL,
-                              use_parallel= TRUE) {
+                              use_parallel= TRUE,
+                              missingness_imputation = NULL, imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::designTreatmentsZ")
   # build a name disjoint from column names
   outcomename <- setdiff(paste('VTREATTEMPCOL',
@@ -406,7 +417,8 @@ designTreatmentsZ <- function(dframe,varlist,
     catScaling = catScaling,
     verbose = verbose,
     parallelCluster = parallelCluster,
-    use_parallel = use_parallel)
+    use_parallel = use_parallel,
+    missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments$outcomeType <- 'None'
   treatments$meanY <- NA
   treatments
@@ -697,6 +709,8 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return list with treatments and crossFrame
 #' 
 #' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{prepare.treatmentplan}}
@@ -736,7 +750,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                     catScaling=TRUE,
                                     verbose= TRUE,
                                     parallelCluster=NULL,
-                                    use_parallel = TRUE) {
+                                    use_parallel = TRUE,
+                                    missingness_imputation = NULL,
+                                    imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameCExperiment")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!is.data.frame(dframe)) {
@@ -774,7 +790,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
                                   catScaling=catScaling,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster,
-                                  use_parallel = use_parallel)
+                                  use_parallel = use_parallel,
+                                  missingness_imputation = missingness_imputation,
+                                  imputation_map = imputation_map)
   zC <- dframe[[outcomename]]
   zoY <- ifelse(zC==outcometarget,1,0)
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
@@ -806,7 +824,9 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
     catScaling = catScaling,
     parallelCluster = parallelCluster,
     use_parallel = use_parallel,
-    verbose = FALSE)
+    verbose = FALSE,
+    missingness_imputation = missingness_imputation,
+    imputation_map = imputation_map)
   crossFrame <- crossDat$crossFrame
   newVarsS <- intersect(newVarsS,colnames(crossFrame))
   goodVars <- newVarsS[vapply(newVarsS,
@@ -858,6 +878,8 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param verbose if TRUE print progress.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{prepare.treatmentplan}}
 #' @examples
@@ -893,7 +915,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     forceSplit=FALSE,
                                     verbose= TRUE,
                                     parallelCluster=NULL,
-                                    use_parallel = TRUE) {
+                                    use_parallel = TRUE,
+                                    missingness_imputation = NULL, imputation_map=NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameNExperiment")
   .checkArgs(dframe=dframe,varlist=varlist,outcomename=outcomename)
   if(!is.data.frame(dframe)) {
@@ -931,7 +954,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                   forceSplit = forceSplit,
                                   verbose=FALSE,
                                   parallelCluster=parallelCluster,
-                                  use_parallel = use_parallel)
+                                  use_parallel = use_parallel,
+                                  missingness_imputation = missingness_imputation, imputation_map=imputation_map)
   zC <- NULL
   zoY <- dframe[[outcomename]]
   newVarsS <- treatments$scoreFrame$varName[(treatments$scoreFrame$varMoves) &
@@ -963,7 +987,8 @@ mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
     catScaling = catScaling,
     parallelCluster = parallelCluster,
     use_parallel = use_parallel,
-    verbose = FALSE)
+    verbose = FALSE,
+    missingness_imputation = missingness_imputation, imputation_map=imputation_map)
   crossFrame <- crossDat$crossFrame
   newVarsS <- intersect(newVarsS,colnames(crossFrame))
   goodVars <- newVarsS[vapply(newVarsS,

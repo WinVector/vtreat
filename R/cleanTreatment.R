@@ -31,7 +31,8 @@ as_rquery.vtreat_pass_through <- function(tstep,
 
 
 .mkPassThrough <- function(...,
-                           origVarName, xcol, ycol, zC, zTarget, weights, collarProb, catScaling) {
+                           origVarName, xcol, ycol, zC, zTarget, weights, collarProb, catScaling,
+                           missingness_imputation, imputation_map) {
   wrapr::stop_if_dot_args(substitute(list(...)), ".mkPassThrough")
   xcol <- as.numeric(xcol)
   napositions <- .is.bad(xcol)
@@ -45,7 +46,24 @@ as_rquery.vtreat_pass_through <- function(tstep,
   } else {
     cuts <- c(min(xcol[!napositions]),max(xcol[!napositions]))
   }
-  nadist <- .wmean(xcol[!napositions],weights[!napositions])
+  if(!is.null(imputation_map)) {
+    specific_imputation_method <- imputation_map[[origVarName]]
+    if(!is.null(specific_imputation_method)) {
+      missingness_imputation <- specific_imputation_method
+    }
+  }
+  if(!is.null(missingness_imputation)) {
+    if(is.numeric(missingness_imputation)) {
+      nadist = missingness_imputation
+    } else {
+      nadist = missingness_imputation(xcol[!napositions], weights[!napositions])
+    }
+    if((!is.numeric(nadist)) || (length(nadist)!=1)) {
+      nadist <- NA_real_
+    }
+  } else {
+    nadist <- .wmean(xcol[!napositions], weights[!napositions])
+  }
   if(is.na(nadist)) {
     nadist <- 0
   }

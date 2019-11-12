@@ -166,7 +166,8 @@ Note: each column is processed independently of all others.</p>
     <pre class="usage"><span class='fu'>designTreatmentsZ</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>...</span>, <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
   <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -219,6 +220,14 @@ Note: each column is processed independently of all others.</p>
       <th>use_parallel</th>
       <td><p>logical, if TRUE use parallel methods (if parallel cluster is set).</p></td>
     </tr>
+    <tr>
+      <th>missingness_imputation</th>
+      <td><p>function of signature f(values: numeric, weights: numeric), simple missing value imputer.</p></td>
+    </tr>
+    <tr>
+      <th>imputation_map</th>
+      <td><p>map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -242,11 +251,11 @@ Note: each column is processed independently of all others.</p>
 <span class='no'>dTestZ</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
 <span class='no'>treatmentsZ</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsZ</span>(<span class='no'>dTrainZ</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainZ</span>),
-  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.8 inspecting inputs Fri Oct  4 18:34:13 2019"
-#&gt; [1] "designing treatments Fri Oct  4 18:34:13 2019"
-#&gt; [1] " have initial level statistics Fri Oct  4 18:34:13 2019"
-#&gt; [1] " scoring treatments Fri Oct  4 18:34:13 2019"
-#&gt; [1] "have treatment plan Fri Oct  4 18:34:13 2019"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
+  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.8 inspecting inputs Tue Nov 12 09:17:22 2019"
+#&gt; [1] "designing treatments Tue Nov 12 09:17:22 2019"
+#&gt; [1] " have initial level statistics Tue Nov 12 09:17:22 2019"
+#&gt; [1] " scoring treatments Tue Nov 12 09:17:22 2019"
+#&gt; [1] "have treatment plan Tue Nov 12 09:17:22 2019"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
 <span class='no'>dTestZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTestZ</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

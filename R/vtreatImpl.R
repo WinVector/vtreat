@@ -248,7 +248,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                           verbose,
                           nRows,
                           yMoves,
-                          codeRestictionWasNULL) {
+                          codeRestictionWasNULL,
+                          missingness_imputation, imputation_map) {
   wrapr::stop_if_dot_args(substitute(list(...)), ".varDesignerW")
   v <- argv$v
   vcolOrig <- argv$vcolOrig
@@ -301,7 +302,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                                zTarget = zTarget,
                                weights = weights,
                                collarProb = collarProb,
-                               catScaling = catScaling)
+                               catScaling = catScaling,
+                               missingness_imputation = missingness_imputation, imputation_map = imputation_map)
           acceptTreatment(ti)
         }
         if(codeRestictionWasNULL || ('isBAD' %in% codeRestriction)) {
@@ -381,7 +383,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            collarProb,
                            codeRestriction, customCoders,
                            catScaling,
-                           verbose) {
+                           verbose,
+                           missingness_imputation, imputation_map) {
   wrapr::stop_if_dot_args(substitute(list(...)), ".mkVarDesigner")
   force(zoY)
   force(zC)
@@ -396,6 +399,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
   force(customCoders)
   force(catScaling)
   force(verbose)
+  force(missingness_imputation)
+  force(imputation_map)
   nRows = length(zoY)
   yMoves <- .has.range.cn(zoY)
   # NULL is an alias for "don't restrict"
@@ -418,7 +423,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                   verbose = verbose,
                   nRows = nRows,
                   yMoves = yMoves,
-                  codeRestictionWasNULL = codeRestictionWasNULL)
+                  codeRestictionWasNULL = codeRestictionWasNULL,
+                  missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   }
 }
 
@@ -544,7 +550,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
   catScaling,
   verbose = FALSE,
   parallelCluster = NULL,
-  use_parallel = TRUE) {
+  use_parallel = TRUE,
+  missingness_imputation, imputation_map) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::.designTreatmentsXS")
   if(verbose) {
@@ -605,7 +612,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
                            collarProb = collarProb,
                            codeRestriction = codeRestriction, customCoders = customCoders,
                            catScaling = catScaling,
-                           verbose = verbose)
+                           verbose = verbose,
+                           missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments <- plapply(workList, worker,
                         parallelCluster = parallelCluster,
                         use_parallel = use_parallel)
@@ -719,7 +727,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
   catScaling,
   verbose = FALSE,
   parallelCluster = NULL,
-  use_parallel = TRUE) {
+  use_parallel = TRUE,
+  missingness_imputation, imputation_map) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::.designTreatmentsX")
   if(!is.data.frame(dframe)) {
@@ -792,7 +801,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
     catScaling = catScaling,
     verbose = verbose,
     parallelCluster = parallelCluster,
-    use_parallel = use_parallel)
+    use_parallel = use_parallel,
+    missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments$scoreFrame <- treatments$scoreFrame[treatments$scoreFrame$varMoves,]
   if(forceSplit) {
     treatments$scoreFrame$needsSplit <- TRUE
@@ -835,7 +845,8 @@ mkVtreatListWorker <- function(scale,doCollar) {
         catScaling = catScaling,
         parallelCluster = parallelCluster,
         use_parallel = use_parallel,
-        verbose = FALSE)
+        verbose = FALSE,
+        missingness_imputation = missingness_imputation, imputation_map = imputation_map)
       crossFrame <- crossData$crossFrame
       crossWeights <- crossData$crossWeights
       crossMethod <- crossData$method

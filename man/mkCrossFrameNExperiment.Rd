@@ -9,7 +9,8 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
   collarProb = 0, codeRestriction = NULL, customCoders = NULL,
   scale = FALSE, doCollar = FALSE, splitFunction = NULL,
   ncross = 3, forceSplit = FALSE, verbose = TRUE,
-  parallelCluster = NULL, use_parallel = TRUE)
+  parallelCluster = NULL, use_parallel = TRUE,
+  missingness_imputation = NULL, imputation_map = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -51,6 +52,10 @@ mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
 
 \item{use_parallel}{logical, if TRUE use parallel methods.}
+
+\item{missingness_imputation}{function of signature f(values: numeric, weights: numeric), simple missing value imputer.}
+
+\item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \value{
 treatment plan (for use with prepare)

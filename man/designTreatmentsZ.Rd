@@ -7,7 +7,8 @@
 designTreatmentsZ(dframe, varlist, ..., minFraction = 0, weights = c(),
   rareCount = 0, collarProb = 0, codeRestriction = NULL,
   customCoders = NULL, verbose = TRUE, parallelCluster = NULL,
-  use_parallel = TRUE)
+  use_parallel = TRUE, missingness_imputation = NULL,
+  imputation_map = NULL)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}
@@ -33,6 +34,10 @@ designTreatmentsZ(dframe, varlist, ..., minFraction = 0, weights = c(),
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
 
 \item{use_parallel}{logical, if TRUE use parallel methods (if parallel cluster is set).}
+
+\item{missingness_imputation}{function of signature f(values: numeric, weights: numeric), simple missing value imputer.}
+
+\item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \value{
 treatment plan (for use with prepare)

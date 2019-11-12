@@ -168,7 +168,8 @@
   <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/solve_piecewisec.html'>solve_piecewisec</a></span>, <span class='kw'>n.PiecewiseV.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/solve_piecewise.html'>solve_piecewise</a></span>,
   <span class='kw'>c.knearest.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/square_windowc.html'>square_windowc</a></span>, <span class='kw'>n.knearest.num</span> <span class='kw'>=</span>
   <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/square_window.html'>square_window</a></span>), <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PiecewiseV"</span>, <span class='st'>"knearest"</span>,
-  <span class='st'>"clean"</span>, <span class='st'>"isBAD"</span>, <span class='st'>"catB"</span>, <span class='st'>"catP"</span>))</pre>
+  <span class='st'>"clean"</span>, <span class='st'>"isBAD"</span>, <span class='st'>"catB"</span>, <span class='st'>"catP"</span>), <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -260,6 +261,14 @@
     <tr>
       <th>codeRestriction</th>
       <td><p>codes to restrict to for variable importance estimate.</p></td>
+    </tr>
+    <tr>
+      <th>missingness_imputation</th>
+      <td><p>function of signature f(values: numeric, weights: numeric), simple missing value imputer.</p></td>
+    </tr>
+    <tr>
+      <th>imputation_map</th>
+      <td><p>map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.</p></td>
     </tr>
     </table>
 
