@@ -22,6 +22,8 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
 #' See
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
+#' \code{\link{mkCrossFrameNExperiment}}, 
+#' \code{\link{designTreatmentsN}},
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 
 #' @param user_params list of user overrides.
@@ -51,6 +53,7 @@ vtreat_parameters <- function(user_params = NULL) {
     trackedValues = NULL)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
+  class(merged_params) <- 'vtreat_parameters'
   return(merged_params)
 }
 
@@ -83,6 +86,9 @@ BinomialOutcomeTreatment <- function(...,
                                      params = NULL,
                                      imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::BinomialOutcomeTreatment")
+  if((!is.null(params)) && (!('vtreat_parameters' %in% class(params)))) {
+    stop("vtreat::BinomialOutcomeTreatment extpected class vtreat_parameters")
+  }
   params <- vtreat_parameters(params)
   settings <- list(
     var_list = var_list,
@@ -229,6 +235,9 @@ NumericOutcomeTreatment <- function(...,
                                     params = NULL,
                                     imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::NumericOutcomeTreatment")
+  if((!is.null(params)) && (!('vtreat_parameters' %in% class(params)))) {
+    stop("vtreat::NumericOutcomeTreatment extpected class vtreat_parameters")
+  }
   params <- vtreat_parameters(params)
   settings <- list(
     var_list = var_list,
@@ -344,6 +353,42 @@ NumericOutcomeTreatment <- function(...,
 }
 
 
+#' vtreat multinomial parameters.
+#' 
+#' A list of settings and values for vtreat multinomial classification fitting. 
+#' See
+#' \code{\link{mkCrossFrameMExperiment}} and
+#' \code{\link{prepare.multinomial_plan}} for details.
+#' 
+#' @param user_params list of user overrides.
+#' @return filled out parameter list
+#' 
+#' @export
+multinomial_parameters <- function(user_params = NULL) {
+  params = list(
+    minFraction=0.02,
+    smFactor=0.0,
+    rareCount=0,
+    rareSig=1,
+    collarProb=0.0,
+    codeRestriction=NULL,
+    customCoders=NULL,
+    scale=FALSE,doCollar=FALSE,
+    splitFunction=NULL,ncross=3,
+    forceSplit = FALSE,
+    catScaling=FALSE,
+    y_dependent_treatments = c("catB"),
+    verbose=FALSE,
+    use_parallel = TRUE,
+    missingness_imputation = NULL, 
+    imputation_map = NULL)
+  merged_params <- merge_params(params = params, 
+                                user_params = user_params)
+  class(merged_params) <- 'multinomial_parameters'
+  return(merged_params)
+}
+
+
 #' Stateful object for designing and applying multinomial outcome treatments.
 #' 
 #' Hold settings are results for multinomial classification data preparation.
@@ -373,6 +418,9 @@ MultinomialOutcomeTreatment <- function(...,
                                         params = NULL,
                                         imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::MultinomialOutcomeTreatment")
+  if((!is.null(params)) && (!('multinomial_parameters' %in% class(params)))) {
+    stop("vtreat::MultinomialOutcomeTreatment extpected class multinomial_parameters")
+  }
   params <- vtreat_parameters(params)
   settings <- list(
     var_list = var_list,
@@ -382,86 +430,81 @@ MultinomialOutcomeTreatment <- function(...,
     imputation_map = imputation_map,
     state = new.env(parent = emptyenv())
   )
-  assign("tp", NULL, envir = settings$state)
-  assign("ce", NULL, envir = settings$state)
+  assign("transform", NULL, envir = settings$state)
+  assign("score_frame", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_MultinomialOutcomeTreatment"
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::MultinomialOutcomeTreatment$transform")
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
+    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
+      parallelCluster = parallelCluster,
       pruneSig= settings$params$pruneSig,
       scale= settings$params$scale,
       doCollar= settings$params$doCollar,
       varRestriction= settings$params$varRestriction,
       codeRestriction= settings$params$codeRestriction,
       trackedValues= settings$params$trackedValues,
-      extracols = settings$cols_to_copy,
-      parallelCluster = parallelCluster,
-      use_parallel = settings$params$use_parallel)
+      extracols= settings$cols_to_copy,
+      use_parallel= settings$params$use_parallel)
     return(res)
   }
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::MultinomialOutcomeTreatment$fit_transform")
-    assign("tp", NULL, envir = settings$state)
-    assign("ce", NULL, envir = settings$state)
-    ce <- mkCrossFrameMExperiment(
+    assign("transform", NULL, envir = settings$state)
+    assign("score_frame", NULL, envir = settings$state)
+    td <- mkCrossFrameMExperiment(
       d = dframe,
       vars = settings$var_list,
       y_name = settings$outcome_name, 
       weights = weights,
-      minFraction = settings$params$minFraction,
-      smFactor = settings$params$smFactor,
-      rareCount = settings$params$rareCount,
-      rareSig = settings$params$rareSig,
-      collarProb = settings$params$collarProb,
-      codeRestriction = settings$params$codeRestriction,
-      customCoders = settings$params$customCoders, 
-      splitFunction = settings$params$splitFunction,
-      ncross = settings$params$ncross,
-      forceSplit = settings$params$forceSplit,
-      verbose = settings$params$verbose,
       parallelCluster = parallelCluster,
+      minFraction=settings$params$minFraction,
+      smFactor=settings$params$smFactor,
+      rareCount=settings$params$rareCount,
+      rareSig=settings$params$rareSig,
+      collarProb=settings$params$collarProb,
+      codeRestriction=settings$params$codeRestriction,
+      customCoders=settings$params$customCoders,
+      scale=settings$params$scale,
+      doCollar=settings$params$doCollar,
+      splitFunction=settings$params$splitFunction,
+      ncross=settings$params$ncross,
+      forceSplit = settings$params$forceSplit,
+      catScaling=settings$params$catScaling,
+      y_dependent_treatments = settings$params$y_dependent_treatments,
+      verbose=settings$params$verbose,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
-    tp <- ce$treatments
-    assign("tp", tp, envir = settings$state)
-    assign("ce", ce, envir = settings$state)
-    res <- ce$crossFrame
-    for(c in settings$cols_to_copy) {
-      res[[c]] <- dframe[[c]]
-    }
+    assign("transform", td$treat_m, envir = settings$state)
+    assign("score_frame", td$score_frame, envir = settings$state)
+    res <- td$cross_frame
     return(res)
   }
   fit <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::MultinomialOutcomeTreatment$fit")
-   fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
+    fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
     invisible(obj) # allow method chaining
   }
   score_frame <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp$scoreFrame)
+    res <- get('score_frame', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   get_transform <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp)
-  }
-  get_cross_frame_experiment <- function() {
-    ce <- get('tp', envir = settings$state, inherits = FALSE)
-    return(ce)
+    td <- get('transform', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   obj$fit = fit
   obj$transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
-  obj$get_cross_frame_experiment = get_cross_frame_experiment
   return(obj)
 }
 
@@ -470,8 +513,7 @@ MultinomialOutcomeTreatment <- function(...,
 #' 
 #' A list of settings and values for vtreat unsupervised fitting. 
 #' See
-#' \code{\link{mkCrossFrameCExperiment}}, 
-#' \code{\link{designTreatmentsC}}, and
+#' \code{\link{designTreatmentsZ}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 
 #' @param user_params list of user overrides.
@@ -495,6 +537,7 @@ unsupervised_parameters <- function(user_params = NULL) {
     trackedValues = NULL)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
+  class(merged_params) <- 'unsupervised_parameters'
   return(merged_params)
 }
 
@@ -525,6 +568,9 @@ UnsupervisedTreatment <- function(...,
                                   params = NULL,
                                   imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::UnsupervisedTreatment")
+  if((!is.null(params)) && (!('unsupervised_parameters' %in% class(params)))) {
+    stop("vtreat::UnsupervisedTreatment extpected class unsupervised_parameters")
+  }
   params <- unsupervised_parameters(params)
   settings <- list(
     var_list = var_list,

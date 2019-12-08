@@ -15,7 +15,6 @@ filled out parameter list
 \description{
 A list of settings and values for vtreat unsupervised fitting. 
 See
-\code{\link{mkCrossFrameCExperiment}}, 
-\code{\link{designTreatmentsC}}, and
+\code{\link{designTreatmentsZ}}, and
 \code{\link{prepare.treatmentplan}} for details.
 }

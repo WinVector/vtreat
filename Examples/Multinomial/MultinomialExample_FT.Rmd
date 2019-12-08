@@ -79,10 +79,9 @@ We use the training data `d` to fit the transform and the return a treated train
 ```{r}
 transform_design = vtreat::MultinomialOutcomeTreatment(
     var_list = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
-    outcome_name = 'y',                             # outcome variable
+    outcome_name = 'yc',                             # outcome variable
     cols_to_copy = c('y', 'yc')
 )
-
 
 # learn transform from data
 d_prepared <-  transform_design$fit_transform(d)

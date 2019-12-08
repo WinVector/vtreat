@@ -58,14 +58,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|           x |           y | xc          |          x2 | yc      |
-| ----------: | ----------: | :---------- | ----------: | :------ |
-|   0.5546014 |   0.6753419 | level\_0.5  | \-0.9750434 | large   |
-|   0.9770467 |   0.6572844 | level\_0.5  |   0.3479896 | large   |
-| \-1.5187140 | \-0.9099303 | NA          |   1.1121128 | small   |
-|          NA |   0.1214606 | level\_0    |   0.3114326 | liminal |
-|          NA | \-0.3460650 | level\_-0.5 |   2.5480988 | liminal |
-|          NA |   0.2471414 | level\_0    | \-1.0847406 | liminal |
+|            x |           y | xc          |          x2 | yc      |
+| -----------: | ----------: | :---------- | ----------: | :------ |
+|    0.6371622 |   0.6483941 | level\_0.5  |   0.4600930 | large   |
+|   12.3284526 | \-0.1059316 | level\_0    |   0.6857590 | liminal |
+| \-11.5490988 |   0.7205948 | level\_0.5  | \-0.7174648 | large   |
+|           NA |   0.0290136 | level\_0    | \-1.5724744 | liminal |
+|           NA | \-0.7070804 | level\_-0.5 |   1.6126971 | small   |
+|           NA | \-0.8877924 | NA          | \-0.1251532 | small   |
 
 ### Some quick data exploration
 
@@ -75,20 +75,21 @@ Check how many levels `xc` has, and their distribution (including `NA`)
 unique(d['xc'])
 ```
 
-    ##           xc
-    ## 1  level_0.5
-    ## 3       <NA>
-    ## 4    level_0
-    ## 5 level_-0.5
-    ## 9    level_1
+    ##             xc
+    ## 1    level_0.5
+    ## 2      level_0
+    ## 5   level_-0.5
+    ## 6         <NA>
+    ## 9      level_1
+    ## 256 level_-1.5
 
 ``` r
 table(d$xc, useNA = 'ifany')
 ```
 
     ## 
-    ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##         96         70         82        125        127
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1       <NA> 
+    ##         90          1         82         92        123        112
 
 Show the distribution of `yc`
 
@@ -98,7 +99,7 @@ table(d$yc, useNA = 'ifany')
 
     ## 
     ##   large liminal   small 
-    ##     165     153     182
+    ##     169     165     166
 
 ## Build a transform appropriate for classification problems.
 
@@ -142,36 +143,36 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | outcome\_level | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :------------- | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0013122 | 0.3616506 | large          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0020454 | 0.2547345 | large          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000102 | 0.9358245 | large          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_catP                       | TRUE     | 0.0728669 | 0.0000000 | large          | TRUE       |                 4 | xc       | catP  | TRUE        |
-| xc\_lev\_NA                    | TRUE     | 0.1924678 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.0970423 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0166332 | 0.0011629 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5985095 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1383632 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0024465 | 0.2196378 | liminal        | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0007690 | 0.4913297 | liminal        | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000334 | 0.8859953 | liminal        | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_catP                       | TRUE     | 0.5401690 | 0.0000000 | liminal        | TRUE       |                 4 | xc       | catP  | TRUE        |
-| xc\_lev\_NA                    | TRUE     | 0.1800325 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.3149506 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0298331 | 0.0000182 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.1766156 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0127498 | 0.0050760 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0066010 | 0.0374863 | small          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0001909 | 0.7235258 | small          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000712 | 0.8289931 | small          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_catP                       | TRUE     | 0.1488681 | 0.0000000 | small          | TRUE       |                 4 | xc       | catP  | TRUE        |
-| xc\_lev\_NA                    | TRUE     | 0.5241218 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1063755 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1269048 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.2076413 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0329971 | 0.0000033 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| large\_xc\_catB                | TRUE     | 0.8162790 | 0.0000000 | large          | TRUE       |                 4 | xc       | catB  | TRUE        |
-| liminal\_xc\_catB              | TRUE     | 0.5981523 | 0.0000000 | liminal        | TRUE       |                 4 | xc       | catB  | TRUE        |
-| small\_xc\_catB                | TRUE     | 0.7999424 | 0.0000000 | small          | TRUE       |                 4 | xc       | catB  | TRUE        |
+| x                              | TRUE     | 0.0027859 | 0.1818905 | large          | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0021800 | 0.2376366 | large          | FALSE      |                 0 | x        | isBAD | FALSE       |
+| x2                             | TRUE     | 0.0052907 | 0.0658145 | large          | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_catP                       | TRUE     | 0.2812259 | 0.0000000 | large          | TRUE       |                 5 | xc       | catP  | TRUE        |
+| xc\_lev\_NA                    | TRUE     | 0.1692653 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1182348 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0198266 | 0.0003690 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.5628021 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1313569 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0008652 | 0.4588634 | liminal        | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0027401 | 0.1874303 | liminal        | FALSE      |                 0 | x        | isBAD | FALSE       |
+| x2                             | TRUE     | 0.0017259 | 0.2954674 | liminal        | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_catP                       | TRUE     | 0.4935292 | 0.0000000 | liminal        | TRUE       |                 5 | xc       | catP  | TRUE        |
+| xc\_lev\_NA                    | TRUE     | 0.1655671 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.3429809 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0221886 | 0.0001760 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.1851534 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0050116 | 0.0746256 | liminal        | FALSE      |                 0 | xc       | lev   | FALSE       |
+| x                              | TRUE     | 0.0005707 | 0.5469828 | small          | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0001107 | 0.7908455 | small          | FALSE      |                 0 | x        | isBAD | FALSE       |
+| x2                             | TRUE     | 0.0010125 | 0.4224429 | small          | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_catP                       | TRUE     | 0.0086155 | 0.0192806 | small          | TRUE       |                 5 | xc       | catP  | TRUE        |
+| xc\_lev\_NA                    | TRUE     | 0.5074031 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1163268 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1325041 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.1861859 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0486115 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| large\_xc\_catB                | TRUE     | 0.7989292 | 0.0000000 | large          | TRUE       |                 5 | xc       | catB  | TRUE        |
+| liminal\_xc\_catB              | TRUE     | 0.6004316 | 0.0000000 | liminal        | TRUE       |                 5 | xc       | catB  | TRUE        |
+| small\_xc\_catB                | TRUE     | 0.8041112 | 0.0000000 | small          | TRUE       |                 5 | xc       | catB  | TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 
@@ -239,14 +240,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc      |
-| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :------ |
-|   0.5546014 |        0 |    0.164 | \-0.9750434 |           0 |                              0 |                    0 |                       1 |                    0 |       0.5323383 |         0.9844977 |    \-12.5813726 | large   |
-|   0.9770467 |        0 |    0.164 |   0.3479896 |           0 |                              0 |                    0 |                       1 |                    0 |       0.5323383 |         0.9844977 |    \-12.7766810 | large   |
-| \-1.5187140 |        0 |    0.254 |   1.1121128 |           1 |                              0 |                    0 |                       0 |                    0 |    \-12.9809874 |      \-12.8453046 |      14.2055577 | small   |
-| \-0.1971413 |        1 |    0.140 |   0.3114326 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.4156744 |        13.8466721 |    \-12.5896031 | liminal |
-| \-0.1971413 |        1 |    0.192 |   2.5480988 |           0 |                              1 |                    0 |                       0 |                    0 |    \-12.5811886 |         0.6135328 |       0.8580459 | liminal |
-| \-0.1971413 |        1 |    0.140 | \-1.0847406 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.4156744 |        13.8466721 |    \-12.5813726 | liminal |
+|            x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc      |
+| -----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :------ |
+|    0.6371622 |        0 |    0.184 |   0.4600930 |           0 |                              0 |                    0 |                       1 |                    0 |       0.4025114 |         0.9143296 |    \-12.6850469 | large   |
+|   12.3284526 |        0 |    0.164 |   0.6857590 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.5649194 |        13.9060172 |    \-12.4926353 | liminal |
+| \-11.5490988 |        0 |    0.184 | \-0.7174648 |           0 |                              0 |                    0 |                       1 |                    0 |       0.4025114 |         0.9143296 |    \-12.6780382 | large   |
+|  \-0.4737018 |        1 |    0.164 | \-1.5724744 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.6045458 |        13.9379731 |    \-12.4381873 | liminal |
+|  \-0.4737018 |        1 |    0.180 |   1.6126971 |           0 |                              1 |                    0 |                       0 |                    0 |    \-12.6712371 |         0.4190099 |       0.8722297 | small   |
+|  \-0.4737018 |        1 |    0.224 | \-0.1251532 |           1 |                              0 |                    0 |                       0 |                    0 |    \-12.8873871 |      \-12.7667102 |      14.2345208 | small   |
 
 ## Using the Prepared Data in a Model
 
@@ -314,12 +315,12 @@ d_prepared[, to_print, drop = FALSE] %.>%
 
 | yc      | predict |     large |   liminal |     small | prob\_on\_predicted\_class | prob\_on\_correct\_class |
 | :------ | :------ | --------: | --------: | --------: | -------------------------: | -----------------------: |
-| large   | liminal | 0.4837907 | 0.5159096 | 0.0002997 |                  0.5159096 |                0.4837907 |
-| large   | liminal | 0.4835204 | 0.5161999 | 0.0002797 |                  0.5161999 |                0.4835204 |
-| small   | small   | 0.0000619 | 0.0001739 | 0.9997642 |                  0.9997642 |                0.9997642 |
-| liminal | liminal | 0.0001881 | 0.9996911 | 0.0001208 |                  0.9996911 |                0.9996911 |
-| liminal | small   | 0.0003238 | 0.4182812 | 0.5813950 |                  0.5813950 |                0.4182812 |
-| liminal | liminal | 0.0001881 | 0.9996907 | 0.0001212 |                  0.9996907 |                0.9996907 |
+| large   | large   | 0.6041745 | 0.3957488 | 0.0000767 |                  0.6041745 |                0.6041745 |
+| liminal | liminal | 0.0001113 | 0.9998485 | 0.0000402 |                  0.9998485 |                0.9998485 |
+| large   | large   | 0.6038939 | 0.3960294 | 0.0000767 |                  0.6038939 |                0.6038939 |
+| liminal | liminal | 0.0001176 | 0.9998422 | 0.0000402 |                  0.9998422 |                0.9998422 |
+| small   | small   | 0.0001071 | 0.3997502 | 0.6001427 |                  0.6001427 |                0.6001427 |
+| small   | small   | 0.0000464 | 0.0000537 | 0.9999000 |                  0.9999000 |                0.9999000 |
 
 ``` r
 table(truth = d_prepared$yc, prediction = d_prepared$predict)
@@ -327,9 +328,9 @@ table(truth = d_prepared$yc, prediction = d_prepared$predict)
 
     ##          prediction
     ## truth     large liminal small
-    ##   large     125      40     0
-    ##   liminal     0     112    41
-    ##   small       0       0   182
+    ##   large     154      15     0
+    ##   liminal    20     108    37
+    ##   small       0       0   166
 
 In the above confusion matrix, the entry `[row, column]` gives the
 number of true items of `class[row]` that also have prediction of
@@ -355,12 +356,12 @@ dtest_prepared[, to_print, drop = FALSE] %.>%
 
 | yc      | predict |     large |   liminal |     small | prob\_on\_predicted\_class | prob\_on\_correct\_class |
 | :------ | :------ | --------: | --------: | --------: | -------------------------: | -----------------------: |
-| small   | small   | 0.0002719 | 0.4245997 | 0.5751284 |                  0.5751284 |                0.5751284 |
-| liminal | liminal | 0.0001850 | 0.9996937 | 0.0001213 |                  0.9996937 |                0.9996937 |
-| liminal | small   | 0.0002719 | 0.4245997 | 0.5751284 |                  0.5751284 |                0.4245997 |
-| liminal | liminal | 0.0001850 | 0.9996937 | 0.0001213 |                  0.9996937 |                0.9996937 |
-| large   | large   | 0.9998174 | 0.0001566 | 0.0000260 |                  0.9998174 |                0.9998174 |
-| small   | small   | 0.0002719 | 0.4245997 | 0.5751284 |                  0.5751284 |                0.5751284 |
+| large   | large   | 0.5128011 | 0.4871043 | 0.0000946 |                  0.5128011 |                0.5128011 |
+| small   | small   | 0.0000406 | 0.0000533 | 0.9999061 |                  0.9999061 |                0.9999061 |
+| liminal | liminal | 0.0002461 | 0.9997068 | 0.0000471 |                  0.9997068 |                0.9997068 |
+| liminal | small   | 0.0001315 | 0.3883520 | 0.6115165 |                  0.6115165 |                0.3883520 |
+| large   | large   | 0.9998832 | 0.0000813 | 0.0000355 |                  0.9998832 |                0.9998832 |
+| large   | large   | 0.5128011 | 0.4871043 | 0.0000946 |                  0.5128011 |                0.5128011 |
 
 ``` r
 table(truth = dtest_prepared$yc, prediction = dtest_prepared$predict)
@@ -368,9 +369,9 @@ table(truth = dtest_prepared$yc, prediction = dtest_prepared$predict)
 
     ##          prediction
     ## truth     large liminal small
-    ##   large     110      61     0
-    ##   liminal     0     103    33
-    ##   small       0       0   143
+    ##   large     140       0     0
+    ##   liminal    42      68    46
+    ##   small       0       0   154
 
 ## Parameters for `mkCrossFrameMExperiment`
 
@@ -566,14 +567,14 @@ d_prepared_thin %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc      |
-| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :------ |
-|   0.5546014 |        0 | \-0.9750434 |           0 |                              0 |                    0 |                       1 |                    0 |       0.5627458 |         0.8174443 |    \-12.7766810 | large   |
-|   0.9770467 |        0 |   0.3479896 |           0 |                              0 |                    0 |                       1 |                    0 |       0.5582715 |         0.9061279 |    \-12.5813726 | large   |
-| \-1.5187140 |        0 |   1.1121128 |           1 |                              0 |                    0 |                       0 |                    0 |    \-12.9224912 |      \-12.7971026 |      14.1899776 | small   |
-| \-0.1971413 |        1 |   0.3114326 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.2603776 |        13.8486214 |    \-12.6467614 | liminal |
-| \-0.1971413 |        1 |   2.5480988 |           0 |                              1 |                    0 |                       0 |                    0 |    \-12.6780382 |         0.5625528 |       0.8862167 | liminal |
-| \-0.1971413 |        1 | \-1.0847406 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.3322930 |        13.8989878 |    \-12.4107474 | liminal |
+|            x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc      |
+| -----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :------ |
+|    0.6371622 |        0 |   0.4600930 |           0 |                              0 |                    0 |                       1 |                    0 |       0.7959372 |         0.8051307 |     \-12.655836 | large   |
+|   12.3284526 |        0 |   0.6857590 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.5330870 |        13.9104915 |     \-12.429219 | liminal |
+| \-11.5490988 |        0 | \-0.7174648 |           0 |                              0 |                    0 |                       1 |                    0 |       0.7376980 |         0.8051307 |     \-12.678038 | large   |
+|  \-0.4737018 |        1 | \-1.5724744 |           0 |                              0 |                    1 |                       0 |                    0 |    \-12.5330870 |        13.9104915 |     \-12.529003 | liminal |
+|  \-0.4737018 |        1 |   1.6126971 |           0 |                              1 |                    0 |                       0 |                    0 |    \-12.6216402 |         0.4335345 |        1.257255 | small   |
+|  \-0.4737018 |        1 | \-0.1251532 |           1 |                              0 |                    0 |                       0 |                    0 |    \-12.8703006 |      \-12.7896360 |       14.247766 | small   |
 
 ``` r
 knitr::kable(score_frame_thin)
@@ -581,33 +582,33 @@ knitr::kable(score_frame_thin)
 
 | varName                        | varMoves |       rsq |       sig | outcome\_level | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :------------- | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0013122 | 0.3616506 | large          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0020454 | 0.2547345 | large          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000102 | 0.9358245 | large          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1924678 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.0970423 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0166332 | 0.0011629 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.5985095 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1383632 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0024465 | 0.2196378 | liminal        | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0007690 | 0.4913297 | liminal        | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000334 | 0.8859953 | liminal        | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1800325 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.3149506 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0298331 | 0.0000182 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.1766156 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0127498 | 0.0050760 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0066010 | 0.0374863 | small          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0001909 | 0.7235258 | small          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000712 | 0.8289931 | small          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.5241218 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1063755 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1269048 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.2076413 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0329971 | 0.0000033 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| large\_xc\_catB                | TRUE     | 0.8183296 | 0.0000000 | large          | TRUE       |                 4 | xc       | catB  | TRUE        |
-| liminal\_xc\_catB              | TRUE     | 0.6020670 | 0.0000000 | liminal        | TRUE       |                 4 | xc       | catB  | TRUE        |
-| small\_xc\_catB                | TRUE     | 0.7992625 | 0.0000000 | small          | TRUE       |                 4 | xc       | catB  | TRUE        |
+| x                              | TRUE     | 0.0027859 | 0.1818905 | large          | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0021800 | 0.2376366 | large          | FALSE      |                 0 | x        | isBAD | FALSE       |
+| x2                             | TRUE     | 0.0052907 | 0.0658145 | large          | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.1692653 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1182348 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0198266 | 0.0003690 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.5628021 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1313569 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0008652 | 0.4588634 | liminal        | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0027401 | 0.1874303 | liminal        | FALSE      |                 0 | x        | isBAD | FALSE       |
+| x2                             | TRUE     | 0.0017259 | 0.2954674 | liminal        | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.1655671 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.3429809 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0221886 | 0.0001760 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.1851534 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0050116 | 0.0746256 | liminal        | FALSE      |                 0 | xc       | lev   | FALSE       |
+| x                              | TRUE     | 0.0005707 | 0.5469828 | small          | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0001107 | 0.7908455 | small          | FALSE      |                 0 | x        | isBAD | FALSE       |
+| x2                             | TRUE     | 0.0010125 | 0.4224429 | small          | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.5074031 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1163268 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1325041 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.1861859 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0486115 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
+| large\_xc\_catB                | TRUE     | 0.7956572 | 0.0000000 | large          | TRUE       |                 5 | xc       | catB  | TRUE        |
+| liminal\_xc\_catB              | TRUE     | 0.5901532 | 0.0000000 | liminal        | TRUE       |                 5 | xc       | catB  | TRUE        |
+| small\_xc\_catB                | TRUE     | 0.8047867 | 0.0000000 | small          | TRUE       |                 5 | xc       | catB  | TRUE        |
 
 ## Deriving the Default Thresholds
 

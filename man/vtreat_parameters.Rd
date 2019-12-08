@@ -17,5 +17,7 @@ A list of settings and values for vtreat supervised fitting.
 See
 \code{\link{mkCrossFrameCExperiment}}, 
 \code{\link{designTreatmentsC}}, and
+\code{\link{mkCrossFrameNExperiment}}, 
+\code{\link{designTreatmentsN}},
 \code{\link{prepare.treatmentplan}} for details.
 }
