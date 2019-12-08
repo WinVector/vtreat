@@ -19,7 +19,7 @@ They work as follows.
 
 This corresponds to the classic `R` `vtreat` notations as follows:
 
-  * `plan$fit(d)` ~ `plan &lt;- designTreatments*(d)`
+  * `plan$fit(d)` ~ `plan <- designTreatments*(d)`
   * `plan$transform(d)` ~ `prepare(plan, d)`
   * `plan$fit_transform(d)` ~ `mkCrossFrame*Experiment(d)$crossFrame`
 
@@ -27,8 +27,8 @@ Both notation systems are good, the `R` one being more "R-like" (using the usual
 
 Examples of the modeling typical tasks in both notations can be found here:
 
- * Regression: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`$fit_transfomr()` notation]().
- * Binary Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`$fit_transfomr()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FT.md).
- * Unsupervised Coding: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`$fit_transfomr()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FT.md).
- * Multinomial Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`$fit_transfomr()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FT.md).
+ * Regression: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FT.md).
+ * Binary Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FT.md).
+ * Unsupervised Coding: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FT.md).
+ * Multinomial Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FT.md).
 
