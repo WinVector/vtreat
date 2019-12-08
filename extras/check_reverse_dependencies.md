@@ -14,7 +14,7 @@ packageVersion(package)
 date()
 ```
 
-    ## [1] "Sat Dec  7 16:52:17 2019"
+    ## [1] "Sat Dec  7 18:54:59 2019"
 
 ``` r
 parallelCluster <- NULL
@@ -33,7 +33,7 @@ setwd(td)
 print(td)
 ```
 
-    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//Rtmp2rrJqE"
+    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//Rtmpyjdpzy"
 
 ``` r
 options(repos = c(CRAN="https://cloud.r-project.org"))

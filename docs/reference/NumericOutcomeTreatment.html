@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run vtreat tests. — run_vtreat_tests • vtreat</title>
+<title>Stateful object for designing and applying numeric outcome treatments. — NumericOutcomeTreatment • vtreat</title>
 
 
 <!-- jquery -->
@@ -35,11 +35,8 @@
 
 
 
-<meta property="og:title" content="Run vtreat tests. — run_vtreat_tests" />
-<meta property="og:description" content="For all files with names of the form &quot;^test_.+\.R$&quot; in the package directory unit_tests
-run all functions with names of the form &quot;^test_.+$&quot; as RUnit tests.
-Attaches RUnit and pkg, requires RUnit.
-Stops on error." />
+<meta property="og:title" content="Stateful object for designing and applying numeric outcome treatments. — NumericOutcomeTreatment" />
+<meta property="og:description" content="Hold settings are results for regression data preparation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -153,29 +150,22 @@ Stops on error." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run vtreat tests.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/run_vtreat_tests.R'><code>R/run_vtreat_tests.R</code></a></small>
-    <div class="hidden name"><code>run_vtreat_tests.Rd</code></div>
+    <h1>Stateful object for designing and applying numeric outcome treatments.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/ft.R'><code>R/ft.R</code></a></small>
+    <div class="hidden name"><code>NumericOutcomeTreatment.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For all files with names of the form "^test_.+\.R$" in the package directory unit_tests
-run all functions with names of the form "^test_.+$" as RUnit tests.
-Attaches RUnit and pkg, requires RUnit.
-Stops on error.</p>
+    <p>Hold settings are results for regression data preparation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_vtreat_tests</span>(
+    <pre class="usage"><span class='fu'>NumericOutcomeTreatment</span>(
   <span class='no'>...</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>package_test_dirs</span> <span class='kw'>=</span> <span class='st'>"unit_tests"</span>,
-  <span class='kw'>test_dirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
-  <span class='kw'>stop_on_issue</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>stop_if_no_tests</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>require_RUnit_attached</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>require_pkg_attached</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>rngKind</span> <span class='kw'>=</span> <span class='st'>"Mersenne-Twister"</span>,
-  <span class='kw'>rngNormalKind</span> <span class='kw'>=</span> <span class='st'>"Inversion"</span>
+  <span class='no'>var_list</span>,
+  <span class='no'>outcome_name</span>,
+  <span class='kw'>cols_to_copy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -183,56 +173,43 @@ Stops on error.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>not used, force later arguments to bind by name.</p></td>
+      <td><p>not used, force arguments to be specified by name.</p></td>
     </tr>
     <tr>
-      <th>verbose</th>
-      <td><p>logical, if TRUE print more.</p></td>
+      <th>var_list</th>
+      <td><p>Names of columns to treat (effective variables).</p></td>
     </tr>
     <tr>
-      <th>package_test_dirs</th>
-      <td><p>directory names to look for in the installed package.</p></td>
+      <th>outcome_name</th>
+      <td><p>Name of column holding outcome variable. <code>dframe[[outcomename]]</code> must be only finite non-missing values.</p></td>
     </tr>
     <tr>
-      <th>test_dirs</th>
-      <td><p>paths to look for tests in.</p></td>
+      <th>cols_to_copy</th>
+      <td><p>list of extra columns to copy.</p></td>
     </tr>
     <tr>
-      <th>stop_on_issue</th>
-      <td><p>logical, if TRUE stop after errors or failures.</p></td>
+      <th>params</th>
+      <td><p>parameters list from <code>vtreat_parameters</code></p></td>
     </tr>
     <tr>
-      <th>stop_if_no_tests</th>
-      <td><p>logical, if TRUE stop if no tests were found.</p></td>
-    </tr>
-    <tr>
-      <th>require_RUnit_attached</th>
-      <td><p>logical, if TRUE require RUnit be attached before testing.</p></td>
-    </tr>
-    <tr>
-      <th>require_pkg_attached</th>
-      <td><p>logical, if TRUE require pkg be attached before testing.</p></td>
-    </tr>
-    <tr>
-      <th>rngKind</th>
-      <td><p>pseudo-random number generator method name.</p></td>
-    </tr>
-    <tr>
-      <th>rngNormalKind</th>
-      <td><p>pseudo-random normal generator method name.</p></td>
+      <th>imputation_map</th>
+      <td><p>map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>RUnit test results (invisible).</p>
+    <p>See
+<code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></code>, 
+<code><a href='designTreatmentsN.html'>designTreatmentsN</a></code>, and
+<code><a href='prepare.treatmentplan.html'>prepare.treatmentplan</a></code> for details.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
     </ul>
 
   </div>
