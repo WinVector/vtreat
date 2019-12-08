@@ -5,11 +5,12 @@ Unsupervised Fit Transform Notation
 
 Nina Zumel and John Mount December 2019
 
-Note this the “fit\_transform” variation (a notation closer to that used
-in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the
-description of the [`R` version of
-`vtreat`](https://github.com/WinVector/vtreat). The original `vtreat`
-notation version can be found
+This is the [“fit\_transform”
+variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md)
+(a notation closer to that used in
+[`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the description
+of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat).
+The original `vtreat` notation version can be found
 [here](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
 The same example for the [`Python` version of
 `vtreat`](https://github.com/WinVector/pyvtreat) can be found
@@ -67,12 +68,12 @@ d %.>%
 
 |           x |           y | xc          |          x2 | x3 |
 | ----------: | ----------: | :---------- | ----------: | -: |
-| \-2.5914400 | \-0.4638982 | level\_-0.5 | \-0.1950176 |  1 |
-|   9.7772629 | \-0.0803355 | level\_0    |   0.4787477 |  1 |
-| \-0.1409548 | \-0.1377198 | level\_0    | \-0.0334094 |  1 |
-|          NA | \-0.8873637 | NA          | \-0.5679459 |  1 |
-|          NA |   1.2220758 | level\_1    | \-0.9349037 |  1 |
-|          NA | \-0.4613416 | level\_-0.5 | \-1.1405181 |  1 |
+|    3.685058 | \-0.4694790 | level\_-0.5 |   0.1983434 |  1 |
+|  \-2.160786 | \-0.8939346 | NA          |   0.1470104 |  1 |
+| \-12.306036 |   0.1827176 | level\_0    | \-0.2532391 |  1 |
+|          NA |   0.5116525 | level\_0.5  | \-1.6476550 |  1 |
+|          NA | \-0.0165443 | level\_0    | \-0.9109115 |  1 |
+|          NA |   0.5911219 | level\_0.5  |   0.2693518 |  1 |
 
 ### Some quick data exploration
 
@@ -82,21 +83,22 @@ Check how many levels `xc` has, and their distribution (including `NaN`)
 unique(d['xc'])
 ```
 
-    ##            xc
-    ## 1  level_-0.5
-    ## 2     level_0
-    ## 4        <NA>
-    ## 5     level_1
-    ## 7   level_0.5
-    ## 51 level_-1.5
+    ##             xc
+    ## 1   level_-0.5
+    ## 2         <NA>
+    ## 3      level_0
+    ## 4    level_0.5
+    ## 8      level_1
+    ## 108 level_-1.5
+    ## 441  level_1.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1       <NA> 
-    ##         78          2         87         96        115        122
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1  level_1.5       <NA> 
+    ##         95          1         82         92        125          1        104
 
 ## Build a transform appropriate for unsupervised (or non-y-aware) problems.
 
@@ -156,7 +158,7 @@ knitr::kable(score_frame)
 | :----------------------------- | :------- | --: | --: | :--------- | ----------------: | :------- | :---- |
 | x                              | TRUE     |   0 |   1 | FALSE      |                 0 | x        | clean |
 | x\_isBAD                       | TRUE     |   0 |   1 | FALSE      |                 0 | x        | isBAD |
-| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 5 | xc       | catP  |
+| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 6 | xc       | catP  |
 | x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
 | xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
@@ -187,14 +189,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
-| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
-| \-2.5914400 |        0 |    0.156 | \-0.1950176 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4638982 |
-|   9.7772629 |        0 |    0.174 |   0.4787477 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.0803355 |
-| \-0.1409548 |        0 |    0.174 | \-0.0334094 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.1377198 |
-|   0.2551063 |        1 |    0.244 | \-0.5679459 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.8873637 |
-|   0.2551063 |        1 |    0.230 | \-0.9349037 |           0 |                              0 |                    0 |                       0 |                    1 |   1.2220758 |
-|   0.2551063 |        1 |    0.156 | \-1.1405181 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4613416 |
+|            x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| -----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|    3.6850581 |        0 |    0.190 |   0.1983434 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4694790 |
+|  \-2.1607860 |        0 |    0.208 |   0.1470104 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.8939346 |
+| \-12.3060357 |        0 |    0.164 | \-0.2532391 |           0 |                              0 |                    1 |                       0 |                    0 |   0.1827176 |
+|  \-0.1947655 |        1 |    0.184 | \-1.6476550 |           0 |                              0 |                    0 |                       1 |                    0 |   0.5116525 |
+|  \-0.1947655 |        1 |    0.164 | \-0.9109115 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.0165443 |
+|  \-0.1947655 |        1 |    0.184 |   0.2693518 |           0 |                              0 |                    0 |                       1 |                    0 |   0.5911219 |
 
 ## Using the Prepared Data to Model
 
@@ -216,7 +218,7 @@ d_prepared['clusterID'] <- clusters$cluster
 head(d_prepared$clusterID)
 ```
 
-    ## [1] 4 5 2 2 2 2
+    ## [1] 4 1 3 1 1 1
 
 ``` r
 ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
@@ -300,7 +302,7 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-    ## [1] "F Test summary: (R2=0.964, F(10,439)=1175, p<1e-05)."
+    ## [1] "F Test summary: (R2=0.9677, F(10,439)=1314, p<1e-05)."
 
 ## Parameters for `UnsupervisedTreatment`
 

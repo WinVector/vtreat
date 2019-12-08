@@ -11,7 +11,7 @@ output: github_document
 Nina Zumel and John Mount
 December 2019
 
-Note this the "fit_transform" variation (a notation closer to that used in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat). The original `vtreat` notation version can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md). The same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+This is the ["fit_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) (a notation closer to that used in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat). The original `vtreat` notation version can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md). The same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
 
 
 

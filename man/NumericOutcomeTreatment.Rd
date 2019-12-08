@@ -30,7 +30,8 @@ NumericOutcomeTreatment(
 Hold settings are results for regression data preparation.
 }
 \details{
-See
+Please see
+\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 \code{\link{mkCrossFrameNExperiment}}, 
 \code{\link{designTreatmentsN}}, and
 \code{\link{prepare.treatmentplan}} for details.

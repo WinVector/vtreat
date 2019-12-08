@@ -14,7 +14,8 @@ filled out parameter list
 }
 \description{
 A list of settings and values for vtreat binomial classification fitting. 
-See
+Please see
+\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 \code{\link{mkCrossFrameCExperiment}}, 
 \code{\link{designTreatmentsC}}, and
 \code{\link{prepare.treatmentplan}} for details.

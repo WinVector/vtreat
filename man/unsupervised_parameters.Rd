@@ -2,7 +2,7 @@
 % Please edit documentation in R/ft.R
 \name{unsupervised_parameters}
 \alias{unsupervised_parameters}
-\title{vtreat unsupervisedparameters.}
+\title{vtreat unsupervised parameters.}
 \usage{
 unsupervised_parameters(user_params = NULL)
 }
@@ -14,7 +14,8 @@ filled out parameter list
 }
 \description{
 A list of settings and values for vtreat unsupervised fitting. 
-See
+Please see
+\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 \code{\link{designTreatmentsZ}}, and
 \code{\link{prepare.treatmentplan}} for details.
 }

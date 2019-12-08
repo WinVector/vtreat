@@ -19,7 +19,8 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
 #' vtreat classification parameters.
 #' 
 #' A list of settings and values for vtreat binomial classification fitting. 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
@@ -60,7 +61,8 @@ classification_parameters <- function(user_params = NULL) {
 #' 
 #' Hold settings are results for binomial classification data preparation.
 #' 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
@@ -85,7 +87,7 @@ BinomialOutcomeTreatment <- function(...,
                                      imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::BinomialOutcomeTreatment")
   if((!is.null(params)) && (!('classification_parameters' %in% class(params)))) {
-    stop("vtreat::BinomialOutcomeTreatment extpected class classification_parameters")
+    stop("vtreat::BinomialOutcomeTreatment expected class classification_parameters")
   }
   params <- classification_parameters(params)
   settings <- list(
@@ -206,7 +208,8 @@ BinomialOutcomeTreatment <- function(...,
 #' vtreat regression parameters.
 #' 
 #' A list of settings and values for vtreat regression fitting. 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
 #' \code{\link{mkCrossFrameNExperiment}}, 
@@ -249,7 +252,8 @@ regression_parameters <- function(user_params = NULL) {
 #' 
 #' Hold settings are results for regression data preparation.
 #' 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameNExperiment}}, 
 #' \code{\link{designTreatmentsN}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
@@ -272,7 +276,7 @@ NumericOutcomeTreatment <- function(...,
                                     imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::NumericOutcomeTreatment")
   if((!is.null(params)) && (!('regression_parameters' %in% class(params)))) {
-    stop("vtreat::NumericOutcomeTreatment extpected class regression_parameters")
+    stop("vtreat::NumericOutcomeTreatment expected class regression_parameters")
   }
   params <- regression_parameters(params)
   settings <- list(
@@ -388,7 +392,8 @@ NumericOutcomeTreatment <- function(...,
 #' vtreat multinomial parameters.
 #' 
 #' A list of settings and values for vtreat multinomial classification fitting. 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameMExperiment}} and
 #' \code{\link{prepare.multinomial_plan}} for details.
 #' 
@@ -425,7 +430,8 @@ multinomial_parameters <- function(user_params = NULL) {
 #' 
 #' Hold settings are results for multinomial classification data preparation.
 #' 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameMExperiment}} and
 #' \code{\link{prepare.multinomial_plan}} for details.
 #' 
@@ -451,7 +457,7 @@ MultinomialOutcomeTreatment <- function(...,
                                         imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::MultinomialOutcomeTreatment")
   if((!is.null(params)) && (!('multinomial_parameters' %in% class(params)))) {
-    stop("vtreat::MultinomialOutcomeTreatment extpected class multinomial_parameters")
+    stop("vtreat::MultinomialOutcomeTreatment expected class multinomial_parameters")
   }
   params <- multinomial_parameters(params)
   settings <- list(
@@ -541,10 +547,11 @@ MultinomialOutcomeTreatment <- function(...,
 }
 
 
-#' vtreat unsupervisedparameters.
+#' vtreat unsupervised parameters.
 #' 
 #' A list of settings and values for vtreat unsupervised fitting. 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{designTreatmentsZ}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 
@@ -578,7 +585,8 @@ unsupervised_parameters <- function(user_params = NULL) {
 #' 
 #' Hold settings are results for unsupervised data preparation.
 #' 
-#' See
+#' Please see
+#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{designTreatmentsZ}} and
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 
@@ -601,7 +609,7 @@ UnsupervisedTreatment <- function(...,
                                   imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::UnsupervisedTreatment")
   if((!is.null(params)) && (!('unsupervised_parameters' %in% class(params)))) {
-    stop("vtreat::UnsupervisedTreatment extpected class unsupervised_parameters")
+    stop("vtreat::UnsupervisedTreatment expected class unsupervised_parameters")
   }
   params <- unsupervised_parameters(params)
   settings <- list(

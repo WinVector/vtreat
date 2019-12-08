@@ -33,7 +33,8 @@ BinomialOutcomeTreatment(
 Hold settings are results for binomial classification data preparation.
 }
 \details{
-See
+Please see
+\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 \code{\link{mkCrossFrameCExperiment}}, 
 \code{\link{designTreatmentsC}}, and
 \code{\link{prepare.treatmentplan}} for details.

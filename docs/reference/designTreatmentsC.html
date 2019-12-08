@@ -307,11 +307,11 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
    <span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
 <span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.8 inspecting inputs Sun Dec  8 09:34:16 2019"
-#&gt; [1] "designing treatments Sun Dec  8 09:34:16 2019"
-#&gt; [1] " have initial level statistics Sun Dec  8 09:34:16 2019"
-#&gt; [1] " scoring treatments Sun Dec  8 09:34:16 2019"
-#&gt; [1] "have treatment plan Sun Dec  8 09:34:16 2019"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
+<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.8 inspecting inputs Sun Dec  8 10:09:49 2019"
+#&gt; [1] "designing treatments Sun Dec  8 10:09:49 2019"
+#&gt; [1] " have initial level statistics Sun Dec  8 10:09:49 2019"
+#&gt; [1] " scoring treatments Sun Dec  8 10:09:49 2019"
+#&gt; [1] "have treatment plan Sun Dec  8 10:09:49 2019"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
 <span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

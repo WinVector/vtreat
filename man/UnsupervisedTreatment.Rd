@@ -27,7 +27,8 @@ UnsupervisedTreatment(
 Hold settings are results for unsupervised data preparation.
 }
 \details{
-See
+Please see
+\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
 \code{\link{designTreatmentsZ}} and
 \code{\link{prepare.treatmentplan}} for details.
 
