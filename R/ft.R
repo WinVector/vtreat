@@ -409,10 +409,10 @@ MultinomialOutcomeTreatment <- function(...,
                             "vtreat::MultinomialOutcomeTreatment$fit_transform")
     assign("tp", NULL, envir = settings$state)
     assign("ce", NULL, envir = settings$state)
-    ce <- mkCrossFrameNExperiment(
-      dframe = dframe,
-      varlist = settings$var_list,
-      outcomename = settings$outcome_name, 
+    ce <- mkCrossFrameMExperiment(
+      d = dframe,
+      vars = settings$var_list,
+      y_name = settings$outcome_name, 
       weights = weights,
       minFraction = settings$params$minFraction,
       smFactor = settings$params$smFactor,
