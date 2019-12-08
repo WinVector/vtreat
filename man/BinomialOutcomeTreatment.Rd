@@ -25,7 +25,7 @@ BinomialOutcomeTreatment(
 
 \item{cols_to_copy}{list of extra columns to copy.}
 
-\item{params}{parameters list from \code{vtreat_parameters}}
+\item{params}{parameters list from \code{classification_parameters}}
 
 \item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }

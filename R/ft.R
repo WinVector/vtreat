@@ -16,21 +16,19 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
 }
 
 
-#' vtreat parameters.
+#' vtreat classification parameters.
 #' 
-#' A list of settings and values for vtreat supervised fitting. 
+#' A list of settings and values for vtreat binomial classification fitting. 
 #' See
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
-#' \code{\link{mkCrossFrameNExperiment}}, 
-#' \code{\link{designTreatmentsN}},
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 
 #' @param user_params list of user overrides.
 #' @return filled out parameter list
 #' 
 #' @export
-vtreat_parameters <- function(user_params = NULL) {
+classification_parameters <- function(user_params = NULL) {
   params = list(
     minFraction = 0.02, 
     smFactor = 0.0,
@@ -53,7 +51,7 @@ vtreat_parameters <- function(user_params = NULL) {
     trackedValues = NULL)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
-  class(merged_params) <- 'vtreat_parameters'
+  class(merged_params) <- 'classification_parameters'
   return(merged_params)
 }
 
@@ -72,7 +70,7 @@ vtreat_parameters <- function(user_params = NULL) {
 #' @param outcome_name Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite non-missing values.
 #' @param outcome_target Value/level of outcome to be considered "success",  and there must be a cut such that \code{dframe[[outcomename]]==outcometarget} at least twice and dframe[[outcomename]]!=outcometarget at least twice.
 #' @param cols_to_copy list of extra columns to copy.
-#' @param params parameters list from \code{vtreat_parameters}
+#' @param params parameters list from \code{classification_parameters}
 #' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' 
 #' 
@@ -86,10 +84,10 @@ BinomialOutcomeTreatment <- function(...,
                                      params = NULL,
                                      imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::BinomialOutcomeTreatment")
-  if((!is.null(params)) && (!('vtreat_parameters' %in% class(params)))) {
-    stop("vtreat::BinomialOutcomeTreatment extpected class vtreat_parameters")
+  if((!is.null(params)) && (!('classification_parameters' %in% class(params)))) {
+    stop("vtreat::BinomialOutcomeTreatment extpected class classification_parameters")
   }
-  params <- vtreat_parameters(params)
+  params <- classification_parameters(params)
   settings <- list(
     var_list = var_list,
     outcome_name = outcome_name, 
@@ -205,6 +203,48 @@ BinomialOutcomeTreatment <- function(...,
 }
 
 
+#' vtreat regression parameters.
+#' 
+#' A list of settings and values for vtreat regression fitting. 
+#' See
+#' \code{\link{mkCrossFrameCExperiment}}, 
+#' \code{\link{designTreatmentsC}}, and
+#' \code{\link{mkCrossFrameNExperiment}}, 
+#' \code{\link{designTreatmentsN}},
+#' \code{\link{prepare.treatmentplan}} for details.
+#' 
+#' @param user_params list of user overrides.
+#' @return filled out parameter list
+#' 
+#' @export
+regression_parameters <- function(user_params = NULL) {
+  params = list(
+    minFraction = 0.02, 
+    smFactor = 0.0,
+    rareCount = 0, 
+    rareSig = NULL,
+    collarProb = 0.00,
+    codeRestriction = NULL,
+    customCoders = NULL, 
+    splitFunction = NULL, 
+    ncross = 3,
+    forceSplit = FALSE,
+    catScaling = TRUE,
+    verbose = FALSE,
+    use_parallel = TRUE,
+    missingness_imputation = NULL,
+    pruneSig = NULL,
+    scale = FALSE,
+    doCollar= FALSE,
+    varRestriction = NULL,
+    trackedValues = NULL)
+  merged_params <- merge_params(params = params, 
+                                user_params = user_params)
+  class(merged_params) <- 'regression_parameters'
+  return(merged_params)
+}
+
+
 #' Stateful object for designing and applying numeric outcome treatments.
 #' 
 #' Hold settings are results for regression data preparation.
@@ -218,7 +258,7 @@ BinomialOutcomeTreatment <- function(...,
 #' @param var_list Names of columns to treat (effective variables).
 #' @param outcome_name Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite non-missing values.
 #' @param cols_to_copy list of extra columns to copy.
-#' @param params parameters list from \code{vtreat_parameters}
+#' @param params parameters list from \code{regression_parameters}
 #' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' 
 #' 
@@ -231,10 +271,10 @@ NumericOutcomeTreatment <- function(...,
                                     params = NULL,
                                     imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::NumericOutcomeTreatment")
-  if((!is.null(params)) && (!('vtreat_parameters' %in% class(params)))) {
-    stop("vtreat::NumericOutcomeTreatment extpected class vtreat_parameters")
+  if((!is.null(params)) && (!('regression_parameters' %in% class(params)))) {
+    stop("vtreat::NumericOutcomeTreatment extpected class regression_parameters")
   }
-  params <- vtreat_parameters(params)
+  params <- regression_parameters(params)
   settings <- list(
     var_list = var_list,
     outcome_name = outcome_name, 
@@ -397,7 +437,7 @@ multinomial_parameters <- function(user_params = NULL) {
 #' @param var_list Names of columns to treat (effective variables).
 #' @param outcome_name Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite non-missing values.
 #' @param cols_to_copy list of extra columns to copy.
-#' @param params parameters list from \code{vtreat_parameters}
+#' @param params parameters list from \code{multinomial_parameters}
 #' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' 
 #' 
@@ -413,7 +453,7 @@ MultinomialOutcomeTreatment <- function(...,
   if((!is.null(params)) && (!('multinomial_parameters' %in% class(params)))) {
     stop("vtreat::MultinomialOutcomeTreatment extpected class multinomial_parameters")
   }
-  params <- vtreat_parameters(params)
+  params <- multinomial_parameters(params)
   settings <- list(
     var_list = var_list,
     outcome_name = outcome_name, 
