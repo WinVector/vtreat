@@ -96,6 +96,8 @@ BinomialOutcomeTreatment <- function(...,
   )
   assign("tp", NULL, envir = settings$state)
   assign("ce", NULL, envir = settings$state)
+  obj <- list(settings = settings)
+  class(obj) <- "vtreat_BinomialOutcomeTreatment"
   fit <- function(dframe, ..., weights = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::BinomialOutcomeTreatment$fit")
@@ -126,10 +128,6 @@ BinomialOutcomeTreatment <- function(...,
     assign("tp", tp, envir = settings$state)
     invisible(obj) # allow method chaining
   }
-  obj <- list(
-    fit = fit,
-    settings = settings)
-  class(obj) <- "vtreat_BinomialOutcomeTreatment"
   transform <- function(dframe) {
     tp <- get('tp', envir = settings$state, inherits = FALSE)
     res <- prepare(
@@ -182,6 +180,7 @@ BinomialOutcomeTreatment <- function(...,
     tp <- get('tp', envir = settings$state, inherits = FALSE)
     return(tp$scoreFrame)
   }
+  obj$fit = fit
   obj$transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
