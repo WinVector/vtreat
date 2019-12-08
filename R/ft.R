@@ -99,15 +99,15 @@ BinomialOutcomeTreatment <- function(...,
     imputation_map = imputation_map,
     state = new.env(parent = emptyenv())
   )
-  assign("tp", NULL, envir = settings$state)
-  assign("ce", NULL, envir = settings$state)
+  assign("transform", NULL, envir = settings$state)
+  assign("score_frame", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_BinomialOutcomeTreatment"
   fit <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::BinomialOutcomeTreatment$fit")
-    assign("tp", NULL, envir = settings$state)
-    assign("ce", NULL, envir = settings$state)
+    assign("transform", NULL, envir = settings$state)
+    assign("score_frame", NULL, envir = settings$state)
     tp <- designTreatmentsC(
       dframe = dframe,
       varlist = settings$var_list,
@@ -130,13 +130,14 @@ BinomialOutcomeTreatment <- function(...,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
-    assign("tp", tp, envir = settings$state)
+    assign("transform", tp, envir = settings$state)
+    assign("score_frame", tp$scoreFrame, envir = settings$state)
     invisible(obj) # allow method chaining
   }
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::BinomialOutcomeTreatment$transform")
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
+    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
@@ -154,8 +155,8 @@ BinomialOutcomeTreatment <- function(...,
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::BinomialOutcomeTreatment$fit_transform")
-    assign("tp", NULL, envir = settings$state)
-    assign("ce", NULL, envir = settings$state)
+    assign("transform", NULL, envir = settings$state)
+    assign("score_frame", NULL, envir = settings$state)
     ce <- mkCrossFrameCExperiment(
       dframe = dframe,
       varlist = settings$var_list,
@@ -179,8 +180,8 @@ BinomialOutcomeTreatment <- function(...,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
     tp <- ce$treatments
-    assign("tp", tp, envir = settings$state)
-    assign("ce", ce, envir = settings$state)
+    assign("transform", tp, envir = settings$state)
+    assign("score_frame", tp$scoreFrame, envir = settings$state)
     res <- ce$crossFrame
     for(c in settings$cols_to_copy) {
       res[[c]] <- dframe[[c]]
@@ -188,23 +189,18 @@ BinomialOutcomeTreatment <- function(...,
     return(res)
   }
   score_frame <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp$scoreFrame)
+    res <- get('score_frame', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   get_transform <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp)
-  }
-  get_cross_frame_experiment <- function() {
-    ce <- get('tp', envir = settings$state, inherits = FALSE)
-    return(ce)
+    td <- get('transform', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   obj$fit = fit
   obj$transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
-  obj$get_cross_frame_experiment = get_cross_frame_experiment
   return(obj)
 }
 
@@ -247,15 +243,15 @@ NumericOutcomeTreatment <- function(...,
     imputation_map = imputation_map,
     state = new.env(parent = emptyenv())
   )
-  assign("tp", NULL, envir = settings$state)
-  assign("ce", NULL, envir = settings$state)
+  assign("transform", NULL, envir = settings$state)
+  assign("score_frame", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_NumericOutcomeTreatment"
   fit <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::NumericOutcomeTreatment$fit")
-    assign("tp", NULL, envir = settings$state)
-    assign("ce", NULL, envir = settings$state)
+    assign("transform", NULL, envir = settings$state)
+    assign("score_frame", NULL, envir = settings$state)
     tp <- designTreatmentsN(
       dframe = dframe,
       varlist = settings$var_list,
@@ -276,13 +272,14 @@ NumericOutcomeTreatment <- function(...,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
-    assign("tp", tp, envir = settings$state)
+    assign("transform", tp, envir = settings$state)
+    assign("score_frame", tp$scoreFrame, envir = settings$state)
     invisible(obj) # allow method chaining
   }
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::NumericOutcomeTreatment$transform")
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
+    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
@@ -300,8 +297,8 @@ NumericOutcomeTreatment <- function(...,
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::NumericOutcomeTreatment$fit_transform")
-    assign("tp", NULL, envir = settings$state)
-    assign("ce", NULL, envir = settings$state)
+    assign("transform", NULL, envir = settings$state)
+    assign("score_frame", NULL, envir = settings$state)
     ce <- mkCrossFrameNExperiment(
       dframe = dframe,
       varlist = settings$var_list,
@@ -323,8 +320,8 @@ NumericOutcomeTreatment <- function(...,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
     tp <- ce$treatments
-    assign("tp", tp, envir = settings$state)
-    assign("ce", ce, envir = settings$state)
+    assign("transform", tp, envir = settings$state)
+    assign("score_frame", tp$scoreFrame, envir = settings$state)
     res <- ce$crossFrame
     for(c in settings$cols_to_copy) {
       res[[c]] <- dframe[[c]]
@@ -332,23 +329,18 @@ NumericOutcomeTreatment <- function(...,
     return(res)
   }
   score_frame <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp$scoreFrame)
+    res <- get('score_frame', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   get_transform <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp)
-  }
-  get_cross_frame_experiment <- function() {
-    ce <- get('tp', envir = settings$state, inherits = FALSE)
-    return(ce)
+    td <- get('transform', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   obj$fit = fit
   obj$transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
-  obj$get_cross_frame_experiment = get_cross_frame_experiment
   return(obj)
 }
 
@@ -579,13 +571,15 @@ UnsupervisedTreatment <- function(...,
     imputation_map = imputation_map,
     state = new.env(parent = emptyenv())
   )
-  assign("tp", NULL, envir = settings$state)
+  assign("transform", NULL, envir = settings$state)
+  assign("score_frame", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_UnsupervisedTreatment"
   fit <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::UnsupervisedTreatment$fit")
-    assign("tp", NULL, envir = settings$state)
+    assign("transform", NULL, envir = settings$state)
+    assign("score_frame", NULL, envir = settings$state)
     tp <- designTreatmentsZ(
       dframe = dframe,
       varlist = settings$var_list,
@@ -599,13 +593,14 @@ UnsupervisedTreatment <- function(...,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
-    assign("tp", tp, envir = settings$state)
+    assign("transform", tp, envir = settings$state)
+    assign("score_frame", tp$scoreFrame, envir = settings$state)
     invisible(obj) # allow method chaining
   }
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::UnsupervisedTreatment$transform")
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
+    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
@@ -627,12 +622,12 @@ UnsupervisedTreatment <- function(...,
     return(res)
   }
   score_frame <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp$scoreFrame)
+    res <- get('score_frame', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   get_transform <- function() {
-    tp <- get('tp', envir = settings$state, inherits = FALSE)
-    return(tp)
+    td <- get('transform', envir = settings$state, inherits = FALSE)
+    return(res)
   }
   obj$fit = fit
   obj$transform = transform
