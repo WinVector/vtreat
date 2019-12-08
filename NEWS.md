@@ -1,8 +1,9 @@
 
-# vtreat 1.4.8 2019/11/12
+# vtreat 1.4.8 2019/12/07
 
  * Center/scale improvement from nfultz.
  * Documentation updates.
+ * fit_tranform interface.
 
 # vtreat 1.4.7 2019/10/01
 

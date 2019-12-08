@@ -4,8 +4,14 @@
 \alias{buildEvalSets}
 \title{Build set carve-up for out-of sample evaluation.}
 \usage{
-buildEvalSets(nRows, ..., dframe = NULL, y = NULL,
-  splitFunction = NULL, nSplits = 3)
+buildEvalSets(
+  nRows,
+  ...,
+  dframe = NULL,
+  y = NULL,
+  splitFunction = NULL,
+  nSplits = 3
+)
 }
 \arguments{
 \item{nRows}{scalar, >=1 number of rows to sample from.}

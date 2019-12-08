@@ -4,11 +4,20 @@
 \alias{prepare.treatmentplan}
 \title{Apply treatments and restrict to useful variables.}
 \usage{
-\method{prepare}{treatmentplan}(treatmentplan, dframe, ...,
-  pruneSig = NULL, scale = FALSE, doCollar = FALSE,
-  varRestriction = NULL, codeRestriction = NULL,
-  trackedValues = NULL, extracols = NULL, parallelCluster = NULL,
-  use_parallel = TRUE)
+\method{prepare}{treatmentplan}(
+  treatmentplan,
+  dframe,
+  ...,
+  pruneSig = NULL,
+  scale = FALSE,
+  doCollar = FALSE,
+  varRestriction = NULL,
+  codeRestriction = NULL,
+  trackedValues = NULL,
+  extracols = NULL,
+  parallelCluster = NULL,
+  use_parallel = TRUE
+)
 }
 \arguments{
 \item{treatmentplan}{Plan built by designTreantmentsC() or designTreatmentsN()}

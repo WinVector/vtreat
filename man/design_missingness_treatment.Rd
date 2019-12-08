@@ -4,8 +4,13 @@
 \alias{design_missingness_treatment}
 \title{Design a simple treatment plan to indicate missingingness and perform simple imputation.}
 \usage{
-design_missingness_treatment(dframe, ..., varlist = colnames(dframe),
-  invalid_mark = "_invalid_", drop_constant_columns = FALSE)
+design_missingness_treatment(
+  dframe,
+  ...,
+  varlist = colnames(dframe),
+  invalid_mark = "_invalid_",
+  drop_constant_columns = FALSE
+)
 }
 \arguments{
 \item{dframe}{data.frame to drive design.}

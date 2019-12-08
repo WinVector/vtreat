@@ -4,16 +4,32 @@
 \alias{value_variables_N}
 \title{Value variables for prediction a numeric outcome.}
 \usage{
-value_variables_N(dframe, varlist, outcomename, ..., weights = c(),
-  minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
-  collarProb = 0, scale = FALSE, doCollar = FALSE,
-  splitFunction = NULL, ncross = 3, forceSplit = FALSE,
-  verbose = FALSE, parallelCluster = NULL, use_parallel = TRUE,
-  customCoders = list(c.PiecewiseV.num = vtreat::solve_piecewisec,
-  n.PiecewiseV.num = vtreat::solve_piecewise, c.knearest.num =
-  vtreat::square_windowc, n.knearest.num = vtreat::square_window),
-  codeRestriction = c("PiecewiseV", "knearest", "clean", "isBAD", "catB",
-  "catP"), missingness_imputation = NULL, imputation_map = NULL)
+value_variables_N(
+  dframe,
+  varlist,
+  outcomename,
+  ...,
+  weights = c(),
+  minFraction = 0.02,
+  smFactor = 0,
+  rareCount = 0,
+  rareSig = 1,
+  collarProb = 0,
+  scale = FALSE,
+  doCollar = FALSE,
+  splitFunction = NULL,
+  ncross = 3,
+  forceSplit = FALSE,
+  verbose = FALSE,
+  parallelCluster = NULL,
+  use_parallel = TRUE,
+  customCoders = list(c.PiecewiseV.num = vtreat::solve_piecewisec, n.PiecewiseV.num =
+    vtreat::solve_piecewise, c.knearest.num = vtreat::square_windowc, n.knearest.num =
+    vtreat::square_window),
+  codeRestriction = c("PiecewiseV", "knearest", "clean", "isBAD", "catB", "catP"),
+  missingness_imputation = NULL,
+  imputation_map = NULL
+)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}

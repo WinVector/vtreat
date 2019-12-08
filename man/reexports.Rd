@@ -23,6 +23,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{wrapr}{\code{\link[wrapr]{apply_left}}, \code{\link[wrapr]{apply_right}}, \code{\link[wrapr]{mk_tmp_name_source}}, \code{\link[wrapr]{map_to_char}}, \code{\link[wrapr]{\%.>\%}}, \code{\link[wrapr]{let}}, \code{\link[wrapr]{qc}}, \code{\link[wrapr]{qe}}, \code{\link[wrapr]{qae}}, \code{\link[wrapr]{build_frame}}, \code{\link[wrapr]{draw_frame}}, \code{\link[wrapr]{qchar_frame}}, \code{\link[wrapr]{\%:=\%}}}
+  \item{wrapr}{\code{\link[wrapr]{\%:=\%}}, \code{\link[wrapr]{\%.>\%}}, \code{\link[wrapr]{apply_left}}, \code{\link[wrapr]{apply_right}}, \code{\link[wrapr]{build_frame}}, \code{\link[wrapr]{draw_frame}}, \code{\link[wrapr]{let}}, \code{\link[wrapr]{map_to_char}}, \code{\link[wrapr]{mk_tmp_name_source}}, \code{\link[wrapr]{qae}}, \code{\link[wrapr]{qc}}, \code{\link[wrapr]{qchar_frame}}, \code{\link[wrapr]{qe}}}
 }}
 

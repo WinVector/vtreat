@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run vtreat tests. — run_vtreat_tests • vtreat</title>
+<title>vtreat parameters. — vtreat_parameters • vtreat</title>
 
 
 <!-- jquery -->
@@ -35,11 +35,12 @@
 
 
 
-<meta property="og:title" content="Run vtreat tests. — run_vtreat_tests" />
-<meta property="og:description" content="For all files with names of the form &quot;^test_.+\.R$&quot; in the package directory unit_tests
-run all functions with names of the form &quot;^test_.+$&quot; as RUnit tests.
-Attaches RUnit and pkg, requires RUnit.
-Stops on error." />
+<meta property="og:title" content="vtreat parameters. — vtreat_parameters" />
+<meta property="og:description" content="A list of settings and values for vtreat supervised fitting. 
+See
+mkCrossFrameCExperiment, 
+designTreatmentsC, and
+prepare.treatmentplan for details." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -153,83 +154,33 @@ Stops on error." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run vtreat tests.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/run_vtreat_tests.R'><code>R/run_vtreat_tests.R</code></a></small>
-    <div class="hidden name"><code>run_vtreat_tests.Rd</code></div>
+    <h1>vtreat parameters.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/ft.R'><code>R/ft.R</code></a></small>
+    <div class="hidden name"><code>vtreat_parameters.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For all files with names of the form "^test_.+\.R$" in the package directory unit_tests
-run all functions with names of the form "^test_.+$" as RUnit tests.
-Attaches RUnit and pkg, requires RUnit.
-Stops on error.</p>
+    <p>A list of settings and values for vtreat supervised fitting. 
+See
+<code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></code>, 
+<code><a href='designTreatmentsC.html'>designTreatmentsC</a></code>, and
+<code><a href='prepare.treatmentplan.html'>prepare.treatmentplan</a></code> for details.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_vtreat_tests</span>(
-  <span class='no'>...</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>package_test_dirs</span> <span class='kw'>=</span> <span class='st'>"unit_tests"</span>,
-  <span class='kw'>test_dirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
-  <span class='kw'>stop_on_issue</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>stop_if_no_tests</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>require_RUnit_attached</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>require_pkg_attached</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>rngKind</span> <span class='kw'>=</span> <span class='st'>"Mersenne-Twister"</span>,
-  <span class='kw'>rngNormalKind</span> <span class='kw'>=</span> <span class='st'>"Inversion"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>vtreat_parameters</span>(<span class='kw'>user_params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>not used, force later arguments to bind by name.</p></td>
-    </tr>
-    <tr>
-      <th>verbose</th>
-      <td><p>logical, if TRUE print more.</p></td>
-    </tr>
-    <tr>
-      <th>package_test_dirs</th>
-      <td><p>directory names to look for in the installed package.</p></td>
-    </tr>
-    <tr>
-      <th>test_dirs</th>
-      <td><p>paths to look for tests in.</p></td>
-    </tr>
-    <tr>
-      <th>stop_on_issue</th>
-      <td><p>logical, if TRUE stop after errors or failures.</p></td>
-    </tr>
-    <tr>
-      <th>stop_if_no_tests</th>
-      <td><p>logical, if TRUE stop if no tests were found.</p></td>
-    </tr>
-    <tr>
-      <th>require_RUnit_attached</th>
-      <td><p>logical, if TRUE require RUnit be attached before testing.</p></td>
-    </tr>
-    <tr>
-      <th>require_pkg_attached</th>
-      <td><p>logical, if TRUE require pkg be attached before testing.</p></td>
-    </tr>
-    <tr>
-      <th>rngKind</th>
-      <td><p>pseudo-random number generator method name.</p></td>
-    </tr>
-    <tr>
-      <th>rngNormalKind</th>
-      <td><p>pseudo-random normal generator method name.</p></td>
+      <th>user_params</th>
+      <td><p>list of user overrides.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>RUnit test results (invisible).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Based on <a href='https://github.com/RcppCore/Rcpp/blob/master/tests/doRUnit.R'>https://github.com/RcppCore/Rcpp/blob/master/tests/doRUnit.R</a>.  This
-version is GPL-3, works derived from it must be distributed GPL-3.</p>
+    <p>filled out parameter list</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -237,7 +188,6 @@ version is GPL-3, works derived from it must be distributed GPL-3.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
     </ul>
 
   </div>

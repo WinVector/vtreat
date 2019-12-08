@@ -3,7 +3,6 @@
 \docType{package}
 \name{vtreat}
 \alias{vtreat}
-\alias{vtreat-package}
 \title{vtreat: A Statistically Sound 'data.frame' Processor/Conditioner}
 \description{
 A 'data.frame' processor/conditioner that prepares real-world data for predictive modeling in a statistically sound manner.

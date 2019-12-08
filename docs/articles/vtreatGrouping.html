@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grouping Example • vtreat</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Grouping Example">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -107,13 +108,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Grouping Example</h1>
                         <h4 class="author">Nina Zumel, Nate Sutton</h4>
             
-            <h4 class="date">2019-10-02</h4>
+            <h4 class="date">2019-12-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatGrouping.Rmd"><code>vignettes/vtreatGrouping.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatGrouping.Rmd</code></div>
@@ -130,7 +132,7 @@
 <p>First, let’s look at the data.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># panel data for concentration in multiple subjects </span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">d &lt;-<span class="st"> </span>datasets<span class="op">::</span>Theoph</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(d)</a></code></pre></div>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(d)</a></code></pre></div>
 <pre><code>##   Subject   Wt Dose Time  conc
 ## 1       1 79.6 4.02 0.00  0.74
 ## 2       1 79.6 4.02 0.25  2.84
@@ -138,23 +140,15 @@
 ## 4       1 79.6 4.02 1.12 10.50
 ## 5       1 79.6 4.02 2.02  9.66
 ## 6       1 79.6 4.02 3.82  8.58</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(d)</a></code></pre></div>
-<pre><code>##     Subject         Wt             Dose            Time       
-##  6      :11   Min.   :54.60   Min.   :3.100   Min.   : 0.000  
-##  7      :11   1st Qu.:63.58   1st Qu.:4.305   1st Qu.: 0.595  
-##  8      :11   Median :70.50   Median :4.530   Median : 3.530  
-##  11     :11   Mean   :69.58   Mean   :4.626   Mean   : 5.895  
-##  3      :11   3rd Qu.:74.42   3rd Qu.:5.037   3rd Qu.: 9.000  
-##  2      :11   Max.   :86.40   Max.   :5.860   Max.   :24.650  
-##  (Other):66                                                   
-##       conc       
-##  Min.   : 0.000  
-##  1st Qu.: 2.877  
-##  Median : 5.275  
-##  Mean   : 4.960  
-##  3rd Qu.: 7.140  
-##  Max.   :11.400  
-## </code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(d)</a></code></pre></div>
+<pre><code>##     Subject         Wt             Dose            Time             conc       
+##  6      :11   Min.   :54.60   Min.   :3.100   Min.   : 0.000   Min.   : 0.000  
+##  7      :11   1st Qu.:63.58   1st Qu.:4.305   1st Qu.: 0.595   1st Qu.: 2.877  
+##  8      :11   Median :70.50   Median :4.530   Median : 3.530   Median : 5.275  
+##  11     :11   Mean   :69.58   Mean   :4.626   Mean   : 5.895   Mean   : 4.960  
+##  3      :11   3rd Qu.:74.42   3rd Qu.:5.037   3rd Qu.: 9.000   3rd Qu.: 7.140  
+##  2      :11   Max.   :86.40   Max.   :5.860   Max.   :24.650   Max.   :11.400  
+##  (Other):66</code></pre>
 <p>We have twelve subjects, who each received a dose of the anti-asthma drug theophylline. The theophylline concentration in the patients’ blood was then measured at eleven points during the next 25 hours. Most of the patients got about the same dose, although the dose information reported in the dataset is normalized by weight.</p>
 </div>
 <div id="partitioning-the-data-for-modeling" class="section level2">
@@ -164,10 +158,10 @@
 <p>Recall that the goal of <em>y</em>-stratification is to insure that all samples from the data have as close to identical <em>y</em> distributions as possible. This becomes more difficult when we also have to obey a grouping constraint.</p>
 <p>Let’s look at three ways of splitting the data into folds. First, we will split the data arbitrarily into three groups, using the modulo of the Subject id to do the splitting.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># a somewhat arbitrary split of patients</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">subnum =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(d<span class="op">$</span>Subject))</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">d<span class="op">$</span>modSplit =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">as.factor</a></span>(subnum <span class="op">%%</span><span class="st"> </span><span class="dv">3</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb5-2" data-line-number="2">subnum =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(d<span class="op">$</span>Subject))</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">d<span class="op">$</span>modSplit =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(subnum <span class="op">%%</span><span class="st"> </span><span class="dv">3</span>)</a></code></pre></div>
 <p>We can verify that this split preserves groups, by looking at the table of subject observations in each fold. Each subject should only appear in a single fold.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>modSplit))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>modSplit))</a></code></pre></div>
 <pre><code>##        groupid
 ## Subject  0  1  2
 ##      6  11  0  0
@@ -185,12 +179,12 @@
 <p>Now let’s try the standard <em>y</em> stratification in <code>vtreat</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># stratify by outcome only</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># forces concentration to be equivalent</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">pStrat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d),<span class="dv">3</span>,d,d<span class="op">$</span>conc)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(pStrat, <span class="st">"splitmethod"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb8-3" data-line-number="3">pStrat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),<span class="dv">3</span>,d,d<span class="op">$</span>conc)</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(pStrat, <span class="st">"splitmethod"</span>)</a></code></pre></div>
 <pre><code>## [1] "kwaycrossystratified"</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">d<span class="op">$</span>stratSplit &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/getSplitPlanAppLabels">getSplitPlanAppLabels</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d),pStrat)</a>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">d<span class="op">$</span>stratSplit &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),pStrat)</a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>stratSplit))</a></code></pre></div>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>stratSplit))</a></code></pre></div>
 <pre><code>##        groupid
 ## Subject 1 2 3
 ##      6  6 2 3
@@ -210,12 +204,12 @@
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># stratify by patient and outcome</span></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co"># allows concentration to vary amoung individual patients</span></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3">splitter &lt;-<span class="st"> </span><span class="kw"><a href="../reference/makekWayCrossValidationGroupedByColumn.html">makekWayCrossValidationGroupedByColumn</a></span>(<span class="st">'Subject'</span>)</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">split &lt;-<span class="st"> </span><span class="kw">splitter</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d),<span class="dv">3</span>,d,d<span class="op">$</span>conc)</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(split, <span class="st">"splitmethod"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb12-4" data-line-number="4">split &lt;-<span class="st"> </span><span class="kw">splitter</span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),<span class="dv">3</span>,d,d<span class="op">$</span>conc)</a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(split, <span class="st">"splitmethod"</span>)</a></code></pre></div>
 <pre><code>## [1] "kwaycrossystratifiedgrouped"</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">d<span class="op">$</span>subjectSplit &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/vtreat/topics/getSplitPlanAppLabels">getSplitPlanAppLabels</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(d),split)</a>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">d<span class="op">$</span>subjectSplit &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),split)</a>
 <a class="sourceLine" id="cb14-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>subjectSplit))</a></code></pre></div>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>subjectSplit))</a></code></pre></div>
 <pre><code>##        groupid
 ## Subject  1  2  3
 ##      6   0  0 11
@@ -268,17 +262,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

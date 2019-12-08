@@ -35,7 +35,7 @@ trackedValues <- track_values(dSample, c("zip", "zip2"))
 # and must not have unhandled warnings.
 tryCatch(
   prepare(tplan, d, trackedValues = trackedValues),
-  warning = function(w) { cat(paste(w, collapse = "\\n")) })
+  warning = function(w) { cat(paste(w, collapse = "\n")) })
 
 }
 \seealso{

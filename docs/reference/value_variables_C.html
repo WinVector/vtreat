@@ -159,17 +159,34 @@
     <p>Value variables for prediction a categorical outcome.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>value_variables_C</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>outcomename</span>, <span class='no'>outcometarget</span>, <span class='no'>...</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>catScaling</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>c.PiecewiseV.num</span> <span class='kw'>=</span>
-  <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/solve_piecewisec.html'>solve_piecewisec</a></span>, <span class='kw'>n.PiecewiseV.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/solve_piecewise.html'>solve_piecewise</a></span>,
-  <span class='kw'>c.knearest.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/square_windowc.html'>square_windowc</a></span>, <span class='kw'>n.knearest.num</span> <span class='kw'>=</span>
-  <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/square_window.html'>square_window</a></span>), <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PiecewiseV"</span>, <span class='st'>"knearest"</span>,
-  <span class='st'>"clean"</span>, <span class='st'>"isBAD"</span>, <span class='st'>"catB"</span>, <span class='st'>"catP"</span>), <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>value_variables_C</span>(
+  <span class='no'>dframe</span>,
+  <span class='no'>varlist</span>,
+  <span class='no'>outcomename</span>,
+  <span class='no'>outcometarget</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>,
+  <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>doCollar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>catScaling</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>c.PiecewiseV.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/solve_piecewisec.html'>solve_piecewisec</a></span>, <span class='kw'>n.PiecewiseV.num</span> <span class='kw'>=</span>
+    <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/solve_piecewise.html'>solve_piecewise</a></span>, <span class='kw'>c.knearest.num</span> <span class='kw'>=</span> <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/square_windowc.html'>square_windowc</a></span>, <span class='kw'>n.knearest.num</span> <span class='kw'>=</span>
+    <span class='kw pkg'>vtreat</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/vtreat/man/square_window.html'>square_window</a></span>),
+  <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PiecewiseV"</span>, <span class='st'>"knearest"</span>, <span class='st'>"clean"</span>, <span class='st'>"isBAD"</span>, <span class='st'>"catB"</span>, <span class='st'>"catP"</span>),
+  <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

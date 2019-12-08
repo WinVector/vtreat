@@ -4,12 +4,28 @@
 \alias{designTreatmentsN}
 \title{build all treatments for a data frame to predict a numeric outcome}
 \usage{
-designTreatmentsN(dframe, varlist, outcomename, ..., weights = c(),
-  minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = NULL,
-  collarProb = 0, codeRestriction = NULL, customCoders = NULL,
-  splitFunction = NULL, ncross = 3, forceSplit = FALSE,
-  verbose = TRUE, parallelCluster = NULL, use_parallel = TRUE,
-  missingness_imputation = NULL, imputation_map = NULL)
+designTreatmentsN(
+  dframe,
+  varlist,
+  outcomename,
+  ...,
+  weights = c(),
+  minFraction = 0.02,
+  smFactor = 0,
+  rareCount = 0,
+  rareSig = NULL,
+  collarProb = 0,
+  codeRestriction = NULL,
+  customCoders = NULL,
+  splitFunction = NULL,
+  ncross = 3,
+  forceSplit = FALSE,
+  verbose = TRUE,
+  parallelCluster = NULL,
+  use_parallel = TRUE,
+  missingness_imputation = NULL,
+  imputation_map = NULL
+)
 }
 \arguments{
 \item{dframe}{Data frame to learn treatments from (training data), must have at least 1 row.}

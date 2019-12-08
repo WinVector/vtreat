@@ -5,15 +5,33 @@
 \alias{materialize_treated}
 \title{Materialize a treated data frame remotely.}
 \usage{
-rquery_prepare(db, rqplan, data_source, result_table_name, ...,
-  extracols = NULL, temporary = FALSE, overwrite = TRUE,
-  attempt_nan_inf_mapping = FALSE, col_sample = NULL,
-  return_ops = FALSE)
+rquery_prepare(
+  db,
+  rqplan,
+  data_source,
+  result_table_name,
+  ...,
+  extracols = NULL,
+  temporary = FALSE,
+  overwrite = TRUE,
+  attempt_nan_inf_mapping = FALSE,
+  col_sample = NULL,
+  return_ops = FALSE
+)
 
-materialize_treated(db, rqplan, data_source, result_table_name, ...,
-  extracols = NULL, temporary = FALSE, overwrite = TRUE,
-  attempt_nan_inf_mapping = FALSE, col_sample = NULL,
-  return_ops = FALSE)
+materialize_treated(
+  db,
+  rqplan,
+  data_source,
+  result_table_name,
+  ...,
+  extracols = NULL,
+  temporary = FALSE,
+  overwrite = TRUE,
+  attempt_nan_inf_mapping = FALSE,
+  col_sample = NULL,
+  return_ops = FALSE
+)
 }
 \arguments{
 \item{db}{a db handle.}

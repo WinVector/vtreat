@@ -171,12 +171,28 @@ categorical variables can introduce undesirable nested model bias, for such data
 using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>designTreatmentsN</span>(<span class='no'>dframe</span>, <span class='no'>varlist</span>, <span class='no'>outcomename</span>, <span class='no'>...</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>designTreatmentsN</span>(
+  <span class='no'>dframe</span>,
+  <span class='no'>varlist</span>,
+  <span class='no'>outcomename</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>,
+  <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -284,11 +300,11 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>),<span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
 <span class='no'>dTestN</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.8 inspecting inputs Tue Nov 12 09:17:22 2019"
-#&gt; [1] "designing treatments Tue Nov 12 09:17:22 2019"
-#&gt; [1] " have initial level statistics Tue Nov 12 09:17:22 2019"
-#&gt; [1] " scoring treatments Tue Nov 12 09:17:22 2019"
-#&gt; [1] "have treatment plan Tue Nov 12 09:17:22 2019"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTrainN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
+<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.4.8 inspecting inputs Sat Dec  7 16:46:35 2019"
+#&gt; [1] "designing treatments Sat Dec  7 16:46:35 2019"
+#&gt; [1] " have initial level statistics Sat Dec  7 16:46:35 2019"
+#&gt; [1] " scoring treatments Sat Dec  7 16:46:35 2019"
+#&gt; [1] "have treatment plan Sat Dec  7 16:46:35 2019"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTrainN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)
 <span class='no'>dTestNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTestN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

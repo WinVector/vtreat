@@ -4,11 +4,20 @@
 \alias{prepare.multinomial_plan}
 \title{Function to apply mkCrossFrameMExperiment treatemnts.}
 \usage{
-\method{prepare}{multinomial_plan}(treatmentplan, dframe, ...,
-  pruneSig = NULL, scale = FALSE, doCollar = FALSE,
-  varRestriction = NULL, codeRestriction = NULL,
-  trackedValues = NULL, extracols = NULL, parallelCluster = NULL,
-  use_parallel = TRUE)
+\method{prepare}{multinomial_plan}(
+  treatmentplan,
+  dframe,
+  ...,
+  pruneSig = NULL,
+  scale = FALSE,
+  doCollar = FALSE,
+  varRestriction = NULL,
+  codeRestriction = NULL,
+  trackedValues = NULL,
+  extracols = NULL,
+  parallelCluster = NULL,
+  use_parallel = TRUE
+)
 }
 \arguments{
 \item{treatmentplan}{multinomial_plan from mkCrossFrameMExperiment.}
