@@ -175,7 +175,11 @@ BinomialOutcomeTreatment <- function(...,
     tp <- ce$treatments
     assign("tp", tp, envir = settings$state)
     assign("ce", ce, envir = settings$state)
-    return(ce$crossFrame)
+    res <- ce$crossFrame
+    for(c in settings$cols_to_copy) {
+      res[[c]] <- dframe[[c]]
+    }
+    return(res)
   }
   score_frame <- function() {
     tp <- get('tp', envir = settings$state, inherits = FALSE)
@@ -258,7 +262,6 @@ NumericOutcomeTreatment <- function(...,
       splitFunction = settings$params$splitFunction,
       ncross = settings$params$ncross,
       forceSplit = settings$params$forceSplit,
-      catScaling = settings$params$catScaling,
       verbose = settings$params$verbose,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
@@ -305,7 +308,6 @@ NumericOutcomeTreatment <- function(...,
       splitFunction = settings$params$splitFunction,
       ncross = settings$params$ncross,
       forceSplit = settings$params$forceSplit,
-      catScaling = settings$params$catScaling,
       verbose = settings$params$verbose,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
@@ -314,7 +316,11 @@ NumericOutcomeTreatment <- function(...,
     tp <- ce$treatments
     assign("tp", tp, envir = settings$state)
     assign("ce", ce, envir = settings$state)
-    return(ce$crossFrame)
+    res <- ce$crossFrame
+    for(c in settings$cols_to_copy) {
+      res[[c]] <- dframe[[c]]
+    }
+    return(res)
   }
   score_frame <- function() {
     tp <- get('tp', envir = settings$state, inherits = FALSE)
@@ -418,7 +424,6 @@ MultinomialOutcomeTreatment <- function(...,
       splitFunction = settings$params$splitFunction,
       ncross = settings$params$ncross,
       forceSplit = settings$params$forceSplit,
-      catScaling = settings$params$catScaling,
       verbose = settings$params$verbose,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
@@ -427,7 +432,11 @@ MultinomialOutcomeTreatment <- function(...,
     tp <- ce$treatments
     assign("tp", tp, envir = settings$state)
     assign("ce", ce, envir = settings$state)
-    return(ce$crossFrame)
+    res <- ce$crossFrame
+    for(c in settings$cols_to_copy) {
+      res[[c]] <- dframe[[c]]
+    }
+    return(res)
   }
   fit <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
@@ -472,9 +481,7 @@ MultinomialOutcomeTreatment <- function(...,
 unsupervised_parameters <- function(user_params = NULL) {
   params = list(
     minFraction = 0.02, 
-    smFactor = 0.0,
     rareCount = 0, 
-    rareSig = NULL,
     collarProb = 0.00,
     codeRestriction = NULL,
     customCoders = NULL, 
@@ -517,7 +524,7 @@ UnsupervisedTreatment <- function(...,
                                   cols_to_copy = NULL,
                                   params = NULL,
                                   imputation_map = NULL) {
-  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::MultinomialOutcomeTreatment")
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::UnsupervisedTreatment")
   params <- unsupervised_parameters(params)
   settings <- list(
     var_list = var_list,
@@ -538,13 +545,11 @@ UnsupervisedTreatment <- function(...,
       varlist = settings$var_list,
       weights = weights,
       minFraction = settings$params$minFraction,
-      smFactor = settings$params$smFactor,
-      rareCount = settings$params$rareCount,
-      rareSig = settings$params$rareSig,
       collarProb = settings$params$collarProb,
       codeRestriction = settings$params$codeRestriction,
       customCoders = settings$params$customCoders, 
       parallelCluster = parallelCluster,
+      verbose = settings$params$verbose,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
       imputation_map = settings$params$imputation_map)
@@ -558,7 +563,6 @@ UnsupervisedTreatment <- function(...,
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
-      pruneSig= settings$params$pruneSig,
       scale= settings$params$scale,
       doCollar= settings$params$doCollar,
       varRestriction= settings$params$varRestriction,
