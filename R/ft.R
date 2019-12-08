@@ -193,7 +193,7 @@ BinomialOutcomeTreatment <- function(...,
     return(res)
   }
   get_transform <- function() {
-    td <- get('transform', envir = settings$state, inherits = FALSE)
+    res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
   obj$fit = fit
@@ -377,7 +377,7 @@ NumericOutcomeTreatment <- function(...,
     return(res)
   }
   get_transform <- function() {
-    td <- get('transform', envir = settings$state, inherits = FALSE)
+    res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
   obj$fit = fit
@@ -535,7 +535,7 @@ MultinomialOutcomeTreatment <- function(...,
     return(res)
   }
   get_transform <- function() {
-    td <- get('transform', envir = settings$state, inherits = FALSE)
+    res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
   obj$fit = fit
@@ -674,7 +674,7 @@ UnsupervisedTreatment <- function(...,
     return(res)
   }
   get_transform <- function() {
-    td <- get('transform', envir = settings$state, inherits = FALSE)
+    res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
   obj$fit = fit
