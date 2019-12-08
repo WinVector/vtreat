@@ -63,12 +63,12 @@ d %.>%
 
 |          x |           y | xc          |          x2 | yc    |
 | ---------: | ----------: | :---------- | ----------: | :---- |
-| \-2.365551 | \-0.7932075 | NA          | \-1.0955305 | FALSE |
-| \-7.586567 | \-1.0325572 | NA          | \-0.3125710 | FALSE |
-| \-6.320034 | \-0.0810583 | level\_0    |   0.3643632 | FALSE |
-|         NA |   0.1854321 | level\_0    |   0.8520152 | FALSE |
-|         NA |   0.0302976 | level\_0    |   0.5325505 | FALSE |
-|         NA | \-0.6291017 | level\_-0.5 | \-0.1265185 | FALSE |
+|   6.302692 | \-0.1295796 | level\_0    |   0.4567776 | FALSE |
+| \-1.492638 | \-1.0181135 | NA          |   0.6904050 | FALSE |
+|   9.011422 |   0.2406594 | level\_0    |   2.1542995 | FALSE |
+|         NA | \-0.5377555 | level\_-0.5 | \-0.1497430 | FALSE |
+|         NA |   0.9582693 | level\_1    | \-0.9892123 | TRUE  |
+|         NA | \-1.0622297 | NA          |   0.0241504 | FALSE |
 
 ### Some quick data exploration
 
@@ -78,12 +78,12 @@ Check how many levels `xc` has, and their distribution (including `NA`)
 unique(d['xc'])
 ```
 
-    ##            xc
-    ## 1        <NA>
-    ## 3     level_0
-    ## 6  level_-0.5
-    ## 8     level_1
-    ## 12  level_0.5
+    ##           xc
+    ## 1    level_0
+    ## 2       <NA>
+    ## 4 level_-0.5
+    ## 5    level_1
+    ## 8  level_0.5
 
 ``` r
 table(d$xc, useNA = 'always')
@@ -91,7 +91,7 @@ table(d$xc, useNA = 'always')
 
     ## 
     ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##        106         94         85        105        110
+    ##         95         71        114        114        106
 
 Find the mean value of `yc`
 
@@ -99,7 +99,7 @@ Find the mean value of `yc`
 mean(d[['yc']])
 ```
 
-    ## [1] 0.32
+    ## [1] 0.352
 
 Plot of `yc` versus `x`.
 
@@ -157,16 +157,16 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0008746 | 0.4590250 | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0018816 | 0.2774572 | FALSE      |                 0 | x        | isBAD | FALSE       |
-| xc\_catP                       | TRUE     | 0.0156637 | 0.0017271 | TRUE       |                 4 | xc       | catP  | TRUE        |
-| xc\_catB                       | TRUE     | 0.8229124 | 0.0000000 | TRUE       |                 4 | xc       | catB  | TRUE        |
-| x2                             | TRUE     | 0.0011841 | 0.3889304 | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1576837 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1509897 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1314300 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0750277 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4913932 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0013210 | 0.3546032 | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0002178 | 0.7070100 | FALSE      |                 0 | x        | isBAD | FALSE       |
+| xc\_catP                       | TRUE     | 0.3915048 | 0.0000000 | TRUE       |                 4 | xc       | catP  | TRUE        |
+| xc\_catB                       | TRUE     | 0.7542349 | 0.0000000 | TRUE       |                 4 | xc       | catB  | TRUE        |
+| x2                             | TRUE     | 0.0000596 | 0.8440993 | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.1648922 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1451918 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.1045998 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0354874 | 0.0000016 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4755162 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 
@@ -233,12 +233,12 @@ d_prepared %.>%
 
 |           x | x\_isBAD |  xc\_catP |   xc\_catB |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
 | ----------: | -------: | --------: | ---------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
-| \-2.3655514 |        0 | 0.2132132 | \-12.72532 | \-1.0955305 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-7.5865667 |        0 | 0.2132132 | \-12.72532 | \-0.3125710 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
-| \-6.3200335 |        0 | 0.1861862 | \-12.58977 |   0.3643632 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
-| \-0.1324257 |        1 | 0.1886228 | \-12.60136 |   0.8520152 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
-| \-0.1324257 |        1 | 0.1886228 | \-12.60136 |   0.5325505 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
-|   0.1582365 |        1 | 0.2102102 | \-12.69733 | \-0.1265185 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|   6.3026920 |        0 | 0.1381381 | \-12.42588 |   0.4567776 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
+| \-1.4926379 |        0 | 0.2102102 | \-12.84573 |   0.6904050 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
+|   9.0114217 |        0 | 0.1381381 | \-12.42588 |   2.1542995 |           0 |                              0 |                    1 |                       0 |                    0 | FALSE |
+| \-0.1894789 |        1 | 0.1976048 | \-12.79540 | \-0.1497430 |           0 |                              1 |                    0 |                       0 |                    0 | FALSE |
+|   0.3048341 |        1 | 0.2282282 |   14.15418 | \-0.9892123 |           0 |                              0 |                    0 |                       0 |                    1 | TRUE  |
+|   0.3048341 |        1 | 0.2102102 | \-12.84573 |   0.0241504 |           1 |                              0 |                    0 |                       0 |                    0 | FALSE |
 
 ## A Closer Look at `catB` variables
 
@@ -354,7 +354,7 @@ We’ve tried to set the defaults for all parameters so that `vtreat` is
 usable out of the box for most applications.
 
 ``` r
-vtreat_parameters()
+classification_parameters()
 ```
 
     ## $minFraction
@@ -415,7 +415,7 @@ vtreat_parameters()
     ## NULL
     ## 
     ## attr(,"class")
-    ## [1] "vtreat_parameters"
+    ## [1] "classification_parameters"
 
 Some parameters of note include:
 
@@ -501,9 +501,9 @@ d %.>%
 
 |         rsq | count |       sig | var |
 | ----------: | ----: | --------: | :-- |
-| 0.001881577 |     2 | 0.5549143 | x   |
-| 0.003085646 |     3 | 0.4928673 | x2  |
-| 0.821192632 |     2 | 0.0000000 | xc  |
+| 0.001321023 |     2 | 0.7092064 | x   |
+| 0.001335232 |     3 | 1.0000000 | x2  |
+| 0.755567579 |     2 | 0.0000000 | xc  |
 
 More on non-linear variable scoring can be found
 [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).

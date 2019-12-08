@@ -253,7 +253,7 @@ We've tried to set the defaults for all parameters so that `vtreat` is usable ou
 
 
 ```{r}
-vtreat_parameters()
+regression_parameters()
 ```
 
 Some parameters of note include:

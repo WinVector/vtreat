@@ -226,7 +226,7 @@ WVPlots::ROCPlot(
 We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications.
 
 ```{r}
-vtreat_parameters()
+classification_parameters()
 ```
 
 
