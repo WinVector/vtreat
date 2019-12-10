@@ -1,4 +1,9 @@
 
+# vtreat 1.5.0 2019/12/10
+
+ * Fix FT multinomial columns copy.
+ * More tests.
+
 # vtreat 1.4.8 2019/12/08
 
  * Center/scale improvement from nfultz.

@@ -522,6 +522,9 @@ MultinomialOutcomeTreatment <- function(...,
     assign("transform", td$treat_m, envir = settings$state)
     assign("score_frame", td$score_frame, envir = settings$state)
     res <- td$cross_frame
+    for(c in settings$cols_to_copy) {
+      res[[c]] <- dframe[[c]]
+    }
     return(res)
   }
   fit <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
