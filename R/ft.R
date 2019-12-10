@@ -90,6 +90,7 @@ BinomialOutcomeTreatment <- function(...,
     stop("vtreat::BinomialOutcomeTreatment expected class classification_parameters")
   }
   params <- classification_parameters(params)
+  var_list <- setdiff(var_list, c(outcome_name, cols_to_copy))
   settings <- list(
     var_list = var_list,
     outcome_name = outcome_name, 
@@ -279,6 +280,7 @@ NumericOutcomeTreatment <- function(...,
     stop("vtreat::NumericOutcomeTreatment expected class regression_parameters")
   }
   params <- regression_parameters(params)
+  var_list <- setdiff(var_list, c(outcome_name, cols_to_copy))
   settings <- list(
     var_list = var_list,
     outcome_name = outcome_name, 
@@ -460,6 +462,7 @@ MultinomialOutcomeTreatment <- function(...,
     stop("vtreat::MultinomialOutcomeTreatment expected class multinomial_parameters")
   }
   params <- multinomial_parameters(params)
+  var_list <- setdiff(var_list, c(outcome_name, cols_to_copy))
   settings <- list(
     var_list = var_list,
     outcome_name = outcome_name, 
@@ -615,6 +618,7 @@ UnsupervisedTreatment <- function(...,
     stop("vtreat::UnsupervisedTreatment expected class unsupervised_parameters")
   }
   params <- unsupervised_parameters(params)
+  var_list <- setdiff(var_list, cols_to_copy)
   settings <- list(
     var_list = var_list,
     cols_to_copy = cols_to_copy,
