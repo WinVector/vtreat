@@ -1,7 +1,8 @@
 
-# vtreat 1.5.0 2019/12/10
+# vtreat 1.5.0 2019/12/13
 
  * Fix FT multinomial columns copy.
+ * Work on ft serialization environments.
  * More tests.
 
 # vtreat 1.4.8 2019/12/08
