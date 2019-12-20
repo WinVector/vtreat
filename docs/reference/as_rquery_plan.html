@@ -204,26 +204,26 @@
    }
    <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"DBI"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>&amp;&amp;</span>
       <span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"RSQLite"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-      <span class='no'>db</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DBI/man/dbConnect.html'>dbConnect</a></span>(<span class='kw pkg'>RSQLite</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/RSQLite/man/SQLite.html'>SQLite</a></span>(), <span class='st'>":memory:"</span>)
+      <span class='no'>db</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbConnect.html'>dbConnect</a></span>(<span class='kw pkg'>RSQLite</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/RSQLite/man/SQLite.html'>SQLite</a></span>(), <span class='st'>":memory:"</span>)
       <span class='no'>source_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_copy_to.html'>rq_copy_to</a></span>(<span class='no'>db</span>, <span class='st'>"dTrainC"</span>, <span class='no'>dTrainC</span>,
                                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
       <span class='no'>rest</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rquery_prepare.html'>rquery_prepare</a></span>(<span class='no'>db</span>, <span class='no'>rqplan</span>, <span class='no'>source_data</span>, <span class='st'>"dTreatedC"</span>,
                                   <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='st'>"id"</span>)
-      <span class='no'>resd</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DBI/man/dbReadTable.html'>dbReadTable</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
+      <span class='no'>resd</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbReadTable.html'>dbReadTable</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>resd</span>)
 
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_remove_table.html'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>source_data</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_remove_table.html'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
-      <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DBI/man/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>db</span>)
+      <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.5.0 inspecting inputs Fri Dec 13 10:28:20 2019"
-#&gt; [1] "designing treatments Fri Dec 13 10:28:20 2019"
-#&gt; [1] " have initial level statistics Fri Dec 13 10:28:20 2019"
-#&gt; [1] " scoring treatments Fri Dec 13 10:28:21 2019"
-#&gt; [1] "have treatment plan Fri Dec 13 10:28:21 2019"
-#&gt; [1] "rescoring complex variables Fri Dec 13 10:28:21 2019"
-#&gt; [1] "done rescoring complex variables Fri Dec 13 10:28:21 2019"
+}</div><div class='output co'>#&gt; [1] "vtreat 1.5.0 inspecting inputs Thu Dec 19 23:20:29 2019"
+#&gt; [1] "designing treatments Thu Dec 19 23:20:29 2019"
+#&gt; [1] " have initial level statistics Thu Dec 19 23:20:29 2019"
+#&gt; [1] " scoring treatments Thu Dec 19 23:20:29 2019"
+#&gt; [1] "have treatment plan Thu Dec 19 23:20:29 2019"
+#&gt; [1] "rescoring complex variables Thu Dec 19 23:20:29 2019"
+#&gt; [1] "done rescoring complex variables Thu Dec 19 23:20:29 2019"
 #&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
 #&gt; 1 0.5000000 -0.6930972 1.0       0        0         1         0 FALSE
 #&gt; 2 0.5000000 -0.6930972 2.0       0        0         1         0 FALSE
