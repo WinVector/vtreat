@@ -129,17 +129,23 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
         missingness_imputation = missingness_imputation, imputation_map = imputation_map)
       cross_frame_i = cfe$crossFrame
       cross_frame_i[[y_name]] <- NULL
-      colnames(cross_frame_i) <- paste0(y_l_names[[y_target]], 
-                                        "_", 
-                                        colnames(cross_frame_i))
       score_frame_i <- cfe$treatments$scoreFrame
+      vars_found <- score_frame_i$varName
+      new_vars <- paste0(y_l_names[[y_target]], 
+                         "_", 
+                         vars_found)
+      vars_forward_map_i <- new_vars
+      names(vars_forward_map_i) <- vars_found
+      vars_reverse_map_i <- vars_found
+      names(vars_reverse_map_i) <- new_vars
+      colnames(cross_frame_i) <- vars_forward_map_i[colnames(cross_frame_i)]
       score_frame_i$outcome_level <- y_target
-      score_frame_i$varName <- paste0(y_l_names[[y_target]], 
-                                      "_", 
-                                      score_frame_i$varName)
+      score_frame_i$varName <- vars_forward_map_i[score_frame_i$varName]
       list(treatments_i = cfe$treatments,
            cross_frame_i = cross_frame_i,
-           score_frame_i = score_frame_i)
+           score_frame_i = score_frame_i,
+           vars_forward_map_i = vars_forward_map_i,
+           vars_reverse_map_i = vars_reverse_map_i)
     })
   names(cfe_list) <- NULL # make sure no names
   
@@ -158,7 +164,13 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
     lapply(cfe_list, function(cfei) cfei$score_frame_i))
   rownames(score_frame) <- NULL
   # build a prepare function for new data
-  treatments_m <- lapply(cfe_list, function(cfei) cfei$treatments_i)
+  treatments_m <- lapply(cfe_list, 
+                         function(cfei) {
+                           list(treatment = cfei$treatments_i,
+                                score_frame_i = cfei$score_frame_i,
+                                vars_forward_map = cfei$vars_forward_map_i,
+                                vars_reverse_map = cfei$vars_reverse_map_i)
+                           })
   # return components
   treat_m <- list(
     y_l_names = y_l_names,
@@ -207,7 +219,7 @@ prepare.multinomial_plan <- function(treatmentplan, dframe,
   treatments_0 <- treatmentplan$treatments_0
   treatments_m <- treatmentplan$treatments_m
   y_l_names <- treatmentplan$y_l_names
-  y_name <- treatments_m[[1]]$outcomename
+  y_name <- treatments_m[[1]]$treatment$outcomename
   treated <- prepare(treatments_0, dframe,
                      pruneSig= pruneSig,
                      scale= scale,
@@ -218,20 +230,29 @@ prepare.multinomial_plan <- function(treatmentplan, dframe,
                      extracols= extracols,
                      parallelCluster= parallelCluster,
                      use_parallel= use_parallel)
-  for(ti in treatments_m) {
+  for(tli in treatments_m) {
+    ti <- tli$treatment
+    vars_forward_map_i <- tli$vars_forward_map
+    vars_reverse_map_i <- tli$vars_reverse_map
+    vri <- NULL
+    if(length(varRestriction)>0) {
+      common_keys <- intersect(varRestriction, names(vars_reverse_map_i))
+      if(length(common_keys)<=0) {
+        next
+      }
+      vri <- vars_reverse_map_i[common_keys]
+    }
     treated_i <- prepare(ti, dframe,
                          pruneSig= pruneSig,
                          scale= scale,
                          doCollar= doCollar,
-                         varRestriction= varRestriction,
+                         varRestriction= vri,
                          codeRestriction= codeRestriction,
                          trackedValues= trackedValues,
                          parallelCluster= parallelCluster,
                          use_parallel= use_parallel)
     treated_i[[y_name]] <- NULL
-    colnames(treated_i) <- paste0(y_l_names[[ti$outcomeTarget]], 
-                                  "_", 
-                                  colnames(treated_i))
+    colnames(treated_i) <- vars_forward_map_i[colnames(treated_i)]
     treated <- cbind(treated, treated_i,
                      stringsAsFactors = FALSE)
   }

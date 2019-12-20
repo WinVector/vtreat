@@ -8,13 +8,13 @@ package = "vtreat"
 packageVersion(package)
 ```
 
-    ## [1] '1.4.8'
+    ## [1] '1.5.0'
 
 ``` r
 date()
 ```
 
-    ## [1] "Sun Dec  8 10:30:26 2019"
+    ## [1] "Thu Dec 19 23:14:11 2019"
 
 ``` r
 parallelCluster <- NULL
@@ -33,7 +33,7 @@ setwd(td)
 print(td)
 ```
 
-    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//RtmpFPPBpU"
+    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//Rtmp90sX63"
 
 ``` r
 options(repos = c(CRAN="https://cloud.r-project.org"))
