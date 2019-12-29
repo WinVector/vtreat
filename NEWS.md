@@ -1,10 +1,11 @@
 
-# vtreat 1.5.0 2019/12/19
+# vtreat 1.5.0 2019/12/29
 
  * Fix multlinomial variable restriction.
  * Fix FT multinomial columns copy.
  * Work on ft serialization environments.
  * More tests.
+ * Improve custom coder flexibility.
 
 # vtreat 1.4.8 2019/12/08
 

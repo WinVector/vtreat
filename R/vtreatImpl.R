@@ -286,8 +286,16 @@ mkVtreatListWorker <- function(scale,doCollar) {
             }
             if('num' %in% codeSeq) {
               if((codeType=='n')==is.null(zC)) {
-                ti <- makeCustomCoderNum(codeName, coder, codeSeq, 
-                                         v,vcol,zoY,zC,zTarget,weights,catScaling)
+                ti <- makeCustomCoderNum(customCode = codeName, 
+                                         coder = coder,
+                                         codeSeq =codeSeq, 
+                                         v = v,
+                                         vcolin = vcol,
+                                         zoY = zoY,
+                                         zC = zC,
+                                         zTarget = zTarget,
+                                         weights = weights,
+                                         catScaling = catScaling)
                 acceptTreatment(ti)
               }
             }
@@ -324,8 +332,16 @@ mkVtreatListWorker <- function(scale,doCollar) {
             }
             if(!('num' %in% codeSeq)) {
               if((codeType=='n')==is.null(zC)) {
-                ti <- makeCustomCoder(codeName, coder, codeSeq, 
-                                      v,vcol,zoY,zC,zTarget,weights,catScaling)
+                ti <- makeCustomCoderCat(customCode = codeName, 
+                                         coder = coder, 
+                                         codeSeq = codeSeq,
+                                         v = v,
+                                         vcolin = vcol,
+                                         zoY = zoY,
+                                         zC = zC,
+                                         zTarget = zTarget,
+                                         weights = weights,
+                                         catScaling = catScaling)
                 acceptTreatment(ti)
               }
             }

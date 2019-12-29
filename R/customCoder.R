@@ -3,7 +3,7 @@
 
 # apply a classification impact model
 # replace level with stored code
-.customCode <- function(col,args, doCollar) {
+.customCodeCat <- function(col,args, doCollar) {
   col <- .preProcCat(col,args$levRestriction)
   unhandledNovel <- !(col %in% names(args$conditionalScore))
   keys <- col
@@ -16,19 +16,26 @@
   pred
 }
 
-# Make a categorical input custom coder.
-#
-# @para customCode code name
-# @param coder user supplied variable re-coder (see vignette for type signature)
-# @param codeSeq argments to custom coder
-# @param v variable name
-# @param vcolin data column, character
-# @param zoY outcome column as numeric
-# @param zC if classification outcome column as character
-# @param zTarge if classification target class
-# @param weights per-row weights
-makeCustomCoder <- function(customCode, coder, codeSeq,
-                            v,vcolin,zoY,zC,zTarget,weights,catScaling)  {
+#' Make a categorical input custom coder.
+#'
+#' @param ... not used, force arguments to be set by name
+#' @param customCode code name
+#' @param coder user supplied variable re-coder (see vignette for type signature)
+#' @param codeSeq argments to custom coder
+#' @param v variable name
+#' @param vcolin data column, character
+#' @param zoY outcome column as numeric
+#' @param zC if classification outcome column as character
+#' @param zTarget if classification target class
+#' @param weights per-row weights
+#' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
+#' @return wrapped custom coder
+#'
+makeCustomCoderCat <- function(...,
+                               customCode, coder, codeSeq,
+                               v,vcolin,zoY,zC,zTarget,
+                               weights = NULL,catScaling = FALSE)  {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat:::makeCustomCoderNum")
   levRestriction <- NULL
   vcol <- .preProcCat(vcolin,levRestriction)
   if(is.null(weights)) {
@@ -65,7 +72,7 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
   newVarName <- vtreat_make_names(paste(v, customCode, sep='_'))
   treatment <- list(origvar=v,
                     newvars=newVarName,
-                    f=.customCode,
+                    f=.customCodeCat,
                     args=list(conditionalScore=conditionalScore,
                               levRestriction=levRestriction,
                               missingValueCode=missingValueCode),
@@ -123,19 +130,26 @@ makeCustomCoder <- function(customCode, coder, codeSeq,
   treated
 }
 
-# Make a numeric input custom coder.
+#' Make a numeric input custom coder.
 #
-# @para customCode code name
-# @param coder user supplied variable re-coder (see vignette for type signature)
-# @param codeSeq argments to custom coder
-# @param v variable name
-# @param vcolin data column, numeric
-# @param zoY outcome column as numeric
-# @param zC if classification outcome column as character
-# @param zTarge if classification target class
-# @param weights per-row weights
-makeCustomCoderNum <- function(customCode, coder, codeSeq,
-                            v,vcolin,zoY,zC,zTarget,weights,catScaling)  {
+#' @param ... not used, force arguments to be set by name
+#' @param customCode code name
+#' @param coder user supplied variable re-coder (see vignette for type signature)
+#' @param codeSeq argments to custom coder
+#' @param v variable name
+#' @param vcolin data column, numeric
+#' @param zoY outcome column as numeric
+#' @param zC if classification outcome column as character
+#' @param zTarget if classification target class
+#' @param weights per-row weights
+#' @param catScaling optional, if TRUE use glm() linkspace, if FALSE use lm() for scaling.
+#' @return wrapped custom coder
+#'
+makeCustomCoderNum <- function(...,
+                               customCode, coder, codeSeq,
+                               v,vcolin,zoY,zC,zTarget,
+                               weights = NULL, catScaling = FALSE)  {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat:::makeCustomCoderNum")
   xcol <- as.numeric(vcolin)
   napositions <- .is.bad(xcol)
   nna <- sum(napositions)
