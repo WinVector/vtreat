@@ -204,7 +204,7 @@
    }
    <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"DBI"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>&amp;&amp;</span>
       <span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"RSQLite"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-      <span class='no'>db</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbConnect.html'>dbConnect</a></span>(<span class='kw pkg'>RSQLite</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/RSQLite/man/SQLite.html'>SQLite</a></span>(), <span class='st'>":memory:"</span>)
+      <span class='no'>db</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbConnect.html'>dbConnect</a></span>(<span class='kw pkg'>RSQLite</span><span class='kw ns'>::</span><span class='fu'><a href='https://rsqlite.r-dbi.org/reference/SQLite.html'>SQLite</a></span>(), <span class='st'>":memory:"</span>)
       <span class='no'>source_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_copy_to.html'>rq_copy_to</a></span>(<span class='no'>db</span>, <span class='st'>"dTrainC"</span>, <span class='no'>dTrainC</span>,
                                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
@@ -217,13 +217,13 @@
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_remove_table.html'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.5.0 inspecting inputs Thu Dec 19 23:20:29 2019"
-#&gt; [1] "designing treatments Thu Dec 19 23:20:29 2019"
-#&gt; [1] " have initial level statistics Thu Dec 19 23:20:29 2019"
-#&gt; [1] " scoring treatments Thu Dec 19 23:20:29 2019"
-#&gt; [1] "have treatment plan Thu Dec 19 23:20:29 2019"
-#&gt; [1] "rescoring complex variables Thu Dec 19 23:20:29 2019"
-#&gt; [1] "done rescoring complex variables Thu Dec 19 23:20:29 2019"
+}</div><div class='output co'>#&gt; [1] "vtreat 1.5.0 inspecting inputs Tue Jan  7 07:36:45 2020"
+#&gt; [1] "designing treatments Tue Jan  7 07:36:45 2020"
+#&gt; [1] " have initial level statistics Tue Jan  7 07:36:45 2020"
+#&gt; [1] " scoring treatments Tue Jan  7 07:36:46 2020"
+#&gt; [1] "have treatment plan Tue Jan  7 07:36:46 2020"
+#&gt; [1] "rescoring complex variables Tue Jan  7 07:36:46 2020"
+#&gt; [1] "done rescoring complex variables Tue Jan  7 07:36:46 2020"
 #&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
 #&gt; 1 0.5000000 -0.6930972 1.0       0        0         1         0 FALSE
 #&gt; 2 0.5000000 -0.6930972 2.0       0        0         1         0 FALSE
