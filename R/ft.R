@@ -18,10 +18,8 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
 
 # approximate object id
 id_f <- function(d) { 
-  if(isTRUE(getOption('vtreat.check_obj_ids', FALSE))) {
-    if(requireNamespace('digest', quietly = TRUE)) {
+  if(requireNamespace('digest', quietly = TRUE)) {
       return(digest::digest(d))
-    }
   }
   return(NULL)
 }
@@ -59,7 +57,8 @@ classification_parameters <- function(user_params = NULL) {
     scale = FALSE,
     doCollar= FALSE,
     varRestriction = NULL,
-    trackedValues = NULL)
+    trackedValues = NULL,
+    check_object_hashes = TRUE)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
   class(merged_params) <- 'classification_parameters'
@@ -121,7 +120,10 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$fit")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- id_f(dframe)
+    fit_obj_id <- NULL
+    if(isTRUE(settings$params$check_object_hashes)) {
+      fit_obj_id <- id_f(dframe)
+    }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
     tp <- designTreatmentsC(
       dframe = dframe,
@@ -155,9 +157,14 @@ BinomialOutcomeTreatment <- function(...,
     old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
     if(!is.null(old_obj_id)) {
-      fit_obj_id <- id_f(dframe)
-      if(fit_obj_id == old_obj_id) {
-        warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+      fit_obj_id <- NULL
+      if(isTRUE(settings$params$check_object_hashes)) {
+        fit_obj_id <- id_f(dframe)
+      }
+      if(!is.null(fit_obj_id)) {
+        if(fit_obj_id == old_obj_id) {
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+        }
       }
     }
     tp <- mget('transform', envir = settings$state, inherits = FALSE,
@@ -184,7 +191,10 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- id_f(dframe)
+    fit_obj_id <- NULL
+    if(isTRUE(settings$params$check_object_hashes)) {
+      fit_obj_id <- id_f(dframe)
+    }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
     ce <- mkCrossFrameCExperiment(
       dframe = dframe,
@@ -281,7 +291,8 @@ regression_parameters <- function(user_params = NULL) {
     scale = FALSE,
     doCollar= FALSE,
     varRestriction = NULL,
-    trackedValues = NULL)
+    trackedValues = NULL,
+    check_object_hashes = TRUE)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
   class(merged_params) <- 'regression_parameters'
@@ -340,7 +351,10 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$fit")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- id_f(dframe)
+    fit_obj_id <- NULL
+    if(isTRUE(settings$params$check_object_hashes)) {
+      fit_obj_id <- id_f(dframe)
+    }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
     tp <- designTreatmentsN(
       dframe = dframe,
@@ -372,9 +386,14 @@ NumericOutcomeTreatment <- function(...,
     old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
     if(!is.null(old_obj_id)) {
-      fit_obj_id <- id_f(dframe)
-      if(fit_obj_id == old_obj_id) {
-        warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+      fit_obj_id <- NULL
+      if(isTRUE(settings$params$check_object_hashes)) {
+        fit_obj_id <- id_f(dframe)
+      }
+      if(!is.null(fit_obj_id)) {
+        if(fit_obj_id == old_obj_id) {
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+        }
       }
     }
     tp <- mget('transform', envir = settings$state, inherits = FALSE,
@@ -401,7 +420,10 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- id_f(dframe)
+    fit_obj_id <- NULL
+    if(isTRUE(settings$params$check_object_hashes)) {
+      fit_obj_id <- id_f(dframe)
+    }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
     ce <- mkCrossFrameNExperiment(
       dframe = dframe,
@@ -490,7 +512,8 @@ multinomial_parameters <- function(user_params = NULL) {
     verbose=FALSE,
     use_parallel = TRUE,
     missingness_imputation = NULL, 
-    imputation_map = NULL)
+    imputation_map = NULL,
+    check_object_hashes = TRUE)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
   class(merged_params) <- 'multinomial_parameters'
@@ -553,9 +576,14 @@ MultinomialOutcomeTreatment <- function(...,
     old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
     if(!is.null(old_obj_id)) {
-      fit_obj_id <- id_f(dframe)
-      if(fit_obj_id == old_obj_id) {
-        warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+      fit_obj_id <- NULL
+      if(isTRUE(settings$params$check_object_hashes)) {
+        fit_obj_id <- id_f(dframe)
+      }
+      if(!is.null(fit_obj_id)) {
+        if(fit_obj_id == old_obj_id) {
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+        }
       }
     }
     tp <- mget('transform', envir = settings$state, inherits = FALSE,
@@ -582,7 +610,10 @@ MultinomialOutcomeTreatment <- function(...,
                             "vtreat::MultinomialOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- id_f(dframe)
+    fit_obj_id <- NULL
+    if(isTRUE(settings$params$check_object_hashes)) {
+      fit_obj_id <- id_f(dframe)
+    }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
     td <- mkCrossFrameMExperiment(
       d = dframe,
