@@ -15,6 +15,8 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
   return(params)
 }
 
+# approximate object id
+id_f <- function(d) { gsub(' .*$', '', capture.output(.Internal(inspect(d)))[[1]]) }
 
 #' vtreat classification parameters.
 #' 
@@ -102,6 +104,7 @@ BinomialOutcomeTreatment <- function(...,
   )
   assign("transform", NULL, envir = settings$state)
   assign("score_frame", NULL, envir = settings$state)
+  assign("fit_obj_id", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_pipe_step"
   obj$treatment_type <- "BinomialOutcomeTreatment"
@@ -110,6 +113,8 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$fit")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
+    fit_obj_id <- id_f(dframe)
+    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     tp <- designTreatmentsC(
       dframe = dframe,
       varlist = settings$var_list,
@@ -139,6 +144,15 @@ BinomialOutcomeTreatment <- function(...,
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::BinomialOutcomeTreatment$transform")
+    old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
+                       ifnotfound = list('fit_obj_id' = NULL))[[1]]
+    if(is.null(old_obj_id)) {
+      stop("tried to use transform() on a not-fit treatment")
+    }
+    fit_obj_id <- id_f(dframe)
+    if(fit_obj_id == old_obj_id) {
+      warning("called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+    }
     tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
@@ -159,6 +173,8 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
+    fit_obj_id <- id_f(dframe)
+    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     ce <- mkCrossFrameCExperiment(
       dframe = dframe,
       varlist = settings$var_list,
@@ -304,6 +320,7 @@ NumericOutcomeTreatment <- function(...,
   )
   assign("transform", NULL, envir = settings$state)
   assign("score_frame", NULL, envir = settings$state)
+  assign("fit_obj_id", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_pipe_step"
   obj$treatment_type <- "NumericOutcomeTreatment"
@@ -312,6 +329,8 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$fit")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
+    fit_obj_id <- id_f(dframe)
+    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     tp <- designTreatmentsN(
       dframe = dframe,
       varlist = settings$var_list,
@@ -339,6 +358,15 @@ NumericOutcomeTreatment <- function(...,
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::NumericOutcomeTreatment$transform")
+    old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
+                       ifnotfound = list('fit_obj_id' = NULL))[[1]]
+    if(is.null(old_obj_id)) {
+      stop("tried to use transform() on a not-fit treatment")
+    }
+    fit_obj_id <- id_f(dframe)
+    if(fit_obj_id == old_obj_id) {
+      warning("called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+    }
     tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
@@ -359,6 +387,8 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
+    fit_obj_id <- id_f(dframe)
+    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     ce <- mkCrossFrameNExperiment(
       dframe = dframe,
       varlist = settings$var_list,
@@ -499,12 +529,22 @@ MultinomialOutcomeTreatment <- function(...,
   )
   assign("transform", NULL, envir = settings$state)
   assign("score_frame", NULL, envir = settings$state)
+  assign("fit_obj_id", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_pipe_step"
   obj$treatment_type <- "MultinomialOutcomeTreatment"
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::MultinomialOutcomeTreatment$transform")
+    old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
+                       ifnotfound = list('fit_obj_id' = NULL))[[1]]
+    if(is.null(old_obj_id)) {
+      stop("tried to use transform() on a not-fit treatment")
+    }
+    fit_obj_id <- id_f(dframe)
+    if(fit_obj_id == old_obj_id) {
+      warning("called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+    }
     tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
@@ -525,6 +565,8 @@ MultinomialOutcomeTreatment <- function(...,
                             "vtreat::MultinomialOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
+    fit_obj_id <- id_f(dframe)
+    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     td <- mkCrossFrameMExperiment(
       d = dframe,
       vars = settings$var_list,
@@ -695,7 +737,11 @@ UnsupervisedTreatment <- function(...,
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::UnsupervisedTreatment$transform")
-    tp <- get('transform', envir = settings$state, inherits = FALSE)
+    tp <- mget('transform', envir = settings$state, inherits = FALSE,
+               ifnotfound = list('transform' = NULL))[[1]]
+    if(is.null(tp)) {
+      stop("tried to use transform() on a not-fit treatment")
+    }
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,

@@ -38,7 +38,19 @@ test_ft_classification <- function() {
   RUnit::checkTrue(!('qq' %in% score_frame$origName))
   
   # check simple xform
-  d2 <-  transform_design$transform(d)
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(d),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(saw_warning)
+  dZ <- d
+  dZ['zz'] <- 0
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(dZ),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(!saw_warning)
+  
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
@@ -84,7 +96,18 @@ test_ft_regression <- function() {
   RUnit::checkTrue(!('qq' %in% score_frame$origName))
   
   # check simple xform
-  d2 <-  transform_design$transform(d)
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(d),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(saw_warning)
+  dZ <- d
+  dZ['zz'] <- 0
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(dZ),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(!saw_warning)
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
@@ -129,7 +152,11 @@ test_ft_unsupervised <- function() {
   RUnit::checkTrue(!('qq' %in% score_frame$origName))
   
   # check simple xform
-  d2 <-  transform_design$transform(d)
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(d),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(!saw_warning)
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
@@ -175,7 +202,19 @@ test_ft_multinomial <- function() {
   RUnit::checkTrue(!('qq' %in% score_frame$origName))
   
   # check simple xform
-  d2 <-  transform_design$transform(d)
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(d),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(saw_warning)
+  dZ <- d
+  dZ['zz'] <- 0
+  saw_warning <- FALSE
+  tryCatch(
+    d2 <- transform_design$transform(dZ),
+    warning = function(...) { saw_warning <<- TRUE })
+  RUnit::checkTrue(!saw_warning)
+  
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))

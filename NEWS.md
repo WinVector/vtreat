@@ -1,4 +1,8 @@
 
+# vtreat 1.5.1 2020/01/09
+
+ * Add an obvious same object warning to ft path.
+
 # vtreat 1.5.0 2020/01/07
 
  * Fix multinomial variable restriction.
