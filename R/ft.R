@@ -58,7 +58,7 @@ classification_parameters <- function(user_params = NULL) {
     doCollar= FALSE,
     varRestriction = NULL,
     trackedValues = NULL,
-    check_object_hashes = TRUE)
+    check_for_duplicate_frames = TRUE)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
   class(merged_params) <- 'classification_parameters'
@@ -121,7 +121,7 @@ BinomialOutcomeTreatment <- function(...,
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
     fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_object_hashes)) {
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
       fit_obj_id <- id_f(dframe)
     }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
@@ -158,7 +158,7 @@ BinomialOutcomeTreatment <- function(...,
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
     if(!is.null(old_obj_id)) {
       fit_obj_id <- NULL
-      if(isTRUE(settings$params$check_object_hashes)) {
+      if(isTRUE(settings$params$check_for_duplicate_frames)) {
         fit_obj_id <- id_f(dframe)
       }
       if(!is.null(fit_obj_id)) {
@@ -192,7 +192,7 @@ BinomialOutcomeTreatment <- function(...,
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
     fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_object_hashes)) {
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
       fit_obj_id <- id_f(dframe)
     }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
@@ -292,7 +292,7 @@ regression_parameters <- function(user_params = NULL) {
     doCollar= FALSE,
     varRestriction = NULL,
     trackedValues = NULL,
-    check_object_hashes = TRUE)
+    check_for_duplicate_frames = TRUE)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
   class(merged_params) <- 'regression_parameters'
@@ -352,7 +352,7 @@ NumericOutcomeTreatment <- function(...,
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
     fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_object_hashes)) {
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
       fit_obj_id <- id_f(dframe)
     }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
@@ -387,7 +387,7 @@ NumericOutcomeTreatment <- function(...,
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
     if(!is.null(old_obj_id)) {
       fit_obj_id <- NULL
-      if(isTRUE(settings$params$check_object_hashes)) {
+      if(isTRUE(settings$params$check_for_duplicate_frames)) {
         fit_obj_id <- id_f(dframe)
       }
       if(!is.null(fit_obj_id)) {
@@ -421,7 +421,7 @@ NumericOutcomeTreatment <- function(...,
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
     fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_object_hashes)) {
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
       fit_obj_id <- id_f(dframe)
     }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
@@ -513,7 +513,7 @@ multinomial_parameters <- function(user_params = NULL) {
     use_parallel = TRUE,
     missingness_imputation = NULL, 
     imputation_map = NULL,
-    check_object_hashes = TRUE)
+    check_for_duplicate_frames = TRUE)
   merged_params <- merge_params(params = params, 
                                 user_params = user_params)
   class(merged_params) <- 'multinomial_parameters'
@@ -577,7 +577,7 @@ MultinomialOutcomeTreatment <- function(...,
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
     if(!is.null(old_obj_id)) {
       fit_obj_id <- NULL
-      if(isTRUE(settings$params$check_object_hashes)) {
+      if(isTRUE(settings$params$check_for_duplicate_frames)) {
         fit_obj_id <- id_f(dframe)
       }
       if(!is.null(fit_obj_id)) {
@@ -611,7 +611,7 @@ MultinomialOutcomeTreatment <- function(...,
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
     fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_object_hashes)) {
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
       fit_obj_id <- id_f(dframe)
     }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
