@@ -23,7 +23,8 @@ Depends:
 Imports:
     stats,
     parallel,
-    wrapr (>= 1.9.3)
+    wrapr (>= 1.9.3),
+    digest
 Suggests:
     rquery (>= 1.4.0),
     rqdatatable (>= 1.2.4),

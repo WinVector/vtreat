@@ -15,8 +15,16 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
   return(params)
 }
 
+
 # approximate object id
-id_f <- function(d) { gsub(' .*$', '', capture.output(.Internal(inspect(d)))[[1]]) }
+id_f <- function(d) { 
+  if(isTRUE(getOption('vtreat.check_obj_ids', FALSE))) {
+    if(requireNamespace('digest', quietly = TRUE)) {
+      return(digest::digest(d))
+    }
+  }
+  return(NULL)
+}
 
 #' vtreat classification parameters.
 #' 
@@ -146,14 +154,17 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$transform")
     old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
-    if(is.null(old_obj_id)) {
+    if(!is.null(old_obj_id)) {
+      fit_obj_id <- id_f(dframe)
+      if(fit_obj_id == old_obj_id) {
+        warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+      }
+    }
+    tp <- mget('transform', envir = settings$state, inherits = FALSE,
+               ifnotfound = list('transform' = NULL))[[1]]
+    if(is.null(tp)) {
       stop("tried to use transform() on a not-fit treatment")
     }
-    fit_obj_id <- id_f(dframe)
-    if(fit_obj_id == old_obj_id) {
-      warning("called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
-    }
-    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
@@ -360,14 +371,17 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$transform")
     old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
-    if(is.null(old_obj_id)) {
+    if(!is.null(old_obj_id)) {
+      fit_obj_id <- id_f(dframe)
+      if(fit_obj_id == old_obj_id) {
+        warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+      }
+    }
+    tp <- mget('transform', envir = settings$state, inherits = FALSE,
+               ifnotfound = list('transform' = NULL))[[1]]
+    if(is.null(tp)) {
       stop("tried to use transform() on a not-fit treatment")
     }
-    fit_obj_id <- id_f(dframe)
-    if(fit_obj_id == old_obj_id) {
-      warning("called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
-    }
-    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
@@ -538,14 +552,17 @@ MultinomialOutcomeTreatment <- function(...,
                             "vtreat::MultinomialOutcomeTreatment$transform")
     old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
                        ifnotfound = list('fit_obj_id' = NULL))[[1]]
-    if(is.null(old_obj_id)) {
+    if(!is.null(old_obj_id)) {
+      fit_obj_id <- id_f(dframe)
+      if(fit_obj_id == old_obj_id) {
+        warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+      }
+    }
+    tp <- mget('transform', envir = settings$state, inherits = FALSE,
+               ifnotfound = list('transform' = NULL))[[1]]
+    if(is.null(tp)) {
       stop("tried to use transform() on a not-fit treatment")
     }
-    fit_obj_id <- id_f(dframe)
-    if(fit_obj_id == old_obj_id) {
-      warning("called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
-    }
-    tp <- get('transform', envir = settings$state, inherits = FALSE)
     res <- prepare(
       treatmentplan = tp,
       dframe = dframe,
