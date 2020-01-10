@@ -54,6 +54,10 @@ test_ft_classification <- function() {
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
+  
+  d2b <- dZ %.>% transform_design
+  
+  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
 
   invisible(NULL)
 }

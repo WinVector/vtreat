@@ -862,4 +862,14 @@ print.vtreat_pipe_step <- function(x, ...) {
 }
 
 
+#' @export
+apply_right.vtreat_pipe_step <- function(pipe_left_arg,
+                                         pipe_right_arg,
+                                         pipe_environment,
+                                         left_arg_name,
+                                         pipe_string,
+                                         right_arg_name) {
+  pipe_right_arg$transform(pipe_left_arg)
+}
+
 

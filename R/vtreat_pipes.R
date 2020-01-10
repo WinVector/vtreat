@@ -30,3 +30,5 @@ apply_right.multinomial_plan <- function(pipe_left_arg,
                                          right_arg_name) {
   prepare(pipe_right_arg, pipe_left_arg)
 }
+
+

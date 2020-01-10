@@ -3,6 +3,7 @@
 S3method(apply_right,multinomial_plan)
 S3method(apply_right,simple_plan)
 S3method(apply_right,treatmentplan)
+S3method(apply_right,vtreat_pipe_step)
 S3method(as.character,multinomial_plan)
 S3method(as.character,simple_plan)
 S3method(as.character,treatmentplan)
