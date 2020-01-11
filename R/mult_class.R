@@ -175,12 +175,13 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
   treat_m <- list(
     y_l_names = y_l_names,
     treatments_0 = treatments_0,
-    treatments_m = treatments_m)
+    treatments_m = treatments_m,
+    fit_obj_id = id_f(dframe))
   class(treat_m) <- "multinomial_plan"
   plan <- list(cross_frame = cross_frame,
                treat_m = treat_m,
-               score_frame = rbind(sframe_0, score_frame))
-  plan$fit_obj_id <- id_f(dframe)
+               score_frame = rbind(sframe_0, score_frame),
+               fit_obj_id = treat_m$fit_obj_id)
   plan
 }
 

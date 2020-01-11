@@ -104,7 +104,6 @@ BinomialOutcomeTreatment <- function(...,
   )
   assign("transform", NULL, envir = settings$state)
   assign("score_frame", NULL, envir = settings$state)
-  assign("fit_obj_id", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_pipe_step"
   obj$treatment_type <- "BinomialOutcomeTreatment"
@@ -113,11 +112,6 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$fit")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_for_duplicate_frames)) {
-      fit_obj_id <- id_f(dframe)
-    }
-    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     tp <- designTreatmentsC(
       dframe = dframe,
       varlist = settings$var_list,
@@ -147,11 +141,15 @@ BinomialOutcomeTreatment <- function(...,
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::BinomialOutcomeTreatment$transform")
-    old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
-                       ifnotfound = list('fit_obj_id' = NULL))[[1]]
-    if(!is.null(old_obj_id)) {
+    tp <- mget('transform', envir = settings$state, inherits = FALSE,
+               ifnotfound = list('transform' = NULL))[[1]]
+    if(is.null(tp)) {
+      stop("tried to use transform() on a not-fit treatment")
+    }
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
+      old_obj_id <- tp$fit_obj_id
       fit_obj_id <- NULL
-      if(isTRUE(settings$params$check_for_duplicate_frames)) {
+      if(!is.null(old_obj_id)) {
         fit_obj_id <- id_f(dframe)
       }
       if(!is.null(fit_obj_id)) {
@@ -159,11 +157,6 @@ BinomialOutcomeTreatment <- function(...,
           warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
         }
       }
-    }
-    tp <- mget('transform', envir = settings$state, inherits = FALSE,
-               ifnotfound = list('transform' = NULL))[[1]]
-    if(is.null(tp)) {
-      stop("tried to use transform() on a not-fit treatment")
     }
     res <- prepare(
       treatmentplan = tp,
@@ -185,11 +178,6 @@ BinomialOutcomeTreatment <- function(...,
                             "vtreat::BinomialOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_for_duplicate_frames)) {
-      fit_obj_id <- id_f(dframe)
-    }
-    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     ce <- mkCrossFrameCExperiment(
       dframe = dframe,
       varlist = settings$var_list,
@@ -336,7 +324,6 @@ NumericOutcomeTreatment <- function(...,
   )
   assign("transform", NULL, envir = settings$state)
   assign("score_frame", NULL, envir = settings$state)
-  assign("fit_obj_id", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_pipe_step"
   obj$treatment_type <- "NumericOutcomeTreatment"
@@ -345,11 +332,6 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$fit")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_for_duplicate_frames)) {
-      fit_obj_id <- id_f(dframe)
-    }
-    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     tp <- designTreatmentsN(
       dframe = dframe,
       varlist = settings$var_list,
@@ -377,23 +359,22 @@ NumericOutcomeTreatment <- function(...,
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::NumericOutcomeTreatment$transform")
-    old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
-                       ifnotfound = list('fit_obj_id' = NULL))[[1]]
-    if(!is.null(old_obj_id)) {
-      fit_obj_id <- NULL
-      if(isTRUE(settings$params$check_for_duplicate_frames)) {
-        fit_obj_id <- id_f(dframe)
-      }
-      if(!is.null(fit_obj_id)) {
-        if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit. To avoid this, please use fit_transform().")
-        }
-      }
-    }
     tp <- mget('transform', envir = settings$state, inherits = FALSE,
                ifnotfound = list('transform' = NULL))[[1]]
     if(is.null(tp)) {
       stop("tried to use transform() on a not-fit treatment")
+    }
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
+      old_obj_id <- tp$fit_obj_id
+      fit_obj_id <- NULL
+      if(!is.null(old_obj_id)) {
+        fit_obj_id <- id_f(dframe)
+      }
+      if(!is.null(fit_obj_id)) {
+        if(fit_obj_id == old_obj_id) {
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
+        }
+      }
     }
     res <- prepare(
       treatmentplan = tp,
@@ -415,11 +396,6 @@ NumericOutcomeTreatment <- function(...,
                             "vtreat::NumericOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_for_duplicate_frames)) {
-      fit_obj_id <- id_f(dframe)
-    }
-    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     ce <- mkCrossFrameNExperiment(
       dframe = dframe,
       varlist = settings$var_list,
@@ -561,30 +537,28 @@ MultinomialOutcomeTreatment <- function(...,
   )
   assign("transform", NULL, envir = settings$state)
   assign("score_frame", NULL, envir = settings$state)
-  assign("fit_obj_id", NULL, envir = settings$state)
   obj <- list(settings = settings)
   class(obj) <- "vtreat_pipe_step"
   obj$treatment_type <- "MultinomialOutcomeTreatment"
   transform <- function(dframe, ..., parallelCluster = NULL) {
     wrapr::stop_if_dot_args(substitute(list(...)), 
                             "vtreat::MultinomialOutcomeTreatment$transform")
-    old_obj_id <- mget('fit_obj_id', envir = settings$state, inherits = FALSE, 
-                       ifnotfound = list('fit_obj_id' = NULL))[[1]]
-    if(!is.null(old_obj_id)) {
-      fit_obj_id <- NULL
-      if(isTRUE(settings$params$check_for_duplicate_frames)) {
-        fit_obj_id <- id_f(dframe)
-      }
-      if(!is.null(fit_obj_id)) {
-        if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit. To avoid this, please use fit_transform().")
-        }
-      }
-    }
     tp <- mget('transform', envir = settings$state, inherits = FALSE,
                ifnotfound = list('transform' = NULL))[[1]]
     if(is.null(tp)) {
       stop("tried to use transform() on a not-fit treatment")
+    }
+    if(isTRUE(settings$params$check_for_duplicate_frames)) {
+      old_obj_id <- tp$fit_obj_id
+      fit_obj_id <- NULL
+      if(!is.null(old_obj_id)) {
+        fit_obj_id <- id_f(dframe)
+      }
+      if(!is.null(fit_obj_id)) {
+        if(fit_obj_id == old_obj_id) {
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
+        }
+      }
     }
     res <- prepare(
       treatmentplan = tp,
@@ -606,11 +580,6 @@ MultinomialOutcomeTreatment <- function(...,
                             "vtreat::MultinomialOutcomeTreatment$fit_transform")
     assign("transform", NULL, envir = settings$state)
     assign("score_frame", NULL, envir = settings$state)
-    fit_obj_id <- NULL
-    if(isTRUE(settings$params$check_for_duplicate_frames)) {
-      fit_obj_id <- id_f(dframe)
-    }
-    assign("fit_obj_id", fit_obj_id, envir = settings$state)
     td <- mkCrossFrameMExperiment(
       dframe = dframe,
       varlist = settings$var_list,
