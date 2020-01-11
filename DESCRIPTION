@@ -26,7 +26,7 @@ Imports:
     wrapr (>= 1.9.3),
     digest
 Suggests:
-    rquery (>= 1.4.0),
+    rquery (>= 1.4.1),
     rqdatatable (>= 1.2.4),
     isotone,
     lme4,
