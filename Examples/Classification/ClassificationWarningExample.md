@@ -65,14 +65,14 @@ training_data %.>%
   knitr::kable(.)
 ```
 
-|          x |           y | xc          |          x2 | yc    |
-| ---------: | ----------: | :---------- | ----------: | :---- |
-| \-4.734979 |   0.9150260 | level\_1    |   0.5040542 | TRUE  |
-| \-1.863432 | \-1.0665369 | NA          | \-0.6500201 | FALSE |
-|   2.353331 |   0.5898336 | level\_0.5  |   0.1120212 | TRUE  |
-|         NA | \-0.3723690 | level\_-0.5 | \-0.1466151 | FALSE |
-|         NA |   0.4817471 | level\_0.5  |   1.2193987 | FALSE |
-|         NA | \-0.7180701 | level\_-0.5 |   0.1958299 | FALSE |
+|          x |           y | xc         |          x2 | yc    |
+| ---------: | ----------: | :--------- | ----------: | :---- |
+| \-3.697856 |   0.6142224 | level\_0.5 |   0.3607324 | TRUE  |
+| \-4.169991 |   0.8109925 | level\_1   |   2.6907725 | TRUE  |
+| \-1.928503 | \-1.0334506 | NA         | \-1.5121338 | FALSE |
+|         NA | \-0.9426745 | NA         |   0.3373455 | FALSE |
+|         NA | \-1.1088176 | NA         | \-1.0859602 | FALSE |
+|         NA | \-0.9670602 | NA         | \-0.7261317 | FALSE |
 
 ## Demonstrate the Warning
 
@@ -96,17 +96,18 @@ transform_design = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:42:03 2020"
-    ## [1] " start cross frame work Sat Jan 11 09:42:04 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:42:04 2020"
+    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:46:07 2020"
+    ## [1] " start cross frame work Sat Jan 11 09:46:08 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:46:08 2020"
 
 ``` r
 transform <- transform_design$treatments
 train_prepared <- transform_design$crossFrame
 ```
 
-`train_prepared` is the correct way to use the same training data for
-inferring the impact-coded variables.
+`train_prepared` is prepared in the correct way to use the same training
+data for inferring the impact-coded variables, using the returned
+`$crossFrame` from `mkCrossFrameCExperiment()`.
 
 We prepare new test or application data as follows.
 
