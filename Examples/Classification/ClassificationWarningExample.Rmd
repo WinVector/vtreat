@@ -97,3 +97,6 @@ train_prepared_wrong <- prepare(transform, training_data)
 Notice we now get a warning that we should not have done this, and in doing so we may have a nested model bias data leak.
 
 And that is the new nested model bias warning feature.
+
+The `Python`-version of this document can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/ClassificationWarningExample.md).
+

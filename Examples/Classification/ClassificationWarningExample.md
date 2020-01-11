@@ -67,12 +67,12 @@ training_data %.>%
 
 |          x |           y | xc          |          x2 | yc    |
 | ---------: | ----------: | :---------- | ----------: | :---- |
-|  10.088396 | \-0.6397045 | level\_-0.5 | \-0.0360472 | FALSE |
-| \-3.786014 |   0.6247358 | level\_0.5  |   0.8821910 | TRUE  |
-|   5.653378 | \-0.5693094 | level\_-0.5 |   0.2569794 | FALSE |
-|         NA | \-0.8233617 | NA          | \-1.7062826 | FALSE |
-|         NA |   0.6630078 | level\_0.5  | \-0.1211011 | TRUE  |
-|         NA |   0.7865697 | level\_1    |   1.4946036 | TRUE  |
+|  6.8068049 |   0.5572591 | level\_0.5  | \-0.9520055 | TRUE  |
+| 12.5119547 | \-0.0937665 | level\_0    | \-0.3879735 | FALSE |
+|  0.3614936 |   0.3793758 | level\_0.5  | \-1.1801381 | FALSE |
+|         NA | \-0.3323129 | level\_-0.5 |   0.5020848 | FALSE |
+|         NA | \-1.0982912 | NA          |   1.9367222 | FALSE |
+|         NA |   0.1538800 | level\_0    | \-1.4343143 | FALSE |
 
 ## Demonstrate the Warning
 
@@ -96,9 +96,9 @@ transform_design = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:03:36 2020"
-    ## [1] " start cross frame work Sat Jan 11 09:03:37 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:03:37 2020"
+    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:23:33 2020"
+    ## [1] " start cross frame work Sat Jan 11 09:23:33 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:23:34 2020"
 
 ``` r
 transform <- transform_design$treatments
@@ -134,3 +134,6 @@ Notice we now get a warning that we should not have done this, and in
 doing so we may have a nested model bias data leak.
 
 And that is the new nested model bias warning feature.
+
+The `Python`-version of this document can be found
+[here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/ClassificationWarningExample.md).
