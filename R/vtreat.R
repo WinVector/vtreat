@@ -620,7 +620,7 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
     fit_obj_id <- id_f(dframe)
     if(!is.null(fit_obj_id)) {
       if(fit_obj_id == old_fit_obj_id) {
-        warning("possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrameCExperiment$crossFrame.")
+        warning("possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.")
       }
     }
   }
