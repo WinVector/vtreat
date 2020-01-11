@@ -75,7 +75,7 @@ transform <- transform_design$treatments
 train_prepared <- transform_design$crossFrame
 ```
 
-`d_prepared` is the correct way to use the same training data for inferring the impact-coded variables.
+`train_prepared` is the correct way to use the same training data for inferring the impact-coded variables.
 
 We prepare new test or application data as follows.
 

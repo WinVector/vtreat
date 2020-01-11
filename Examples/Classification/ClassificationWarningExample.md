@@ -67,12 +67,12 @@ training_data %.>%
 
 |          x |           y | xc          |          x2 | yc    |
 | ---------: | ----------: | :---------- | ----------: | :---- |
-|  6.8068049 |   0.5572591 | level\_0.5  | \-0.9520055 | TRUE  |
-| 12.5119547 | \-0.0937665 | level\_0    | \-0.3879735 | FALSE |
-|  0.3614936 |   0.3793758 | level\_0.5  | \-1.1801381 | FALSE |
-|         NA | \-0.3323129 | level\_-0.5 |   0.5020848 | FALSE |
-|         NA | \-1.0982912 | NA          |   1.9367222 | FALSE |
-|         NA |   0.1538800 | level\_0    | \-1.4343143 | FALSE |
+| \-4.734979 |   0.9150260 | level\_1    |   0.5040542 | TRUE  |
+| \-1.863432 | \-1.0665369 | NA          | \-0.6500201 | FALSE |
+|   2.353331 |   0.5898336 | level\_0.5  |   0.1120212 | TRUE  |
+|         NA | \-0.3723690 | level\_-0.5 | \-0.1466151 | FALSE |
+|         NA |   0.4817471 | level\_0.5  |   1.2193987 | FALSE |
+|         NA | \-0.7180701 | level\_-0.5 |   0.1958299 | FALSE |
 
 ## Demonstrate the Warning
 
@@ -96,16 +96,16 @@ transform_design = vtreat::mkCrossFrameCExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:23:33 2020"
-    ## [1] " start cross frame work Sat Jan 11 09:23:33 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:23:34 2020"
+    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:42:03 2020"
+    ## [1] " start cross frame work Sat Jan 11 09:42:04 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:42:04 2020"
 
 ``` r
 transform <- transform_design$treatments
 train_prepared <- transform_design$crossFrame
 ```
 
-`d_prepared` is the correct way to use the same training data for
+`train_prepared` is the correct way to use the same training data for
 inferring the impact-coded variables.
 
 We prepare new test or application data as follows.
