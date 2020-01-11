@@ -4,9 +4,9 @@
 #' 
 #' Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
 #' 
-#' @param d data to learn from
-#' @param vars character, vector of indpendent variable column names.
-#' @param y_name character, name of outcome column.
+#' @param dframe data to learn from
+#' @param varlist character, vector of indpendent variable column names.
+#' @param outcomename character, name of outcome column.
 #' @param ... not used, declared to forced named binding of later arguments
 #' @param weights optional training weights for each row
 #' @param minFraction optional minimum frequency a categorical level must have to be converted to an indicator column.
@@ -34,7 +34,7 @@
 #' 
 #' @export
 #'
-mkCrossFrameMExperiment <- function(d, vars, y_name, 
+mkCrossFrameMExperiment <- function(dframe, varlist, outcomename, 
                                     ...,
                                     weights=c(),
                                     minFraction=0.02,smFactor=0.0,
@@ -52,13 +52,13 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
                                     use_parallel = TRUE,
                                     missingness_imputation = NULL, imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::mkCrossFrameMExperiment")
-  y_levels <- sort(unique(as.character(d[[y_name]])))
+  y_levels <- sort(unique(as.character(dframe[[outcomename]])))
   y_l_names <- vtreat_make_names(y_levels)
   if(length(y_levels)<2) {
     stop("vtreat::mkCrossFrameMExperiment outcome must have 2 or more levels")
   }
   # build y-independent variable treatments
-  treatments_0 <- designTreatmentsZ(d, vars, 
+  treatments_0 <- designTreatmentsZ(dframe, varlist, 
                                     weights=weights,
                                     minFraction=minFraction,
                                     rareCount=rareCount,
@@ -70,17 +70,17 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
                                     use_parallel = use_parallel,
                                     missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   # score them
-  tf_0 <- prepare(treatments_0, d,
-                  extracols = y_name,
+  tf_0 <- prepare(treatments_0, dframe,
+                  extracols = outcomename,
                   parallelCluster = parallelCluster,
                   use_parallel = use_parallel)
   sf_0 <- treatments_0$scoreFrame[order(treatments_0$scoreFrame$varName), , drop = FALSE]
   sframe_0 <- lapply(
     y_levels,
     function(y_target) {
-      zCS <- tf_0[[y_name]]==y_target
+      zCS <- tf_0[[outcomename]]==y_target
       zoYS <- ifelse(zCS,1,0)
-      z_vars <- setdiff(colnames(tf_0), y_name)
+      z_vars <- setdiff(colnames(tf_0), outcomename)
       swkr <- .mkScoreColWorker(zoYS, zCS, TRUE, weights)
       newVarsSP <- lapply(z_vars,
                           function(nv) {
@@ -108,7 +108,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
     y_levels,
     function(y_target) {
       cfe <- mkCrossFrameCExperiment(
-        d, vars, y_name, y_target,
+        dframe, varlist, outcomename, y_target,
         weights=weights,
         minFraction=minFraction,
         smFactor=smFactor,
@@ -128,7 +128,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
         use_parallel = use_parallel,
         missingness_imputation = missingness_imputation, imputation_map = imputation_map)
       cross_frame_i = cfe$crossFrame
-      cross_frame_i[[y_name]] <- NULL
+      cross_frame_i[[outcomename]] <- NULL
       score_frame_i <- cfe$treatments$scoreFrame
       vars_found <- score_frame_i$varName
       new_vars <- paste0(y_l_names[[y_target]], 
@@ -150,10 +150,10 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
   names(cfe_list) <- NULL # make sure no names
   
   # build an overall cross-frame for training
-  dy <- data.frame(y = as.character(d[[y_name]]),
+  dy <- data.frame(y = as.character(dframe[[outcomename]]),
                    stringsAsFactors = FALSE)
-  colnames(dy) = y_name
-  cbind_args <- c(list(prepare(treatments_0, d)),
+  colnames(dy) = outcomename
+  cbind_args <- c(list(prepare(treatments_0, dframe)),
                   lapply(cfe_list, function(cfei) cfei$cross_frame_i),
                   list(dy),
                   stringsAsFactors = FALSE)
@@ -180,6 +180,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
   plan <- list(cross_frame = cross_frame,
                treat_m = treat_m,
                score_frame = rbind(sframe_0, score_frame))
+  plan$fit_obj_id <- id_f(dframe)
   plan
 }
 
@@ -199,6 +200,7 @@ mkCrossFrameMExperiment <- function(d, vars, y_name,
 #' @param extracols extra columns to copy.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param check_for_duplicate_frames logical, if TRUE check if we called prepare on same data.frame as design step.
 #' @return prepared data frame.
 #' 
 #' @seealso \code{\link{mkCrossFrameMExperiment}}, \code{\link{prepare}}
@@ -214,12 +216,22 @@ prepare.multinomial_plan <- function(treatmentplan, dframe,
                       trackedValues= NULL,
                       extracols= NULL,
                       parallelCluster= NULL,
-                      use_parallel= TRUE) {
-  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare_m")
+                      use_parallel= TRUE,
+                      check_for_duplicate_frames= TRUE) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare.multinomial_plan")
   treatments_0 <- treatmentplan$treatments_0
   treatments_m <- treatmentplan$treatments_m
   y_l_names <- treatmentplan$y_l_names
-  y_name <- treatments_m[[1]]$treatment$outcomename
+  outcomename <- treatments_m[[1]]$treatment$outcomename
+  old_fit_obj_id <- treatmentplan$fit_obj_id
+  if(check_for_duplicate_frames && (!is.null(old_fit_obj_id))) {
+    fit_obj_id <- id_f(dframe)
+    if(!is.null(fit_obj_id)) {
+      if(fit_obj_id == old_fit_obj_id) {
+        warning("possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrameCExperiment$crossFrame.")
+      }
+    }
+  }
   treated <- prepare(treatments_0, dframe,
                      pruneSig= pruneSig,
                      scale= scale,
@@ -229,7 +241,8 @@ prepare.multinomial_plan <- function(treatmentplan, dframe,
                      trackedValues= trackedValues,
                      extracols= extracols,
                      parallelCluster= parallelCluster,
-                     use_parallel= use_parallel)
+                     use_parallel= use_parallel,
+                     check_for_duplicate_frames= FALSE)
   for(tli in treatments_m) {
     ti <- tli$treatment
     vars_forward_map_i <- tli$vars_forward_map
@@ -250,14 +263,15 @@ prepare.multinomial_plan <- function(treatmentplan, dframe,
                          codeRestriction= codeRestriction,
                          trackedValues= trackedValues,
                          parallelCluster= parallelCluster,
-                         use_parallel= use_parallel)
-    treated_i[[y_name]] <- NULL
+                         use_parallel= use_parallel,
+                         check_for_duplicate_frames = FALSE)
+    treated_i[[outcomename]] <- NULL
     colnames(treated_i) <- vars_forward_map_i[colnames(treated_i)]
     treated <- cbind(treated, treated_i,
                      stringsAsFactors = FALSE)
   }
-  if(y_name %in% colnames(dframe)) {
-    treated[[y_name]] <- dframe[[y_name]]
+  if(outcomename %in% colnames(dframe)) {
+    treated[[outcomename]] <- dframe[[outcomename]]
   }
   treated
 }

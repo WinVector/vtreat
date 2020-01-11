@@ -16,7 +16,8 @@
   trackedValues = NULL,
   extracols = NULL,
   parallelCluster = NULL,
-  use_parallel = TRUE
+  use_parallel = TRUE,
+  check_for_duplicate_frames = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@
 \item{parallelCluster}{(optional) a cluster object created by package parallel or package snow.}
 
 \item{use_parallel}{logical, if TRUE use parallel methods.}
+
+\item{check_for_duplicate_frames}{logical, if TRUE check if we called prepare on same data.frame as design step.}
 }
 \value{
 prepared data frame.

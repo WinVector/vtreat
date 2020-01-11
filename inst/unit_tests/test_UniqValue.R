@@ -8,8 +8,8 @@ test_UniqValue <- function() {
   treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                   rareCount=0,rareSig=1,
                                   verbose=FALSE)
-  dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
-  dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
+  dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=1, check_for_duplicate_frames=FALSE)
+  dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=1, check_for_duplicate_frames=FALSE)
   
   
   dTrainC <- data.frame(x=c('a','a','a','a','a','a','b'),
@@ -21,9 +21,9 @@ test_UniqValue <- function() {
                                    rareCount=0,rareSig=1,
                                    verbose=FALSE)
   dTrainCTreated <- prepare(treatmentsC,dTrainC,
-                            pruneSig=1,doCollar=FALSE)
+                            pruneSig=1,doCollar=FALSE, check_for_duplicate_frames=FALSE)
   dTestCTreated <- prepare(treatmentsC,dTestC,
-                           pruneSig=1,doCollar=FALSE)
+                           pruneSig=1,doCollar=FALSE, check_for_duplicate_frames=FALSE)
   
   dTrainZ <- data.frame(x=c('a','a','a','a','a','a','b'),
                         z=c(0,0,0,0,0,0,1))
@@ -32,8 +32,8 @@ test_UniqValue <- function() {
   treatmentsZ = designTreatmentsZ(dTrainN,colnames(dTrainN),
                                   rareCount=0,
                                   verbose=FALSE)
-  dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1)
-  dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1)
+  dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1, check_for_duplicate_frames=FALSE)
+  dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1, check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(!is.null(dTestZTreated))
   
   invisible(NULL)

@@ -24,7 +24,7 @@ test_multiclass <- function() {
   cfe_m <- mkCrossFrameMExperiment(d, vars, y_name)
   sf <- cfe_m$score_frame
   cf <- cfe_m$cross_frame
-  prepped <- prepare(cfe_m$treat_m, d)
+  prepped <- prepare(cfe_m$treat_m, d, check_for_duplicate_frames=FALSE)
   RUnit::checkEquals(sort(colnames(prepped)), 
                          sort(colnames(cf)))
   RUnit::checkEquals(character(0), 

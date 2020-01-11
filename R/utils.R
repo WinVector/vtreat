@@ -384,3 +384,11 @@ vtreat_make_names <- function(nms_in,
 }
 
 
+#' @importFrom digest digest
+NULL
+
+# approximate object identity check
+id_f <- function(d) { 
+  return(digest::digest(d))
+}
+

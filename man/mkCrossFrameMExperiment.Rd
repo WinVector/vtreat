@@ -5,9 +5,9 @@
 \title{Function to build multi-outcome vtreat cross frame and treatment plan.}
 \usage{
 mkCrossFrameMExperiment(
-  d,
-  vars,
-  y_name,
+  dframe,
+  varlist,
+  outcomename,
   ...,
   weights = c(),
   minFraction = 0.02,
@@ -32,11 +32,11 @@ mkCrossFrameMExperiment(
 )
 }
 \arguments{
-\item{d}{data to learn from}
+\item{dframe}{data to learn from}
 
-\item{vars}{character, vector of indpendent variable column names.}
+\item{varlist}{character, vector of indpendent variable column names.}
 
-\item{y_name}{character, name of outcome column.}
+\item{outcomename}{character, name of outcome column.}
 
 \item{...}{not used, declared to forced named binding of later arguments}
 

@@ -215,6 +215,7 @@ designTreatmentsC <- function(dframe,varlist,
     missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments$outcomeTarget <- outcometarget
   treatments$outcomeType <- 'Binary'
+  treatments$fit_obj_id <- id_f(dframe)
   treatments
 }
 
@@ -325,6 +326,7 @@ designTreatmentsN <- function(dframe,varlist,outcomename,
     use_parallel = use_parallel,
     missingness_imputation = missingness_imputation, imputation_map = imputation_map)
   treatments$outcomeType <- 'Numeric'
+  treatments$fit_obj_id <- id_f(dframe)
   treatments
 }
 
@@ -549,6 +551,7 @@ prepare <- function(treatmentplan, dframe,
 #' @param extracols extra columns to copy.
 #' @param parallelCluster (optional) a cluster object created by package parallel or package snow.
 #' @param use_parallel logical, if TRUE use parallel methods.
+#' @param check_for_duplicate_frames logical, if TRUE check if we called prepare on same data.frame as design step.
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
 #' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}, \code{\link{prepare}}
@@ -591,7 +594,8 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
                                   trackedValues= NULL,
                                   extracols= NULL,
                                   parallelCluster= NULL,
-                                  use_parallel= TRUE) {
+                                  use_parallel= TRUE,
+                                  check_for_duplicate_frames= TRUE) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::prepare")
   .checkArgs1(dframe=dframe)
   if(!('treatmentplan' %in% class(treatmentplan))) {
@@ -610,6 +614,15 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
   }
   if(nrow(dframe)<=0) {
     stop("no rows")
+  }
+  old_fit_obj_id <- treatmentplan$fit_obj_id
+  if(check_for_duplicate_frames && (!is.null(old_fit_obj_id))) {
+    fit_obj_id <- id_f(dframe)
+    if(!is.null(fit_obj_id)) {
+      if(fit_obj_id == old_fit_obj_id) {
+        warning("possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrameCExperiment$crossFrame.")
+      }
+    }
   }
   if(!is.null(trackedValues)) {
     for(v in sort(intersect(names(trackedValues),

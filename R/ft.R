@@ -16,13 +16,6 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
 }
 
 
-# approximate object id
-id_f <- function(d) { 
-  if(requireNamespace('digest', quietly = TRUE)) {
-      return(digest::digest(d))
-  }
-  return(NULL)
-}
 
 #' vtreat classification parameters.
 #' 
@@ -163,7 +156,7 @@ BinomialOutcomeTreatment <- function(...,
       }
       if(!is.null(fit_obj_id)) {
         if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
         }
       }
     }
@@ -183,7 +176,8 @@ BinomialOutcomeTreatment <- function(...,
       trackedValues= settings$params$trackedValues,
       extracols = settings$cols_to_copy,
       parallelCluster = parallelCluster,
-      use_parallel = settings$params$use_parallel)
+      use_parallel = settings$params$use_parallel,
+      check_for_duplicate_frames = FALSE)
     return(res)
   }
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -392,7 +386,7 @@ NumericOutcomeTreatment <- function(...,
       }
       if(!is.null(fit_obj_id)) {
         if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit. To avoid this, please use fit_transform().")
         }
       }
     }
@@ -412,7 +406,8 @@ NumericOutcomeTreatment <- function(...,
       trackedValues= settings$params$trackedValues,
       extracols = settings$cols_to_copy,
       parallelCluster = parallelCluster,
-      use_parallel = settings$params$use_parallel)
+      use_parallel = settings$params$use_parallel,
+      check_for_duplicate_frames = FALSE)
     return(res)
   }
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -582,7 +577,7 @@ MultinomialOutcomeTreatment <- function(...,
       }
       if(!is.null(fit_obj_id)) {
         if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit please use fit_transform()")
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit. To avoid this, please use fit_transform().")
         }
       }
     }
@@ -602,7 +597,8 @@ MultinomialOutcomeTreatment <- function(...,
       codeRestriction= settings$params$codeRestriction,
       trackedValues= settings$params$trackedValues,
       extracols= settings$cols_to_copy,
-      use_parallel= settings$params$use_parallel)
+      use_parallel= settings$params$use_parallel,
+      check_for_duplicate_frames = FALSE)
     return(res)
   }
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -616,9 +612,9 @@ MultinomialOutcomeTreatment <- function(...,
     }
     assign("fit_obj_id", fit_obj_id, envir = settings$state)
     td <- mkCrossFrameMExperiment(
-      d = dframe,
-      vars = settings$var_list,
-      y_name = settings$outcome_name, 
+      dframe = dframe,
+      varlist = settings$var_list,
+      outcomename = settings$outcome_name, 
       weights = weights,
       parallelCluster = parallelCluster,
       minFraction=settings$params$minFraction,
@@ -800,7 +796,8 @@ UnsupervisedTreatment <- function(...,
       trackedValues= settings$params$trackedValues,
       extracols = settings$cols_to_copy,
       parallelCluster = parallelCluster,
-      use_parallel = settings$params$use_parallel)
+      use_parallel = settings$params$use_parallel,
+      check_for_duplicate_frames = FALSE)
     return(res)
   }
   fit_transform <- function(dframe, ..., weights = NULL, parallelCluster = NULL) {

@@ -70,7 +70,8 @@ test_BO <- function() {
                                        rareCount=2,rareSig=0.5,
                                        verbose=verbose)
       dTrainNTreated <- prepare(treatmentsN,dTrain,pruneSig=0.99,
-                                scale=scale)
+                                scale=scale, 
+                                check_for_duplicate_frames=FALSE)
       nvars <- setdiff(colnames(dTrainNTreated),'yN')
       if(scale) {
         # all input variables should be mean 0 when scale is TRUE
@@ -85,7 +86,8 @@ test_BO <- function() {
       }
       modelN <- lm(paste('yN',paste(nvars,collapse=' + '),sep=' ~ '),
                    data=dTrainNTreated)
-      dTestNTreated <- prepare(treatmentsN,dTest,pruneSig=0.99,scale=scale)
+      dTestNTreated <- prepare(treatmentsN,dTest,pruneSig=0.99,scale=scale, 
+                               check_for_duplicate_frames=FALSE)
       dTestNTreated$pred <- predict(modelN,newdata=dTestNTreated)
       if(verbose) {
         print(summary(modelN))
@@ -97,7 +99,8 @@ test_BO <- function() {
       treatmentsC <- designTreatmentsC(dTrain,vars,'yC',TRUE,smFactor=smFactor,
                                       catScaling=TRUE,
                                        verbose=verbose)
-      dTrainCTreated <- prepare(treatmentsC,dTrain,pruneSig=0.99,scale=scale)
+      dTrainCTreated <- prepare(treatmentsC,dTrain,pruneSig=0.99,scale=scale,
+                                check_for_duplicate_frames=FALSE)
       cvars <- setdiff(colnames(dTrainCTreated),'yC')
       if(scale) {
         # all input variables should be mean 0 when scale is TRUE
@@ -112,7 +115,8 @@ test_BO <- function() {
       }
       modelC <- glm(paste('yC',paste(cvars,collapse=' + '),sep=' ~ '),
                     data=dTrainCTreated,family=binomial(link='logit'))
-      dTestCTreated <- prepare(treatmentsC,dTest,pruneSig=0.99,scale=scale)
+      dTestCTreated <- prepare(treatmentsC,dTest,pruneSig=0.99,scale=scale, 
+                               check_for_duplicate_frames=FALSE)
       dTestCTreated$pred <- predict(modelC,newdata=dTestCTreated,type='response')
       if(verbose) {
         print(summary(modelC))

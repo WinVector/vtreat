@@ -8,8 +8,8 @@ test_Scale <- function() {
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                    catScaling=TRUE,
                                    verbose=FALSE)
-  dTrainCTreatedUnscaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=FALSE)
-  dTrainCTreatedScaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
+  dTrainCTreatedUnscaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=FALSE, check_for_duplicate_frames=FALSE)
+  dTrainCTreatedScaled <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   slopeFrame <- data.frame(varName=treatmentsC$scoreFrame$varName,
                            stringsAsFactors = FALSE)
   slopeFrame$mean <- vapply(dTrainCTreatedScaled[,slopeFrame$varName,drop=FALSE],mean,

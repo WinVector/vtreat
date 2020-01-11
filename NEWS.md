@@ -1,8 +1,9 @@
 
-# vtreat 1.5.1 2020/01/09
+# vtreat 1.5.1 2020/01/11
 
- * Add an obvious same object warning to ft path.
+ * Check for same-frame on prepare paths.
  * Pipe into ft.
+ * Rename multinomial arguments to match other methods.
 
 # vtreat 1.5.0 2020/01/07
 

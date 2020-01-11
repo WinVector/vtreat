@@ -11,28 +11,28 @@ test_ZW <- function() {
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                    catScaling = TRUE,
                                    weights=trainCWeights,verbose=FALSE)
-  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
+  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   varsC <- setdiff(colnames(dTrainCTreated),'y')
   # all input variables should be mean 0
   sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
   # all slopes should be 1
   sapply(varsC,function(c) { glm(paste('y',c,sep='~'),family='binomial',
                                 data=dTrainCTreated)$coefficients[[2]]})
-  dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
+  dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   
   # categorical example indicator mode
   set.seed(235256)
   treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE,
                                    catScaling = FALSE,
                                    weights=trainCWeights,verbose=FALSE)
-  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE)
+  dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   varsC <- setdiff(colnames(dTrainCTreated),'y')
   # all input variables should be mean 0
   sapply(dTrainCTreated[,varsC,drop=FALSE],mean)
   # all slopes should be 1
   sapply(varsC,function(c) { lm(paste('y',c,sep='~'),
                                  data=dTrainCTreated)$coefficients[[2]]})
-  dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE)
+  dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   
   # numeric example
   set.seed(235256)
@@ -45,14 +45,14 @@ test_ZW <- function() {
   treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y',
                                   weights=trainNWeights,
                                   verbose=FALSE)
-  dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=c(),scale=TRUE)
+  dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   varsN <- setdiff(colnames(dTrainNTreated),'y')
   # all input variables should be mean 0
   sapply(dTrainNTreated[,varsN,drop=FALSE],mean) 
   # all slopes should be 1
   sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainNTreated)$coefficients[[2]]}) 
-  dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE)
+  dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(!is.null(dTestNTreated))
   
   invisible(NULL)

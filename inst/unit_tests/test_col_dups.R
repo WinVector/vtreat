@@ -17,7 +17,7 @@ test_col_dups <- function() {
   
   dTest_treated <- prepare(treatment_plan, 
                            d,
-                           scale = TRUE)
+                           scale = TRUE, check_for_duplicate_frames=FALSE)
   
   dTest_treated
   RUnit::checkTrue(length(colnames(dTest_treated))==length(unique(colnames(dTest_treated))))

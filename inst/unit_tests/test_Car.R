@@ -15,7 +15,7 @@ test_Car <- function() {
     pvars <- setdiff(colnames(uci.car.data),dYName)
     treatmentsC <- designTreatmentsC(uci.car.data,
                                      pvars,dYName,dYTarget,verbose=FALSE)
-    dTrainCTreated <- prepare(treatmentsC,uci.car.data,pruneSig=0.5)
+    dTrainCTreated <- prepare(treatmentsC, uci.car.data, pruneSig=0.5, check_for_duplicate_frames=FALSE)
     cvars <- setdiff(colnames(dTrainCTreated),dYName)
     p_values <- c(p_values, min(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName=='noise']))
     

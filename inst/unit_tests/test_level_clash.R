@@ -11,7 +11,7 @@ test_level_clash <- function() {
   
   tp <- designTreatmentsN(d, "time", "y", verbose = FALSE)
 
-  d_treated <- d %.>% tp
+  d_treated <- prepare(tp, d, check_for_duplicate_frames = FALSE)
   d_treated$time <- d$time
   
   # print(d_treated)
@@ -34,7 +34,7 @@ test_level_clash <- function() {
   
   tp <- designTreatmentsN(d, "time", "y", verbose = FALSE)
   
-  d_treated <- d %.>% tp
+  d_treated <- prepare(tp, d, check_for_duplicate_frames = FALSE)
   d_treated$time <- d$time
   
   # print(d_treated)

@@ -7,8 +7,8 @@ test_NoY <- function() {
   treatmentsZ = designTreatmentsZ(dTrainZ,colnames(dTrainZ),
                                   rareCount=0,
                                   verbose=FALSE)
-  dTrainZTreated <- prepare(treatmentsZ,dTrainZ,pruneSig=NULL)
-  dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=NULL)
+  dTrainZTreated <- prepare(treatmentsZ,dTrainZ,pruneSig=NULL, check_for_duplicate_frames=FALSE)
+  dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=NULL, check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(!is.null(dTestZTreated))
   
   invisible(NULL)

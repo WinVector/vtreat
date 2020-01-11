@@ -19,7 +19,7 @@ test_rquery <- function() {
   dTrainC$id <- seq_len(nrow(dTrainC))
   treatmentsC <- designTreatmentsC(dTrainC, c("x", "z"), 'y', TRUE,
                                    verbose = FALSE)
-  treated_c_1 <- prepare(treatmentsC, dTrainC)
+  treated_c_1 <- prepare(treatmentsC, dTrainC, check_for_duplicate_frames=FALSE)
   
   dTrainR <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
                         z= c(1, 2, NA, 4, 5, 6),
@@ -28,7 +28,7 @@ test_rquery <- function() {
   dTrainR$id <- seq_len(nrow(dTrainR))
   treatmentsN <- designTreatmentsN(dTrainR, c("x", "z"), 'y',
                                    verbose = FALSE)
-  treated_n_1 <- prepare(treatmentsN, dTrainR)
+  treated_n_1 <- prepare(treatmentsN, dTrainR, check_for_duplicate_frames=FALSE)
   
   dTrainZ <- data.frame(x= c('a', 'a', 'a', 'b' ,NA , 'b'),
                         z= c(1, 2, NA, 4, 5, 6),
@@ -36,7 +36,7 @@ test_rquery <- function() {
   dTrainZ$id <- seq_len(nrow(dTrainZ))
   treatmentsZ <- designTreatmentsZ(dTrainZ, c("x", "z"), 
                                    verbose = FALSE)
-  treated_z_1 <- prepare(treatmentsZ, dTrainZ)
+  treated_z_1 <- prepare(treatmentsZ, dTrainZ, check_for_duplicate_frames=FALSE)
   
   
   if(eval_examples) {

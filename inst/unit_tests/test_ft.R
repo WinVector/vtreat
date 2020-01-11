@@ -56,7 +56,6 @@ test_ft_classification <- function() {
   RUnit::checkTrue('y' %in% colnames(d2))
   
   d2b <- dZ %.>% transform_design
-  
   RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
 
   invisible(NULL)
@@ -116,6 +115,9 @@ test_ft_regression <- function() {
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
   
+  d2b <- dZ %.>% transform_design
+  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
+  
   invisible(NULL)
 }
 
@@ -164,6 +166,9 @@ test_ft_unsupervised <- function() {
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
+  
+  d2b <- d %.>% transform_design
+  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
   
   invisible(NULL)
 }
@@ -222,6 +227,9 @@ test_ft_multinomial <- function() {
   
   RUnit::checkTrue('yc' %in% colnames(d2))
   RUnit::checkTrue('y' %in% colnames(d2))
+  
+  d2b <- dZ %.>% transform_design
+  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
   
   invisible(NULL)
 }

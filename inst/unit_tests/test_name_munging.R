@@ -9,7 +9,7 @@ test_name_munging <- function() {
     4.7             , 3.2          , 1.3           , 0.2          , "setosa"  )
   
   t <- designTreatmentsZ(d, names(d), verbose = FALSE)
-  d2 <- prepare(t, d)
+  d2 <- prepare(t, d, check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(isTRUE(all.equal(make.names(colnames(d2)), colnames(d2))))
   
   ts <- design_missingness_treatment(d)

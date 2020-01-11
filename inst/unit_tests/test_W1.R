@@ -16,7 +16,7 @@ test_W1 <- function() {
   tN <- designTreatmentsN(d,c('zip','zip2'),'y',
                            rareCount=2,rareSig=0.5,
                           verbose=FALSE)
-  dTN <- prepare(tN,d,pruneSig=0.01)
+  dTN <- prepare(tN,d,pruneSig=0.01, check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(!('zip_catN' %in% colnames(dTN)))
   RUnit::checkTrue('zip2_catN' %in% colnames(dTN))
 
@@ -24,16 +24,16 @@ test_W1 <- function() {
   tC <- designTreatmentsC(d,c('zip','zip2'),'yc',TRUE,
                           rareCount=2,rareSig=0.5,
                           verbose=FALSE)
-  dTC <- prepare(tC,d,pruneSig=0.01)
+  dTC <- prepare(tC,d,pruneSig=0.01, check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(!('zip_catB' %in% colnames(dTC)))
   RUnit::checkTrue('zip2_catB' %in% colnames(dTC))
 
   
   tC# show naive method has high correlations
-  dTN <- prepare(tN,d,pruneSig=c())
+  dTN <- prepare(tN,d,pruneSig=c(), check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(cor(dTN$zip_catN,dTN$y)>0.1)
   
-  dTC <- prepare(tC,d,pruneSig=c())
+  dTC <- prepare(tC,d,pruneSig=c(), check_for_duplicate_frames=FALSE)
   RUnit::checkTrue(cor(as.numeric(dTC$yc),dTC$zip_catB)>0.1)
   
   # show cross table helps lower this
