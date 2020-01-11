@@ -305,12 +305,12 @@ Trivial example:
 ``` r
 library("vtreat")
 packageVersion("vtreat")
- #  [1] '1.4.8'
+ #  [1] '1.5.1'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
  #  
- #    John Mount and Nina Zumel (2019). vtreat: A Statistically Sound
+ #    John Mount and Nina Zumel (2020). vtreat: A Statistically Sound
  #    'data.frame' Processor/Conditioner.
  #    https://github.com/WinVector/vtreat/,
  #    https://winvector.github.io/vtreat/.
@@ -320,7 +320,7 @@ citation('vtreat')
  #    @Manual{,
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
- #      year = {2019},
+ #      year = {2020},
  #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
  #    }
 
@@ -336,8 +336,8 @@ treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.060049677 0.44862725                 2
- #  2        x    x_catB  catB 0.127625394 0.26932340                 2
+ #  1        x    x_catP  catP 0.111456141 0.30194137                 2
+ #  2        x    x_catB  catB 0.033761011 0.56994212                 2
  #  3        z         z clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -347,6 +347,10 @@ print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'e
 # help("prepare")
 
 dTrainCTreated <- prepare(treatmentsC, dTrainC, pruneSig=1.0, scale=TRUE)
+ #  Warning in prepare.treatmentplan(treatmentsC, dTrainC, pruneSig = 1, scale =
+ #  TRUE): possibly called prepare() on same data frame as designTreatments*()/
+ #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
+ #  mkCrossFrameCExperiment$crossFrame.
 varsC <- setdiff(colnames(dTrainCTreated), 'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[, varsC, drop=FALSE], mean)
@@ -357,10 +361,8 @@ sapply(dTrainCTreated[, varsC, drop=FALSE], mean)
 # all non NA slopes should be 1
 sapply(varsC, function(c) { lm(paste('y', c, sep='~'),
    data=dTrainCTreated)$coefficients[[2]]})
- #      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a 
- #  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 
- #   x_lev_x_b 
- #  0.24663035
+ #      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a  x_lev_x_b 
+ #  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 0.24663035
 dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=c(), scale=TRUE)
 print(dTestCTreated)
  #        x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b
@@ -380,15 +382,19 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 2.869955e-01 0.1711651                 2
- #  2        x    x_catN  catN 2.014886e-02 0.7374034                 2
- #  3        x    x_catD  catD 3.614228e-01 0.1149323                 2
+ #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
+ #  2        x    x_catN  catN 2.606061e-01 0.1961166                 2
+ #  3        x    x_catD  catD 6.666667e-02 0.5369633                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
  #  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0
  #  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0
 dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig=1.0, scale=TRUE)
+ #  Warning in prepare.treatmentplan(treatmentsN, dTrainN, pruneSig = 1, scale =
+ #  TRUE): possibly called prepare() on same data frame as designTreatments*()/
+ #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
+ #  mkCrossFrameCExperiment$crossFrame.
 varsN <- setdiff(colnames(dTrainNTreated), 'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[, varsN, drop=FALSE], mean) 
@@ -399,10 +405,8 @@ sapply(dTrainNTreated[, varsN, drop=FALSE], mean)
 # all non NA slopes should be 1
 sapply(varsN, function(c) { lm(paste('y', c, sep='~'),
    data=dTrainNTreated)$coefficients[[2]]}) 
- #     x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a 
- #          1         1         1         1         1         1         1 
- #  x_lev_x_b 
- #          1
+ #     x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
+ #          1         1         1         1         1         1         1         1
 dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=c(), scale=TRUE)
 print(dTestNTreated)
  #    x_catP x_catN      x_catD         z    z_isBAD   x_lev_NA x_lev_x_a
@@ -423,6 +427,10 @@ print(dTestNTreated)
 dTrainN %.>% 
   treatmentsN %.>% 
   knitr::kable(.)
+ #  Warning in prepare.treatmentplan(pipe_right_arg, pipe_left_arg):
+ #  possibly called prepare() on same data frame as designTreatments*()/
+ #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
+ #  mkCrossFrameCExperiment$crossFrame.
 ```
 
 | x\_catP | x\_catN |   x\_catD |        z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | y |

@@ -172,7 +172,8 @@
   <span class='kw'>trackedValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>check_for_duplicate_frames</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -225,6 +226,10 @@
     <tr>
       <th>use_parallel</th>
       <td><p>logical, if TRUE use parallel methods.</p></td>
+    </tr>
+    <tr>
+      <th>check_for_duplicate_frames</th>
+      <td><p>logical, if TRUE check if we called prepare on same data.frame as design step.</p></td>
     </tr>
     </table>
 

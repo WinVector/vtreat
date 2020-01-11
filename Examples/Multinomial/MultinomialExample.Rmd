@@ -78,9 +78,9 @@ We use the training data `d` to fit the transform and the return a treated train
 
 ```{r}
 transform_design = vtreat::mkCrossFrameMExperiment(
-    d = d,                                         # data to learn transform from
-    vars = setdiff(colnames(d), c('y', 'yc')),     # columns to transform
-    y_name = 'yc'                                  # outcome variable
+    d,                                    # data to learn transform from
+    setdiff(colnames(d), c('y', 'yc')),   # columns to transform
+    'yc'                                  # outcome variable
 )
 transform <- transform_design$treat_m
 d_prepared <- transform_design$cross_frame
@@ -263,10 +263,10 @@ in other words, you only want to use variables of types (`clean_copy`, `missing_
 
 ```{r}
 transform_design_thin = vtreat::mkCrossFrameMExperiment(
-    d = d,                                         # data to learn transform from
-    vars = setdiff(colnames(d), c('y', 'yc')),     # columns to transform
-    y_name = 'yc',                                 # outcome variable
-    codeRestriction = c('lev',                     # transforms we want
+    d,                                    # data to learn transform from
+    setdiff(colnames(d), c('y', 'yc')),   # columns to transform
+    'yc',                                 # outcome variable
+    codeRestriction = c('lev',            # transforms we want
                         'clean',
                         'isBAD')
 )
