@@ -1,12 +1,13 @@
 
 test_Parallel <- function() {
-  # seems to kill testthat on stop, possibly https://github.com/hadley/testthat/issues/129
-  Sys.setenv("R_TESTS" = "")
+  # # # left-over from when we were using testthat
+  # # seems to kill testthat on stop, possibly https://github.com/hadley/testthat/issues/129
+  # Sys.setenv("R_TESTS" = "")
 
   dir <- system.file("unit_tests", package = "vtreat", mustWork = TRUE)
   load(paste(dir, 'uci.car.data.Rdata', sep = "/"))
   cl <- NULL
-  if(requireNamespace("parallel",quietly=TRUE)) {
+  if(requireNamespace("parallel", quietly=TRUE)) {
     cl <- parallel::makeCluster(2)
   }
   

@@ -22,7 +22,6 @@ Depends:
   R (>= 3.2.1)
 Imports:
     stats,
-    parallel,
     wrapr (>= 1.9.3),
     digest
 Suggests:
@@ -33,6 +32,7 @@ Suggests:
     knitr,
     rmarkdown,
     data.table (>= 1.11.4),
+    parallel,
     DBI,
     RSQLite,
     datasets,
