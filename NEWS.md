@@ -1,5 +1,5 @@
 
-# vtreat 1.5.1 2020/01/11
+# vtreat 1.5.1 2020/01/12
 
  * Check for same-frame on prepare paths.
  * Pipe into ft.

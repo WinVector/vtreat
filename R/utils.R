@@ -51,7 +51,7 @@ plapply <- function(workList, worker,
     }
   }
   # fall back to base R
-  do.call(rbind,frame_list)
+  do.call(base::rbind, c(frame_list, list('stringsAsFactors' = FALSE)))
 }
 
 
