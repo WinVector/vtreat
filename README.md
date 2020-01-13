@@ -4,6 +4,7 @@
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
+[![status](https://tinyverse.netlify.com/badge/vtreat)](https://CRAN.R-project.org/package=vtreat)
 
 `vtreat` is a `data.frame` processor/conditioner (available [for
 `R`](https://github.com/WinVector/vtreat), and [for
@@ -336,8 +337,8 @@ treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
                                  verbose=FALSE)
 print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code         rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 0.111456141 0.30194137                 2
- #  2        x    x_catB  catB 0.033761011 0.56994212                 2
+ #  1        x    x_catP  catP 0.059315943 0.45141252                 2
+ #  2        x    x_catB  catB 0.029824903 0.59334713                 2
  #  3        z         z clean 0.237601767 0.13176020                 0
  #  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
  #  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -350,7 +351,7 @@ dTrainCTreated <- prepare(treatmentsC, dTrainC, pruneSig=1.0, scale=TRUE)
  #  Warning in prepare.treatmentplan(treatmentsC, dTrainC, pruneSig = 1, scale =
  #  TRUE): possibly called prepare() on same data frame as designTreatments*()/
  #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
- #  mkCrossFrameCExperiment$crossFrame.
+ #  mkCrossFrame*Experiment$crossFrame.
 varsC <- setdiff(colnames(dTrainCTreated), 'y')
 # all input variables should be mean 0
 sapply(dTrainCTreated[, varsC, drop=FALSE], mean)
@@ -382,9 +383,9 @@ treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
                                 verbose=FALSE)
 print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
  #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 3.700306e-01 0.1095637                 2
- #  2        x    x_catN  catN 2.606061e-01 0.1961166                 2
- #  3        x    x_catD  catD 6.666667e-02 0.5369633                 2
+ #  1        x    x_catP  catP 1.348315e-01 0.3708945                 2
+ #  2        x    x_catN  catN 4.582430e-02 0.6107193                 2
+ #  3        x    x_catD  catD 2.549856e-01 0.2018336                 2
  #  4        z         z clean 2.880952e-01 0.1701892                 0
  #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
  #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
@@ -394,7 +395,7 @@ dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig=1.0, scale=TRUE)
  #  Warning in prepare.treatmentplan(treatmentsN, dTrainN, pruneSig = 1, scale =
  #  TRUE): possibly called prepare() on same data frame as designTreatments*()/
  #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
- #  mkCrossFrameCExperiment$crossFrame.
+ #  mkCrossFrame*Experiment$crossFrame.
 varsN <- setdiff(colnames(dTrainNTreated), 'y')
 # all input variables should be mean 0
 sapply(dTrainNTreated[, varsN, drop=FALSE], mean) 
@@ -430,7 +431,7 @@ dTrainN %.>%
  #  Warning in prepare.treatmentplan(pipe_right_arg, pipe_left_arg):
  #  possibly called prepare() on same data frame as designTreatments*()/
  #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
- #  mkCrossFrameCExperiment$crossFrame.
+ #  mkCrossFrame*Experiment$crossFrame.
 ```
 
 | x\_catP | x\_catN |   x\_catD |        z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | y |

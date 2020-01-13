@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
-
+[![status](https://tinyverse.netlify.com/badge/vtreat)](https://CRAN.R-project.org/package=vtreat)
 
 `vtreat` is a `data.frame` processor/conditioner (available [for `R`](https://github.com/WinVector/vtreat), and [for `Python`](https://github.com/WinVector/pyvtreat)) that prepares
 real-world data for supervised machine learning or predictive modeling
