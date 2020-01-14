@@ -94,6 +94,9 @@ transform_design = vtreat::BinomialOutcomeTreatment(
 # learn transform from data
 d_prepared <-  transform_design$fit_transform(d)
 
+# list the derived variables
+print(transform_design$get_feature_names())
+
 # get statistics on the variables
 score_frame <- transform_design$score_frame()
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
@@ -101,6 +104,13 @@ score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(scor
 
 Note that for the training data `d`: `transform_design$fit_transform(d)` is **not** the same as `transform_design$fit(d)$transform(d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
 For other, later data, not seen during transform design `transform_design$transform(o)` is an appropriate step.
+
+`vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
+
+```{r}
+d_prepared_wrong <- transform_design$transform(d)
+```
+
 
 Now examine the score frame, which gives information about each new variable, including its type, which original variable it is  derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome. 
 
@@ -206,6 +216,7 @@ dtest <- make_data(450)
 
 # prepare the new data with vtreat
 dtest_prepared = transform_design$transform(dtest)
+# dtest %.>% transform_design is an alias for transform_design$transform(dtest)
 
 # apply the model to the prepared data
 dtest_prepared['prediction'] = predict(

@@ -154,7 +154,7 @@ BinomialOutcomeTreatment <- function(...,
       }
       if(!is.null(fit_obj_id)) {
         if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoid this, please use fit_transform().")
         }
       }
     }
@@ -217,12 +217,20 @@ BinomialOutcomeTreatment <- function(...,
     res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
+  get_feature_names <- function(input_features=NULL) {
+    sf <- get('score_frame', envir = settings$state, inherits = FALSE)
+    want <- sf$varMoves
+    if(!is.null(input_features)) {
+      want <- want & (sf$origName %in% input_features)
+    }
+    return(sf$varName[want])
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform")) {
+              "score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -233,6 +241,7 @@ BinomialOutcomeTreatment <- function(...,
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
+  obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -372,7 +381,7 @@ NumericOutcomeTreatment <- function(...,
       }
       if(!is.null(fit_obj_id)) {
         if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoid this, please use fit_transform().")
         }
       }
     }
@@ -433,12 +442,20 @@ NumericOutcomeTreatment <- function(...,
     res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
+  get_feature_names <- function(input_features=NULL) {
+    sf <- get('score_frame', envir = settings$state, inherits = FALSE)
+    want <- sf$varMoves
+    if(!is.null(input_features)) {
+      want <- want & (sf$origName %in% input_features)
+    }
+    return(sf$varName[want])
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform")) {
+              "score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -449,6 +466,7 @@ NumericOutcomeTreatment <- function(...,
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
+  obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -556,7 +574,7 @@ MultinomialOutcomeTreatment <- function(...,
       }
       if(!is.null(fit_obj_id)) {
         if(fit_obj_id == old_obj_id) {
-          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoidthis, please use fit_transform().")
+          warning("possibly called transform() on same data frame as fit(), this can lead to over-fit.  To avoid this, please use fit_transform().")
         }
       }
     }
@@ -626,12 +644,20 @@ MultinomialOutcomeTreatment <- function(...,
     res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
+  get_feature_names <- function(input_features=NULL) {
+    sf <- get('score_frame', envir = settings$state, inherits = FALSE)
+    want <- sf$varMoves
+    if(!is.null(input_features)) {
+      want <- want & (sf$origName %in% input_features)
+    }
+    return(unique(sf$varName[want]))
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform")) {
+              "score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -642,6 +668,7 @@ MultinomialOutcomeTreatment <- function(...,
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
+  obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -784,12 +811,20 @@ UnsupervisedTreatment <- function(...,
     res <- get('transform', envir = settings$state, inherits = FALSE)
     return(res)
   }
+  get_feature_names <- function(input_features=NULL) {
+    sf <- get('score_frame', envir = settings$state, inherits = FALSE)
+    want <- sf$varMoves
+    if(!is.null(input_features)) {
+      want <- want & (sf$origName %in% input_features)
+    }
+    return(sf$varName[want])
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform")) {
+              "score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -800,6 +835,7 @@ UnsupervisedTreatment <- function(...,
   obj$fit_transform = fit_transform
   obj$score_frame = score_frame
   obj$get_transform = get_transform
+  obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
   return(obj)
 }

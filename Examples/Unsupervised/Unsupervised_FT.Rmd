@@ -89,12 +89,14 @@ transform_design = vtreat::UnsupervisedTreatment(
 
 # learn transform from data
 d_prepared <-  transform_design$fit_transform(d)
+
+# list the derived variables
+print(transform_design$get_feature_names())
 ```
 
-Use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
+The treated training set should be clean: completely numeric, with no missing values.
 
 ```{r}
-d_prepared = transform_design$transform(d)
 d_prepared$y = d$y
 ```
 

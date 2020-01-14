@@ -94,6 +94,9 @@ transform_design = vtreat::NumericOutcomeTreatment(
 # learn transform from data
 d_prepared <-  transform_design$fit_transform(d)
 
+# list the derived variables
+print(transform_design$get_feature_names())
+
 # get statistics on the variables
 score_frame <- transform_design$score_frame()
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
@@ -101,6 +104,13 @@ score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(scor
 
 Note that for the training data `d`: `transform_design$fit_transform(d)` is **not** the same as `transform_design$fit(d)$transform(d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
 For other, later data, not seen during transform design `transform_design$transform(o)` is an appropriate step.
+
+`vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
+
+```{r}
+d_prepared_wrong <- transform_design$transform(d)
+```
+
 
 Use the training data `d_prepared` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
@@ -179,7 +189,9 @@ Note also that the impact code values are jittered; this is because `d_prepared`
 # jittered
 summary(d_prepared$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 
+# notice this generates a warning!
 dtmp = transform_design$transform(d)
+
 dtmp['y_centered'] = dtmp$y - mean(dtmp$y)
 
 # constant
