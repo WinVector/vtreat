@@ -17,12 +17,25 @@ Load modules/packages.
 
 ``` r
 library(vtreat)
+packageVersion('vtreat')
+```
+
+    ## [1] '1.5.1'
+
+``` r
 suppressPackageStartupMessages(library(ggplot2))
 library(WVPlots)
 library(rqdatatable)
 ```
 
     ## Loading required package: rquery
+
+    ## 
+    ## Attaching package: 'rquery'
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     arrow
 
 Generate example data.
 
@@ -36,6 +49,8 @@ Generate example data.
 <!-- end list -->
 
 ``` r
+set.seed(2020)
+
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)
@@ -56,12 +71,12 @@ d %.>%
 
 |          x |           y | xc          |          x2 | x3 |
 | ---------: | ----------: | :---------- | ----------: | -: |
-|   2.869921 |   0.2050366 | level\_0    | \-2.1165106 |  1 |
-| \-7.800579 | \-1.0655070 | NA          |   0.8836485 |  1 |
-| \-3.987771 |   0.9476780 | level\_1    |   1.9157663 |  1 |
-|         NA | \-0.2492630 | level\_0    |   0.9493477 |  1 |
-|         NA | \-0.6926920 | level\_-0.5 |   0.4461547 |  1 |
-|         NA |   0.2191380 | level\_0    | \-1.1675057 |  1 |
+|   1.884861 |   1.0906132 | level\_1    |   0.0046504 |  1 |
+|   1.507742 |   1.0108804 | level\_1    | \-1.2287497 |  1 |
+| \-5.490116 |   0.7766693 | level\_1    | \-0.1405980 |  1 |
+|         NA |   0.5442452 | level\_0.5  | \-0.2073270 |  1 |
+|         NA | \-0.9738103 | NA          | \-0.9215306 |  1 |
+|         NA | \-0.4968719 | level\_-0.5 |   0.3604742 |  1 |
 
 ### Some quick data exploration
 
@@ -71,20 +86,21 @@ Check how many levels `xc` has, and their distribution (including `NaN`)
 unique(d['xc'])
 ```
 
-    ##           xc
-    ## 1    level_0
-    ## 2       <NA>
-    ## 3    level_1
-    ## 5 level_-0.5
-    ## 9  level_0.5
+    ##            xc
+    ## 1     level_1
+    ## 4   level_0.5
+    ## 5        <NA>
+    ## 6  level_-0.5
+    ## 13    level_0
+    ## 91 level_-1.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5    level_0  level_0.5    level_1       <NA> 
-    ##         98         72         89        115        126
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1       <NA> 
+    ##         91          2         92         91        106        118
 
 ## Build a transform appropriate for unsupervised (or non-y-aware) problems.
 
@@ -118,11 +134,11 @@ transform = vtreat::designTreatmentsZ(
 )
 ```
 
-    ## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:35:37 2019"
-    ## [1] "designing treatments Tue Oct  1 10:35:37 2019"
-    ## [1] " have initial level statistics Tue Oct  1 10:35:37 2019"
-    ## [1] " scoring treatments Tue Oct  1 10:35:37 2019"
-    ## [1] "have treatment plan Tue Oct  1 10:35:37 2019"
+    ## [1] "vtreat 1.5.1 inspecting inputs Tue Jan 14 09:53:54 2020"
+    ## [1] "designing treatments Tue Jan 14 09:53:54 2020"
+    ## [1] " have initial level statistics Tue Jan 14 09:53:54 2020"
+    ## [1] " scoring treatments Tue Jan 14 09:53:54 2020"
+    ## [1] "have treatment plan Tue Jan 14 09:53:54 2020"
 
 ``` r
 score_frame = transform$scoreFrame
@@ -151,10 +167,11 @@ knitr::kable(score_frame)
 | :----------------------------- | :------- | --: | --: | :--------- | ----------------: | :------- | :---- |
 | x                              | TRUE     |   0 |   1 | FALSE      |                 0 | x        | clean |
 | x\_isBAD                       | TRUE     |   0 |   1 | FALSE      |                 0 | x        | isBAD |
-| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 4 | xc       | catP  |
+| xc\_catP                       | TRUE     |   0 |   1 | TRUE       |                 5 | xc       | catP  |
 | x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
 | xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_1\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_1           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
@@ -182,14 +199,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
-| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
-|   2.8699211 |        0 |    0.144 | \-2.1165106 |           0 |                              0 |                    1 |                       0 |                    0 |   0.2050366 |
-| \-7.8005789 |        0 |    0.252 |   0.8836485 |           1 |                              0 |                    0 |                       0 |                    0 | \-1.0655070 |
-| \-3.9877706 |        0 |    0.230 |   1.9157663 |           0 |                              0 |                    0 |                       0 |                    1 |   0.9476780 |
-| \-0.3877845 |        1 |    0.144 |   0.9493477 |           0 |                              0 |                    1 |                       0 |                    0 | \-0.2492630 |
-| \-0.3877845 |        1 |    0.196 |   0.4461547 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.6926920 |
-| \-0.3877845 |        1 |    0.144 | \-1.1675057 |           0 |                              0 |                    1 |                       0 |                    0 |   0.2191380 |
+|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_minus\_1\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   1.8848606 |        0 |    0.212 |   0.0046504 |           0 |                              0 |                              0 |                    0 |                       0 |                    1 |   1.0906132 |
+|   1.5077419 |        0 |    0.212 | \-1.2287497 |           0 |                              0 |                              0 |                    0 |                       0 |                    1 |   1.0108804 |
+| \-5.4901159 |        0 |    0.212 | \-0.1405980 |           0 |                              0 |                              0 |                    0 |                       0 |                    1 |   0.7766693 |
+| \-0.2704873 |        1 |    0.182 | \-0.2073270 |           0 |                              0 |                              0 |                    0 |                       1 |                    0 |   0.5442452 |
+| \-0.2704873 |        1 |    0.236 | \-0.9215306 |           1 |                              0 |                              0 |                    0 |                       0 |                    0 | \-0.9738103 |
+| \-0.2704873 |        1 |    0.182 |   0.3604742 |           0 |                              1 |                              0 |                    0 |                       0 |                    0 | \-0.4968719 |
 
 ## Using the Prepared Data to Model
 
@@ -211,7 +228,7 @@ d_prepared['clusterID'] <- clusters$cluster
 head(d_prepared$clusterID)
 ```
 
-    ## [1] 1 3 4 2 2 2
+    ## [1] 1 1 2 1 1 1
 
 ``` r
 ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
@@ -263,6 +280,7 @@ dtest <- make_data(450)
 
 # prepare the new data with vtreat
 dtest_prepared = prepare(transform, dtest)
+# dtest %.>% transform is an alias for prepare(transform, dtest)
 dtest_prepared$y = dtest$y
 
 # apply the model to the prepared data
@@ -271,8 +289,8 @@ dtest_prepared['prediction'] = predict(
   newdata = dtest_prepared)
 ```
 
-    ## Warning in predict.lm(model, newdata = dtest_prepared): prediction from a
-    ## rank-deficient fit may be misleading
+    ## Warning in predict.lm(model, newdata = dtest_prepared): prediction from a rank-
+    ## deficient fit may be misleading
 
 ``` r
 # compare the predictions to the outcome (on the test data)
@@ -295,7 +313,7 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-    ## [1] "F Test summary: (R2=0.965, F(10,439)=1212, p<1e-05)."
+    ## [1] "F Test summary: (R2=0.9683, F(11,438)=1218, p<1e-05)."
 
 ## Parameters for `UnsupervisedTreatment`
 
@@ -380,11 +398,11 @@ transform_thin = vtreat::designTreatmentsZ(
     codeRestriction = c('clean', 'lev', 'isBAD'))
 ```
 
-    ## [1] "vtreat 1.4.7 inspecting inputs Tue Oct  1 10:35:40 2019"
-    ## [1] "designing treatments Tue Oct  1 10:35:40 2019"
-    ## [1] " have initial level statistics Tue Oct  1 10:35:40 2019"
-    ## [1] " scoring treatments Tue Oct  1 10:35:40 2019"
-    ## [1] "have treatment plan Tue Oct  1 10:35:40 2019"
+    ## [1] "vtreat 1.5.1 inspecting inputs Tue Jan 14 09:53:57 2020"
+    ## [1] "designing treatments Tue Jan 14 09:53:57 2020"
+    ## [1] " have initial level statistics Tue Jan 14 09:53:57 2020"
+    ## [1] " scoring treatments Tue Jan 14 09:53:57 2020"
+    ## [1] "have treatment plan Tue Jan 14 09:53:57 2020"
 
 ``` r
 score_frame_thin = transform_thin$scoreFrame
@@ -398,6 +416,7 @@ knitr::kable(score_frame_thin)
 | x2                             | TRUE     |   0 |   1 | FALSE      |                 0 | x2       | clean |
 | xc\_lev\_NA                    | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_1\_5 | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_0\_5        | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |
 | xc\_lev\_x\_level\_1           | TRUE     |   0 |   1 | FALSE      |                 0 | xc       | lev   |

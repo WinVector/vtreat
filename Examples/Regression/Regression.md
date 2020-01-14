@@ -17,12 +17,25 @@ Load modules/packages.
 
 ``` r
 library(vtreat)
+packageVersion('vtreat')
+```
+
+    ## [1] '1.5.1'
+
+``` r
 suppressPackageStartupMessages(library(ggplot2))
 library(WVPlots)
 library(rqdatatable)
 ```
 
     ## Loading required package: rquery
+
+    ## 
+    ## Attaching package: 'rquery'
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     arrow
 
 Generate example data.
 
@@ -36,6 +49,8 @@ Generate example data.
 <!-- end list -->
 
 ``` r
+set.seed(2020)
+
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)
@@ -53,14 +68,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|           x |         y | xc         |          x2 |
-| ----------: | --------: | :--------- | ----------: |
-| \-4.9017858 | 0.8612389 | level\_1   |   0.3295212 |
-|   7.0173132 | 0.7898418 | level\_1   |   0.7063760 |
-|   0.8487485 | 0.8692236 | level\_1   | \-0.7385409 |
-|          NA | 0.4754084 | level\_0.5 | \-0.4047655 |
-|          NA | 0.9998406 | level\_1   |   0.3993567 |
-|          NA | 0.8772700 | level\_1   |   0.2835836 |
+|          x |           y | xc          |          x2 |
+| ---------: | ----------: | :---------- | ----------: |
+|   1.884861 |   1.0906132 | level\_1    |   0.0046504 |
+|   1.507742 |   1.0108804 | level\_1    | \-1.2287497 |
+| \-5.490116 |   0.7766693 | level\_1    | \-0.1405980 |
+|         NA |   0.5442452 | level\_0.5  | \-0.2073270 |
+|         NA | \-0.9738103 | NA          | \-0.9215306 |
+|         NA | \-0.4968719 | level\_-0.5 |   0.3604742 |
 
 ### Some quick data exploration
 
@@ -73,18 +88,18 @@ unique(d['xc'])
     ##            xc
     ## 1     level_1
     ## 4   level_0.5
-    ## 7  level_-0.5
-    ## 8     level_0
-    ## 9        <NA>
-    ## 81  level_1.5
+    ## 5        <NA>
+    ## 6  level_-0.5
+    ## 13    level_0
+    ## 91 level_-1.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5    level_0  level_0.5    level_1  level_1.5       <NA> 
-    ##         97         77        100        119          4        103
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1       <NA> 
+    ##         91          2         92         91        106        118
 
 Find the mean value of `y`
 
@@ -92,7 +107,7 @@ Find the mean value of `y`
 mean(d[['y']])
 ```
 
-    ## [1] 0.05055877
+    ## [1] -0.0324356
 
 Plot of `y` versus `x`.
 
@@ -122,9 +137,9 @@ transform_design = vtreat::mkCrossFrameNExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.7 start initial treatment design Tue Oct  1 10:35:25 2019"
-    ## [1] " start cross frame work Tue Oct  1 10:35:26 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Oct  1 10:35:26 2019"
+    ## [1] "vtreat 1.5.1 start initial treatment design Tue Jan 14 09:53:06 2020"
+    ## [1] " start cross frame work Tue Jan 14 09:53:07 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Jan 14 09:53:07 2020"
 
 ``` r
 transform <- transform_design$treatments
@@ -134,13 +149,25 @@ score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(scor
 ```
 
 Note that for the training data `d`: `transform_design$crossFrame` is
-**not** the same as `transform.prepare(d)`; the second call can lead to
+**not** the same as `prepare(transform, d)`; the second call can lead to
 nested model bias in some situations, and is **not** recommended. For
 other, later data, not seen during transform design
 `transform.preprare(o)` is an appropriate step.
 
-Use the training data `d_prepared` to fit the transform and the return a
-treated training set: completely numeric, with no missing values.
+`vtreat` version `1.5.1` and newer issue a warning if you call the
+incorrect transform pattern on your original training
+    data:
+
+``` r
+d_prepared_wrong <- prepare(transform, d)
+```
+
+    ## Warning in prepare.treatmentplan(transform, d): possibly called prepare() on
+    ## same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead
+    ## to over-fit. To avoid this, please use mkCrossFrame*Experiment$crossFrame.
+
+The prepared data should be clean: completely numeric, with no missing
+values.
 
 Now examine the score frame, which gives information about each new
 variable, including its type, which original variable it is derived
@@ -154,17 +181,17 @@ knitr::kable(score_frame)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  | recommended |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0255682 | 0.0003311 | FALSE      |                 0 | x        | clean | TRUE        |
-| x\_isBAD                       | TRUE     | 0.0000594 | 0.8635365 | FALSE      |                 0 | x        | isBAD | FALSE       |
-| xc\_catP                       | TRUE     | 0.0623790 | 0.0000000 | TRUE       |                 5 | xc       | catP  | TRUE        |
-| xc\_catN                       | TRUE     | 0.9685271 | 0.0000000 | TRUE       |                 5 | xc       | catN  | TRUE        |
-| xc\_catD                       | TRUE     | 0.1100452 | 0.0000000 | TRUE       |                 5 | xc       | catD  | TRUE        |
-| x2                             | TRUE     | 0.0001707 | 0.7707031 | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.4865748 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1420567 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.0004419 | 0.6391115 | FALSE      |                 0 | xc       | lev   | FALSE       |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1151268 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4610722 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| x                              | TRUE     | 0.0000545 | 0.8692659 | FALSE      |                 0 | x        | clean | FALSE       |
+| x\_isBAD                       | TRUE     | 0.0016526 | 0.3643472 | FALSE      |                 0 | x        | isBAD | FALSE       |
+| xc\_catP                       | TRUE     | 0.0648011 | 0.0000000 | TRUE       |                 5 | xc       | catP  | TRUE        |
+| xc\_catN                       | TRUE     | 0.9701400 | 0.0000000 | TRUE       |                 5 | xc       | catN  | TRUE        |
+| xc\_catD                       | TRUE     | 0.1064961 | 0.0000000 | TRUE       |                 5 | xc       | catD  | TRUE        |
+| x2                             | TRUE     | 0.0001760 | 0.7672865 | FALSE      |                 0 | x2       | clean | FALSE       |
+| xc\_lev\_NA                    | TRUE     | 0.5015468 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1092110 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.0009315 | 0.4959262 | FALSE      |                 0 | xc       | lev   | FALSE       |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1334055 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4771728 | 0.0000000 | FALSE      |                 0 | xc       | lev   | TRUE        |
 
 Notice that the variable `xc` has been converted to multiple variables:
 
@@ -201,7 +228,6 @@ score_frame[score_frame[['recommended']], 'varName', drop = FALSE]  %.>%
 
 |    | varName                        |
 | -- | :----------------------------- |
-| 1  | x                              |
 | 3  | xc\_catP                       |
 | 4  | xc\_catN                       |
 | 5  | xc\_catD                       |
@@ -218,6 +244,7 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
 
 |   | varName              |
 | - | :------------------- |
+| 1 | x                    |
 | 2 | x\_isBAD             |
 | 6 | x2                   |
 | 9 | xc\_lev\_x\_level\_0 |
@@ -231,14 +258,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD |  xc\_catP |  xc\_catN |  xc\_catD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |         y |
-| ----------: | -------: | --------: | --------: | --------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------: |
-| \-4.9017858 |        0 | 0.2372372 | 0.8828538 | 0.1100874 |   0.3295212 |           0 |                              0 |                    0 |                       0 |                    1 | 0.8612389 |
-|   7.0173132 |        0 | 0.2372372 | 0.8828538 | 0.1100874 |   0.7063760 |           0 |                              0 |                    0 |                       0 |                    1 | 0.7898418 |
-|   0.8487485 |        0 | 0.2395210 | 0.8759557 | 0.1087225 | \-0.7385409 |           0 |                              0 |                    0 |                       0 |                    1 | 0.8692236 |
-| \-0.4358876 |        1 | 0.2005988 | 0.4849321 | 0.1423751 | \-0.4047655 |           0 |                              0 |                    0 |                       1 |                    0 | 0.4754084 |
-| \-0.0936027 |        1 | 0.2372372 | 0.8773338 | 0.1064295 |   0.3993567 |           0 |                              0 |                    0 |                       0 |                    1 | 0.9998406 |
-| \-0.4358876 |        1 | 0.2395210 | 0.8759557 | 0.1087225 |   0.2835836 |           0 |                              0 |                    0 |                       0 |                    1 | 0.8772700 |
+|           x | x\_isBAD |  xc\_catP |    xc\_catN |  xc\_catD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | --------: | ----------: | --------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   1.8848606 |        0 | 0.2132132 |   0.9515171 | 0.1173878 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 |   1.0906132 |
+|   1.5077419 |        0 | 0.2102102 |   0.9544223 | 0.1174762 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 |   1.0108804 |
+| \-5.4901159 |        0 | 0.2125749 |   0.9550836 | 0.1227090 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 |   0.7766693 |
+| \-0.3704472 |        1 | 0.1801802 |   0.5530813 | 0.1300380 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 |   0.5442452 |
+| \-0.3704472 |        1 | 0.2372372 | \-0.9120600 | 0.1079478 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.9738103 |
+| \-0.2175061 |        1 | 0.1801802 | \-0.5032241 | 0.1308212 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4968719 |
 
 This is `vtreat`’s default behavior; to include all variables in the
 prepared data, set the parameter `filter_to_recommended` to False, as we
@@ -267,7 +294,7 @@ WVPlots::ScatterHist(
   title = 'Relationship between xc_catN and y')
 ```
 
-![](Regression_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Regression_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 This indicates that `xc_catN` is strongly predictive of the outcome.
 Note that the score frame also reported the Pearson correlation between
@@ -277,7 +304,7 @@ Note that the score frame also reported the Pearson correlation between
 score_frame[score_frame$varName == 'xc_catN', ]$rsq
 ```
 
-    ## [1] 0.9685271
+    ## [1] 0.97014
 
 Note also that the impact code values are jittered; this is because
 `d_prepared` is a “cross-frame”: that is, the result of a
@@ -294,10 +321,17 @@ summary(d_prepared$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##  0.8760  0.8760  0.8773  0.8787  0.8829  0.8829
+    ##  0.9515  0.9515  0.9544  0.9537  0.9551  0.9551
 
 ``` r
 dtmp = prepare(transform, d)
+```
+
+    ## Warning in prepare.treatmentplan(transform, d): possibly called prepare() on
+    ## same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead
+    ## to over-fit. To avoid this, please use mkCrossFrame*Experiment$crossFrame.
+
+``` r
 dtmp['y_centered'] = dtmp$y - mean(dtmp$y)
 
 # constant
@@ -305,7 +339,7 @@ summary(dtmp$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##  0.8787  0.8787  0.8787  0.8787  0.8787  0.8787
+    ##  0.9537  0.9537  0.9537  0.9537  0.9537  0.9537
 
 Variables of type `impact_code` are useful when dealing with categorical
 variables with a very large number of possible levels. For example, a
@@ -341,7 +375,7 @@ WVPlots::ScatterHist(
   title = 'Relationship between prediction and y')
 ```
 
-![](Regression_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](Regression_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 Now apply the model to new data.
 
@@ -351,6 +385,7 @@ dtest <- make_data(450)
 
 # prepare the new data with vtreat
 dtest_prepared = prepare(transform, dtest)
+# dtest %.>% transform is an alias for prepare(transform, dtest)
 
 # apply the model to the prepared data
 dtest_prepared['prediction'] = predict(
@@ -367,7 +402,7 @@ WVPlots::ScatterHist(
   title = 'Relationship between prediction and y')
 ```
 
-![](Regression_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](Regression_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ``` r
 # get r-squared
@@ -377,7 +412,7 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-    ## [1] "F Test summary: (R2=0.9673, F(9,440)=1444, p<1e-05)."
+    ## [1] "F Test summary: (R2=0.9697, F(8,441)=1767, p<1e-05)."
 
 ## Parameters for `mkCrossFrameNExperiment`
 
@@ -402,12 +437,30 @@ help("mkCrossFrameNExperiment")
     ## 
     ## Usage:
     ## 
-    ##      mkCrossFrameNExperiment(dframe, varlist, outcomename, ..., weights = c(),
-    ##        minFraction = 0.02, smFactor = 0, rareCount = 0, rareSig = 1,
-    ##        collarProb = 0, codeRestriction = NULL, customCoders = NULL,
-    ##        scale = FALSE, doCollar = FALSE, splitFunction = NULL,
-    ##        ncross = 3, forceSplit = FALSE, verbose = TRUE,
-    ##        parallelCluster = NULL, use_parallel = TRUE)
+    ##      mkCrossFrameNExperiment(
+    ##        dframe,
+    ##        varlist,
+    ##        outcomename,
+    ##        ...,
+    ##        weights = c(),
+    ##        minFraction = 0.02,
+    ##        smFactor = 0,
+    ##        rareCount = 0,
+    ##        rareSig = 1,
+    ##        collarProb = 0,
+    ##        codeRestriction = NULL,
+    ##        customCoders = NULL,
+    ##        scale = FALSE,
+    ##        doCollar = FALSE,
+    ##        splitFunction = NULL,
+    ##        ncross = 3,
+    ##        forceSplit = FALSE,
+    ##        verbose = TRUE,
+    ##        parallelCluster = NULL,
+    ##        use_parallel = TRUE,
+    ##        missingness_imputation = NULL,
+    ##        imputation_map = NULL
+    ##      )
     ##      
     ## Arguments:
     ## 
@@ -469,6 +522,13 @@ help("mkCrossFrameNExperiment")
     ##           parallel or package snow.
     ## 
     ## use_parallel: logical, if TRUE use parallel methods.
+    ## 
+    ## missingness_imputation: function of signature f(values: numeric,
+    ##           weights: numeric), simple missing value imputer.
+    ## 
+    ## imputation_map: map from column names to functions of signature
+    ##           f(values: numeric, weights: numeric), simple missing value
+    ##           imputers.
     ## 
     ## Value:
     ## 
@@ -562,9 +622,9 @@ transform_design_thin = vtreat::mkCrossFrameNExperiment(
 )
 ```
 
-    ## [1] "vtreat 1.4.7 start initial treatment design Tue Oct  1 10:35:30 2019"
-    ## [1] " start cross frame work Tue Oct  1 10:35:30 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Oct  1 10:35:30 2019"
+    ## [1] "vtreat 1.5.1 start initial treatment design Tue Jan 14 09:53:11 2020"
+    ## [1] " start cross frame work Tue Jan 14 09:53:11 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Jan 14 09:53:11 2020"
 
 ``` r
 transform_thin <- transform_design_thin$treatments
@@ -576,14 +636,14 @@ d_prepared_thin %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |         y |
-| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------: |
-| \-4.9017858 |        0 |   0.3295212 |           0 |                              0 |                    0 |                       0 |                    1 | 0.8612389 |
-|   7.0173132 |        0 |   0.7063760 |           0 |                              0 |                    0 |                       0 |                    1 | 0.7898418 |
-|   0.8487485 |        0 | \-0.7385409 |           0 |                              0 |                    0 |                       0 |                    1 | 0.8692236 |
-| \-0.2594916 |        1 | \-0.4047655 |           0 |                              0 |                    0 |                       1 |                    0 | 0.4754084 |
-| \-0.2594916 |        1 |   0.3993567 |           0 |                              0 |                    0 |                       0 |                    1 | 0.9998406 |
-| \-0.1748753 |        1 |   0.2835836 |           0 |                              0 |                    0 |                       0 |                    1 | 0.8772700 |
+|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   1.8848606 |        0 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 |   1.0906132 |
+|   1.5077419 |        0 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 |   1.0108804 |
+| \-5.4901159 |        0 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 |   0.7766693 |
+| \-0.1587674 |        1 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 |   0.5442452 |
+| \-0.3316281 |        1 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.9738103 |
+| \-0.3212205 |        1 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4968719 |
 
 ``` r
 knitr::kable(score_frame_thin)
@@ -591,14 +651,14 @@ knitr::kable(score_frame_thin)
 
 | varName                        | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code  |
 | :----------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :---- |
-| x                              | TRUE     | 0.0255682 | 0.0003311 | FALSE      |                 0 | x        | clean |
-| x\_isBAD                       | TRUE     | 0.0000594 | 0.8635365 | FALSE      |                 0 | x        | isBAD |
-| x2                             | TRUE     | 0.0001707 | 0.7707031 | FALSE      |                 0 | x2       | clean |
-| xc\_lev\_NA                    | TRUE     | 0.4865748 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1420567 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.0004419 | 0.6391115 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1151268 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4610722 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| x                              | TRUE     | 0.0000545 | 0.8692659 | FALSE      |                 0 | x        | clean |
+| x\_isBAD                       | TRUE     | 0.0016526 | 0.3643472 | FALSE      |                 0 | x        | isBAD |
+| x2                             | TRUE     | 0.0001760 | 0.7672865 | FALSE      |                 0 | x2       | clean |
+| xc\_lev\_NA                    | TRUE     | 0.5015468 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1092110 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0           | TRUE     | 0.0009315 | 0.4959262 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1334055 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
+| xc\_lev\_x\_level\_1           | TRUE     | 0.4771728 | 0.0000000 | FALSE      |                 0 | xc       | lev   |
 
 ## Deriving the Default Thresholds
 

@@ -23,6 +23,7 @@ Load modules/packages.
 
 ```{r}
 library(vtreat)
+packageVersion('vtreat')
 suppressPackageStartupMessages(library(ggplot2))
 library(WVPlots)
 library(rqdatatable)
@@ -38,6 +39,8 @@ Generate example data.
 
 
 ```{r}
+set.seed(2020)
+
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)
@@ -184,6 +187,7 @@ dtest <- make_data(450)
 
 # prepare the new data with vtreat
 dtest_prepared = prepare(transform, dtest)
+# dtest %.>% transform is an alias for prepare(transform, dtest)
 dtest_prepared$y = dtest$y
 
 # apply the model to the prepared data

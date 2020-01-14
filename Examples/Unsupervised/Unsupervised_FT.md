@@ -22,6 +22,12 @@ Load modules/packages.
 
 ``` r
 library(vtreat)
+packageVersion('vtreat')
+```
+
+    ## [1] '1.5.1'
+
+``` r
 suppressPackageStartupMessages(library(ggplot2))
 library(WVPlots)
 library(rqdatatable)
@@ -48,6 +54,8 @@ Generate example data.
 <!-- end list -->
 
 ``` r
+set.seed(2020)
+
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)
@@ -66,14 +74,14 @@ d %.>%
   knitr::kable(.)
 ```
 
-|           x |           y | xc          |          x2 | x3 |
-| ----------: | ----------: | :---------- | ----------: | -: |
-|  \-1.091066 | \-0.9921436 | NA          | \-0.8396715 |  1 |
-|  \-4.664736 |   0.9286202 | level\_1    |   1.1180053 |  1 |
-| \-12.846157 | \-0.4175321 | level\_-0.5 | \-0.0204812 |  1 |
-|          NA |   0.9778351 | level\_1    | \-0.0386864 |  1 |
-|          NA |   0.3525322 | level\_0.5  | \-1.0605033 |  1 |
-|          NA | \-0.8462265 | NA          | \-0.0462581 |  1 |
+|          x |           y | xc          |          x2 | x3 |
+| ---------: | ----------: | :---------- | ----------: | -: |
+|   1.884861 |   1.0906132 | level\_1    |   0.0046504 |  1 |
+|   1.507742 |   1.0108804 | level\_1    | \-1.2287497 |  1 |
+| \-5.490116 |   0.7766693 | level\_1    | \-0.1405980 |  1 |
+|         NA |   0.5442452 | level\_0.5  | \-0.2073270 |  1 |
+|         NA | \-0.9738103 | NA          | \-0.9215306 |  1 |
+|         NA | \-0.4968719 | level\_-0.5 |   0.3604742 |  1 |
 
 ### Some quick data exploration
 
@@ -83,21 +91,21 @@ Check how many levels `xc` has, and their distribution (including `NaN`)
 unique(d['xc'])
 ```
 
-    ##             xc
-    ## 1         <NA>
-    ## 2      level_1
-    ## 3   level_-0.5
-    ## 5    level_0.5
-    ## 12     level_0
-    ## 168  level_1.5
+    ##            xc
+    ## 1     level_1
+    ## 4   level_0.5
+    ## 5        <NA>
+    ## 6  level_-0.5
+    ## 13    level_0
+    ## 91 level_-1.5
 
 ``` r
 table(d$xc, useNA = 'always')
 ```
 
     ## 
-    ## level_-0.5    level_0  level_0.5    level_1  level_1.5       <NA> 
-    ##         98         82        102        119          3         96
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1       <NA> 
+    ##         91          2         92         91        106        118
 
 ## Build a transform appropriate for unsupervised (or non-y-aware) problems.
 
@@ -196,14 +204,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|            x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
-| -----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
-|  \-1.0910661 |        0 |    0.192 | \-0.8396715 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.9921436 |
-|  \-4.6647359 |        0 |    0.238 |   1.1180053 |           0 |                              0 |                    0 |                       0 |                    1 |   0.9286202 |
-| \-12.8461574 |        0 |    0.196 | \-0.0204812 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4175321 |
-|    0.7405541 |        1 |    0.238 | \-0.0386864 |           0 |                              0 |                    0 |                       0 |                    1 |   0.9778351 |
-|    0.7405541 |        1 |    0.204 | \-1.0605033 |           0 |                              0 |                    0 |                       1 |                    0 |   0.3525322 |
-|    0.7405541 |        1 |    0.192 | \-0.0462581 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.8462265 |
+|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 |           y |
+| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | ----------: |
+|   1.8848606 |        0 |    0.212 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 |   1.0906132 |
+|   1.5077419 |        0 |    0.212 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 |   1.0108804 |
+| \-5.4901159 |        0 |    0.212 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 |   0.7766693 |
+| \-0.2704873 |        1 |    0.182 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 |   0.5442452 |
+| \-0.2704873 |        1 |    0.236 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 | \-0.9738103 |
+| \-0.2704873 |        1 |    0.182 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 | \-0.4968719 |
 
 ## Using the Prepared Data to Model
 
@@ -225,7 +233,7 @@ d_prepared['clusterID'] <- clusters$cluster
 head(d_prepared$clusterID)
 ```
 
-    ## [1] 4 1 2 4 4 4
+    ## [1] 1 1 2 1 1 1
 
 ``` r
 ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
@@ -309,7 +317,7 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-    ## [1] "F Test summary: (R2=0.968, F(10,439)=1327, p<1e-05)."
+    ## [1] "F Test summary: (R2=0.9683, F(10,439)=1343, p<1e-05)."
 
 ## Parameters for `UnsupervisedTreatment`
 

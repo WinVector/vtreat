@@ -19,6 +19,7 @@ Load modules/packages.
 
 ```{r}
 library(vtreat)
+packageVersion('vtreat')
 suppressPackageStartupMessages(library(ggplot2))
 library(WVPlots)
 library(rqdatatable)
@@ -31,6 +32,8 @@ Generate example data.
 * Input `x2` is a pure noise variable with no relationship to the output
 
 ```{r}
+set.seed(2020)
+
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)

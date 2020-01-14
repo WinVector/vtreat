@@ -19,6 +19,7 @@ Load modules/packages.
 
 ```{r}
 library(vtreat)
+packageVersion('vtreat')
 suppressPackageStartupMessages(library(ggplot2))
 library(WVPlots)
 library(rqdatatable)
@@ -31,6 +32,8 @@ Generate example data.
 * Input `x2` is a pure noise variable with no relationship to the output
 
 ```{r}
+set.seed(2020)
+
 make_data <- function(nrows) {
     d <- data.frame(x = 5*rnorm(nrows))
     d['y'] = sin(d[['x']]) + 0.01*d[['x']] + 0.1*rnorm(n = nrows)
@@ -97,11 +100,16 @@ score_frame <- transform$scoreFrame
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is **not** the same as `transform.prepare(d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
+Note that for the training data `d`: `transform_design$crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
 For other, later data, not seen during transform design `transform.preprare(o)` is an appropriate step.
 
-Use the training data `d_prepared` to fit the transform and the return a treated training set: completely numeric, with no missing values.
+`vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
 
+```{r}
+d_prepared_wrong <- prepare(transform, d)
+```
+
+The prepared data should be clean: completely numeric, with no missing values.
 
 Now examine the score frame, which gives information about each new variable, including its type, which original variable it is  derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome. 
 
@@ -223,6 +231,7 @@ dtest <- make_data(450)
 
 # prepare the new data with vtreat
 dtest_prepared = prepare(transform, dtest)
+# dtest %.>% transform is an alias for prepare(transform, dtest)
 
 # apply the model to the prepared data
 dtest_prepared['prediction'] = predict(
