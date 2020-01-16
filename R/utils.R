@@ -385,8 +385,11 @@ vtreat_make_names <- function(nms_in,
 #' @importFrom digest digest
 NULL
 
-# approximate object identity check
+# approximate object identity check, can return NULL
 id_f <- function(d) { 
+  if(!isTRUE(getOption('vtreat.check_for_nested_model_bias', TRUE))) {
+    return(NULL)
+  }
   return(digest::digest(d))
 }
 

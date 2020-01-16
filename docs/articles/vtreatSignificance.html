@@ -115,7 +115,7 @@
       <h1>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-01-11</h4>
+            <h4 class="date">2020-01-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -169,13 +169,13 @@
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/designTreatmentsC.html">designTreatmentsC</a></span>(d,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.1 inspecting inputs Sat Jan 11 07:13:40 2020"
-## [1] "designing treatments Sat Jan 11 07:13:40 2020"
-## [1] " have initial level statistics Sat Jan 11 07:13:40 2020"
-## [1] " scoring treatments Sat Jan 11 07:13:40 2020"
-## [1] "have treatment plan Sat Jan 11 07:13:40 2020"
-## [1] "rescoring complex variables Sat Jan 11 07:13:40 2020"
-## [1] "done rescoring complex variables Sat Jan 11 07:13:41 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.1 inspecting inputs Thu Jan 16 08:32:42 2020"
+## [1] "designing treatments Thu Jan 16 08:32:42 2020"
+## [1] " have initial level statistics Thu Jan 16 08:32:42 2020"
+## [1] " scoring treatments Thu Jan 16 08:32:43 2020"
+## [1] "have treatment plan Thu Jan 16 08:32:43 2020"
+## [1] "rescoring complex variables Thu Jan 16 08:32:43 2020"
+## [1] "done rescoring complex variables Thu Jan 16 08:32:43 2020"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Estimate effect significance (not coefficient significance).</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">  d &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
@@ -193,7 +193,7 @@
 <pre><code>## Warning in prepare.treatmentplan(treatmentsC, d, pruneSig = c()):
 ## possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
-## mkCrossFrameCExperiment$crossFrame.</code></pre>
+## mkCrossFrame*Experiment$crossFrame.</code></pre>
 <p>vtreat produces good variable significances using out of sample simulation (cross frames).</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'varName'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##              varName         rsq           sig extraModelDegrees

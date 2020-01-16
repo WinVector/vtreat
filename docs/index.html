@@ -250,14 +250,14 @@
 <a class="sourceLine" id="cb1-30" data-line-number="30">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb1-31" data-line-number="31">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-32" data-line-number="32"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code         rsq        sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 0.111456141 0.30194137                 2</span></a>
-<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 0.033761011 0.56994212                 2</span></a>
-<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z         z clean 0.237601767 0.13176020                 0</span></a>
-<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 0.296065432 0.09248399                 0</span></a>
-<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 0.296065432 0.09248399                 0</span></a>
-<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 0.130005705 0.26490379                 0</span></a>
-<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33"> <span class="co">#    origName   varName  code          rsq        sig extraModelDegrees</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34"> <span class="co">#  1        x    x_catP  catP 1.559780e-01 0.22202097                 2</span></a>
+<a class="sourceLine" id="cb1-35" data-line-number="35"> <span class="co">#  2        x    x_catB  catB 1.142159e-05 0.99166241                 2</span></a>
+<a class="sourceLine" id="cb1-36" data-line-number="36"> <span class="co">#  3        z         z clean 2.376018e-01 0.13176020                 0</span></a>
+<a class="sourceLine" id="cb1-37" data-line-number="37"> <span class="co">#  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-38" data-line-number="38"> <span class="co">#  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0</span></a>
+<a class="sourceLine" id="cb1-39" data-line-number="39"> <span class="co">#  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0</span></a>
+<a class="sourceLine" id="cb1-40" data-line-number="40"> <span class="co">#  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0</span></a>
 <a class="sourceLine" id="cb1-41" data-line-number="41"></a>
 <a class="sourceLine" id="cb1-42" data-line-number="42"><span class="co"># help("prepare")</span></a>
 <a class="sourceLine" id="cb1-43" data-line-number="43"></a>
@@ -265,7 +265,7 @@
 <a class="sourceLine" id="cb1-45" data-line-number="45"> <span class="co">#  Warning in prepare.treatmentplan(treatmentsC, dTrainC, pruneSig = 1, scale =</span></a>
 <a class="sourceLine" id="cb1-46" data-line-number="46"> <span class="co">#  TRUE): possibly called prepare() on same data frame as designTreatments*()/</span></a>
 <a class="sourceLine" id="cb1-47" data-line-number="47"> <span class="co">#  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use</span></a>
-<a class="sourceLine" id="cb1-48" data-line-number="48"> <span class="co">#  mkCrossFrameCExperiment$crossFrame.</span></a>
+<a class="sourceLine" id="cb1-48" data-line-number="48"> <span class="co">#  mkCrossFrame*Experiment$crossFrame.</span></a>
 <a class="sourceLine" id="cb1-49" data-line-number="49">varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainCTreated), <span class="st">'y'</span>)</a>
 <a class="sourceLine" id="cb1-50" data-line-number="50"><span class="co"># all input variables should be mean 0</span></a>
 <a class="sourceLine" id="cb1-51" data-line-number="51"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(dTrainCTreated[, varsC, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean)</a>
@@ -294,9 +294,9 @@
 <a class="sourceLine" id="cb2-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a>
 <a class="sourceLine" id="cb2-9" data-line-number="9"> <span class="co">#    origName   varName  code          rsq       sig extraModelDegrees</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 3.700306e-01 0.1095637                 2</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 2.606061e-01 0.1961166                 2</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 6.666667e-02 0.5369633                 2</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"> <span class="co">#  1        x    x_catP  catP 7.174888e-02 0.5212691                 2</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"> <span class="co">#  2        x    x_catN  catN 1.950163e-03 0.9173064                 2</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"> <span class="co">#  3        x    x_catD  catD 3.743113e-01 0.1069707                 2</span></a>
 <a class="sourceLine" id="cb2-13" data-line-number="13"> <span class="co">#  4        z         z clean 2.880952e-01 0.1701892                 0</span></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14"> <span class="co">#  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0</span></a>
 <a class="sourceLine" id="cb2-15" data-line-number="15"> <span class="co">#  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0</span></a>
@@ -306,7 +306,7 @@
 <a class="sourceLine" id="cb2-19" data-line-number="19"> <span class="co">#  Warning in prepare.treatmentplan(treatmentsN, dTrainN, pruneSig = 1, scale =</span></a>
 <a class="sourceLine" id="cb2-20" data-line-number="20"> <span class="co">#  TRUE): possibly called prepare() on same data frame as designTreatments*()/</span></a>
 <a class="sourceLine" id="cb2-21" data-line-number="21"> <span class="co">#  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"> <span class="co">#  mkCrossFrameCExperiment$crossFrame.</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"> <span class="co">#  mkCrossFrame*Experiment$crossFrame.</span></a>
 <a class="sourceLine" id="cb2-23" data-line-number="23">varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)</a>
 <a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co"># all input variables should be mean 0</span></a>
 <a class="sourceLine" id="cb2-25" data-line-number="25"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(dTrainNTreated[, varsN, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean) </a>
@@ -342,7 +342,7 @@
 <a class="sourceLine" id="cb2-55" data-line-number="55"> <span class="co">#  Warning in prepare.treatmentplan(pipe_right_arg, pipe_left_arg):</span></a>
 <a class="sourceLine" id="cb2-56" data-line-number="56"> <span class="co">#  possibly called prepare() on same data frame as designTreatments*()/</span></a>
 <a class="sourceLine" id="cb2-57" data-line-number="57"> <span class="co">#  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use</span></a>
-<a class="sourceLine" id="cb2-58" data-line-number="58"> <span class="co">#  mkCrossFrameCExperiment$crossFrame.</span></a></code></pre></div>
+<a class="sourceLine" id="cb2-58" data-line-number="58"> <span class="co">#  mkCrossFrame*Experiment$crossFrame.</span></a></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x_catP</th>
@@ -511,6 +511,7 @@
 <li><a href="https://doi.org/10.21105/joss.00584"><img src="http://joss.theoj.org/papers/10.21105/joss.00584/status.svg" alt="DOI"></a></li>
 <li><a href="https://doi.org/10.5281/zenodo.1173313"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg" alt="DOI"></a></li>
 <li><a href="https://cran.r-project.org/package=vtreat"><img src="https://www.r-pkg.org/badges/version/vtreat" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://CRAN.R-project.org/package=vtreat"><img src="https://tinyverse.netlify.com/badge/vtreat" alt="status"></a></li>
 </ul>
 </div>
 </div>

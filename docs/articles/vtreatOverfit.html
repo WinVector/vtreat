@@ -115,7 +115,7 @@
       <h1>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-01-11</h4>
+            <h4 class="date">2020-01-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
@@ -147,20 +147,20 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4">treatments &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/designTreatmentsC.html">designTreatmentsC</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.1 inspecting inputs Sat Jan 11 07:13:27 2020"
-## [1] "designing treatments Sat Jan 11 07:13:27 2020"
-## [1] " have initial level statistics Sat Jan 11 07:13:27 2020"
-## [1] " scoring treatments Sat Jan 11 07:13:27 2020"
-## [1] "have treatment plan Sat Jan 11 07:13:27 2020"
-## [1] "rescoring complex variables Sat Jan 11 07:13:27 2020"
-## [1] "done rescoring complex variables Sat Jan 11 07:13:28 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.1 inspecting inputs Thu Jan 16 08:32:32 2020"
+## [1] "designing treatments Thu Jan 16 08:32:32 2020"
+## [1] " have initial level statistics Thu Jan 16 08:32:32 2020"
+## [1] " scoring treatments Thu Jan 16 08:32:32 2020"
+## [1] "have treatment plan Thu Jan 16 08:32:32 2020"
+## [1] "rescoring complex variables Thu Jan 16 08:32:32 2020"
+## [1] "done rescoring complex variables Thu Jan 16 08:32:32 2020"</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/prepare.html">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">)</a></code></pre></div>
 <pre><code>## Warning in prepare.treatmentplan(treatments, dTrain, pruneSig = c()):
 ## possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
-## mkCrossFrameCExperiment$crossFrame.</code></pre>
+## mkCrossFrame*Experiment$crossFrame.</code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(y<span class="op">~</span>x_catB,<span class="dt">data=</span>dTrainTreated,<span class="dt">family=</span><span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>(<span class="dt">link=</span><span class="st">'logit'</span>))</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(m1))  <span class="co"># notice low residual deviance</span></a></code></pre></div>
 <pre><code>## 
@@ -251,13 +251,13 @@
 <a class="sourceLine" id="cb14-4" data-line-number="4">                                        <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span></a>
 <a class="sourceLine" id="cb14-5" data-line-number="5">                                        <span class="dt">rareSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note set this to something like 0.3</span></a>
 <a class="sourceLine" id="cb14-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.1 inspecting inputs Sat Jan 11 07:13:28 2020"
-## [1] "designing treatments Sat Jan 11 07:13:28 2020"
-## [1] " have initial level statistics Sat Jan 11 07:13:28 2020"
-## [1] " scoring treatments Sat Jan 11 07:13:28 2020"
-## [1] "have treatment plan Sat Jan 11 07:13:28 2020"
-## [1] "rescoring complex variables Sat Jan 11 07:13:28 2020"
-## [1] "done rescoring complex variables Sat Jan 11 07:13:28 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.1 inspecting inputs Thu Jan 16 08:32:32 2020"
+## [1] "designing treatments Thu Jan 16 08:32:32 2020"
+## [1] " have initial level statistics Thu Jan 16 08:32:32 2020"
+## [1] " scoring treatments Thu Jan 16 08:32:32 2020"
+## [1] "have treatment plan Thu Jan 16 08:32:32 2020"
+## [1] "rescoring complex variables Thu Jan 16 08:32:32 2020"
+## [1] "done rescoring complex variables Thu Jan 16 08:32:32 2020"</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/prepare.html">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">                                 <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span></a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">)</a>
@@ -300,7 +300,7 @@
 <pre><code>## Warning in prepare.treatmentplan(treatments, dCode, pruneSig = c()):
 ## possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
-## mkCrossFrameCExperiment$crossFrame.</code></pre>
+## mkCrossFrame*Experiment$crossFrame.</code></pre>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">dCode<span class="op">$</span>predM2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(m2,<span class="dt">newdata=</span>dCodeTreated,<span class="dt">type=</span><span class="st">'response'</span>)</a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="kw">plotRes</span>(dCode,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on coding set'</span>)</a></code></pre></div>
 <pre><code>## [1] "model2 on coding set"
@@ -330,9 +330,9 @@
 <a class="sourceLine" id="cb26-2" data-line-number="2">xdat &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span>(dTrain,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb26-3" data-line-number="3">                                  <span class="dt">rareCount=</span><span class="dv">0</span>,  <span class="co"># Note set this to something larger, like 5</span></a>
 <a class="sourceLine" id="cb26-4" data-line-number="4">                                  <span class="dt">rareSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>())</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 07:13:28 2020"
-## [1] " start cross frame work Sat Jan 11 07:13:28 2020"
-## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 07:13:28 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.1 start initial treatment design Thu Jan 16 08:32:32 2020"
+## [1] " start cross frame work Thu Jan 16 08:32:33 2020"
+## [1] " vtreat::mkCrossFrameCExperiment done Thu Jan 16 08:32:33 2020"</code></pre>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">treatments &lt;-<span class="st"> </span>xdat<span class="op">$</span>treatments</a>
 <a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatments<span class="op">$</span>scoreFrame)</a></code></pre></div>
 <pre><code>##   varName varMoves          rsq          sig needsSplit extraModelDegrees
