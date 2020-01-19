@@ -38,6 +38,8 @@
 #' @param varlist character, names of columns to process.
 #' @param invalid_mark character, name to use for NA levels and novel levels.
 #' @param drop_constant_columns logical, if TRUE drop columns that do not vary from the treatment plan.
+#' @param missingness_imputation function of signature f(values: numeric), simple missing value imputer.
+#' @param imputation_map map from column names to functions of signature f(values: numeric), simple missing value imputers.
 #' @return simple treatment plan.
 #' 
 #' @examples 
@@ -61,7 +63,9 @@ design_missingness_treatment <- function(dframe,
                                          ..., 
                                          varlist = colnames(dframe),
                                          invalid_mark = "_invalid_",
-                                         drop_constant_columns = FALSE) {
+                                         drop_constant_columns = FALSE,
+                                         missingness_imputation = NULL, 
+                                         imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), 
                           "vtreat:::design_missingness_treatment")
   force(invalid_mark)
@@ -81,7 +85,18 @@ design_missingness_treatment <- function(dframe,
       mean_v <- 0.0
       bads <- is.na(vi) | is.nan(vi) | is.infinite(vi)
       if(any(!bads)) {
-        mean_v <- mean(vi[!bads])
+        missing_v <- base::mean
+        if(!is.null(missingness_imputation)) {
+          missing_v <- missingness_imputation
+        }
+        if((!is.null(imputation_map)) && (ci %in% names(imputation_map))) {
+          missing_v <- imputation_map[[ci]]
+        }
+        if(is.function(missing_v)) {
+          mean_v <- missing_v(vi[!bads])
+        } else {
+          mean_v <- missing_v
+        }
       }
       ops <- c(ops, 
                list(

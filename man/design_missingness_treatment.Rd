@@ -9,7 +9,9 @@ design_missingness_treatment(
   ...,
   varlist = colnames(dframe),
   invalid_mark = "_invalid_",
-  drop_constant_columns = FALSE
+  drop_constant_columns = FALSE,
+  missingness_imputation = NULL,
+  imputation_map = NULL
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ design_missingness_treatment(
 \item{invalid_mark}{character, name to use for NA levels and novel levels.}
 
 \item{drop_constant_columns}{logical, if TRUE drop columns that do not vary from the treatment plan.}
+
+\item{missingness_imputation}{function of signature f(values: numeric), simple missing value imputer.}
+
+\item{imputation_map}{map from column names to functions of signature f(values: numeric), simple missing value imputers.}
 }
 \value{
 simple treatment plan.

@@ -1,4 +1,8 @@
 
+# vtreat 1.5.2 2020/01/18
+
+ * Control imputation on design_missingness_treatment.
+
 # vtreat 1.5.1 2020/01/16
 
  * Check for same-frame on prepare paths.
