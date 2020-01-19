@@ -46,7 +46,7 @@ as_rquery.vtreat_pass_through <- function(tstep,
   } else {
     cuts <- c(min(xcol[!napositions]),max(xcol[!napositions]))
   }
-  if(!is.null(imputation_map)) {
+  if((!is.null(imputation_map)) && (origVarName %in% names(imputation_map))) {
     specific_imputation_method <- imputation_map[[origVarName]]
     if(!is.null(specific_imputation_method)) {
       missingness_imputation <- specific_imputation_method
