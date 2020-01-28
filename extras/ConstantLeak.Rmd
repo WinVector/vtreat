@@ -8,7 +8,7 @@ output: github_document
 We will show how in some situations using "more data in cross-validation" can be
 harmful.
 
-Our example: an outcome (`y`) that is independent of a low-complexity
+Our example: an outcome (`y`) that is independent of a high-complexity
 categorical variable (`x`).  We will combine this with a variable that is a noisy
 constant and leave-one-out cross-validation (which is a deterministic procedure) to 
 get a bad result (failing to notice over-fit).
@@ -19,8 +19,7 @@ library("vtreat")
 set.seed(352355)
 
 nrow <- 100
-d <- data.frame(x = sample(c('a', 'b'), 
-                           nrow, replace = TRUE),
+d <- data.frame(x = sample(paste0('lev_', seq_len(nrow)), size = nrow, replace = FALSE),
                 y = rnorm(nrow),
                 stringsAsFactors = FALSE)
 ```
@@ -31,6 +30,7 @@ This coder is bad in several ways:
 
   * It is essentially returning a constant independent of the variable it claims to be encoding.
   * It's predictions are not consistent, it makes different predictions for the same value of the independent variable it claims to encode. 
+  * It is trying to predict the dependent variable `y`, instead of a conditional difference of the dependent variable from the cross-validated mean of the dependent variable.
 
 ```{r badcustomcoder}
 # @param v character scalar: variable name
@@ -38,16 +38,52 @@ This coder is bad in several ways:
 # @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
-badCoderN <- function(v, vcol, 
-                      y, 
-                      weights) {
+bad_coder_noisy_constant <- function(
+  v, vcol, 
+  y, 
+  weights) {
   # Notice we are returning a constant, independent of vcol!
   # this should not look informative.
   meanY <- sum(y*weights)/sum(weights)
-  1.0e-3*runif(length(y)) + meanY # noise to sneak past constant detector
+  meanY + 1.0e-3*runif(length(y)) # noise to sneak past constant detector
 }
 
-customCoders <- list('n.badCoderN' = badCoderN)
+# @param v character scalar: variable name
+# @param vcol character vector, independent or input variable values
+# @param y numeric, dependent or outcome variable to predict
+# @param weights row/example weights
+# @return scored training data column
+bad_coder_noisy_conditional <- function(
+  v, vcol, 
+  y, 
+  weights) {
+  # Note: ignores weights
+  agg <- aggregate(y ~ x, data = data.frame(x = vcol, y = y), FUN = mean)
+  map <- agg$y
+  names(map) <- agg$x
+  map[vcol] + 1.0e-3*runif(length(y)) # noise to sneak past constant detector
+}
+
+# @param v character scalar: variable name
+# @param vcol character vector, independent or input variable values
+# @param y numeric, dependent or outcome variable to predict
+# @param weights row/example weights
+# @return scored training data column
+bad_coder_noisy_delta <- function(
+  v, vcol, 
+  y, 
+  weights) {
+  # Note: ignores weights
+  agg <- aggregate(y ~ x, data = data.frame(x = vcol, y = y), FUN = mean)
+  map <- agg$y - mean(y)
+  names(map) <- agg$x
+  map[vcol] + 1.0e-3*runif(length(y)) # noise to sneak past constant detector
+}
+
+customCoders <- list(
+  'n.bad_coder_noisy_constant' = bad_coder_noisy_constant,
+  'n.bad_coder_noisy_conditional' = bad_coder_noisy_conditional,
+  'n.bad_coder_noisy_delta' = bad_coder_noisy_delta)
 ```
 
 `vtreat` correctly works on this example in the design/prepare pattern, and rejects the bad custom variable.
@@ -59,22 +95,15 @@ treatplanN <- designTreatmentsN(d,
                                 customCoders = customCoders, 
                                 verbose = FALSE)
 knitr::kable(treatplanN$scoreFrame)
+```
 
+Notice `vtreat` correctly identified none of the variables as being significant.
+
+```{r}
 treatedD <- prepare(treatplanN, d)
-summary(lm(y ~ x_badCoderN, data= treatedD))
+summary(lm(y ~ x_bad_coder_noisy_constant, data= treatedD))
 ```
 
-`vtreat` correctly works on this example in the cross-frame pattern, and rejects the bad custom variable.
-
-```{r crossWorking}
-cfe <- mkCrossFrameNExperiment(d, 
-                               varlist = c('x'),
-                               outcomename = 'y',
-                               customCoders = customCoders)
-knitr::kable(cfe$treatments$scoreFrame)
-
-summary(lm(y ~ x_badCoderN, data= cfe$crossFrame))
-```
 
 However, specifying `oneWayHoldout` as the cross-validation technique introduces
 sampling variation that is correlated with the outcome.  This causes the value in
@@ -90,14 +119,11 @@ cfeBad <- mkCrossFrameNExperiment(d,
                                   customCoders = customCoders,
                                   splitFunction = oneWayHoldout)
 knitr::kable(cfeBad$treatments$scoreFrame)
-
-summary(lm(y ~ x_badCoderN, data= cfeBad$crossFrame))
-
-treatedDbad <- prepare(cfeBad$treatments, d)
-summary(lm(y ~ x_badCoderN, data= treatedDbad))
 ```
 
-Notice the bad coder was (falsely) reported as usable and (falsely) appears useful on the cross-frame (but not on a simple prepared frame).  Also notice the normal coders such as impact (which was fully rejected by `vtreat`) and levels codes were properly rejected.
+Notice the bad coder was (falsely) and conditional coders are both reported as usable and (falsely) appear useful on the cross-frame.  The delta-code avoid this issue.  Also notice the normal coders such as impact (which was fully rejected by `vtreat`) and levels codes were properly rejected.
+
+
 
 What happened is:
  
@@ -114,9 +140,14 @@ However by algebra we have this estimate `e(k)` is also equal to `(n/(n-1)) mean
 
 Or: to an observer that knows `n` and `mean(y)` (and hence `sum(y)`) `e(k)` completely determines `y(k)` even though it was constructed without knowledge of `y(k)`.
 
-This failing is because the common cross validation procedures are not [fully nested simulation](http://www.win-vector.com/blog/2017/01/a-theory-of-nested-cross-simulation/) in the sense that rows were not excluded from out final calculation (the estimation of significance, or final linear model).  I did not correctly make the distinction when laying out the theory of notation in the previous article, but the idea is to maintain full exchangeability every step of the simulation must systematically exclude sets of rows: especially the last step if it is performing join over all rows calculations.
+This failing is because:
+
+<ul>
+  <li>The estimator tried to estimate `E[y | x]` (which is records sampling noise from the cross-validation procedure) instead of `E[y - E[y] | x]` (which does not record the sampling noise in the cross-validation procedure).  `vtreat` uses the encoding of differences technique to avoid such difficulties.</li>
+  <li>The common cross validation procedures are not [fully nested simulation](http://www.win-vector.com/blog/2017/01/a-theory-of-nested-cross-simulation/) in the sense that rows were not excluded from out final calculation (the estimation of significance, or final linear model).  I did not correctly make the distinction when laying out the theory of notation in the previous article, but the idea is to maintain full exchangeability every step of the simulation must systematically exclude sets of rows: especially the last step if it is performing join over all rows calculations.</li>
+</ul>
 
 *Fully* nested cross-simulation (where even the last step is under the cross-control and enumerating excluded sets of training rows) is likely too cumbersome (requiring more code coordination) and expensive (upping the size of the sets of rows we have to exclude) to force on implementers who are also unlikely to see any benefit in non-degenerate cases.  The partially nested cross-simulation used in `vtreat` is likely a good practical compromise (though we may explore full-nesting for the score frame estimates, as that is a step completely under `vtreat` control).
 
-The current `vtreat` procedures are very strong and fully up to the case of assisting in construction of best possible machine learning models.  However in certain degenerate cases (near-constant encoding combined completely deterministic cross-validation; neither of which is a default behavior of `vtreat`) the cross validation system itself can introduce an information leak that promotes over-fit.
+The current `vtreat` procedures are very strong and fully "up to the job" of assisting in construction of best possible machine learning models.  However in certain degenerate cases (near-constant encoding combined completely deterministic cross-validation; neither of which is a default behavior of `vtreat`) the cross validation system itself can introduce an information leak that promotes over-fit for some custom coders. `vtreat`'s built-in coders are estimates of conditional changes from apparent mean (not estimates of conditional values), so tend to avoid the above issues.
 

@@ -1,12 +1,12 @@
 Constant Coding Leak
 ================
 John Mount, Win-Vector LLC
-2019-07-06
+2020-01-28
 
 We will show how in some situations using “more data in
 cross-validation” can be harmful.
 
-Our example: an outcome (`y`) that is independent of a low-complexity
+Our example: an outcome (`y`) that is independent of a high-complexity
 categorical variable (`x`). We will combine this with a variable that is
 a noisy constant and leave-one-out cross-validation (which is a
 deterministic procedure) to get a bad result (failing to notice
@@ -18,8 +18,7 @@ library("vtreat")
 set.seed(352355)
 
 nrow <- 100
-d <- data.frame(x = sample(c('a', 'b'), 
-                           nrow, replace = TRUE),
+d <- data.frame(x = sample(paste0('lev_', seq_len(nrow)), size = nrow, replace = FALSE),
                 y = rnorm(nrow),
                 stringsAsFactors = FALSE)
 ```
@@ -32,6 +31,9 @@ This coder is bad in several ways:
     it claims to be encoding.
   - It’s predictions are not consistent, it makes different predictions
     for the same value of the independent variable it claims to encode.
+  - It is trying to predict the dependent variable `y`, instead of a
+    conditional difference of the dependent variable from the
+    cross-validated mean of the dependent variable.
 
 <!-- end list -->
 
@@ -41,16 +43,52 @@ This coder is bad in several ways:
 # @param y numeric, dependent or outcome variable to predict
 # @param weights row/example weights
 # @return scored training data column
-badCoderN <- function(v, vcol, 
-                      y, 
-                      weights) {
+bad_coder_noisy_constant <- function(
+  v, vcol, 
+  y, 
+  weights) {
   # Notice we are returning a constant, independent of vcol!
   # this should not look informative.
   meanY <- sum(y*weights)/sum(weights)
-  1.0e-3*runif(length(y)) + meanY # noise to sneak past constant detector
+  meanY + 1.0e-3*runif(length(y)) # noise to sneak past constant detector
 }
 
-customCoders <- list('n.badCoderN' = badCoderN)
+# @param v character scalar: variable name
+# @param vcol character vector, independent or input variable values
+# @param y numeric, dependent or outcome variable to predict
+# @param weights row/example weights
+# @return scored training data column
+bad_coder_noisy_conditional <- function(
+  v, vcol, 
+  y, 
+  weights) {
+  # Note: ignores weights
+  agg <- aggregate(y ~ x, data = data.frame(x = vcol, y = y), FUN = mean)
+  map <- agg$y
+  names(map) <- agg$x
+  map[vcol] + 1.0e-3*runif(length(y)) # noise to sneak past constant detector
+}
+
+# @param v character scalar: variable name
+# @param vcol character vector, independent or input variable values
+# @param y numeric, dependent or outcome variable to predict
+# @param weights row/example weights
+# @return scored training data column
+bad_coder_noisy_delta <- function(
+  v, vcol, 
+  y, 
+  weights) {
+  # Note: ignores weights
+  agg <- aggregate(y ~ x, data = data.frame(x = vcol, y = y), FUN = mean)
+  map <- agg$y - mean(y)
+  names(map) <- agg$x
+  map[vcol] + 1.0e-3*runif(length(y)) # noise to sneak past constant detector
+}
+
+customCoders <- list(
+  'n.bad_coder_noisy_constant' = bad_coder_noisy_constant,
+  'n.bad_coder_noisy_conditional' = bad_coder_noisy_conditional,
+  'n.bad_coder_noisy_delta' = bad_coder_noisy_delta)
 ```
 
 `vtreat` correctly works on this example in the design/prepare pattern,
@@ -65,78 +103,44 @@ treatplanN <- designTreatmentsN(d,
 knitr::kable(treatplanN$scoreFrame)
 ```
 
-| varName      | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code      |
-| :----------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :-------- |
-| x\_badCoderN | TRUE     | 0.0016387 | 0.6892408 | TRUE       |                 1 | x        | badCoderN |
-| x\_lev\_x\_a | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
-| x\_lev\_x\_b | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
+| varName                           | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code                           |
+| :-------------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :----------------------------- |
+| x\_bad\_coder\_noisy\_constant    | TRUE     | 0.0020488 | 0.6547491 | TRUE       |                99 | x        | bad\_coder\_noisy\_constant    |
+| x\_bad\_coder\_noisy\_conditional | TRUE     | 0.0020489 | 0.6547430 | TRUE       |                99 | x        | bad\_coder\_noisy\_conditional |
+| x\_bad\_coder\_noisy\_delta       | TRUE     | 0.0002930 | 0.8657779 | TRUE       |                99 | x        | bad\_coder\_noisy\_delta       |
+| x\_catN                           | TRUE     | 0.0000000 | 1.0000000 | TRUE       |                99 | x        | catN                           |
+
+Notice `vtreat` correctly identified none of the variables as being
+significant.
 
 ``` r
 treatedD <- prepare(treatplanN, d)
-summary(lm(y ~ x_badCoderN, data= treatedD))
+```
+
+    ## Warning in prepare.treatmentplan(treatplanN, d): possibly called prepare() on
+    ## same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead
+    ## to over-fit. To avoid this, please use mkCrossFrame*Experiment$crossFrame.
+
+``` r
+summary(lm(y ~ x_bad_coder_noisy_constant, data= treatedD))
 ```
 
     ## 
     ## Call:
-    ## lm(formula = y ~ x_badCoderN, data = treatedD)
+    ## lm(formula = y ~ x_bad_coder_noisy_constant, data = treatedD)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -3.00554 -0.74592 -0.01978  0.67265  2.98501 
+    ## -2.47427 -0.66641 -0.07081  0.58681  2.97163 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)    391.5      939.1   0.417    0.678
-    ## x_badCoderN  -1999.8     4799.8  -0.417    0.678
+    ##                            Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                   -9.50      86.60  -0.110    0.913
+    ## x_bad_coder_noisy_constant    45.38     404.63   0.112    0.911
     ## 
-    ## Residual standard error: 1.12 on 98 degrees of freedom
-    ## Multiple R-squared:  0.001768,   Adjusted R-squared:  -0.008418 
-    ## F-statistic: 0.1736 on 1 and 98 DF,  p-value: 0.6779
-
-`vtreat` correctly works on this example in the cross-frame pattern, and
-rejects the bad custom variable.
-
-``` r
-cfe <- mkCrossFrameNExperiment(d, 
-                               varlist = c('x'),
-                               outcomename = 'y',
-                               customCoders = customCoders)
-```
-
-    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:28:28 2019"
-    ## [1] " start cross frame work Sat Jul  6 16:28:28 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:28:28 2019"
-
-``` r
-knitr::kable(cfe$treatments$scoreFrame)
-```
-
-| varName      | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code      |
-| :----------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :-------- |
-| x\_badCoderN | TRUE     | 0.0022312 | 0.6407308 | TRUE       |                 1 | x        | badCoderN |
-| x\_lev\_x\_a | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
-| x\_lev\_x\_b | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
-
-``` r
-summary(lm(y ~ x_badCoderN, data= cfe$crossFrame))
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = y ~ x_badCoderN, data = cfe$crossFrame)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -3.04022 -0.74222  0.05169  0.63005  2.95187 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   0.5794     1.1269   0.514    0.608
-    ## x_badCoderN  -1.9688     5.7449  -0.343    0.733
-    ## 
-    ## Residual standard error: 1.121 on 98 degrees of freedom
-    ## Multiple R-squared:  0.001197,   Adjusted R-squared:  -0.008995 
-    ## F-statistic: 0.1174 on 1 and 98 DF,  p-value: 0.7326
+    ## Residual standard error: 1.066 on 98 degrees of freedom
+    ## Multiple R-squared:  0.0001283,  Adjusted R-squared:  -0.01007 
+    ## F-statistic: 0.01258 on 1 and 98 DF,  p-value: 0.9109
 
 However, specifying `oneWayHoldout` as the cross-validation technique
 introduces sampling variation that is correlated with the outcome. This
@@ -154,69 +158,25 @@ cfeBad <- mkCrossFrameNExperiment(d,
                                   splitFunction = oneWayHoldout)
 ```
 
-    ## [1] "vtreat 1.4.3 start initial treatment design Sat Jul  6 16:28:28 2019"
-    ## [1] " start cross frame work Sat Jul  6 16:28:29 2019"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Sat Jul  6 16:28:30 2019"
+    ## [1] "vtreat 1.5.2 start initial treatment design Tue Jan 28 05:21:55 2020"
+    ## [1] " start cross frame work Tue Jan 28 05:21:57 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Jan 28 05:22:00 2020"
 
 ``` r
 knitr::kable(cfeBad$treatments$scoreFrame)
 ```
 
-| varName      | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code      |
-| :----------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :-------- |
-| x\_badCoderN | TRUE     | 0.9999862 | 0.0000000 | TRUE       |                 1 | x        | badCoderN |
-| x\_lev\_x\_a | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
-| x\_lev\_x\_b | TRUE     | 0.0017682 | 0.6778556 | FALSE      |                 0 | x        | lev       |
+| varName                           | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code                           |
+| :-------------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :----------------------------- |
+| x\_bad\_coder\_noisy\_constant    | TRUE     | 0.9999926 | 0.0000000 | TRUE       |                99 | x        | bad\_coder\_noisy\_constant    |
+| x\_bad\_coder\_noisy\_conditional | TRUE     | 0.9999923 | 0.0000000 | TRUE       |                99 | x        | bad\_coder\_noisy\_conditional |
+| x\_bad\_coder\_noisy\_delta       | TRUE     | 0.0049319 | 0.4874913 | TRUE       |                99 | x        | bad\_coder\_noisy\_delta       |
 
-``` r
-summary(lm(y ~ x_badCoderN, data= cfeBad$crossFrame))
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = y ~ x_badCoderN, data = cfeBad$crossFrame)
-    ## 
-    ## Residuals:
-    ##        Min         1Q     Median         3Q        Max 
-    ## -0.0135012 -0.0028152 -0.0000517  0.0022441  0.0092467 
-    ## 
-    ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  19.557657   0.007569    2584   <2e-16 ***
-    ## x_badCoderN -98.994795   0.038634   -2562   <2e-16 ***
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.004332 on 98 degrees of freedom
-    ## Multiple R-squared:      1,  Adjusted R-squared:      1 
-    ## F-statistic: 6.566e+06 on 1 and 98 DF,  p-value: < 2.2e-16
-
-``` r
-treatedDbad <- prepare(cfeBad$treatments, d)
-summary(lm(y ~ x_badCoderN, data= treatedDbad))
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = y ~ x_badCoderN, data = treatedDbad)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -3.00554 -0.74592 -0.01978  0.67265  2.98501 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)  -322040     772954  -0.417    0.678
-    ## x_badCoderN  1646604    3952139   0.417    0.678
-    ## 
-    ## Residual standard error: 1.12 on 98 degrees of freedom
-    ## Multiple R-squared:  0.001768,   Adjusted R-squared:  -0.008418 
-    ## F-statistic: 0.1736 on 1 and 98 DF,  p-value: 0.6779
-
-Notice the bad coder was (falsely) reported as usable and (falsely)
-appears useful on the cross-frame (but not on a simple prepared frame).
-Also notice the normal coders such as impact (which was fully rejected
-by `vtreat`) and levels codes were properly rejected.
+Notice the bad coder was (falsely) and conditional coders are both
+reported as usable and (falsely) appear useful on the cross-frame. The
+delta-code avoid this issue. Also notice the normal coders such as
+impact (which was fully rejected by `vtreat`) and levels codes were
+properly rejected.
 
 What happened is:
 
@@ -265,8 +225,23 @@ Or: to an observer that knows `n` and `mean(y)` (and hence `sum(y)`)
 `e(k)` completely determines `y(k)` even though it was constructed
 without knowledge of `y(k)`.
 
-This failing is because the common cross validation procedures are not
-[fully nested
+This failing is because:
+
+<ul>
+
+<li>
+
+The estimator tried to estimate `E[y | x]` (which is records sampling
+noise from the cross-validation procedure) instead of `E[y - E[y] | x]`
+(which does not record the sampling noise in the cross-validation
+procedure). `vtreat` uses the encoding of differences technique to avoid
+such difficulties.
+
+</li>
+
+<li>
+
+The common cross validation procedures are not [fully nested
 simulation](http://www.win-vector.com/blog/2017/01/a-theory-of-nested-cross-simulation/)
 in the sense that rows were not excluded from out final calculation (the
 estimation of significance, or final linear model). I did not correctly
@@ -275,6 +250,10 @@ previous article, but the idea is to maintain full exchangeability every
 step of the simulation must systematically exclude sets of rows:
 especially the last step if it is performing join over all rows
 calculations.
+
+</li>
+
+</ul>
 
 *Fully* nested cross-simulation (where even the last step is under the
 cross-control and enumerating excluded sets of training rows) is likely
@@ -286,9 +265,12 @@ a good practical compromise (though we may explore full-nesting for the
 score frame estimates, as that is a step completely under `vtreat`
 control).
 
-The current `vtreat` procedures are very strong and fully up to the case
-of assisting in construction of best possible machine learning models.
-However in certain degenerate cases (near-constant encoding combined
-completely deterministic cross-validation; neither of which is a default
-behavior of `vtreat`) the cross validation system itself can introduce
-an information leak that promotes over-fit.
+The current `vtreat` procedures are very strong and fully “up to the
+job” of assisting in construction of best possible machine learning
+models. However in certain degenerate cases (near-constant encoding
+combined completely deterministic cross-validation; neither of which is
+a default behavior of `vtreat`) the cross validation system itself can
+introduce an information leak that promotes over-fit for some custom
+coders. `vtreat`’s built-in coders are estimates of conditional changes
+from apparent mean (not estimates of conditional values), so tend to
+avoid the above issues.
