@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.2</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
       <h1>Multi Class vtreat</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2020-01-16</h4>
+            <h4 class="date">2020-01-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/MultiClassVtreat.Rmd"><code>vignettes/MultiClassVtreat.Rmd</code></a></small>
       <div class="hidden name"><code>MultiClassVtreat.Rmd</code></div>
@@ -213,12 +213,12 @@
 ##  $ x3_lev_x_1    : num  0 1 0 0 0 0 1 1 1 0 ...
 ##  $ x3_lev_x_2    : num  1 0 0 1 0 1 0 0 0 1 ...
 ##  $ x3_lev_x_3    : num  0 0 1 0 1 0 0 0 0 0 ...
-##  $ Large1_x2_catB: num  1.11 -10.61 1.25 1.11 -10.57 ...
-##  $ Large1_x3_catB: num  0.616 0.362 -10.571 0.616 -10.57 ...
-##  $ Large2_x2_catB: num  -0.0638 0.1074 0.0821 -0.0638 0.1074 ...
-##  $ Large2_x3_catB: num  -4.69 -13.09 4.71 -4.69 4.71 ...
-##  $ NoInfo_x2_catB: num  -0.378 0.132 -0.304 -0.378 0.132 ...
-##  $ NoInfo_x3_catB: num  2.25 2.56 -4.82 2.25 -4.16 ...
+##  $ Large1_x2_catB: num  1.23 -10.72 1.15 1.16 -10.53 ...
+##  $ Large1_x3_catB: num  0.7025 0.0903 -10.4833 0.6238 -10.529 ...
+##  $ Large2_x2_catB: num  0.17979 0.19661 -0.00379 -0.09818 0.00627 ...
+##  $ Large2_x3_catB: num  -13.12 -13.05 4.49 -4.03 4.71 ...
+##  $ NoInfo_x2_catB: num  -0.48752 -0.00254 -0.27947 -0.26155 0.15195 ...
+##  $ NoInfo_x3_catB: num  2.05 2.43 -4.34 1.79 -4.55 ...
 ##  $ y             : chr  "NoInfo" "NoInfo" "Large2" "Large1" ...</code></pre>
 <p><code><a href="../reference/prepare.html">prepare()</a></code> can apply the designed treatments to new data. Here we are simulating new data by re-using our design data.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># pretend original data is new data to be treated</span></a>
@@ -422,37 +422,37 @@
 </tr>
 <tr class="even">
 <td align="left">Large1_x2_catB</td>
-<td align="right">0.2677786</td>
+<td align="right">0.2679354</td>
 <td align="right">0.0000000</td>
 <td align="left">Large1</td>
 </tr>
 <tr class="odd">
 <td align="left">Large1_x3_catB</td>
-<td align="right">0.0971273</td>
-<td align="right">0.0000000</td>
+<td align="right">0.0835409</td>
+<td align="right">0.0000002</td>
 <td align="left">Large1</td>
 </tr>
 <tr class="even">
 <td align="left">Large2_x2_catB</td>
-<td align="right">0.0000502</td>
-<td align="right">0.8012468</td>
+<td align="right">0.0002176</td>
+<td align="right">0.6004146</td>
 <td align="left">Large2</td>
 </tr>
 <tr class="odd">
 <td align="left">Large2_x3_catB</td>
-<td align="right">0.9310333</td>
+<td align="right">0.9064823</td>
 <td align="right">0.0000000</td>
 <td align="left">Large2</td>
 </tr>
 <tr class="even">
 <td align="left">NoInfo_x2_catB</td>
-<td align="right">0.0073151</td>
-<td align="right">0.0019622</td>
+<td align="right">0.0080585</td>
+<td align="right">0.0011565</td>
 <td align="left">NoInfo</td>
 </tr>
 <tr class="odd">
 <td align="left">NoInfo_x3_catB</td>
-<td align="right">0.7167572</td>
+<td align="right">0.7143906</td>
 <td align="right">0.0000000</td>
 <td align="left">NoInfo</td>
 </tr>
@@ -463,12 +463,12 @@
 <a class="sourceLine" id="cb9-2" data-line-number="2">       cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, </a>
 <a class="sourceLine" id="cb9-3" data-line-number="3">       max)</a></code></pre></div>
 <pre><code>##         x1         x2         x3 
-## 0.04276746 0.26811298 0.93103329</code></pre>
+## 0.04276746 0.26811298 0.93085900</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span>(cfe_m<span class="op">$</span>score_frame<span class="op">$</span>sig, </a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">       cfe_m<span class="op">$</span>score_frame<span class="op">$</span>origName, </a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">       min)</a></code></pre></div>
 <pre><code>##            x1            x2            x3 
-##  2.015164e-04  1.315559e-20 2.488384e-257</code></pre>
+##  2.015164e-04  1.315559e-20 2.777723e-257</code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

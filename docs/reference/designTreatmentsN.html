@@ -75,7 +75,7 @@ using mkCrossFrameNExperiment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.2</span>
       </span>
     </div>
 
@@ -300,11 +300,11 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>),<span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
 <span class='no'>dTestN</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.5.1 inspecting inputs Thu Jan 16 08:31:55 2020"
-#&gt; [1] "designing treatments Thu Jan 16 08:31:55 2020"
-#&gt; [1] " have initial level statistics Thu Jan 16 08:31:55 2020"
-#&gt; [1] " scoring treatments Thu Jan 16 08:31:55 2020"
-#&gt; [1] "have treatment plan Thu Jan 16 08:31:55 2020"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTrainN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='input'><span class='no'>dTestNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTestN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
+<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.5.2 inspecting inputs Tue Jan 28 08:40:08 2020"
+#&gt; [1] "designing treatments Tue Jan 28 08:40:08 2020"
+#&gt; [1] " have initial level statistics Tue Jan 28 08:40:08 2020"
+#&gt; [1] " scoring treatments Tue Jan 28 08:40:08 2020"
+#&gt; [1] "have treatment plan Tue Jan 28 08:40:08 2020"</div><div class='input'><span class='no'>dTrainNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTrainN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='input'><span class='no'>dTestNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTestN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

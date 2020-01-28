@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.2</span>
       </span>
     </div>
 
@@ -164,7 +164,9 @@
   <span class='no'>...</span>,
   <span class='kw'>varlist</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dframe</span>),
   <span class='kw'>invalid_mark</span> <span class='kw'>=</span> <span class='st'>"_invalid_"</span>,
-  <span class='kw'>drop_constant_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>drop_constant_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -189,6 +191,14 @@
     <tr>
       <th>drop_constant_columns</th>
       <td><p>logical, if TRUE drop columns that do not vary from the treatment plan.</p></td>
+    </tr>
+    <tr>
+      <th>missingness_imputation</th>
+      <td><p>function of signature f(values: numeric), simple missing value imputer.</p></td>
+    </tr>
+    <tr>
+      <th>imputation_map</th>
+      <td><p>map from column names to functions of signature f(values: numeric), simple missing value imputers.</p></td>
     </tr>
     </table>
 

@@ -19,7 +19,7 @@ mkCrossFrameMExperiment(
   customCoders = NULL,
   scale = FALSE,
   doCollar = FALSE,
-  splitFunction = NULL,
+  splitFunction = vtreat::kWayCrossValidation,
   ncross = 3,
   forceSplit = FALSE,
   catScaling = FALSE,

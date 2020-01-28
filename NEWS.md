@@ -1,7 +1,8 @@
 
-# vtreat 1.5.2 2020/01/18
+# vtreat 1.5.2 2020/01/28
 
  * Control imputation on design_missingness_treatment.
+ * Share cross-splits in multinomial mode to minimize data leakage.
 
 # vtreat 1.5.1 2020/01/16
 

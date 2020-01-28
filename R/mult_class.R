@@ -43,7 +43,7 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
                                     codeRestriction=NULL,
                                     customCoders=NULL,
                                     scale=FALSE,doCollar=FALSE,
-                                    splitFunction=NULL,ncross=3,
+                                    splitFunction=vtreat::kWayCrossValidation, ncross=3,
                                     forceSplit = FALSE,
                                     catScaling=FALSE,
                                     y_dependent_treatments = c("catB"),
@@ -102,6 +102,12 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
   sframe_0 <- do.call(rbind, sframe_0)
   rownames(sframe_0) <- NULL
   rm(list = c("tf_0"))
+  # get a shared split plan to minimize data leakage
+  if(is.null(splitFunction)) {
+    splitFunction <- kWayCrossValidation
+  }
+  evalSets <- splitFunction(nRows = nrow(dframe), nSplits = ncross, dframe=dframe, y = dframe[[outcomename]])
+  splitFunction <- pre_comp_xval(nRows=nrow(dframe), ncross, evalSets)
   # build one set of y-dependent treatments per possible y outcome
   names(y_l_names) <- y_levels
   cfe_list <- lapply(
