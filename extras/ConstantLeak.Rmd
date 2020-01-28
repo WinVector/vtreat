@@ -19,7 +19,7 @@ library("vtreat")
 set.seed(352355)
 
 nrow <- 100
-d <- data.frame(x = sample(paste0('lev_', seq_len(nrow)), size = nrow, replace = FALSE),
+d <- data.frame(x = sample(paste0('lev_', seq_len(nrow)), size = nrow, replace = TRUE),
                 y = rnorm(nrow),
                 stringsAsFactors = FALSE)
 ```
@@ -84,6 +84,12 @@ customCoders <- list(
   'n.bad_coder_noisy_constant' = bad_coder_noisy_constant,
   'n.bad_coder_noisy_conditional' = bad_coder_noisy_conditional,
   'n.bad_coder_noisy_delta' = bad_coder_noisy_delta)
+
+codeRestriciton <- c('bad_coder_noisy_constant', 
+                     'bad_coder_noisy_conditional', 
+                     'bad_coder_noisy_delta',
+                     'catN')
+                     
 ```
 
 `vtreat` correctly works on this example in the design/prepare pattern, and rejects the bad custom variable.
@@ -93,6 +99,7 @@ treatplanN <- designTreatmentsN(d,
                                 varlist = c('x'),
                                 outcomename = 'y',
                                 customCoders = customCoders, 
+                                codeRestriction = codeRestriciton,
                                 verbose = FALSE)
 knitr::kable(treatplanN$scoreFrame)
 ```
@@ -117,11 +124,13 @@ cfeBad <- mkCrossFrameNExperiment(d,
                                   varlist = c('x'),
                                   outcomename = 'y',
                                   customCoders = customCoders,
-                                  splitFunction = oneWayHoldout)
+                                  codeRestriction = codeRestriciton,
+                                  splitFunction = oneWayHoldout,
+                                  verbose = FALSE)
 knitr::kable(cfeBad$treatments$scoreFrame)
 ```
 
-Notice the bad coder was (falsely) and conditional coders are both reported as usable and (falsely) appear useful on the cross-frame.  The delta-code avoid this issue.  Also notice the normal coders such as impact (which was fully rejected by `vtreat`) and levels codes were properly rejected.
+Notice the bad constant coder was (falsely) reported as usable and (falsely) appears useful on the cross-frame.  Also notice the normal coders such as impact (which was fully rejected by `vtreat`) and levels codes were properly rejected.
 
 
 

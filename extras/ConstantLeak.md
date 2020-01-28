@@ -18,7 +18,7 @@ library("vtreat")
 set.seed(352355)
 
 nrow <- 100
-d <- data.frame(x = sample(paste0('lev_', seq_len(nrow)), size = nrow, replace = FALSE),
+d <- data.frame(x = sample(paste0('lev_', seq_len(nrow)), size = nrow, replace = TRUE),
                 y = rnorm(nrow),
                 stringsAsFactors = FALSE)
 ```
@@ -89,6 +89,11 @@ customCoders <- list(
   'n.bad_coder_noisy_constant' = bad_coder_noisy_constant,
   'n.bad_coder_noisy_conditional' = bad_coder_noisy_conditional,
   'n.bad_coder_noisy_delta' = bad_coder_noisy_delta)
+
+codeRestriciton <- c('bad_coder_noisy_constant', 
+                     'bad_coder_noisy_conditional', 
+                     'bad_coder_noisy_delta',
+                     'catN')
 ```
 
 `vtreat` correctly works on this example in the design/prepare pattern,
@@ -99,16 +104,17 @@ treatplanN <- designTreatmentsN(d,
                                 varlist = c('x'),
                                 outcomename = 'y',
                                 customCoders = customCoders, 
+                                codeRestriction = codeRestriciton,
                                 verbose = FALSE)
 knitr::kable(treatplanN$scoreFrame)
 ```
 
 | varName                           | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code                           |
 | :-------------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :----------------------------- |
-| x\_bad\_coder\_noisy\_constant    | TRUE     | 0.0020488 | 0.6547491 | TRUE       |                99 | x        | bad\_coder\_noisy\_constant    |
-| x\_bad\_coder\_noisy\_conditional | TRUE     | 0.0020489 | 0.6547430 | TRUE       |                99 | x        | bad\_coder\_noisy\_conditional |
-| x\_bad\_coder\_noisy\_delta       | TRUE     | 0.0002930 | 0.8657779 | TRUE       |                99 | x        | bad\_coder\_noisy\_delta       |
-| x\_catN                           | TRUE     | 0.0000000 | 1.0000000 | TRUE       |                99 | x        | catN                           |
+| x\_bad\_coder\_noisy\_constant    | TRUE     | 0.0020199 | 0.6570383 | TRUE       |                66 | x        | bad\_coder\_noisy\_constant    |
+| x\_bad\_coder\_noisy\_conditional | TRUE     | 0.0012397 | 0.7280086 | TRUE       |                66 | x        | bad\_coder\_noisy\_conditional |
+| x\_bad\_coder\_noisy\_delta       | TRUE     | 0.0013310 | 0.7185787 | TRUE       |                66 | x        | bad\_coder\_noisy\_delta       |
+| x\_catN                           | TRUE     | 0.0013300 | 0.7186823 | TRUE       |                66 | x        | catN                           |
 
 Notice `vtreat` correctly identified none of the variables as being
 significant.
@@ -131,16 +137,16 @@ summary(lm(y ~ x_bad_coder_noisy_constant, data= treatedD))
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -2.47427 -0.66641 -0.07081  0.58681  2.97163 
+    ## -2.48154 -0.68676 -0.06004  0.60649  2.85883 
     ## 
     ## Coefficients:
     ##                            Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)                   -9.50      86.60  -0.110    0.913
-    ## x_bad_coder_noisy_constant    45.38     404.63   0.112    0.911
+    ## (Intercept)                   76.05     100.17   0.759    0.450
+    ## x_bad_coder_noisy_constant  -322.30     425.85  -0.757    0.451
     ## 
-    ## Residual standard error: 1.066 on 98 degrees of freedom
-    ## Multiple R-squared:  0.0001283,  Adjusted R-squared:  -0.01007 
-    ## F-statistic: 0.01258 on 1 and 98 DF,  p-value: 0.9109
+    ## Residual standard error: 1.044 on 98 degrees of freedom
+    ## Multiple R-squared:  0.005811,   Adjusted R-squared:  -0.004334 
+    ## F-statistic: 0.5728 on 1 and 98 DF,  p-value: 0.451
 
 However, specifying `oneWayHoldout` as the cross-validation technique
 introduces sampling variation that is correlated with the outcome. This
@@ -155,28 +161,23 @@ cfeBad <- mkCrossFrameNExperiment(d,
                                   varlist = c('x'),
                                   outcomename = 'y',
                                   customCoders = customCoders,
-                                  splitFunction = oneWayHoldout)
-```
-
-    ## [1] "vtreat 1.5.2 start initial treatment design Tue Jan 28 05:21:55 2020"
-    ## [1] " start cross frame work Tue Jan 28 05:21:57 2020"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Jan 28 05:22:00 2020"
-
-``` r
+                                  codeRestriction = codeRestriciton,
+                                  splitFunction = oneWayHoldout,
+                                  verbose = FALSE)
 knitr::kable(cfeBad$treatments$scoreFrame)
 ```
 
 | varName                           | varMoves |       rsq |       sig | needsSplit | extraModelDegrees | origName | code                           |
 | :-------------------------------- | :------- | --------: | --------: | :--------- | ----------------: | :------- | :----------------------------- |
-| x\_bad\_coder\_noisy\_constant    | TRUE     | 0.9999926 | 0.0000000 | TRUE       |                99 | x        | bad\_coder\_noisy\_constant    |
-| x\_bad\_coder\_noisy\_conditional | TRUE     | 0.9999923 | 0.0000000 | TRUE       |                99 | x        | bad\_coder\_noisy\_conditional |
-| x\_bad\_coder\_noisy\_delta       | TRUE     | 0.0049319 | 0.4874913 | TRUE       |                99 | x        | bad\_coder\_noisy\_delta       |
+| x\_bad\_coder\_noisy\_constant    | TRUE     | 0.9996395 | 0.0000000 | TRUE       |                66 | x        | bad\_coder\_noisy\_constant    |
+| x\_bad\_coder\_noisy\_conditional | TRUE     | 0.0008197 | 0.7773529 | TRUE       |                66 | x        | bad\_coder\_noisy\_conditional |
+| x\_bad\_coder\_noisy\_delta       | TRUE     | 0.0018823 | 0.6682155 | TRUE       |                66 | x        | bad\_coder\_noisy\_delta       |
+| x\_catN                           | TRUE     | 0.0018844 | 0.6680390 | TRUE       |                66 | x        | catN                           |
 
-Notice the bad coder was (falsely) and conditional coders are both
-reported as usable and (falsely) appear useful on the cross-frame. The
-delta-code avoid this issue. Also notice the normal coders such as
-impact (which was fully rejected by `vtreat`) and levels codes were
-properly rejected.
+Notice the bad constant coder was (falsely) reported as usable and
+(falsely) appears useful on the cross-frame. Also notice the normal
+coders such as impact (which was fully rejected by `vtreat`) and levels
+codes were properly rejected.
 
 What happened is:
 
