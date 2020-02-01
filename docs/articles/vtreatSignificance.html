@@ -115,7 +115,7 @@
       <h1>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-01-28</h4>
+            <h4 class="date">2020-02-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -169,13 +169,13 @@
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">treatmentsC &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/designTreatmentsC.html">designTreatmentsC</a></span>(d,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.2 inspecting inputs Tue Jan 28 08:40:55 2020"
-## [1] "designing treatments Tue Jan 28 08:40:55 2020"
-## [1] " have initial level statistics Tue Jan 28 08:40:55 2020"
-## [1] " scoring treatments Tue Jan 28 08:40:56 2020"
-## [1] "have treatment plan Tue Jan 28 08:40:56 2020"
-## [1] "rescoring complex variables Tue Jan 28 08:40:56 2020"
-## [1] "done rescoring complex variables Tue Jan 28 08:40:57 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.2 inspecting inputs Sat Feb  1 12:16:16 2020"
+## [1] "designing treatments Sat Feb  1 12:16:16 2020"
+## [1] " have initial level statistics Sat Feb  1 12:16:16 2020"
+## [1] " scoring treatments Sat Feb  1 12:16:16 2020"
+## [1] "have treatment plan Sat Feb  1 12:16:17 2020"
+## [1] "rescoring complex variables Sat Feb  1 12:16:17 2020"
+## [1] "done rescoring complex variables Sat Feb  1 12:16:17 2020"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Estimate effect significance (not coefficient significance).</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">estSigGLM &lt;-<span class="st"> </span><span class="cf">function</span>(xVar,yVar,<span class="dt">numberOfHiddenDegrees=</span><span class="dv">0</span>) {</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">  d &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span>xVar,<span class="dt">y=</span>yVar,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
