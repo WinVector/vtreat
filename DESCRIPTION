@@ -2,7 +2,7 @@ Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
 Version: 1.5.2
-Date: 2020-02-01
+Date: 2020-02-06
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
@@ -22,11 +22,11 @@ Depends:
   R (>= 3.2.1)
 Imports:
     stats,
-    wrapr (>= 1.9.3),
+    wrapr (>= 1.9.6),
     digest
 Suggests:
-    rquery (>= 1.4.1),
-    rqdatatable (>= 1.2.5),
+    rquery (>= 1.4.3),
+    rqdatatable (>= 1.2.6),
     data.table (>= 1.12.2),
     isotone,
     lme4,
