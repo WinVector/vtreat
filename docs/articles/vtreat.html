@@ -208,10 +208,11 @@
 </ul>
 <p>Examples of current best practice using <code>vtreat</code> (variable coding, train, test split) can be found <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">here</a> and <a href="http://winvector.github.io/KDD2009/KDD2009RF.html">here</a>.</p>
 <p>Trivial example:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"vtreat"</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
+<pre><code>## Loading required package: wrapr</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
 <pre><code>## [1] '1.5.2'</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'vtreat'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'vtreat'</span>)</a></code></pre></div>
 <pre><code>## 
 ## To cite package 'vtreat' in publications use:
 ## 
@@ -228,17 +229,17 @@
 ##     year = {2020},
 ##     note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
 ##   }</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># categorical example</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="ot">NA</span>, <span class="dv">6</span>, <span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">   <span class="dt">y=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># help("designTreatmentsC")</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># categorical example</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">dTrainC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="ot">NA</span>, <span class="dv">6</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">   <span class="dt">y=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">dTestC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co"># help("designTreatmentsC")</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">treatmentsC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(dTrainC, <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainC), <span class="st">'y'</span>, <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code         rsq        sig extraModelDegrees
 ## 1        x    x_catP  catP 0.285095342 0.09874390                 2
 ## 2        x    x_catB  catB 0.117443640 0.28930668                 2
@@ -247,68 +248,68 @@
 ## 5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
 ## 6        x x_lev_x_a   lev 0.130005705 0.26490379                 0
 ## 7        x x_lev_x_b   lev 0.006067337 0.80967242                 0</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># help("prepare")</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC, dTrainC, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># help("prepare")</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">dTrainCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC, dTrainC, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Warning in prepare.treatmentplan(treatmentsC, dTrainC, pruneSig = 1, scale =
 ## TRUE): possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
 ## mkCrossFrame*Experiment$crossFrame.</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainCTreated), <span class="st">'y'</span>)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(dTrainCTreated[, varsC, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">varsC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainCTreated), <span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(dTrainCTreated[, varsC, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean)</a></code></pre></div>
 <pre><code>##        x_catP        x_catB             z       z_isBAD      x_lev_NA 
 ##  2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 
 ##     x_lev_x_a     x_lev_x_b 
 ## -6.345680e-17  1.189718e-17</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># all non NA slopes should be 1</span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(varsC, <span class="cf">function</span>(c) { <span class="kw"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(varsC, <span class="cf">function</span>(c) { <span class="kw"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">   <span class="dt">data=</span>dTrainCTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]})</a></code></pre></div>
 <pre><code>##     x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a  x_lev_x_b 
 ## 0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 0.24663035</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC, dTestC, <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(dTestCTreated)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">dTestCTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsC, dTestC, <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(dTestCTreated)</a></code></pre></div>
 <pre><code>##       x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b
 ## 1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472
 ## 2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179
 ## 3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472
 ## 4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># numeric example</span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="ot">NA</span>, <span class="dv">7</span>, <span class="ot">NA</span>), <span class="dt">y=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
-<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co"># help("designTreatmentsN")</span></a>
-<a class="sourceLine" id="cb15-6" data-line-number="6">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN, <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainN), <span class="st">'y'</span>,</a>
-<a class="sourceLine" id="cb15-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># numeric example</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">dTrainN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">   <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="ot">NA</span>, <span class="dv">7</span>, <span class="ot">NA</span>), <span class="dt">y=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">dTestN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="ot">NA</span>), <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co"># help("designTreatmentsN")</span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">treatmentsN =<span class="st"> </span><span class="kw"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(dTrainN, <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainN), <span class="st">'y'</span>,</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 1.304740e-01 0.3793327                 2
-## 2        x    x_catN  catN 2.616674e-01 0.1950536                 2
-## 3        x    x_catD  catD 9.705853e-02 0.4525551                 2
+## 1        x    x_catP  catP 2.941176e-01 0.1649303                 2
+## 2        x    x_catN  catN 6.583561e-02 0.5396025                 2
+## 3        x    x_catD  catD 9.777348e-03 0.8158041                 2
 ## 4        z         z clean 2.880952e-01 0.1701892                 0
 ## 5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 ## 6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
 ## 7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0
 ## 8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">dTrainNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTrainN, <span class="dt">pruneSig=</span><span class="fl">1.0</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Warning in prepare.treatmentplan(treatmentsN, dTrainN, pruneSig = 1, scale =
 ## TRUE): possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
 ## mkCrossFrame*Experiment$crossFrame.</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)</a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
-<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(dTrainNTreated[, varsN, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean) </a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">varsN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainNTreated), <span class="st">'y'</span>)</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="co"># all input variables should be mean 0</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(dTrainNTreated[, varsN, <span class="dt">drop=</span><span class="ot">FALSE</span>], mean) </a></code></pre></div>
 <pre><code>##        x_catP        x_catN        x_catD             z       z_isBAD 
 ##  2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 
 ##      x_lev_NA     x_lev_x_a     x_lev_x_b 
 ##  6.938894e-18  0.000000e+00  7.703720e-34</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># all non NA slopes should be 1</span></a>
-<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(varsN, <span class="cf">function</span>(c) { <span class="kw"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co"># all non NA slopes should be 1</span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(varsN, <span class="cf">function</span>(c) { <span class="kw"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">'y'</span>, c, <span class="dt">sep=</span><span class="st">'~'</span>),</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">   <span class="dt">data=</span>dTrainNTreated)<span class="op">$</span>coefficients[[<span class="dv">2</span>]]}) </a></code></pre></div>
 <pre><code>##    x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
 ##         1         1         1         1         1         1         1         1</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTestN, <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(dTestNTreated)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">dTestNTreated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare.html">prepare</a></span>(treatmentsN, dTestN, <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(), <span class="dt">scale=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(dTestNTreated)</a></code></pre></div>
 <pre><code>##   x_catP x_catN      x_catD         z    z_isBAD   x_lev_NA x_lev_x_a
 ## 1 -0.250  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25
 ## 2  0.250   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25
@@ -319,13 +320,13 @@
 ## 2  6.798700e-17
 ## 3 -2.266233e-17
 ## 4 -2.266233e-17</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co"># for large data sets you can consider designing the treatments on </span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="co"># a subset like: d[sample(1:dim(d)[[1]], 1000), ]</span></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb25-4" data-line-number="4"><span class="co"># One can also use treatment plans as pipe targets.</span></a>
-<a class="sourceLine" id="cb25-5" data-line-number="5">dTrainN <span class="op">%.&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb25-6" data-line-number="6"><span class="st">  </span>treatmentsN <span class="op">%.&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb25-7" data-line-number="7"><span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(.)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># for large data sets you can consider designing the treatments on </span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="co"># a subset like: d[sample(1:dim(d)[[1]], 1000), ]</span></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="co"># One can also use treatment plans as pipe targets.</span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5">dTrainN <span class="op">%.&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6"><span class="st">  </span>treatmentsN <span class="op">%.&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-7" data-line-number="7"><span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(.)</a></code></pre></div>
 <pre><code>## Warning in prepare.treatmentplan(pipe_right_arg, pipe_left_arg):
 ## possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
@@ -446,7 +447,7 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>To install, from inside <code>R</code> please run:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"vtreat"</span>)</a></code></pre></div>
 </div>
 <div id="note" class="section level2">
 <h2 class="hasAnchor">

@@ -81,7 +81,7 @@ mkCrossFrameCExperiment(
 \item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \value{
-list with treatments and crossFrame
+named list containing: treatments, crossFrame, crossWeights, method, and evalSets
 }
 \description{
 Builds a \code{\link{designTreatmentsC}} treatment plan and a data frame prepared 
@@ -92,22 +92,53 @@ into calibration, training, test sets.
 }
 \examples{
 
+# categorical example
 set.seed(23525)
-zip <- paste('z',1:100)
-N <- 200
-d <- data.frame(zip=sample(zip,N,replace=TRUE),
-                zip2=sample(zip,20,replace=TRUE),
-                y=runif(N))
-del <- runif(length(zip))
-names(del) <- zip
-d$y <- d$y + del[d$zip2]
-d$yc <- d$y>=mean(d$y)
-cC <- mkCrossFrameCExperiment(d,c('zip','zip2'),'yc',TRUE,
-  rareCount=2,rareSig=0.9)
-cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)  # poor
-cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB) # better
-treatments <- cC$treatments
-dTrainV <- cC$crossFrame
+
+# we set up our raw training and application data
+dTrainC <- data.frame(
+  x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, NA, 6, NA),
+  y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
+
+dTestC <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsC
+# and dTrainCTreated
+unpack[
+  treatmentsC = treatments,
+  dTrainCTreated = crossFrame
+  ] <- mkCrossFrameCExperiment(
+    dframe = dTrainC,
+    varlist = setdiff(colnames(dTrainC), 'y'),
+    outcomename = 'y',
+    outcometarget = TRUE,
+    verbose = FALSE)
+
+# the treatments include a score fram relating new
+# derived variables to original columns
+treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] \%.>\%
+  print(.)
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainCTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
+
+# Any future application data is prepared with
+# the prepare method.
+dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+
+dTestCTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
 
 }
 \seealso{

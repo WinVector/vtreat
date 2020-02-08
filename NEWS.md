@@ -5,6 +5,8 @@
  * Share cross-splits in multinomial mode to minimize data leakage.
  * Earlier argument checking.
  * Default classification target to TRUE.
+ * Some documentation improvements.
+ * Move wrapr to Depends.
 
 # vtreat 1.5.1 2020/01/16
 

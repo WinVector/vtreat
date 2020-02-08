@@ -19,10 +19,10 @@ Description: A 'data.frame' processor/conditioner that prepares real-world data 
     "'vtreat': a data.frame Processor for Predictive Modeling", Zumel, Mount, 2016, <DOI:10.5281/zenodo.1173313>.
 License: GPL-2 | GPL-3
 Depends:
-  R (>= 3.4.0)
+  R (>= 3.4.0),
+  wrapr (>= 1.9.6)
 Imports:
     stats,
-    wrapr (>= 1.9.6),
     digest
 Suggests:
     rquery (>= 1.4.3),

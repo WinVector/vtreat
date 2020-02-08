@@ -81,10 +81,62 @@ mkCrossFrameMExperiment(
 \item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \value{
-list(cross_frame, treatments_0, treatments_m)
+a names list containing cross_frame, treat_m, score_frame, and fit_obj_id
 }
 \description{
 Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://winvector.github.io/vtreat/articles/MultiClassVtreat.html}.
+}
+\examples{
+
+
+# numeric example
+set.seed(23525)
+
+# we set up our raw training and application data
+dTrainM <- data.frame(
+  x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+  y = c(0, 0, 0, 1, 0, 1, 2, 1))
+
+dTestM <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsM,
+# dTrainMTreated, and score_frame
+unpack[
+  treatmentsM = treat_m,
+  dTrainMTreated = cross_frame,
+  score_frame = score_frame
+  ] <- mkCrossFrameMExperiment(
+    dframe = dTrainM,
+    varlist = setdiff(colnames(dTrainM), 'y'),
+    outcomename = 'y',
+    verbose = FALSE)
+
+# the score_frame relates new
+# derived variables to original columns
+score_frame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'outcome_level')] \%.>\%
+  print(.)
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainMTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
+
+# Any future application data is prepared with
+# the prepare method.
+dTestMTreated <- prepare(treatmentsM, dTestM, pruneSig=NULL)
+
+dTestMTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
+
 }
 \seealso{
 \code{\link{prepare.multinomial_plan}}

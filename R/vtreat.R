@@ -125,6 +125,8 @@ print.treatmentplan <- function(x, ...) {
 #' See the vtreat vignette for a bit more detail and a worked example.
 #' 
 #' Columns that do not vary are not passed through.
+#' 
+#' Note: re-encoding high cardinality on training data can introduce nested model bias, consider using \code{mkCrossFrameCExperiment} instead.
 #'
 #' @param dframe Data frame to learn treatments from (training data), must have at least 1 row.
 #' @param varlist Names of columns to treat (effective variables).
@@ -150,6 +152,7 @@ print.treatmentplan <- function(x, ...) {
 #' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
 #' @return treatment plan (for use with prepare)
 #' @seealso \code{\link{prepare.treatmentplan}}, \code{\link{designTreatmentsN}}, \code{\link{designTreatmentsZ}}, \code{\link{mkCrossFrameCExperiment}}
+#' 
 #' @examples
 #' 
 #' dTrainC <- data.frame(x=c('a','a','a','b','b','b'),
@@ -158,7 +161,6 @@ print.treatmentplan <- function(x, ...) {
 #' dTestC <- data.frame(x=c('a','b','c',NA),
 #'    z=c(10,20,30,NA))
 #' treatmentsC <- designTreatmentsC(dTrainC,colnames(dTrainC),'y',TRUE)
-#' dTrainCTreated <- prepare(treatmentsC,dTrainC,pruneSig=0.99)
 #' dTestCTreated <- prepare(treatmentsC,dTestC,pruneSig=0.99)
 #' 
 #' @export
@@ -228,7 +230,7 @@ designTreatmentsC <- function(dframe,varlist,
 #' numeric outcome.  Data frame is assumed to have only atomic columns
 #' except for dates (which are converted to numeric).
 #' Note: each column is processed independently of all others. 
-#' Note: re-encoding high cardinality
+#' Note: re-encoding high cardinality on training data
 #' categorical variables can introduce undesirable nested model bias, for such data consider
 #' using \code{\link{mkCrossFrameNExperiment}}.
 #' 
@@ -271,7 +273,6 @@ designTreatmentsC <- function(dframe,varlist,
 #' dTestN <- data.frame(x=c('a','b','c',NA),
 #'     z=c(10,20,30,NA))
 #' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-#' dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=0.99)
 #' dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=0.99)
 #' 
 #' @export
@@ -555,33 +556,56 @@ prepare <- function(treatmentplan, dframe,
 #' @return treated data frame (all columns numeric- without NA, NaN)
 #' 
 #' @seealso \code{\link{mkCrossFrameCExperiment}}, \code{\link{mkCrossFrameNExperiment}}, \code{\link{designTreatmentsC}} \code{\link{designTreatmentsN}} \code{\link{designTreatmentsZ}}, \code{\link{prepare}}
+#' 
 #' @examples
 #' 
-#' dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),
-#'                       z= c(1,2,3,4,5,6,7),
-#'                       y= c(0,0,0,1,0,1,1))
-#' dTestN <- data.frame(x= c('a','b','c',NA),
-#'                      z= c(10,20,30,NA))
-#' treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN), 'y')
-#' dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig= 0.2)
-#' dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig= 0.2)
+#' # categorical example
+#' set.seed(23525)
 #' 
-#' dTrainC <- data.frame(x= c('a','a','a','b','b','b'),
-#'                       z= c(1,2,3,4,5,6),
-#'                       y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-#' dTestC <- data.frame(x= c('a','b','c',NA),
-#'                      z= c(10,20,30,NA))
-#' treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-#' dTrainCTreated <- prepare(treatmentsC, dTrainC)
-#' dTestCTreated <- prepare(treatmentsC, dTestC)
-#'
-#' dTrainZ <- data.frame(x= c('a','a','a','b','b','b'),
-#'                       z= c(1,2,3,4,5,6))
-#' dTestZ <- data.frame(x= c('a','b','c',NA),
-#'                      z= c(10,20,30,NA))
-#' treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
-#' dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
-#' dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
+#' # we set up our raw training and application data
+#' dTrainC <- data.frame(
+#'   x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+#'   z = c(1, 2, 3, 4, NA, 6, NA),
+#'   y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
+#' 
+#' dTestC <- data.frame(
+#'   x = c('a', 'b', 'c', NA), 
+#'   z = c(10, 20, 30, NA))
+#' 
+#' # we perform a vtreat cross frame experiment
+#' # and unpack the results into treatmentsC
+#' # and dTrainCTreated
+#' unpack[
+#'   treatmentsC = treatments,
+#'   dTrainCTreated = crossFrame
+#'   ] <- mkCrossFrameCExperiment(
+#'     dframe = dTrainC,
+#'     varlist = setdiff(colnames(dTrainC), 'y'),
+#'     outcomename = 'y',
+#'     outcometarget = TRUE,
+#'     verbose = FALSE)
+#' 
+#' # the treatments include a score fram relating new
+#' # derived variables to original columns
+#' treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+#'   print(.)
+#' 
+#' # the treated frame is a "cross frame" which
+#' # is a transform of the training data built 
+#' # as if the treatment were learned on a different
+#' # disjoint training set to avoid nested model
+#' # bias and over-fit.
+#' dTrainCTreated %.>%
+#'   head(.) %.>%
+#'   print(.)
+#' 
+#' # Any future application data is prepared with
+#' # the prepare method.
+#' dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+#' 
+#' dTestCTreated %.>%
+#'   head(.) %.>%
+#'   print(.)
 #' 
 #' @export
 prepare.treatmentplan <- function(treatmentplan, dframe,
@@ -724,28 +748,59 @@ prepare.treatmentplan <- function(treatmentplan, dframe,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
 #' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
-#' @return list with treatments and crossFrame
+#' @return named list containing: treatments, crossFrame, crossWeights, method, and evalSets 
 #' 
 #' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{prepare.treatmentplan}}
 #' 
 #' @examples
 #' 
+#' # categorical example
 #' set.seed(23525)
-#' zip <- paste('z',1:100)
-#' N <- 200
-#' d <- data.frame(zip=sample(zip,N,replace=TRUE),
-#'                 zip2=sample(zip,20,replace=TRUE),
-#'                 y=runif(N))
-#' del <- runif(length(zip))
-#' names(del) <- zip
-#' d$y <- d$y + del[d$zip2]
-#' d$yc <- d$y>=mean(d$y)
-#' cC <- mkCrossFrameCExperiment(d,c('zip','zip2'),'yc',TRUE,
-#'   rareCount=2,rareSig=0.9)
-#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)  # poor
-#' cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB) # better
-#' treatments <- cC$treatments
-#' dTrainV <- cC$crossFrame
+#' 
+#' # we set up our raw training and application data
+#' dTrainC <- data.frame(
+#'   x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+#'   z = c(1, 2, 3, 4, NA, 6, NA),
+#'   y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
+#' 
+#' dTestC <- data.frame(
+#'   x = c('a', 'b', 'c', NA), 
+#'   z = c(10, 20, 30, NA))
+#' 
+#' # we perform a vtreat cross frame experiment
+#' # and unpack the results into treatmentsC
+#' # and dTrainCTreated
+#' unpack[
+#'   treatmentsC = treatments,
+#'   dTrainCTreated = crossFrame
+#'   ] <- mkCrossFrameCExperiment(
+#'     dframe = dTrainC,
+#'     varlist = setdiff(colnames(dTrainC), 'y'),
+#'     outcomename = 'y',
+#'     outcometarget = TRUE,
+#'     verbose = FALSE)
+#' 
+#' # the treatments include a score fram relating new
+#' # derived variables to original columns
+#' treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+#'   print(.)
+#' 
+#' # the treated frame is a "cross frame" which
+#' # is a transform of the training data built 
+#' # as if the treatment were learned on a different
+#' # disjoint training set to avoid nested model
+#' # bias and over-fit.
+#' dTrainCTreated %.>%
+#'   head(.) %.>%
+#'   print(.)
+#' 
+#' # Any future application data is prepared with
+#' # the prepare method.
+#' dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+#' 
+#' dTestCTreated %.>%
+#'   head(.) %.>%
+#'   print(.)
 #' 
 #' @export
 mkCrossFrameCExperiment <- function(dframe,varlist,
@@ -893,28 +948,61 @@ mkCrossFrameCExperiment <- function(dframe,varlist,
 #' @param use_parallel logical, if TRUE use parallel methods.
 #' @param missingness_imputation function of signature f(values: numeric, weights: numeric), simple missing value imputer.
 #' @param imputation_map map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.
-#' @return treatment plan (for use with prepare)
+#' @return named list containing: treatments, crossFrame, crossWeights, method, and evalSets 
+#' 
 #' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{prepare.treatmentplan}}
+#' 
 #' @examples
 #' 
+#' # numeric example
 #' set.seed(23525)
-#' zip <- paste('z',1:100)
-#' N <- 200
-#' d <- data.frame(zip=sample(zip,N,replace=TRUE),
-#'                 zip2=sample(zip,N,replace=TRUE),
-#'                 y=runif(N))
-#' del <- runif(length(zip))
-#' names(del) <- zip
-#' d$y <- d$y + del[d$zip2]
-#' d$yc <- d$y>=mean(d$y)
-#' cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
-#'    rareCount=2,rareSig=0.9)
-#' cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
-#' cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
-#' treatments <- cN$treatments
-#' dTrainV <- cN$crossFrame
+#' 
+#' # we set up our raw training and application data
+#' dTrainN <- data.frame(
+#'   x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+#'   z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+#'   y = c(0, 0, 0, 1, 0, 1, 1, 1))
+#' 
+#' dTestN <- data.frame(
+#'   x = c('a', 'b', 'c', NA), 
+#'   z = c(10, 20, 30, NA))
+#' 
+#' # we perform a vtreat cross frame experiment
+#' # and unpack the results into treatmentsN
+#' # and dTrainNTreated
+#' unpack[
+#'   treatmentsN = treatments,
+#'   dTrainNTreated = crossFrame
+#'   ] <- mkCrossFrameNExperiment(
+#'     dframe = dTrainN,
+#'     varlist = setdiff(colnames(dTrainN), 'y'),
+#'     outcomename = 'y',
+#'     verbose = FALSE)
+#' 
+#' # the treatments include a score fram relating new
+#' # derived variables to original columns
+#' treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+#'   print(.)
+#' 
+#' # the treated frame is a "cross frame" which
+#' # is a transform of the training data built 
+#' # as if the treatment were learned on a different
+#' # disjoint training set to avoid nested model
+#' # bias and over-fit.
+#' dTrainNTreated %.>%
+#'   head(.) %.>%
+#'   print(.)
+#' 
+#' # Any future application data is prepared with
+#' # the prepare method.
+#' dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=NULL)
+#' 
+#' dTestNTreated %.>%
+#'   head(.) %.>%
+#'   print(.)
 #' 
 #' @export
+#' 
 mkCrossFrameNExperiment <- function(dframe,varlist,outcomename,
                                     ...,
                                     weights=c(),

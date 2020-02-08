@@ -301,12 +301,15 @@ train, test split) can be found
 [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)
 and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
 
-Trivial example:
+Some small examples:
+
+We attach our packages.
 
 ``` r
 library("vtreat")
+ #  Loading required package: wrapr
 packageVersion("vtreat")
- #  [1] '1.5.1'
+ #  [1] '1.5.2'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
@@ -324,126 +327,175 @@ citation('vtreat')
  #      year = {2020},
  #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
  #    }
-
-# categorical example
-dTrainC <- data.frame(x=c('a', 'a', 'a', 'b', 'b', NA, NA),
-   z=c(1, 2, 3, 4, NA, 6, NA),
-   y=c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
-dTestC <- data.frame(x=c('a', 'b', 'c', NA), z=c(10, 20, 30, NA))
-
-# help("designTreatmentsC")
-
-treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
-                                 verbose=FALSE)
-print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code          rsq        sig extraModelDegrees
- #  1        x    x_catP  catP 1.559780e-01 0.22202097                 2
- #  2        x    x_catB  catB 1.142159e-05 0.99166241                 2
- #  3        z         z clean 2.376018e-01 0.13176020                 0
- #  4        z   z_isBAD isBAD 2.960654e-01 0.09248399                 0
- #  5        x  x_lev_NA   lev 2.960654e-01 0.09248399                 0
- #  6        x x_lev_x_a   lev 1.300057e-01 0.26490379                 0
- #  7        x x_lev_x_b   lev 6.067337e-03 0.80967242                 0
-
-# help("prepare")
-
-dTrainCTreated <- prepare(treatmentsC, dTrainC, pruneSig=1.0, scale=TRUE)
- #  Warning in prepare.treatmentplan(treatmentsC, dTrainC, pruneSig = 1, scale =
- #  TRUE): possibly called prepare() on same data frame as designTreatments*()/
- #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
- #  mkCrossFrame*Experiment$crossFrame.
-varsC <- setdiff(colnames(dTrainCTreated), 'y')
-# all input variables should be mean 0
-sapply(dTrainCTreated[, varsC, drop=FALSE], mean)
- #         x_catP        x_catB             z       z_isBAD      x_lev_NA 
- #   2.537498e-16 -1.268826e-16  6.336166e-17  2.536414e-16 -2.537653e-16 
- #      x_lev_x_a     x_lev_x_b 
- #  -6.345680e-17  1.189718e-17
-# all non NA slopes should be 1
-sapply(varsC, function(c) { lm(paste('y', c, sep='~'),
-   data=dTrainCTreated)$coefficients[[2]]})
- #      x_catP     x_catB          z    z_isBAD   x_lev_NA  x_lev_x_a  x_lev_x_b 
- #  0.23254609 0.05841932 0.16062145 0.03162633 0.03162633 0.23254609 0.24663035
-dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=c(), scale=TRUE)
-print(dTestCTreated)
- #        x_catP    x_catB         z   z_isBAD  x_lev_NA  x_lev_x_a  x_lev_x_b
- #  1 -1.0238626 -3.248380  7.437329 -5.420438 -5.420438 -1.0238626  0.1158472
- #  2  0.7678969 -2.550396 18.374578 -5.420438 -5.420438  0.7678969 -0.2896179
- #  3  3.4555361 -2.260694 29.311827 -5.420438 -5.420438  0.7678969  0.1158472
- #  4  0.7678969  7.422967  0.000000 13.551095 13.551095  0.7678969  0.1158472
 ```
+
+A small categorical example.
+
+``` r
+# categorical example
+set.seed(23525)
+
+# we set up our raw training and application data
+dTrainC <- data.frame(
+  x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, NA, 6, NA),
+  y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
+
+dTestC <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsC
+# and dTrainCTreated
+unpack[
+  treatmentsC = treatments,
+  dTrainCTreated = crossFrame
+  ] <- mkCrossFrameCExperiment(
+  dframe = dTrainC,
+  varlist = setdiff(colnames(dTrainC), 'y'),
+  outcomename = 'y',
+  outcometarget = TRUE,
+  verbose = FALSE)
+
+# the treatments include a score fram relating new
+# derived variables to original columns
+treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+  knitr::kable(.)
+```
+
+| origName | varName      | code  |       rsq |       sig | extraModelDegrees |
+| :------- | :----------- | :---- | --------: | --------: | ----------------: |
+| x        | x\_catP      | catP  | 0.1669568 | 0.2064389 |                 2 |
+| x        | x\_catB      | catB  | 0.2547883 | 0.1185814 |                 2 |
+| z        | z            | clean | 0.2376018 | 0.1317602 |                 0 |
+| z        | z\_isBAD     | isBAD | 0.2960654 | 0.0924840 |                 0 |
+| x        | x\_lev\_NA   | lev   | 0.2960654 | 0.0924840 |                 0 |
+| x        | x\_lev\_x\_a | lev   | 0.1300057 | 0.2649038 |                 0 |
+| x        | x\_lev\_x\_b | lev   | 0.0060673 | 0.8096724 |                 0 |
+
+``` r
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainCTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+| x\_catP |      x\_catB | z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | y     |
+| ------: | -----------: | -: | -------: | ---------: | -----------: | -----------: | :---- |
+|    0.50 |    0.0000000 | 1 |        0 |          0 |            1 |            0 | FALSE |
+|    0.40 |  \-0.4054484 | 2 |        0 |          0 |            1 |            0 | FALSE |
+|    0.40 | \-10.3089860 | 3 |        0 |          0 |            1 |            0 | TRUE  |
+|    0.20 |    8.8049919 | 4 |        0 |          0 |            0 |            1 | FALSE |
+|    0.25 |  \-9.2104404 | 3 |        1 |          0 |            0 |            1 | TRUE  |
+|    0.25 |    9.2104404 | 6 |        0 |          1 |            0 |            0 | TRUE  |
+
+``` r
+
+# Any future application data is prepared with
+# the prepare method.
+dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+
+dTestCTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+|   x\_catP |     x\_catB |    z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b |
+| --------: | ----------: | ---: | -------: | ---------: | -----------: | -----------: |
+| 0.4285714 | \-0.9807709 | 10.0 |        0 |          0 |            1 |            0 |
+| 0.2857143 | \-0.2876737 | 20.0 |        0 |          0 |            0 |            1 |
+| 0.0714286 |   0.0000000 | 30.0 |        0 |          0 |            0 |            0 |
+| 0.2857143 |   9.6158638 |  3.2 |        1 |          1 |            0 |            0 |
+
+A small numeric example.
 
 ``` r
 # numeric example
-dTrainN <- data.frame(x=c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
-   z=c(1, 2, 3, 4, 5, NA, 7, NA), y=c(0, 0, 0, 1, 0, 1, 1, 1))
-dTestN <- data.frame(x=c('a', 'b', 'c', NA), z=c(10, 20, 30, NA))
-# help("designTreatmentsN")
-treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
-                                verbose=FALSE)
-print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
- #    origName   varName  code          rsq       sig extraModelDegrees
- #  1        x    x_catP  catP 7.174888e-02 0.5212691                 2
- #  2        x    x_catN  catN 1.950163e-03 0.9173064                 2
- #  3        x    x_catD  catD 3.743113e-01 0.1069707                 2
- #  4        z         z clean 2.880952e-01 0.1701892                 0
- #  5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
- #  6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
- #  7        x x_lev_x_a   lev 2.500000e-01 0.2070312                 0
- #  8        x x_lev_x_b   lev 1.110223e-16 1.0000000                 0
-dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig=1.0, scale=TRUE)
- #  Warning in prepare.treatmentplan(treatmentsN, dTrainN, pruneSig = 1, scale =
- #  TRUE): possibly called prepare() on same data frame as designTreatments*()/
- #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
- #  mkCrossFrame*Experiment$crossFrame.
-varsN <- setdiff(colnames(dTrainNTreated), 'y')
-# all input variables should be mean 0
-sapply(dTrainNTreated[, varsN, drop=FALSE], mean) 
- #         x_catP        x_catN        x_catD             z       z_isBAD 
- #   2.775558e-17  0.000000e+00 -2.775558e-17  4.857226e-17  6.938894e-18 
- #       x_lev_NA     x_lev_x_a     x_lev_x_b 
- #   6.938894e-18  0.000000e+00  7.703720e-34
-# all non NA slopes should be 1
-sapply(varsN, function(c) { lm(paste('y', c, sep='~'),
-   data=dTrainNTreated)$coefficients[[2]]}) 
- #     x_catP    x_catN    x_catD         z   z_isBAD  x_lev_NA x_lev_x_a x_lev_x_b 
- #          1         1         1         1         1         1         1         1
-dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=c(), scale=TRUE)
-print(dTestNTreated)
- #    x_catP x_catN      x_catD         z    z_isBAD   x_lev_NA x_lev_x_a
- #  1 -0.250  -0.25 -0.06743804 0.9952381 -0.1666667 -0.1666667     -0.25
- #  2  0.250   0.00 -0.25818161 2.5666667 -0.1666667 -0.1666667      0.25
- #  3  0.625   0.00 -0.25818161 4.1380952 -0.1666667 -0.1666667      0.25
- #  4  0.250   0.50  0.39305768 0.0000000  0.5000000  0.5000000      0.25
- #        x_lev_x_b
- #  1 -2.266233e-17
- #  2  6.798700e-17
- #  3 -2.266233e-17
- #  4 -2.266233e-17
+set.seed(23525)
 
-# for large data sets you can consider designing the treatments on 
-# a subset like: d[sample(1:dim(d)[[1]], 1000), ]
+# we set up our raw training and application data
+dTrainN <- data.frame(
+  x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+  y = c(0, 0, 0, 1, 0, 1, 1, 1))
 
-# One can also use treatment plans as pipe targets.
-dTrainN %.>% 
-  treatmentsN %.>% 
+dTestN <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsN
+# and dTrainNTreated
+unpack[
+  treatmentsN = treatments,
+  dTrainNTreated = crossFrame
+  ] <- mkCrossFrameNExperiment(
+  dframe = dTrainN,
+  varlist = setdiff(colnames(dTrainN), 'y'),
+  outcomename = 'y',
+  verbose = FALSE)
+
+# the treatments include a score fram relating new
+# derived variables to original columns
+treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
   knitr::kable(.)
- #  Warning in prepare.treatmentplan(pipe_right_arg, pipe_left_arg):
- #  possibly called prepare() on same data frame as designTreatments*()/
- #  mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
- #  mkCrossFrame*Experiment$crossFrame.
 ```
 
-| x\_catP | x\_catN |   x\_catD |        z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | y |
-| ------: | ------: | --------: | -------: | -------: | ---------: | -----------: | -----------: | -: |
-|    0.50 |  \-0.25 | 0.5000000 | 1.000000 |        0 |          0 |            1 |            0 | 0 |
-|    0.50 |  \-0.25 | 0.5000000 | 2.000000 |        0 |          0 |            1 |            0 | 0 |
-|    0.50 |  \-0.25 | 0.5000000 | 3.000000 |        0 |          0 |            1 |            0 | 0 |
-|    0.50 |  \-0.25 | 0.5000000 | 4.000000 |        0 |          0 |            1 |            0 | 1 |
-|    0.25 |    0.00 | 0.7071068 | 5.000000 |        0 |          0 |            0 |            1 | 0 |
-|    0.25 |    0.00 | 0.7071068 | 3.666667 |        1 |          0 |            0 |            1 | 1 |
-|    0.25 |    0.50 | 0.0000000 | 7.000000 |        0 |          1 |            0 |            0 | 1 |
-|    0.25 |    0.50 | 0.0000000 | 3.666667 |        1 |          1 |            0 |            0 | 1 |
+| origName | varName      | code  |       rsq |       sig | extraModelDegrees |
+| :------- | :----------- | :---- | --------: | --------: | ----------------: |
+| x        | x\_catP      | catP  | 0.4047085 | 0.0899406 |                 2 |
+| x        | x\_catN      | catN  | 0.2822908 | 0.1753958 |                 2 |
+| x        | x\_catD      | catD  | 0.0209693 | 0.7322571 |                 2 |
+| z        | z            | clean | 0.2880952 | 0.1701892 |                 0 |
+| z        | z\_isBAD     | isBAD | 0.3333333 | 0.1339746 |                 0 |
+| x        | x\_lev\_NA   | lev   | 0.3333333 | 0.1339746 |                 0 |
+| x        | x\_lev\_x\_a | lev   | 0.2500000 | 0.2070312 |                 0 |
+| x        | x\_lev\_x\_b | lev   | 0.0000000 | 1.0000000 |                 0 |
+
+``` r
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainNTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+|     x\_catN |   x\_catD | z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | x\_catP | y |
+| ----------: | --------: | -: | -------: | ---------: | -----------: | -----------: | ------: | -: |
+| \-0.2666667 | 0.5000000 | 1 |        0 |          0 |            1 |            0 |     0.6 | 0 |
+| \-0.5000000 | 0.0000000 | 2 |        0 |          0 |            1 |            0 |     0.5 | 0 |
+| \-0.0666667 | 0.5000000 | 3 |        0 |          0 |            1 |            0 |     0.6 | 0 |
+| \-0.5000000 | 0.0000000 | 4 |        0 |          0 |            1 |            0 |     0.5 | 1 |
+|   0.4000000 | 0.7071068 | 5 |        0 |          0 |            0 |            1 |     0.2 | 0 |
+| \-0.4000000 | 0.7071068 | 3 |        1 |          0 |            0 |            1 |     0.2 | 1 |
+
+``` r
+
+# Any future application data is prepared with
+# the prepare method.
+dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=NULL)
+
+dTestNTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+| x\_catP | x\_catN |   x\_catD |         z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b |
+| ------: | ------: | --------: | --------: | -------: | ---------: | -----------: | -----------: |
+|  0.5000 |  \-0.25 | 0.5000000 | 10.000000 |        0 |          0 |            1 |            0 |
+|  0.2500 |    0.00 | 0.7071068 | 20.000000 |        0 |          0 |            0 |            1 |
+|  0.0625 |    0.00 | 0.7071068 | 30.000000 |        0 |          0 |            0 |            0 |
+|  0.2500 |    0.50 | 0.0000000 |  3.666667 |        1 |          1 |            0 |            0 |
 
 Related work:
 

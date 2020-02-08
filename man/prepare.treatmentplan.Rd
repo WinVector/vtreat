@@ -62,31 +62,53 @@ vtreat that produced the plan differs from the version running \code{prepare()}.
 }
 \examples{
 
-dTrainN <- data.frame(x= c('a','a','a','a','b','b','b'),
-                      z= c(1,2,3,4,5,6,7),
-                      y= c(0,0,0,1,0,1,1))
-dTestN <- data.frame(x= c('a','b','c',NA),
-                     z= c(10,20,30,NA))
-treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN), 'y')
-dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig= 0.2)
-dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig= 0.2)
+# categorical example
+set.seed(23525)
 
-dTrainC <- data.frame(x= c('a','a','a','b','b','b'),
-                      z= c(1,2,3,4,5,6),
-                      y= c(FALSE,FALSE,TRUE,FALSE,TRUE,TRUE))
-dTestC <- data.frame(x= c('a','b','c',NA),
-                     z= c(10,20,30,NA))
-treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC),'y',TRUE)
-dTrainCTreated <- prepare(treatmentsC, dTrainC)
-dTestCTreated <- prepare(treatmentsC, dTestC)
+# we set up our raw training and application data
+dTrainC <- data.frame(
+  x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, NA, 6, NA),
+  y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
 
-dTrainZ <- data.frame(x= c('a','a','a','b','b','b'),
-                      z= c(1,2,3,4,5,6))
-dTestZ <- data.frame(x= c('a','b','c',NA),
-                     z= c(10,20,30,NA))
-treatmentsZ <- designTreatmentsZ(dTrainZ, colnames(dTrainZ))
-dTrainZTreated <- prepare(treatmentsZ, dTrainZ, codeRestriction= c('lev'))
-dTestZTreated <- prepare(treatmentsZ, dTestZ, codeRestriction= c('lev'))
+dTestC <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsC
+# and dTrainCTreated
+unpack[
+  treatmentsC = treatments,
+  dTrainCTreated = crossFrame
+  ] <- mkCrossFrameCExperiment(
+    dframe = dTrainC,
+    varlist = setdiff(colnames(dTrainC), 'y'),
+    outcomename = 'y',
+    outcometarget = TRUE,
+    verbose = FALSE)
+
+# the treatments include a score fram relating new
+# derived variables to original columns
+treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] \%.>\%
+  print(.)
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainCTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
+
+# Any future application data is prepared with
+# the prepare method.
+dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+
+dTestCTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
 
 }
 \seealso{

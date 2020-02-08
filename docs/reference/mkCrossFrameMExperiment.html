@@ -289,11 +289,103 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list(cross_frame, treatments_0, treatments_m)</p>
+    <p>a names list containing cross_frame, treat_m, score_frame, and fit_obj_id</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='prepare.multinomial_plan.html'>prepare.multinomial_plan</a></code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+
+<span class='co'># numeric example</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>23525</span>)
+
+<span class='co'># we set up our raw training and application data</span>
+<span class='no'>dTrainM</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+  <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'b'</span>, <span class='st'>'b'</span>, <span class='fl'>NA</span>, <span class='fl'>NA</span>),
+  <span class='kw'>z</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>NA</span>, <span class='fl'>7</span>, <span class='fl'>NA</span>),
+  <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>1</span>))
+
+<span class='no'>dTestM</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+  <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>, <span class='st'>'b'</span>, <span class='st'>'c'</span>, <span class='fl'>NA</span>),
+  <span class='kw'>z</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>20</span>, <span class='fl'>30</span>, <span class='fl'>NA</span>))
+
+<span class='co'># we perform a vtreat cross frame experiment</span>
+<span class='co'># and unpack the results into treatmentsM,</span>
+<span class='co'># dTrainMTreated, and score_frame</span>
+<span class='no'>unpack</span>[
+  <span class='kw'>treatmentsM</span> <span class='kw'>=</span> <span class='no'>treat_m</span>,
+  <span class='kw'>dTrainMTreated</span> <span class='kw'>=</span> <span class='no'>cross_frame</span>,
+  <span class='kw'>score_frame</span> <span class='kw'>=</span> <span class='no'>score_frame</span>
+  ] <span class='kw'>&lt;-</span> <span class='fu'>mkCrossFrameMExperiment</span>(
+    <span class='kw'>dframe</span> <span class='kw'>=</span> <span class='no'>dTrainM</span>,
+    <span class='kw'>varlist</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sets.html'>setdiff</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainM</span>), <span class='st'>'y'</span>),
+    <span class='kw'>outcomename</span> <span class='kw'>=</span> <span class='st'>'y'</span>,
+    <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># the score_frame relates new</span>
+<span class='co'># derived variables to original columns</span>
+<span class='no'>score_frame</span>[, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'origName'</span>, <span class='st'>'varName'</span>, <span class='st'>'code'</span>, <span class='st'>'rsq'</span>, <span class='st'>'sig'</span>, <span class='st'>'outcome_level'</span>)] <span class='kw'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>.</span>)</div><div class='output co'>#&gt;    origName   varName  code         rsq        sig outcome_level
+#&gt; 1         x    x_catP  catP 0.188721876 0.14797596             0
+#&gt; 2         x  x_lev_NA   lev 0.311278121 0.06316822             0
+#&gt; 3         x x_lev_x_a   lev 0.188721876 0.14797596             0
+#&gt; 4         x x_lev_x_b   lev 0.000000000 1.00000000             0
+#&gt; 5         z         z clean 0.247063496 0.09786343             0
+#&gt; 6         z   z_isBAD isBAD 0.311278121 0.06316822             0
+#&gt; 7         x    x_catP  catP 0.051124479 0.46195519             1
+#&gt; 8         x  x_lev_NA   lev 0.016462246 0.67635930             1
+#&gt; 9         x x_lev_x_a   lev 0.051124479 0.46195519             1
+#&gt; 10        x x_lev_x_b   lev 0.016462246 0.67635930             1
+#&gt; 11        z         z clean 0.001915229 0.88677805             1
+#&gt; 12        z   z_isBAD isBAD 0.489208457 0.02287099             1
+#&gt; 13        x    x_catP  catP 0.253742459 0.21616627             2
+#&gt; 14        x  x_lev_NA   lev 0.540072931 0.07117407             2
+#&gt; 15        x x_lev_x_a   lev 0.253742459 0.21616627             2
+#&gt; 16        x x_lev_x_b   lev 0.103111281 0.43045776             2
+#&gt; 17        z         z clean 1.000000000 0.01407811             2
+#&gt; 18        z   z_isBAD isBAD 0.103111281 0.43045776             2
+#&gt; 19        x X0_x_catB  catB 0.001226957 0.90713685             0
+#&gt; 20        x X1_x_catB  catB 0.013810388 0.70220993             1
+#&gt; 21        x X2_x_catB  catB 0.540072932 0.07117407             2</div><div class='input'>
+<span class='co'># the treated frame is a "cross frame" which</span>
+<span class='co'># is a transform of the training data built </span>
+<span class='co'># as if the treatment were learned on a different</span>
+<span class='co'># disjoint training set to avoid nested model</span>
+<span class='co'># bias and over-fit.</span>
+<span class='no'>dTrainMTreated</span> <span class='kw'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>.</span>) <span class='kw'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>.</span>)</div><div class='output co'>#&gt;   x_catP        z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b X0_x_catB  X1_x_catB
+#&gt; 1   0.50 1.000000       0        0         1         0 0.2876487 -0.2876487
+#&gt; 2   0.50 2.000000       0        0         1         0 1.0985456 -0.2876487
+#&gt; 3   0.50 3.000000       0        0         1         0 9.9035376 -9.2104154
+#&gt; 4   0.50 4.000000       0        0         1         0 9.9035376 -9.2104154
+#&gt; 5   0.25 5.000000       0        0         0         1 0.0000000  0.0000000
+#&gt; 6   0.25 3.666667       1        0         0         1 0.0000000  0.0000000
+#&gt;   X2_x_catB y
+#&gt; 1 -8.650835 0
+#&gt; 2 -8.922767 0
+#&gt; 3 -8.294180 0
+#&gt; 4 -8.294180 1
+#&gt; 5  0.000000 0
+#&gt; 6  0.000000 1</div><div class='input'>
+<span class='co'># Any future application data is prepared with</span>
+<span class='co'># the prepare method.</span>
+<span class='no'>dTestMTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsM</span>, <span class='no'>dTestM</span>, <span class='kw'>pruneSig</span><span class='kw'>=</span><span class='kw'>NULL</span>)
+
+<span class='no'>dTestMTreated</span> <span class='kw'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>.</span>) <span class='kw'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>.</span>)</div><div class='output co'>#&gt;   x_catP         z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b X0_x_catB  X1_x_catB
+#&gt; 1 0.5000 10.000000       0        0         1         0  1.098546 -0.5877333
+#&gt; 2 0.2500 20.000000       0        0         0         1  0.000000  0.5108123
+#&gt; 3 0.0625 30.000000       0        0         0         0  0.000000  0.0000000
+#&gt; 4 0.2500  3.666667       1        1         0         0 -9.903538  0.5108123
+#&gt;   X2_x_catB
+#&gt; 1 -8.650835
+#&gt; 2 -7.957713
+#&gt; 3  0.000000
+#&gt; 4  1.945824</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -301,6 +393,7 @@
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

@@ -76,7 +76,7 @@ Function to design variable treatments for binary prediction of a
 numeric outcome.  Data frame is assumed to have only atomic columns
 except for dates (which are converted to numeric).
 Note: each column is processed independently of all others. 
-Note: re-encoding high cardinality
+Note: re-encoding high cardinality on training data
 categorical variables can introduce undesirable nested model bias, for such data consider
 using \code{\link{mkCrossFrameNExperiment}}.
 }
@@ -98,7 +98,6 @@ dTrainN <- data.frame(x=c('a','a','a','a','b','b','b'),
 dTestN <- data.frame(x=c('a','b','c',NA),
     z=c(10,20,30,NA))
 treatmentsN = designTreatmentsN(dTrainN,colnames(dTrainN),'y')
-dTrainNTreated <- prepare(treatmentsN,dTrainN,pruneSig=0.99)
 dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=0.99)
 
 }

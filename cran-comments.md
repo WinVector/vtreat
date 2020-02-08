@@ -4,7 +4,7 @@
 ### OSX
 
     R CMD check --as-cran vtreat_1.5.2.tar.gz 
-    * using R version 3.6.0 (2019-04-26)
+    * using R version 3.6.2 (2019-12-12)
     * using platform: x86_64-apple-darwin15.6.0 (64-bit)
     * using session charset: UTF-8
     * using option ‘--as-cran’
@@ -14,7 +14,6 @@
     * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
     Maintainer: ‘John Mount <jmount@win-vector.com>’
     Status: OK
-
 
 ### Windows
 

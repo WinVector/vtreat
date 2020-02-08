@@ -75,7 +75,7 @@ mkCrossFrameNExperiment(
 \item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \value{
-treatment plan (for use with prepare)
+named list containing: treatments, crossFrame, crossWeights, method, and evalSets
 }
 \description{
 Builds a \code{\link{designTreatmentsN}} treatment plan and a data frame prepared 
@@ -86,22 +86,52 @@ into calibration, training, test sets.
 }
 \examples{
 
+# numeric example
 set.seed(23525)
-zip <- paste('z',1:100)
-N <- 200
-d <- data.frame(zip=sample(zip,N,replace=TRUE),
-                zip2=sample(zip,N,replace=TRUE),
-                y=runif(N))
-del <- runif(length(zip))
-names(del) <- zip
-d$y <- d$y + del[d$zip2]
-d$yc <- d$y>=mean(d$y)
-cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
-   rareCount=2,rareSig=0.9)
-cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
-cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
-treatments <- cN$treatments
-dTrainV <- cN$crossFrame
+
+# we set up our raw training and application data
+dTrainN <- data.frame(
+  x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+  y = c(0, 0, 0, 1, 0, 1, 1, 1))
+
+dTestN <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsN
+# and dTrainNTreated
+unpack[
+  treatmentsN = treatments,
+  dTrainNTreated = crossFrame
+  ] <- mkCrossFrameNExperiment(
+    dframe = dTrainN,
+    varlist = setdiff(colnames(dTrainN), 'y'),
+    outcomename = 'y',
+    verbose = FALSE)
+
+# the treatments include a score fram relating new
+# derived variables to original columns
+treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] \%.>\%
+  print(.)
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainNTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
+
+# Any future application data is prepared with
+# the prepare method.
+dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=NULL)
+
+dTestNTreated \%.>\%
+  head(.) \%.>\%
+  print(.)
 
 }
 \seealso{

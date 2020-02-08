@@ -296,6 +296,7 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
 - #' - sig : an estimate significance of effect</p>
 <p>See the vtreat vignette for a bit more detail and a worked example.</p>
 <p>Columns that do not vary are not passed through.</p>
+<p>Note: re-encoding high cardinality on training data can introduce nested model bias, consider using <code>mkCrossFrameCExperiment</code> instead.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='prepare.treatmentplan.html'>prepare.treatmentplan</a></code>, <code><a href='designTreatmentsN.html'>designTreatmentsN</a></code>, <code><a href='designTreatmentsZ.html'>designTreatmentsZ</a></code>, <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></code></p></div>
@@ -307,11 +308,11 @@ using <code><a href='mkCrossFrameCExperiment.html'>mkCrossFrameCExperiment</a></
    <span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>))
 <span class='no'>dTestC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.5.2 inspecting inputs Sat Feb  8 08:59:50 2020"
-#&gt; [1] "designing treatments Sat Feb  8 08:59:50 2020"
-#&gt; [1] " have initial level statistics Sat Feb  8 08:59:50 2020"
-#&gt; [1] " scoring treatments Sat Feb  8 08:59:50 2020"
-#&gt; [1] "have treatment plan Sat Feb  8 08:59:50 2020"</div><div class='input'><span class='no'>dTrainCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTrainC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='input'><span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
+<span class='no'>treatmentsC</span> <span class='kw'>&lt;-</span> <span class='fu'>designTreatmentsC</span>(<span class='no'>dTrainC</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainC</span>),<span class='st'>'y'</span>,<span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.5.2 inspecting inputs Sat Feb  8 09:47:22 2020"
+#&gt; [1] "designing treatments Sat Feb  8 09:47:22 2020"
+#&gt; [1] " have initial level statistics Sat Feb  8 09:47:22 2020"
+#&gt; [1] " scoring treatments Sat Feb  8 09:47:22 2020"
+#&gt; [1] "have treatment plan Sat Feb  8 09:47:22 2020"</div><div class='input'><span class='no'>dTestCTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsC</span>,<span class='no'>dTestC</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
