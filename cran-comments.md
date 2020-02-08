@@ -19,6 +19,8 @@
 
      rhub::check_for_cran()
      GhostScript NOTE is a property of the test environment, not of the package.
+     
+     devtools::check_win_devel()
 
 ## Downstream dependencies
 

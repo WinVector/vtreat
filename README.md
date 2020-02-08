@@ -61,7 +61,7 @@ The preparation commands are organized as follows:
     [`Python` multinomial classification
     example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
-In all cases: variable preperation is intended to be a “one liner.”
+In all cases: variable preparation is intended to be a “one liner.”
 
 These current revisions of the examples are designed to be small, yet
 complete. So as a set they have some overlap, but the user can rely
@@ -358,7 +358,7 @@ unpack[
   outcometarget = TRUE,
   verbose = FALSE)
 
-# the treatments include a score fram relating new
+# the treatments include a score frame relating new
 # derived variables to original columns
 treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
   knitr::kable(.)
@@ -441,7 +441,7 @@ unpack[
   outcomename = 'y',
   verbose = FALSE)
 
-# the treatments include a score fram relating new
+# the treatments include a score frame relating new
 # derived variables to original columns
 treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
   knitr::kable(.)

@@ -118,7 +118,7 @@ unpack[
     outcometarget = TRUE,
     verbose = FALSE)
 
-# the treatments include a score fram relating new
+# the treatments include a score frame relating new
 # derived variables to original columns
 treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] \%.>\%
   print(.)
