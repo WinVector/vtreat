@@ -8,7 +8,7 @@ designTreatmentsC(
   dframe,
   varlist,
   outcomename,
-  outcometarget,
+  outcometarget = TRUE,
   ...,
   weights = c(),
   minFraction = 0.02,

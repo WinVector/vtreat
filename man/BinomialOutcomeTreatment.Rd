@@ -8,7 +8,7 @@ BinomialOutcomeTreatment(
   ...,
   var_list,
   outcome_name,
-  outcome_target,
+  outcome_target = TRUE,
   cols_to_copy = NULL,
   params = NULL,
   imputation_map = NULL
@@ -19,7 +19,7 @@ BinomialOutcomeTreatment(
 
 \item{var_list}{Names of columns to treat (effective variables).}
 
-\item{outcome_name}{Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite non-missing values.}
+\item{outcome_name}{Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite and non-missing values.}
 
 \item{outcome_target}{Value/level of outcome to be considered "success",  and there must be a cut such that \code{dframe[[outcomename]]==outcometarget} at least twice and dframe[[outcomename]]!=outcometarget at least twice.}
 

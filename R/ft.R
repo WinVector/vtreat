@@ -71,7 +71,7 @@ classification_parameters <- function(user_params = NULL) {
 #' 
 #' @param ... not used, force arguments to be specified by name.
 #' @param var_list Names of columns to treat (effective variables).
-#' @param outcome_name Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite non-missing values.
+#' @param outcome_name Name of column holding outcome variable. \code{dframe[[outcomename]]} must be only finite and non-missing values.
 #' @param outcome_target Value/level of outcome to be considered "success",  and there must be a cut such that \code{dframe[[outcomename]]==outcometarget} at least twice and dframe[[outcomename]]!=outcometarget at least twice.
 #' @param cols_to_copy list of extra columns to copy.
 #' @param params parameters list from \code{classification_parameters}
@@ -83,13 +83,22 @@ classification_parameters <- function(user_params = NULL) {
 BinomialOutcomeTreatment <- function(...,
                                      var_list,
                                      outcome_name, 
-                                     outcome_target,
+                                     outcome_target = TRUE,
                                      cols_to_copy = NULL,
                                      params = NULL,
                                      imputation_map = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::BinomialOutcomeTreatment")
   if((!is.null(params)) && (!('classification_parameters' %in% class(params)))) {
     stop("vtreat::BinomialOutcomeTreatment expected class classification_parameters")
+  }
+  if(missing(outcome_name)) {
+    stop("vtreat::BinomialOutcomeTreatment outcome_name is required")
+  }
+  if(!is.character(outcome_name)) {
+    stop("vtreat::BinomialOutcomeTreatment outcome_name must be character class")
+  }
+  if(length(outcome_name) != 1) {
+    stop("vtreat::BinomialOutcomeTreatment outcome_name must be length 1")
   }
   params <- classification_parameters(params)
   var_list <- setdiff(var_list, c(outcome_name, cols_to_copy))
@@ -321,6 +330,15 @@ NumericOutcomeTreatment <- function(...,
   if((!is.null(params)) && (!('regression_parameters' %in% class(params)))) {
     stop("vtreat::NumericOutcomeTreatment expected class regression_parameters")
   }
+  if(missing(outcome_name)) {
+    stop("vtreat::NumericOutcomeTreatment outcome_name is required")
+  }
+  if(!is.character(outcome_name)) {
+    stop("vtreat::NumericOutcomeTreatment outcome_name must be character class")
+  }
+  if(length(outcome_name) != 1) {
+    stop("vtreat::NumericOutcomeTreatment outcome_name must be length 1")
+  }
   params <- regression_parameters(params)
   var_list <- setdiff(var_list, c(outcome_name, cols_to_copy))
   settings <- list(
@@ -542,6 +560,15 @@ MultinomialOutcomeTreatment <- function(...,
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::MultinomialOutcomeTreatment")
   if((!is.null(params)) && (!('multinomial_parameters' %in% class(params)))) {
     stop("vtreat::MultinomialOutcomeTreatment expected class multinomial_parameters")
+  }
+  if(missing(outcome_name)) {
+    stop("vtreat::MultinomialOutcomeTreatment outcome_name is required")
+  }
+  if(!is.character(outcome_name)) {
+    stop("vtreat::MultinomialOutcomeTreatment outcome_name must be character class")
+  }
+  if(length(outcome_name) != 1) {
+    stop("vtreat::MultinomialOutcomeTreatment outcome_name must be length 1")
   }
   params <- multinomial_parameters(params)
   var_list <- setdiff(var_list, c(outcome_name, cols_to_copy))

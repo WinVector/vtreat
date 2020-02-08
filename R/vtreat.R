@@ -163,7 +163,7 @@ print.treatmentplan <- function(x, ...) {
 #' 
 #' @export
 designTreatmentsC <- function(dframe,varlist,
-                              outcomename,outcometarget,
+                              outcomename, outcometarget = TRUE,
                               ...,
                               weights=c(),
                               minFraction=0.02,smFactor=0.0,

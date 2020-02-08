@@ -163,7 +163,7 @@
   <span class='no'>...</span>,
   <span class='no'>var_list</span>,
   <span class='no'>outcome_name</span>,
-  <span class='no'>outcome_target</span>,
+  <span class='kw'>outcome_target</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>cols_to_copy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
@@ -182,7 +182,7 @@
     </tr>
     <tr>
       <th>outcome_name</th>
-      <td><p>Name of column holding outcome variable. <code>dframe[[outcomename]]</code> must be only finite non-missing values.</p></td>
+      <td><p>Name of column holding outcome variable. <code>dframe[[outcomename]]</code> must be only finite and non-missing values.</p></td>
     </tr>
     <tr>
       <th>outcome_target</th>

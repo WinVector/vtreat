@@ -115,7 +115,7 @@
       <h1>vtreat package</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-02-01</h4>
+            <h4 class="date">2020-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreat.Rmd"><code>vignettes/vtreat.Rmd</code></a></small>
       <div class="hidden name"><code>vtreat.Rmd</code></div>
@@ -240,8 +240,8 @@
 <a class="sourceLine" id="cb5-10" data-line-number="10">                                 <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb5-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsC<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code         rsq        sig extraModelDegrees
-## 1        x    x_catP  catP 0.111456141 0.30194137                 2
-## 2        x    x_catB  catB 0.115273608 0.29380616                 2
+## 1        x    x_catP  catP 0.285095342 0.09874390                 2
+## 2        x    x_catB  catB 0.117443640 0.28930668                 2
 ## 3        z         z clean 0.237601767 0.13176020                 0
 ## 4        z   z_isBAD isBAD 0.296065432 0.09248399                 0
 ## 5        x  x_lev_NA   lev 0.296065432 0.09248399                 0
@@ -282,9 +282,9 @@
 <a class="sourceLine" id="cb15-7" data-line-number="7">                                <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb15-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(treatmentsN<span class="op">$</span>scoreFrame[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)])</a></code></pre></div>
 <pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 7.352941e-02 0.5159425                 2
-## 2        x    x_catN  catN 1.458257e-03 0.9284687                 2
-## 3        x    x_catD  catD 1.816349e-01 0.2923907                 2
+## 1        x    x_catP  catP 1.304740e-01 0.3793327                 2
+## 2        x    x_catN  catN 2.616674e-01 0.1950536                 2
+## 3        x    x_catD  catD 9.705853e-02 0.4525551                 2
 ## 4        z         z clean 2.880952e-01 0.1701892                 0
 ## 5        z   z_isBAD isBAD 3.333333e-01 0.1339746                 0
 ## 6        x  x_lev_NA   lev 3.333333e-01 0.1339746                 0
