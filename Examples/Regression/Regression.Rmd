@@ -89,18 +89,20 @@ Now that we have the data, we want to treat it prior to modeling: we want traini
 First create the data treatment transform object, in this case a treatment for a regression problem.
 
 ```{r}
-transform_design = vtreat::mkCrossFrameNExperiment(
+unpack[
+  transform = treatments,
+  d_prepared = crossFrame
+  ] <- vtreat::mkCrossFrameNExperiment(
     dframe = d,                              # data to learn transform from
     varlist = setdiff(colnames(d), c('y')),  # columns to transform
     outcomename = 'y'                        # outcome variable
-)
-transform <- transform_design$treatments
-d_prepared <- transform_design$crossFrame
+  )
+
 score_frame <- transform$scoreFrame
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
+Note that for the training data `d`: `crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
 For other, later data, not seen during transform design `transform.preprare(o)` is an appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
@@ -301,17 +303,18 @@ in other words, you only want to use variables of types (`clean`, `is_BAD`, and 
 
 
 ```{r}
-transform_design_thin = vtreat::mkCrossFrameNExperiment(
+unpack[
+  transform_thin = treatments,
+  d_prepared_thin = crossFrame
+  ] <- vtreat::mkCrossFrameNExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'y_centered')),  # columns to transform
     outcomename = 'y',                             # outcome variable
     codeRestriction = c('lev',                     # transforms we want
                         'clean',
                         'isBAD')
-)
+  )
 
-transform_thin <- transform_design_thin$treatments
-d_prepared_thin <- transform_design_thin$crossFrame
 score_frame_thin <- transform_thin$scoreFrame
 
 d_prepared_thin %.>%

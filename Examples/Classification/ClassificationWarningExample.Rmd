@@ -65,14 +65,16 @@ First create the data treatment transform design object, in this case a treatmen
 We use the training data `training_data` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
 ```{r}
-transform_design = vtreat::mkCrossFrameCExperiment(
+unpack[
+  transform = treatments,
+  train_prepared = crossFrame
+  ] <- vtreat::mkCrossFrameCExperiment(
     dframe = training_data,                                    # data to learn transform from
     varlist = setdiff(colnames(training_data), c('y', 'yc')),  # columns to transform
     outcomename = 'yc',                            # outcome variable
-    outcometarget = TRUE                           # outcome of interest
-)
-transform <- transform_design$treatments
-train_prepared <- transform_design$crossFrame
+    outcometarget = TRUE,                          # outcome of interest
+    verbose = FALSE
+  )
 ```
 
 `train_prepared` is prepared in the correct way to use the same training data for inferring the impact-coded variables, using the returned `$crossFrame` from `mkCrossFrameCExperiment()`.

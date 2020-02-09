@@ -24,6 +24,8 @@ Load modules/packages.
 library(rqdatatable)
 ```
 
+    ## Loading required package: wrapr
+
     ## Loading required package: rquery
 
 ``` r
@@ -31,7 +33,7 @@ library(vtreat)
 packageVersion('vtreat')
 ```
 
-    ## [1] '1.5.1'
+    ## [1] '1.5.2'
 
 ``` r
 suppressPackageStartupMessages(library(ggplot2))
@@ -526,11 +528,11 @@ d %.>%
   knitr::kable(.)
 ```
 
-|          rsq | count |       sig | var |
-| -----------: | ----: | --------: | :-- |
-| 0.0005756197 |     2 | 1.0000000 | x   |
-| 0.0026074775 |     3 | 0.6000248 | x2  |
-| 0.7883476986 |     2 | 0.0000000 | xc  |
+|       rsq | count |       sig | var |
+| --------: | ----: | --------: | :-- |
+| 0.0005756 |     2 | 1.0000000 | x   |
+| 0.0026075 |     3 | 0.6000248 | x2  |
+| 0.7883477 |     2 | 0.0000000 | xc  |
 
 More on non-linear variable scoring can be found
 [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).

@@ -80,18 +80,20 @@ First create the data treatment transform design object, in this case a treatmen
 We use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
 ```{r}
-transform_design = vtreat::mkCrossFrameMExperiment(
+unpack[
+  transform = treat_m,
+  d_prepared = cross_frame,
+  score_frame = score_frame
+  ] <- vtreat::mkCrossFrameMExperiment(
     d,                                    # data to learn transform from
     setdiff(colnames(d), c('y', 'yc')),   # columns to transform
     'yc'                                  # outcome variable
-)
-transform <- transform_design$treat_m
-d_prepared <- transform_design$cross_frame
-score_frame <- transform_design$score_frame
+  )
+
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
+Note that for the training data `d`: `crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
 For other, later data, not seen during transform design `transform.preprare(o)` is an appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
@@ -272,17 +274,19 @@ In this example, suppose you only want to use indicators and continuous variable
 in other words, you only want to use variables of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and no `catB` or `prevalence_code` variables.
 
 ```{r}
-transform_design_thin = vtreat::mkCrossFrameMExperiment(
+unpack[
+  transform_thin = treat_m,
+  d_prepared_thin = cross_frame,
+  score_frame_thin = score_frame
+  ] <- vtreat::mkCrossFrameMExperiment(
     d,                                    # data to learn transform from
     setdiff(colnames(d), c('y', 'yc')),   # columns to transform
     'yc',                                 # outcome variable
     codeRestriction = c('lev',            # transforms we want
                         'clean',
                         'isBAD')
-)
-transform_thin <- transform_design_thin$treat_m
-d_prepared_thin <- transform_design_thin$cross_frame
-score_frame_thin <- transform_design_thin$score_frame
+  )
+
 score_frame_thin$recommended <- score_frame_thin$varMoves & (score_frame_thin$sig < 1/nrow(score_frame))
 
 

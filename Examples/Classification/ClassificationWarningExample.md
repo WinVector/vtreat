@@ -29,11 +29,15 @@ Load modules/packages.
 # For this example we want vtreat version 1.5.1 or newer
 # remotes::install_github("WinVector/vtreat")
 library(vtreat)
+```
 
+    ## Loading required package: wrapr
+
+``` r
 packageVersion("vtreat")
 ```
 
-    ## [1] '1.5.1'
+    ## [1] '1.5.2'
 
 Generate example data.
 
@@ -65,14 +69,14 @@ training_data %.>%
   knitr::kable(.)
 ```
 
-|          x |           y | xc         |          x2 | yc    |
-| ---------: | ----------: | :--------- | ----------: | :---- |
-| \-3.697856 |   0.6142224 | level\_0.5 |   0.3607324 | TRUE  |
-| \-4.169991 |   0.8109925 | level\_1   |   2.6907725 | TRUE  |
-| \-1.928503 | \-1.0334506 | NA         | \-1.5121338 | FALSE |
-|         NA | \-0.9426745 | NA         |   0.3373455 | FALSE |
-|         NA | \-1.1088176 | NA         | \-1.0859602 | FALSE |
-|         NA | \-0.9670602 | NA         | \-0.7261317 | FALSE |
+|           x |           y | xc          |          x2 | yc    |
+| ----------: | ----------: | :---------- | ----------: | :---- |
+|  \-6.300502 | \-0.0911132 | level\_0    |   1.0734620 | FALSE |
+| \-12.806083 | \-0.1674592 | level\_0    | \-0.2927048 | FALSE |
+|  \-2.549028 | \-0.5319978 | level\_-0.5 |   1.1928938 | FALSE |
+|          NA | \-0.4529765 | level\_-0.5 | \-0.9187256 | FALSE |
+|          NA |   0.7733011 | level\_1    | \-0.6650483 | TRUE  |
+|          NA |   0.4012471 | level\_0.5  |   1.7981758 | FALSE |
 
 ## Demonstrate the Warning
 
@@ -88,21 +92,16 @@ return a treated training set: completely numeric, with no missing
 values.
 
 ``` r
-transform_design = vtreat::mkCrossFrameCExperiment(
+unpack[
+  transform = treatments,
+  train_prepared = crossFrame
+  ] <- vtreat::mkCrossFrameCExperiment(
     dframe = training_data,                                    # data to learn transform from
     varlist = setdiff(colnames(training_data), c('y', 'yc')),  # columns to transform
     outcomename = 'yc',                            # outcome variable
-    outcometarget = TRUE                           # outcome of interest
-)
-```
-
-    ## [1] "vtreat 1.5.1 start initial treatment design Sat Jan 11 09:46:07 2020"
-    ## [1] " start cross frame work Sat Jan 11 09:46:08 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Jan 11 09:46:08 2020"
-
-``` r
-transform <- transform_design$treatments
-train_prepared <- transform_design$crossFrame
+    outcometarget = TRUE,                          # outcome of interest
+    verbose = FALSE
+  )
 ```
 
 `train_prepared` is prepared in the correct way to use the same training

@@ -22,10 +22,15 @@ Load modules/packages.
 
 ``` r
 library(vtreat)
+```
+
+    ## Loading required package: wrapr
+
+``` r
 packageVersion('vtreat')
 ```
 
-    ## [1] '1.5.1'
+    ## [1] '1.5.2'
 
 ``` r
 suppressPackageStartupMessages(library(ggplot2))

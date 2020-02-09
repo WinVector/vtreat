@@ -19,6 +19,8 @@ Load modules/packages.
 library(rqdatatable)
 ```
 
+    ## Loading required package: wrapr
+
     ## Loading required package: rquery
 
 ``` r
@@ -26,7 +28,7 @@ library(vtreat)
 packageVersion('vtreat')
 ```
 
-    ## [1] '1.5.1'
+    ## [1] '1.5.2'
 
 ``` r
 suppressPackageStartupMessages(library(ggplot2))
@@ -130,30 +132,31 @@ We use the training data `d` to fit the transform and the return a
 treated training set: completely numeric, with no missing values.
 
 ``` r
-transform_design = vtreat::mkCrossFrameCExperiment(
+unpack[
+  transform <- treatments,
+  d_prepared <- crossFrame
+  ] <- vtreat::mkCrossFrameCExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
     outcomename = 'yc',                            # outcome variable
     outcometarget = TRUE                           # outcome of interest
-)
+  )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Tue Jan 14 09:52:46 2020"
-    ## [1] " start cross frame work Tue Jan 14 09:52:47 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Jan 14 09:52:47 2020"
+    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 15:31:48 2020"
+    ## [1] " start cross frame work Sun Feb  9 15:31:48 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sun Feb  9 15:31:49 2020"
 
 ``` r
-transform <- transform_design$treatments
-d_prepared <- transform_design$crossFrame
 score_frame <- transform$scoreFrame
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is
-**not** the same as `prepare(transform, d)`; the second call can lead to
-nested model bias in some situations, and is **not** recommended. For
-other, later data, not seen during transform design
-`transform.preprare(o)` is an appropriate step.
+Note that for the training data `d`: `crossFrame` is **not** the same as
+`prepare(transform, d)`; the second call can lead to nested model bias
+in some situations, and is **not** recommended. For other, later data,
+not seen during transform design `transform.preprare(o)` is an
+appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the
 incorrect transform pattern on your original training
@@ -486,7 +489,8 @@ help("mkCrossFrameCExperiment")
     ## 
     ## Value:
     ## 
-    ##      list with treatments and crossFrame
+    ##      named list containing: treatments, crossFrame, crossWeights,
+    ##      method, and evalSets
     ## 
     ## See Also:
     ## 
@@ -494,22 +498,53 @@ help("mkCrossFrameCExperiment")
     ## 
     ## Examples:
     ## 
+    ##      # categorical example
     ##      set.seed(23525)
-    ##      zip <- paste('z',1:100)
-    ##      N <- 200
-    ##      d <- data.frame(zip=sample(zip,N,replace=TRUE),
-    ##                      zip2=sample(zip,20,replace=TRUE),
-    ##                      y=runif(N))
-    ##      del <- runif(length(zip))
-    ##      names(del) <- zip
-    ##      d$y <- d$y + del[d$zip2]
-    ##      d$yc <- d$y>=mean(d$y)
-    ##      cC <- mkCrossFrameCExperiment(d,c('zip','zip2'),'yc',TRUE,
-    ##        rareCount=2,rareSig=0.9)
-    ##      cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip_catB)  # poor
-    ##      cor(as.numeric(cC$crossFrame$yc),cC$crossFrame$zip2_catB) # better
-    ##      treatments <- cC$treatments
-    ##      dTrainV <- cC$crossFrame
+    ##      
+    ##      # we set up our raw training and application data
+    ##      dTrainC <- data.frame(
+    ##        x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+    ##        z = c(1, 2, 3, 4, NA, 6, NA),
+    ##        y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
+    ##      
+    ##      dTestC <- data.frame(
+    ##        x = c('a', 'b', 'c', NA), 
+    ##        z = c(10, 20, 30, NA))
+    ##      
+    ##      # we perform a vtreat cross frame experiment
+    ##      # and unpack the results into treatmentsC
+    ##      # and dTrainCTreated
+    ##      unpack[
+    ##        treatmentsC = treatments,
+    ##        dTrainCTreated = crossFrame
+    ##        ] <- mkCrossFrameCExperiment(
+    ##          dframe = dTrainC,
+    ##          varlist = setdiff(colnames(dTrainC), 'y'),
+    ##          outcomename = 'y',
+    ##          outcometarget = TRUE,
+    ##          verbose = FALSE)
+    ##      
+    ##      # the treatments include a score frame relating new
+    ##      # derived variables to original columns
+    ##      treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+    ##        print(.)
+    ##      
+    ##      # the treated frame is a "cross frame" which
+    ##      # is a transform of the training data built 
+    ##      # as if the treatment were learned on a different
+    ##      # disjoint training set to avoid nested model
+    ##      # bias and over-fit.
+    ##      dTrainCTreated %.>%
+    ##        head(.) %.>%
+    ##        print(.)
+    ##      
+    ##      # Any future application data is prepared with
+    ##      # the prepare method.
+    ##      dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+    ##      
+    ##      dTestCTreated %.>%
+    ##        head(.) %.>%
+    ##        print(.)
 
 Some parameters of note include:
 
@@ -563,7 +598,10 @@ of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and
 no `catB` or `prevalence_code` variables.
 
 ``` r
-transform_design_thin = vtreat::mkCrossFrameCExperiment(
+unpack[
+  transform_thin = treatments,
+  d_prepared_thin = crossFrame
+  ] <- vtreat::mkCrossFrameCExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
     outcomename = 'yc',                            # outcome variable
@@ -571,16 +609,14 @@ transform_design_thin = vtreat::mkCrossFrameCExperiment(
     codeRestriction = c('lev',                     # transforms we want
                         'clean',
                         'isBAD')
-)
+  )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Tue Jan 14 09:52:50 2020"
-    ## [1] " start cross frame work Tue Jan 14 09:52:50 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Jan 14 09:52:50 2020"
+    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 15:31:54 2020"
+    ## [1] " start cross frame work Sun Feb  9 15:31:54 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sun Feb  9 15:31:55 2020"
 
 ``` r
-transform_thin <- transform_design_thin$treatments
-d_prepared_thin <- transform_design_thin$crossFrame
 score_frame_thin <- transform_thin$scoreFrame
 
 d_prepared_thin %.>%
@@ -650,11 +686,11 @@ d %.>%
   knitr::kable(.)
 ```
 
-|          rsq | count |       sig | var |
-| -----------: | ----: | --------: | :-- |
-| 0.0005756197 |     2 | 1.0000000 | x   |
-| 0.0026074775 |     3 | 0.6000248 | x2  |
-| 0.7875856509 |     2 | 0.0000000 | xc  |
+|       rsq | count |       sig | var |
+| --------: | ----: | --------: | :-- |
+| 0.0005756 |     2 | 1.0000000 | x   |
+| 0.0026075 |     3 | 0.6000248 | x2  |
+| 0.7875857 |     2 | 0.0000000 | xc  |
 
 More on non-linear variable scoring can be found
 [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).

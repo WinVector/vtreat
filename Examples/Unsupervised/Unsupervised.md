@@ -17,10 +17,15 @@ Load modules/packages.
 
 ``` r
 library(vtreat)
+```
+
+    ## Loading required package: wrapr
+
+``` r
 packageVersion('vtreat')
 ```
 
-    ## [1] '1.5.1'
+    ## [1] '1.5.2'
 
 ``` r
 suppressPackageStartupMessages(library(ggplot2))
@@ -134,11 +139,11 @@ transform = vtreat::designTreatmentsZ(
 )
 ```
 
-    ## [1] "vtreat 1.5.1 inspecting inputs Tue Jan 14 09:53:54 2020"
-    ## [1] "designing treatments Tue Jan 14 09:53:54 2020"
-    ## [1] " have initial level statistics Tue Jan 14 09:53:54 2020"
-    ## [1] " scoring treatments Tue Jan 14 09:53:54 2020"
-    ## [1] "have treatment plan Tue Jan 14 09:53:54 2020"
+    ## [1] "vtreat 1.5.2 inspecting inputs Sun Feb  9 15:36:15 2020"
+    ## [1] "designing treatments Sun Feb  9 15:36:15 2020"
+    ## [1] " have initial level statistics Sun Feb  9 15:36:15 2020"
+    ## [1] " scoring treatments Sun Feb  9 15:36:15 2020"
+    ## [1] "have treatment plan Sun Feb  9 15:36:15 2020"
 
 ``` r
 score_frame = transform$scoreFrame
@@ -398,11 +403,11 @@ transform_thin = vtreat::designTreatmentsZ(
     codeRestriction = c('clean', 'lev', 'isBAD'))
 ```
 
-    ## [1] "vtreat 1.5.1 inspecting inputs Tue Jan 14 09:53:57 2020"
-    ## [1] "designing treatments Tue Jan 14 09:53:57 2020"
-    ## [1] " have initial level statistics Tue Jan 14 09:53:57 2020"
-    ## [1] " scoring treatments Tue Jan 14 09:53:57 2020"
-    ## [1] "have treatment plan Tue Jan 14 09:53:57 2020"
+    ## [1] "vtreat 1.5.2 inspecting inputs Sun Feb  9 15:36:18 2020"
+    ## [1] "designing treatments Sun Feb  9 15:36:18 2020"
+    ## [1] " have initial level statistics Sun Feb  9 15:36:18 2020"
+    ## [1] " scoring treatments Sun Feb  9 15:36:18 2020"
+    ## [1] "have treatment plan Sun Feb  9 15:36:18 2020"
 
 ``` r
 score_frame_thin = transform_thin$scoreFrame

@@ -124,22 +124,24 @@ We use the training data `d` to fit the transform and the return a
 treated training set: completely numeric, with no missing values.
 
 ``` r
-transform_design = vtreat::mkCrossFrameMExperiment(
+unpack[
+  transform = treat_m,
+  d_prepared = cross_frame,
+  score_frame = score_frame
+  ] <- vtreat::mkCrossFrameMExperiment(
     d,                                    # data to learn transform from
     setdiff(colnames(d), c('y', 'yc')),   # columns to transform
     'yc'                                  # outcome variable
-)
-transform <- transform_design$treat_m
-d_prepared <- transform_design$cross_frame
-score_frame <- transform_design$score_frame
+  )
+
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is
-**not** the same as `prepare(transform, d)`; the second call can lead to
-nested model bias in some situations, and is **not** recommended. For
-other, later data, not seen during transform design
-`transform.preprare(o)` is an appropriate step.
+Note that for the training data `d`: `crossFrame` is **not** the same as
+`prepare(transform, d)`; the second call can lead to nested model bias
+in some situations, and is **not** recommended. For other, later data,
+not seen during transform design `transform.preprare(o)` is an
+appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the
 incorrect transform pattern on your original training
@@ -285,6 +287,10 @@ library(glmnet)
 
     ## 
     ## Attaching package: 'Matrix'
+
+    ## The following object is masked _by_ '.GlobalEnv':
+    ## 
+    ##     unpack
 
     ## The following object is masked from 'package:wrapr':
     ## 
@@ -520,11 +526,62 @@ help("mkCrossFrameMExperiment")
     ## 
     ## Value:
     ## 
-    ##      list(cross_frame, treatments_0, treatments_m)
+    ##      a names list containing cross_frame, treat_m, score_frame, and
+    ##      fit_obj_id
     ## 
     ## See Also:
     ## 
     ##      'prepare.multinomial_plan'
+    ## 
+    ## Examples:
+    ## 
+    ##      # numeric example
+    ##      set.seed(23525)
+    ##      
+    ##      # we set up our raw training and application data
+    ##      dTrainM <- data.frame(
+    ##        x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+    ##        z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+    ##        y = c(0, 0, 0, 1, 0, 1, 2, 1))
+    ##      
+    ##      dTestM <- data.frame(
+    ##        x = c('a', 'b', 'c', NA), 
+    ##        z = c(10, 20, 30, NA))
+    ##      
+    ##      # we perform a vtreat cross frame experiment
+    ##      # and unpack the results into treatmentsM,
+    ##      # dTrainMTreated, and score_frame
+    ##      unpack[
+    ##        treatmentsM = treat_m,
+    ##        dTrainMTreated = cross_frame,
+    ##        score_frame = score_frame
+    ##        ] <- mkCrossFrameMExperiment(
+    ##          dframe = dTrainM,
+    ##          varlist = setdiff(colnames(dTrainM), 'y'),
+    ##          outcomename = 'y',
+    ##          verbose = FALSE)
+    ##      
+    ##      # the score_frame relates new
+    ##      # derived variables to original columns
+    ##      score_frame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'outcome_level')] %.>%
+    ##        print(.)
+    ##      
+    ##      # the treated frame is a "cross frame" which
+    ##      # is a transform of the training data built 
+    ##      # as if the treatment were learned on a different
+    ##      # disjoint training set to avoid nested model
+    ##      # bias and over-fit.
+    ##      dTrainMTreated %.>%
+    ##        head(.) %.>%
+    ##        print(.)
+    ##      
+    ##      # Any future application data is prepared with
+    ##      # the prepare method.
+    ##      dTestMTreated <- prepare(treatmentsM, dTestM, pruneSig=NULL)
+    ##      
+    ##      dTestMTreated %.>%
+    ##        head(.) %.>%
+    ##        print(.)
 
 Some parameters of note include:
 
@@ -578,17 +635,19 @@ of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and
 no `catB` or `prevalence_code` variables.
 
 ``` r
-transform_design_thin = vtreat::mkCrossFrameMExperiment(
+unpack[
+  transform_thin = treat_m,
+  d_prepared_thin = cross_frame,
+  score_frame_thin = score_frame
+  ] <- vtreat::mkCrossFrameMExperiment(
     d,                                    # data to learn transform from
     setdiff(colnames(d), c('y', 'yc')),   # columns to transform
     'yc',                                 # outcome variable
     codeRestriction = c('lev',            # transforms we want
                         'clean',
                         'isBAD')
-)
-transform_thin <- transform_design_thin$treat_m
-d_prepared_thin <- transform_design_thin$cross_frame
-score_frame_thin <- transform_design_thin$score_frame
+  )
+
 score_frame_thin$recommended <- score_frame_thin$varMoves & (score_frame_thin$sig < 1/nrow(score_frame))
 
 

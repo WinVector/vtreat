@@ -17,10 +17,15 @@ Load modules/packages.
 
 ``` r
 library(vtreat)
+```
+
+    ## Loading required package: wrapr
+
+``` r
 packageVersion('vtreat')
 ```
 
-    ## [1] '1.5.1'
+    ## [1] '1.5.2'
 
 ``` r
 suppressPackageStartupMessages(library(ggplot2))
@@ -130,29 +135,30 @@ First create the data treatment transform object, in this case a
 treatment for a regression problem.
 
 ``` r
-transform_design = vtreat::mkCrossFrameNExperiment(
+unpack[
+  transform = treatments,
+  d_prepared = crossFrame
+  ] <- vtreat::mkCrossFrameNExperiment(
     dframe = d,                              # data to learn transform from
     varlist = setdiff(colnames(d), c('y')),  # columns to transform
     outcomename = 'y'                        # outcome variable
-)
+  )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Tue Jan 14 09:53:06 2020"
-    ## [1] " start cross frame work Tue Jan 14 09:53:07 2020"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Jan 14 09:53:07 2020"
+    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 15:35:44 2020"
+    ## [1] " start cross frame work Sun Feb  9 15:35:44 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Feb  9 15:35:44 2020"
 
 ``` r
-transform <- transform_design$treatments
-d_prepared <- transform_design$crossFrame
 score_frame <- transform$scoreFrame
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is
-**not** the same as `prepare(transform, d)`; the second call can lead to
-nested model bias in some situations, and is **not** recommended. For
-other, later data, not seen during transform design
-`transform.preprare(o)` is an appropriate step.
+Note that for the training data `d`: `crossFrame` is **not** the same as
+`prepare(transform, d)`; the second call can lead to nested model bias
+in some situations, and is **not** recommended. For other, later data,
+not seen during transform design `transform.preprare(o)` is an
+appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the
 incorrect transform pattern on your original training
@@ -532,7 +538,8 @@ help("mkCrossFrameNExperiment")
     ## 
     ## Value:
     ## 
-    ##      treatment plan (for use with prepare)
+    ##      named list containing: treatments, crossFrame, crossWeights,
+    ##      method, and evalSets
     ## 
     ## See Also:
     ## 
@@ -540,22 +547,52 @@ help("mkCrossFrameNExperiment")
     ## 
     ## Examples:
     ## 
+    ##      # numeric example
     ##      set.seed(23525)
-    ##      zip <- paste('z',1:100)
-    ##      N <- 200
-    ##      d <- data.frame(zip=sample(zip,N,replace=TRUE),
-    ##                      zip2=sample(zip,N,replace=TRUE),
-    ##                      y=runif(N))
-    ##      del <- runif(length(zip))
-    ##      names(del) <- zip
-    ##      d$y <- d$y + del[d$zip2]
-    ##      d$yc <- d$y>=mean(d$y)
-    ##      cN <- mkCrossFrameNExperiment(d,c('zip','zip2'),'y',
-    ##         rareCount=2,rareSig=0.9)
-    ##      cor(cN$crossFrame$y,cN$crossFrame$zip_catN)  # poor
-    ##      cor(cN$crossFrame$y,cN$crossFrame$zip2_catN) # better
-    ##      treatments <- cN$treatments
-    ##      dTrainV <- cN$crossFrame
+    ##      
+    ##      # we set up our raw training and application data
+    ##      dTrainN <- data.frame(
+    ##        x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+    ##        z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+    ##        y = c(0, 0, 0, 1, 0, 1, 1, 1))
+    ##      
+    ##      dTestN <- data.frame(
+    ##        x = c('a', 'b', 'c', NA), 
+    ##        z = c(10, 20, 30, NA))
+    ##      
+    ##      # we perform a vtreat cross frame experiment
+    ##      # and unpack the results into treatmentsN
+    ##      # and dTrainNTreated
+    ##      unpack[
+    ##        treatmentsN = treatments,
+    ##        dTrainNTreated = crossFrame
+    ##        ] <- mkCrossFrameNExperiment(
+    ##          dframe = dTrainN,
+    ##          varlist = setdiff(colnames(dTrainN), 'y'),
+    ##          outcomename = 'y',
+    ##          verbose = FALSE)
+    ##      
+    ##      # the treatments include a score frame relating new
+    ##      # derived variables to original columns
+    ##      treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+    ##        print(.)
+    ##      
+    ##      # the treated frame is a "cross frame" which
+    ##      # is a transform of the training data built 
+    ##      # as if the treatment were learned on a different
+    ##      # disjoint training set to avoid nested model
+    ##      # bias and over-fit.
+    ##      dTrainNTreated %.>%
+    ##        head(.) %.>%
+    ##        print(.)
+    ##      
+    ##      # Any future application data is prepared with
+    ##      # the prepare method.
+    ##      dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=NULL)
+    ##      
+    ##      dTestNTreated %.>%
+    ##        head(.) %.>%
+    ##        print(.)
 
 Some parameters of note include:
 
@@ -612,23 +649,24 @@ of types (`clean`, `is_BAD`, and `lev`), and no `catN`, `deviance_code`,
 `catP`, or `catD` variables.
 
 ``` r
-transform_design_thin = vtreat::mkCrossFrameNExperiment(
+unpack[
+  transform_thin = treatments,
+  d_prepared_thin = crossFrame
+  ] <- vtreat::mkCrossFrameNExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'y_centered')),  # columns to transform
     outcomename = 'y',                             # outcome variable
     codeRestriction = c('lev',                     # transforms we want
                         'clean',
                         'isBAD')
-)
+  )
 ```
 
-    ## [1] "vtreat 1.5.1 start initial treatment design Tue Jan 14 09:53:11 2020"
-    ## [1] " start cross frame work Tue Jan 14 09:53:11 2020"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Tue Jan 14 09:53:11 2020"
+    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 15:35:48 2020"
+    ## [1] " start cross frame work Sun Feb  9 15:35:48 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Sun Feb  9 15:35:48 2020"
 
 ``` r
-transform_thin <- transform_design_thin$treatments
-d_prepared_thin <- transform_design_thin$crossFrame
 score_frame_thin <- transform_thin$scoreFrame
 
 d_prepared_thin %.>%

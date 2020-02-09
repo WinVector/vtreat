@@ -14,6 +14,8 @@ Here we create a simple data set where the inputs have missing values.
 library(vtreat)
 ```
 
+    ## Loading required package: wrapr
+
 ``` r
 d = data.frame(
     "x" = c(0, 1, 1000, NA),

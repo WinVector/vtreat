@@ -88,19 +88,20 @@ First create the data treatment transform design object, in this case a treatmen
 We use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
 ```{r}
-transform_design = vtreat::mkCrossFrameCExperiment(
+unpack[
+  transform <- treatments,
+  d_prepared <- crossFrame
+  ] <- vtreat::mkCrossFrameCExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
     outcomename = 'yc',                            # outcome variable
     outcometarget = TRUE                           # outcome of interest
-)
-transform <- transform_design$treatments
-d_prepared <- transform_design$crossFrame
+  )
 score_frame <- transform$scoreFrame
 score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
 
-Note that for the training data `d`: `transform_design$crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
+Note that for the training data `d`: `crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
 For other, later data, not seen during transform design `transform.preprare(o)` is an appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
@@ -273,7 +274,10 @@ In this example, suppose you only want to use indicators and continuous variable
 in other words, you only want to use variables of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and no `catB` or `prevalence_code` variables.
 
 ```{r}
-transform_design_thin = vtreat::mkCrossFrameCExperiment(
+unpack[
+  transform_thin = treatments,
+  d_prepared_thin = crossFrame
+  ] <- vtreat::mkCrossFrameCExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
     outcomename = 'yc',                            # outcome variable
@@ -281,10 +285,8 @@ transform_design_thin = vtreat::mkCrossFrameCExperiment(
     codeRestriction = c('lev',                     # transforms we want
                         'clean',
                         'isBAD')
-)
+  )
 
-transform_thin <- transform_design_thin$treatments
-d_prepared_thin <- transform_design_thin$crossFrame
 score_frame_thin <- transform_thin$scoreFrame
 
 d_prepared_thin %.>%
