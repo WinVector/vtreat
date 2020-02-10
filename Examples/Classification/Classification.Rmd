@@ -89,8 +89,8 @@ We use the training data `d` to fit the transform and the return a treated train
 
 ```{r}
 unpack[
-  transform <- treatments,
-  d_prepared <- crossFrame
+  transform = treatments,
+  d_prepared = crossFrame
   ] <- vtreat::mkCrossFrameCExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'yc')),  # columns to transform

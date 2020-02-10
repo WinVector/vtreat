@@ -133,8 +133,8 @@ treated training set: completely numeric, with no missing values.
 
 ``` r
 unpack[
-  transform <- treatments,
-  d_prepared <- crossFrame
+  transform = treatments,
+  d_prepared = crossFrame
   ] <- vtreat::mkCrossFrameCExperiment(
     dframe = d,                                    # data to learn transform from
     varlist = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
@@ -143,9 +143,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 15:31:48 2020"
-    ## [1] " start cross frame work Sun Feb  9 15:31:48 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sun Feb  9 15:31:49 2020"
+    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 16:47:03 2020"
+    ## [1] " start cross frame work Sun Feb  9 16:47:03 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sun Feb  9 16:47:03 2020"
 
 ``` r
 score_frame <- transform$scoreFrame
@@ -612,9 +612,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 15:31:54 2020"
-    ## [1] " start cross frame work Sun Feb  9 15:31:54 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sun Feb  9 15:31:55 2020"
+    ## [1] "vtreat 1.5.2 start initial treatment design Sun Feb  9 16:47:06 2020"
+    ## [1] " start cross frame work Sun Feb  9 16:47:06 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sun Feb  9 16:47:06 2020"
 
 ``` r
 score_frame_thin <- transform_thin$scoreFrame
