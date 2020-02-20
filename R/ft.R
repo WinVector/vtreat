@@ -218,7 +218,7 @@ BinomialOutcomeTreatment <- function(...,
     }
     return(res)
   }
-  score_frame <- function() {
+  get_score_frame <- function() {
     res <- get('score_frame', envir = settings$state, inherits = FALSE)
     return(res)
   }
@@ -239,7 +239,7 @@ BinomialOutcomeTreatment <- function(...,
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -247,8 +247,10 @@ BinomialOutcomeTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
+  obj$apply_transform = transform
   obj$fit_transform = fit_transform
-  obj$score_frame = score_frame
+  obj$score_frame = get_score_frame
+  obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
@@ -452,7 +454,7 @@ NumericOutcomeTreatment <- function(...,
     }
     return(res)
   }
-  score_frame <- function() {
+  get_score_frame <- function() {
     res <- get('score_frame', envir = settings$state, inherits = FALSE)
     return(res)
   }
@@ -473,7 +475,7 @@ NumericOutcomeTreatment <- function(...,
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -481,8 +483,10 @@ NumericOutcomeTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
+  obj$apply_transform = transform
   obj$fit_transform = fit_transform
-  obj$score_frame = score_frame
+  obj$score_frame = get_score_frame
+  obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
@@ -663,7 +667,7 @@ MultinomialOutcomeTreatment <- function(...,
     fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
     invisible(obj) # allow method chaining
   }
-  score_frame <- function() {
+  get_score_frame <- function() {
     res <- get('score_frame', envir = settings$state, inherits = FALSE)
     return(res)
   }
@@ -684,7 +688,7 @@ MultinomialOutcomeTreatment <- function(...,
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -692,8 +696,10 @@ MultinomialOutcomeTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
+  obj$apply_transform = transform
   obj$fit_transform = fit_transform
-  obj$score_frame = score_frame
+  obj$score_frame = get_score_frame
+  obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
@@ -830,7 +836,7 @@ UnsupervisedTreatment <- function(...,
     res <- transform(dframe = dframe, parallelCluster = parallelCluster)
     return(res)
   }
-  score_frame <- function() {
+  get_score_frame <- function() {
     res <- get('score_frame', envir = settings$state, inherits = FALSE)
     return(res)
   }
@@ -851,7 +857,7 @@ UnsupervisedTreatment <- function(...,
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -859,8 +865,10 @@ UnsupervisedTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
+  obj$apply_transform = transform
   obj$fit_transform = fit_transform
-  obj$score_frame = score_frame
+  obj$score_frame = get_score_frame
+  obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
   assign("obj", obj, envir = f_env)
@@ -899,6 +907,136 @@ apply_right.vtreat_pipe_step <- function(pipe_left_arg,
                                          pipe_string,
                                          right_arg_name) {
   pipe_right_arg$transform(pipe_left_arg)
+}
+
+
+#' Fit first arguemnt to data in second argument.
+#' 
+#' Update the state of first argument to have learned or fit from second argument.
+#' 
+#' @param vps vtreat pipe step, mutable object to fit to.
+#' @param dframe data.frame, data to fit from.
+#' @param ... not used, forces later arguments to bind by name.
+#' @param weights optional, per-dframe data weights.
+#' @param parallelCluster optional, parallel cluster to run on.
+#' @return vps
+#' 
+#' @export
+fit <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
+  UseMethod("fit")
+}
+
+#' @export
+fit.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit.vtreat_pipe_step")
+  vps$fit(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
+}
+
+
+#' Transform second argument by first.
+#' 
+#' Apply first argument to second as a transform.
+#' 
+#' @param vps vtreat pipe step, object defining transform.
+#' @param dframe data.frame, data to transform
+#' @param ... not used, forces later arguments to bind by name.
+#' @param parallelCluster optional, parallel cluster to run on.
+#' @return transformed dframe
+#' 
+#' @export
+apply_transform <- function(vps, dframe, ..., parallelCluster = NULL) {
+  # don't use transform name to stay out of base::transform's way.
+  UseMethod("apply_transform")
+}
+
+#' @export
+apply_transform.vtreat_pipe_step <- function(vps, dframe, ..., parallelCluster = NULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::apply_transform.vtreat_pipe_step")
+  vps$transform(dframe = dframe, parallelCluster = parallelCluster)
+}
+
+#' @export
+prepare.vtreat_pipe_step <- function(treatmentplan, dframe, ...) {
+  # vtreat prepare interface
+  treatmentplan$transform(dframe = dframe, ...)
+}
+
+
+#' Fit and transform in a cross-validated manner.
+#' 
+#' Update the state of first argument to have learned or fit from second argument, and compute a cross
+#' validated example of such a transform.
+#'
+#' @param vps vtreat pipe step, mutable object to fit to.
+#' @param dframe data.frame, data to fit from.
+#' @param ... not used, forces later arguments to bind by name.
+#' @param weights optional, per-dframe data weights.
+#' @param parallelCluster optional, parallel cluster to run on.
+#' @return transformed dframe
+#' 
+#' @export
+fit_transform <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
+  UseMethod("fit_transform")
+}
+
+#' @export
+fit_transform.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_transform.vtreat_pipe_step") 
+  vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
+}
+
+
+#' Return score frame from vps.
+#' 
+#' Return previously fit score frame.
+#' 
+#' @param vps vtreat pipe step, mutable object to read from.
+#' @return score frame
+#' 
+#' @export
+get_score_frame.vtreat_pipe_step <- function(vps) {
+  UseMethod("get_score_frame")
+}
+
+#' @export
+get_score_frame.vtreat_pipe_step <- function(vps) {
+  vps$get_score_frame()
+}
+
+
+#' Return underlying transform from vps.
+#' 
+#' Return previously fit transform.
+#' 
+#' @param vps vtreat pipe step, mutable object to read from.
+#' @return transform
+#' 
+#' @export
+get_transform.vtreat_pipe_step <- function(vps) {
+  UseMethod("get_transform")
+}
+
+#' @export
+get_transform.vtreat_pipe_step <- function(vps) {
+  vps$get_transform()
+}
+
+
+#' Return feasible feature names.
+#' 
+#' Return previously fit feature names.
+#' 
+#' @param vps vtreat pipe step, mutable object to read from.
+#' @return feature names
+#' 
+#' @export
+get_feature_names.vtreat_pipe_step <- function(vps) {
+  UseMethod("get_feature_names")
+}
+
+#' @export
+get_feature_names.vtreat_pipe_step <- function(vps) {
+  vps$get_feature_names()
 }
 
 

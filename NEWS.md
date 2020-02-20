@@ -1,4 +1,8 @@
 
+# vtreat 1.5.3 2020/02/19
+
+ * More S3 methods.
+
 # vtreat 1.5.2 2020/02/08
 
  * Control imputation on design_missingness_treatment.

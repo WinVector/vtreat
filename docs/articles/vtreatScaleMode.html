@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.3</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
       <h1>vtreat scale mode</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2020-02-08</h4>
+            <h4 class="date">2020-02-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatScaleMode.Rmd"><code>vignettes/vtreatScaleMode.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatScaleMode.Rmd</code></div>
@@ -194,12 +194,12 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <a class="sourceLine" id="cb13-17" data-line-number="17">slopeFrame<span class="op">$</span>badSlope &lt;-</a>
 <a class="sourceLine" id="cb13-18" data-line-number="18"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(slopeFrame<span class="op">$</span>slope), <span class="ot">TRUE</span>, <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(slopeFrame<span class="op">$</span>slope <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>.e<span class="dv">-8</span>)</a>
 <a class="sourceLine" id="cb13-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(slopeFrame)</a></code></pre></div>
-<pre><code>##     varName          mean slope       sig badSlope
-## 1    x_catP  1.850372e-17     1 0.3289524    FALSE
-## 2    x_catB  1.387779e-17     1 0.3161341    FALSE
-## 3  x_lev_NA -6.938894e-18     1 0.2076623    FALSE
-## 4 x_lev_x_a  0.000000e+00     1 0.4097258    FALSE
-## 5 x_lev_x_b  0.000000e+00    NA 1.0000000     TRUE</code></pre>
+<pre><code>##     varName          mean slope        sig badSlope
+## 1    x_catP  1.850372e-17     1 0.03392101    FALSE
+## 2    x_catB  1.387779e-17     1 1.00000000    FALSE
+## 3  x_lev_NA -6.938894e-18     1 0.20766228    FALSE
+## 4 x_lev_x_a  0.000000e+00     1 0.40972582    FALSE
+## 5 x_lev_x_b  0.000000e+00    NA 1.00000000     TRUE</code></pre>
 <p>The above claims are true with the exception of the derived variable <code>x_lev_x.b</code>. This is because the outcome variable <code>y</code> has identical distribution when the original variable <code>x==‘b’</code> and when <code>x!=‘b’</code> (on half the time in both cases). This means <code>y</code> is perfectly independent of <code>x==‘b’</code> and the regression slope must be zero (thus, cannot be 1). vtreat now treats this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance facts in <code>treatmentsC$scoreFrame</code> are about the un-scaled frame (where <code>x_lev_x.b</code> does in fact move).</p>
 <p>For a good discussion of the application of <em>y</em>-aware scaling to Principal Components Analysis please see <a href="http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/">here</a>.</p>
 <p>Previous versions of vtreat (0.5.22 and earlier) would copy variables that could not be sensibly scaled into the treated frame unaltered. This was considered the “most faithful” thing to do. However we now feel that this practice was not safe for many downstream procedures, such as principal components analysis and geometric clustering.</p>
@@ -276,9 +276,9 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <a class="sourceLine" id="cb27-7" data-line-number="7">cEraw &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(dTrainN,</a>
 <a class="sourceLine" id="cb27-8" data-line-number="8">                                         <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,</a>
 <a class="sourceLine" id="cb27-9" data-line-number="9">                                         <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.2 start initial treatment design Sat Feb  8 10:00:56 2020"
-## [1] " start cross frame work Sat Feb  8 10:00:56 2020"
-## [1] " vtreat::mkCrossFrameNExperiment done Sat Feb  8 10:00:56 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.3 start initial treatment design Wed Feb 19 16:29:00 2020"
+## [1] " start cross frame work Wed Feb 19 16:29:00 2020"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Feb 19 16:29:00 2020"</code></pre>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">newvars &lt;-<span class="st"> </span>cEraw<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName</a>
 <a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(newvars)</a></code></pre></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>
@@ -298,9 +298,9 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <a class="sourceLine" id="cb33-2" data-line-number="2">cEscaled &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(dTrainN,</a>
 <a class="sourceLine" id="cb33-3" data-line-number="3">                                            <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,</a>
 <a class="sourceLine" id="cb33-4" data-line-number="4">                                            <span class="dt">scale=</span><span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.5.2 start initial treatment design Sat Feb  8 10:00:56 2020"
-## [1] " start cross frame work Sat Feb  8 10:00:56 2020"
-## [1] " vtreat::mkCrossFrameNExperiment done Sat Feb  8 10:00:56 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.5.3 start initial treatment design Wed Feb 19 16:29:00 2020"
+## [1] " start cross frame work Wed Feb 19 16:29:00 2020"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Feb 19 16:29:00 2020"</code></pre>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">newvars_s &lt;-<span class="st"> </span>cEscaled<span class="op">$</span>treatments<span class="op">$</span>scoreFrame<span class="op">$</span>varName</a>
 <a class="sourceLine" id="cb35-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(newvars_s)</a></code></pre></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>
