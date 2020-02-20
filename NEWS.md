@@ -1,5 +1,5 @@
 
-# vtreat 1.5.3 2020/02/19
+# vtreat 1.6.0 2020/02/20
 
  * More S3 methods.
 

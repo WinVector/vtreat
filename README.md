@@ -309,7 +309,7 @@ We attach our packages.
 library("vtreat")
  #  Loading required package: wrapr
 packageVersion("vtreat")
- #  [1] '1.5.3'
+ #  [1] '1.6.0'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:

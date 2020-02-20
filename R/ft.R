@@ -234,12 +234,22 @@ BinomialOutcomeTreatment <- function(...,
     }
     return(sf$varName[want])
   }
+  fresh_copy <- function() {
+    BinomialOutcomeTreatment(
+      var_list = settings$var_list,
+      outcome_name = settings$outcome_name,
+      outcome_target = settings$outcome_target,
+      cols_to_copy = settings$cols_to_copy,
+      params = settings$params,
+      imputation_map = settings$imputation_map)
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "get_score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names",
+              "fresh_copy")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -253,6 +263,7 @@ BinomialOutcomeTreatment <- function(...,
   obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
+  obj$fresh_copy = fresh_copy
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -470,12 +481,21 @@ NumericOutcomeTreatment <- function(...,
     }
     return(sf$varName[want])
   }
+  fresh_copy <- function() {
+    NumericOutcomeTreatment(
+      var_list = settings$var_list,
+      outcome_name = settings$outcome_name,
+      cols_to_copy = settings$cols_to_copy,
+      params = settings$params,
+      imputation_map = settings$imputation_map)
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "get_score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names",
+              "fresh_copy")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -489,6 +509,7 @@ NumericOutcomeTreatment <- function(...,
   obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
+  obj$fresh_copy = fresh_copy
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -683,12 +704,21 @@ MultinomialOutcomeTreatment <- function(...,
     }
     return(unique(sf$varName[want]))
   }
+  fresh_copy <- function() {
+    MultinomialOutcomeTreatment(
+      var_list = settings$var_list,
+      outcome_name = settings$outcome_name,
+      cols_to_copy = settings$cols_to_copy,
+      params = settings$params,
+      imputation_map = settings$imputation_map)
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "get_score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names",
+              "fresh_copy")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -702,6 +732,7 @@ MultinomialOutcomeTreatment <- function(...,
   obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
+  obj$fresh_copy = fresh_copy
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -852,12 +883,20 @@ UnsupervisedTreatment <- function(...,
     }
     return(sf$varName[want])
   }
+  fresh_copy <- function() {
+    UnsupervisedTreatment(
+      var_list = settings$var_list,
+      cols_to_copy = settings$cols_to_copy,
+      params = settings$params,
+      imputation_map = settings$imputation_map)
+  }
   # get globalenv early on environment chain for seralization
   # See pseudo-SEXPTYPEs in https://cran.r-project.org/doc/manuals/r-release/R-ints.html
   f_env <- new.env(parent = globalenv())
   assign("settings", settings, envir = f_env)
   for(nm in c("fit", "transform", "fit_transform",
-              "get_score_frame", "get_transform", "get_feature_names")) {
+              "get_score_frame", "get_transform", "get_feature_names",
+              "fresh_copy")) {
     fi <- get(nm)
     environment(fi) <- f_env
     assign(nm, fi, envir = f_env)
@@ -871,6 +910,7 @@ UnsupervisedTreatment <- function(...,
   obj$get_score_frame = get_score_frame
   obj$get_transform = get_transform
   obj$get_feature_names = get_feature_names
+  obj$fresh_copy = fresh_copy
   assign("obj", obj, envir = f_env)
   return(obj)
 }
@@ -910,16 +950,22 @@ apply_right.vtreat_pipe_step <- function(pipe_left_arg,
 }
 
 
+
+# S3 interface, immutable to be more R-like
+
+
 #' Fit first arguemnt to data in second argument.
 #' 
 #' Update the state of first argument to have learned or fit from second argument.
 #' 
-#' @param vps vtreat pipe step, mutable object to fit to.
+#' Note: input vps is not altered, fit is in returned value.
+#' 
+#' @param vps vtreat pipe step, object specifying fit
 #' @param dframe data.frame, data to fit from.
 #' @param ... not used, forces later arguments to bind by name.
 #' @param weights optional, per-dframe data weights.
 #' @param parallelCluster optional, parallel cluster to run on.
-#' @return vps
+#' @return new fit object
 #' 
 #' @export
 fit <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -929,6 +975,7 @@ fit <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
 #' @export
 fit.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit.vtreat_pipe_step")
+  vps <- vps$fresh_copy()
   vps$fit(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
 }
 
@@ -966,13 +1013,15 @@ prepare.vtreat_pipe_step <- function(treatmentplan, dframe, ...) {
 #' 
 #' Update the state of first argument to have learned or fit from second argument, and compute a cross
 #' validated example of such a transform.
+#' 
+#' Note: input vps is not altered, fit is in returned list.
 #'
-#' @param vps vtreat pipe step, mutable object to fit to.
+#' @param vps vtreat pipe step, object specifying fit.
 #' @param dframe data.frame, data to fit from.
 #' @param ... not used, forces later arguments to bind by name.
 #' @param weights optional, per-dframe data weights.
 #' @param parallelCluster optional, parallel cluster to run on.
-#' @return transformed dframe
+#' @return @return named list containing: vtreat_pipe_step and cross_frame
 #' 
 #' @export
 fit_transform <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -982,7 +1031,9 @@ fit_transform <- function(vps, dframe, ..., weights = NULL, parallelCluster = NU
 #' @export
 fit_transform.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_transform.vtreat_pipe_step") 
-  vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
+  vps <- vps$fresh_copy()
+  cross_frame <- vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
+  list(vtreat_pipe_step = vps, cross_frame = cross_frame)
 }
 
 

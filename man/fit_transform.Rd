@@ -7,7 +7,7 @@
 fit_transform(vps, dframe, ..., weights = NULL, parallelCluster = NULL)
 }
 \arguments{
-\item{vps}{vtreat pipe step, mutable object to fit to.}
+\item{vps}{vtreat pipe step, object specifying fit.}
 
 \item{dframe}{data.frame, data to fit from.}
 
@@ -18,9 +18,12 @@ fit_transform(vps, dframe, ..., weights = NULL, parallelCluster = NULL)
 \item{parallelCluster}{optional, parallel cluster to run on.}
 }
 \value{
-transformed dframe
+@return named list containing: vtreat_pipe_step and cross_frame
 }
 \description{
 Update the state of first argument to have learned or fit from second argument, and compute a cross
 validated example of such a transform.
+}
+\details{
+Note: input vps is not altered, fit is in returned list.
 }

@@ -7,7 +7,7 @@
 fit(vps, dframe, ..., weights = NULL, parallelCluster = NULL)
 }
 \arguments{
-\item{vps}{vtreat pipe step, mutable object to fit to.}
+\item{vps}{vtreat pipe step, object specifying fit}
 
 \item{dframe}{data.frame, data to fit from.}
 
@@ -18,8 +18,11 @@ fit(vps, dframe, ..., weights = NULL, parallelCluster = NULL)
 \item{parallelCluster}{optional, parallel cluster to run on.}
 }
 \value{
-vps
+new fit object
 }
 \description{
 Update the state of first argument to have learned or fit from second argument.
+}
+\details{
+Note: input vps is not altered, fit is in returned value.
 }
