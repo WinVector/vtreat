@@ -257,7 +257,6 @@ BinomialOutcomeTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
-  obj$apply_transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = get_score_frame
   obj$get_score_frame = get_score_frame
@@ -503,7 +502,6 @@ NumericOutcomeTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
-  obj$apply_transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = get_score_frame
   obj$get_score_frame = get_score_frame
@@ -726,7 +724,6 @@ MultinomialOutcomeTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
-  obj$apply_transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = get_score_frame
   obj$get_score_frame = get_score_frame
@@ -904,7 +901,6 @@ UnsupervisedTreatment <- function(...,
   # build up result object
   obj$fit = fit
   obj$transform = transform
-  obj$apply_transform = transform
   obj$fit_transform = fit_transform
   obj$score_frame = get_score_frame
   obj$get_score_frame = get_score_frame
@@ -1031,6 +1027,34 @@ fit_transform <- function(vps, dframe, ..., weights = NULL, parallelCluster = NU
 #' @export
 fit_transform.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_transform.vtreat_pipe_step") 
+  vps <- vps$fresh_copy()
+  cross_frame <- vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
+  list(vtreat_pipe_step = vps, cross_frame = cross_frame)
+}
+
+
+#' Fit and prepare in a cross-validated manner.
+#' 
+#' Update the state of first argument to have learned or fit from second argument, and compute a cross
+#' validated example of such a transform.
+#' 
+#' Note: input vps is not altered, fit is in returned list.
+#'
+#' @param vps vtreat pipe step, object specifying fit.
+#' @param dframe data.frame, data to fit from.
+#' @param ... not used, forces later arguments to bind by name.
+#' @param weights optional, per-dframe data weights.
+#' @param parallelCluster optional, parallel cluster to run on.
+#' @return @return named list containing: vtreat_pipe_step and cross_frame
+#' 
+#' @export
+fit_prepare <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
+  UseMethod("fit_transform")
+}
+
+#' @export
+fit_prepare.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
+  wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_prepare.vtreat_pipe_step") 
   vps <- vps$fresh_copy()
   cross_frame <- vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
   list(vtreat_pipe_step = vps, cross_frame = cross_frame)
