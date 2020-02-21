@@ -360,19 +360,19 @@ unpack[
 
 # the treatments include a score frame relating new
 # derived variables to original columns
-treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees', 'recommended')] %.>%
   knitr::kable(.)
 ```
 
-| origName | varName      | code  |       rsq |       sig | extraModelDegrees |
-| :------- | :----------- | :---- | --------: | --------: | ----------------: |
-| x        | x\_catP      | catP  | 0.1669568 | 0.2064389 |                 2 |
-| x        | x\_catB      | catB  | 0.2547883 | 0.1185814 |                 2 |
-| z        | z            | clean | 0.2376018 | 0.1317602 |                 0 |
-| z        | z\_isBAD     | isBAD | 0.2960654 | 0.0924840 |                 0 |
-| x        | x\_lev\_NA   | lev   | 0.2960654 | 0.0924840 |                 0 |
-| x        | x\_lev\_x\_a | lev   | 0.1300057 | 0.2649038 |                 0 |
-| x        | x\_lev\_x\_b | lev   | 0.0060673 | 0.8096724 |                 0 |
+| origName | varName      | code  |       rsq |       sig | extraModelDegrees | recommended |
+| :------- | :----------- | :---- | --------: | --------: | ----------------: | :---------- |
+| x        | x\_catP      | catP  | 0.1669568 | 0.2064389 |                 2 | FALSE       |
+| x        | x\_catB      | catB  | 0.2547883 | 0.1185814 |                 2 | TRUE        |
+| z        | z            | clean | 0.2376018 | 0.1317602 |                 0 | TRUE        |
+| z        | z\_isBAD     | isBAD | 0.2960654 | 0.0924840 |                 0 | TRUE        |
+| x        | x\_lev\_NA   | lev   | 0.2960654 | 0.0924840 |                 0 | FALSE       |
+| x        | x\_lev\_x\_a | lev   | 0.1300057 | 0.2649038 |                 0 | FALSE       |
+| x        | x\_lev\_x\_b | lev   | 0.0060673 | 0.8096724 |                 0 | FALSE       |
 
 ``` r
 

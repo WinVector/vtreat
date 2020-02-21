@@ -3,44 +3,49 @@
 
 ### OSX
 
-    R CMD check --as-cran vtreat_1.5.2.tar.gz 
+    R CMD check --as-cran vtreat_1.6.0.tar.gz
     * using R version 3.6.2 (2019-12-12)
     * using platform: x86_64-apple-darwin15.6.0 (64-bit)
     * using session charset: UTF-8
     * using option ‘--as-cran’
     * checking for file ‘vtreat/DESCRIPTION’ ... OK
     * checking extension type ... Package
-    * this is package ‘vtreat’ version ‘1.5.2’
-    * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
+    * this is package ‘vtreat’ version ‘1.6.0’
+    * checking CRAN incoming feasibility ... NOTE
     Maintainer: ‘John Mount <jmount@win-vector.com>’
-    Status: OK
+    Number of updates in past 6 months: 7
+    Status: 1 NOTE
+
+### Windows
+
+    rhub::check_for_cran()
+ 715#> setting _R_CHECK_FORCE_SUGGESTS_ to false
+ 716#> setting R_COMPILE_AND_INSTALL_PACKAGES to never
+ 717#> setting R_REMOTES_STANDALONE to true
+ 718#> setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+ 719#> setting _R_CHECK_FORCE_SUGGESTS_ to true
+ 720#> setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+ 721#> * using log directory 'C:/Users/USERtgqFjUHpvO/vtreat.Rcheck'
+ 722#> * using R Under development (unstable) (2020-01-22 r77697)
+ 723#> * using platform: x86_64-w64-mingw32 (64-bit)
+ 724#> * using session charset: ISO8859-1
+ 725#> * using option '--as-cran'
+ 726#> * checking for file 'vtreat/DESCRIPTION' ... OK
+ 727#> * checking extension type ... Package
+ 728#> * this is package 'vtreat' version '1.6.0'
+ 729#> * checking CRAN incoming feasibility ... NOTE
+ 730#> Maintainer: 'John Mount '
+ 731#> Number of updates in past 6 months: 7
+ 743#> * checking for future file timestamps ... NOTE
+ 744#> unable to verify current time
+ 774#> * checking sizes of PDF files under 'inst/doc' ... NOTE
+ 775#> Unable to find GhostScript executable to run checks on size reduction
+ 790#> Status: 3 NOTEs
+ Ghostscript and time notes are a property of the testing facility, not of the package.
 
 ### Linux
 
-    3063#> About to run xvfb-run R CMD check --as-cran vtreat_1.5.2.tar.gz
-    3065#> * using R version 3.6.1 (2019-07-05)
-    3066#> * using platform: x86_64-pc-linux-gnu (64-bit)
-    3067#> * using session charset: UTF-8
-    3068#> * using option ‘--as-cran’
-    3069#> * checking for file ‘vtreat/DESCRIPTION’ ... OK
-    3070#> * checking extension type ... Package
-    3071#> * this is package ‘vtreat’ version ‘1.5.2’
-    3072#> * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
-    3073#> Maintainer: ‘John Mount ’
-    3129#> Status: OK
-    
-    5565#> About to run xvfb-run R CMD check --as-cran vtreat_1.5.2.tar.gz
-    5566#> * using log directory ‘/home/docker/vtreat.Rcheck’
-    5567#> * using R Under development (unstable) (2020-02-01 r77752)
-    5568#> * using platform: x86_64-pc-linux-gnu (64-bit)
-    5569#> * using session charset: UTF-8
-    5570#> * using option ‘--as-cran’
-    5571#> * checking for file ‘vtreat/DESCRIPTION’ ... OK
-    5572#> * checking extension type ... Package
-    5573#> * this is package ‘vtreat’ version ‘1.5.2’
-    5574#> * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
-    5575#> Maintainer: ‘John Mount ’
-    5633#> Status: OK
+    rhub::check_for_cran()
 
 
 ## Downstream dependencies

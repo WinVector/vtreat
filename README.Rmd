@@ -342,7 +342,7 @@ unpack[
 
 # the treatments include a score frame relating new
 # derived variables to original columns
-treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees', 'recommended')] %.>%
   knitr::kable(.)
 
 # the treated frame is a "cross frame" which

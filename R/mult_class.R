@@ -229,6 +229,9 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
                                 vars_forward_map = cfei$vars_forward_map_i,
                                 vars_reverse_map = cfei$vars_reverse_map_i)
                            })
+  sframe_0 <- augment_score_frame(sframe_0)  # get columns to match
+  score_frame <- rbind(sframe_0, score_frame)
+  score_frame <- augment_score_frame(score_frame)  # recompute augment on joined frame
   # return components
   treat_m <- list(
     y_l_names = y_l_names,
@@ -238,7 +241,7 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
   class(treat_m) <- "multinomial_plan"
   plan <- list(cross_frame = cross_frame,
                treat_m = treat_m,
-               score_frame = rbind(sframe_0, score_frame),
+               score_frame = score_frame,
                fit_obj_id = treat_m$fit_obj_id)
   plan
 }
