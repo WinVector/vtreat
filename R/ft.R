@@ -61,7 +61,7 @@ classification_parameters <- function(user_params = NULL) {
 
 #' Stateful object for designing and applying binomial outcome treatments.
 #' 
-#' Hold settings are results for binomial classification data preparation.
+#' Hold settings and results for binomial classification data preparation.
 #' 
 #' Please see
 #' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
@@ -314,7 +314,7 @@ regression_parameters <- function(user_params = NULL) {
 
 #' Stateful object for designing and applying numeric outcome treatments.
 #' 
-#' Hold settings are results for regression data preparation.
+#' Hold settings and results for regression data preparation.
 #' 
 #' Please see
 #' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
@@ -553,7 +553,7 @@ multinomial_parameters <- function(user_params = NULL) {
 
 #' Stateful object for designing and applying multinomial outcome treatments.
 #' 
-#' Hold settings are results for multinomial classification data preparation.
+#' Hold settings and results for multinomial classification data preparation.
 #' 
 #' Please see
 #' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
@@ -771,7 +771,7 @@ unsupervised_parameters <- function(user_params = NULL) {
 
 #' Stateful object for designing and applying unsupervised treatments.
 #' 
-#' Hold settings are results for unsupervised data preparation.
+#' Hold settings and results for unsupervised data preparation.
 #' 
 #' Please see
 #' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
@@ -927,10 +927,17 @@ as.character.vtreat_pipe_step <- function(x, ...) {
 #' @export
 print.vtreat_pipe_step <- function(x, ...) {
   print(format(x, ...))
-  sf <- x$score_frame()[, c('varName', 'origName', 'code', 'varMoves', 'rsq', 'sig')]
-  sf <- sf[order(sf$origName, sf$varName), , drop = FALSE]
-  rownames(sf) <- NULL
-  print(sf)
+  sf <- x$score_frame()
+  if(!is.null(sf)) {
+    cols <- c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees', 'recommended')
+    cols <- intersect(cols, colnames(sf))
+    sf <- sf[, cols, drop = FALSE]
+    if(!is.null(sf)) {
+      sf <- sf[order(sf$origName, sf$varName), , drop = FALSE]
+      rownames(sf) <- NULL
+      print(sf)
+    }
+  }
   invisible(x)
 }
 

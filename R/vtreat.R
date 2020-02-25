@@ -81,9 +81,10 @@ print.vtreatment <- function(x, ...) {
 
 #' @export
 format.treatmentplan <- function(x, ...) { 
+  sf <- x$scoreFrame
   cols <- c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees', 'recommended')
-  cols <- intersect(cols, colnames(x))
-  format(x$scoreFrame[ , 
+  cols <- intersect(cols, colnames(sf))
+  format(sf[ , 
                        cols, 
                        drop = FALSE])
 }
@@ -100,6 +101,7 @@ as.character.treatmentplan <- function (x, ...) {
 #' @seealso \code{\link{designTreatmentsC}}, \code{\link{designTreatmentsN}}, \code{\link{designTreatmentsZ}}, \code{\link{prepare.treatmentplan}}
 #' @export
 print.treatmentplan <- function(x, ...) { 
+  print(class(x))
   print(format(x), ...) 
 }
 
