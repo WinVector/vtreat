@@ -1069,7 +1069,7 @@ fit_prepare.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, paral
 #' @return score frame
 #' 
 #' @export
-get_score_frame.vtreat_pipe_step <- function(vps) {
+get_score_frame <- function(vps) {
   UseMethod("get_score_frame")
 }
 
@@ -1087,7 +1087,7 @@ get_score_frame.vtreat_pipe_step <- function(vps) {
 #' @return transform
 #' 
 #' @export
-get_transform.vtreat_pipe_step <- function(vps) {
+get_transform <- function(vps) {
   UseMethod("get_transform")
 }
 
@@ -1105,7 +1105,7 @@ get_transform.vtreat_pipe_step <- function(vps) {
 #' @return feature names
 #' 
 #' @export
-get_feature_names.vtreat_pipe_step <- function(vps) {
+get_feature_names <- function(vps) {
   UseMethod("get_feature_names")
 }
 
