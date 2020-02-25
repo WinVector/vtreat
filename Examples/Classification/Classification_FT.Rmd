@@ -96,24 +96,24 @@ transform_spec <- vtreat::BinomialOutcomeTreatment(
 
 # learn transform from data (add link in comment to multiassignment vignette)
 unpack[
-  transform_design = treatments,
+  treatment_plan = treatments,
   d_prepared = cross_frame
   ] <- fit_prepare(transform_spec, d)     
 
 # list the derived variables
-get_feature_names(transform_design)
+get_feature_names(treatment_plan)
 
 # get statistics on the variables
-score_frame <- get_score_frame(transform_design)
+score_frame <- get_score_frame(treatment_plan)
 ```
 
-Note that for the training data `d`: `transform_design$fit_transform(d)` is **not** the same as `transform_design$fit(d)$transform(d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
-For other, later data, not seen during transform design `transform_design$transform(o)` is an appropriate step.
+Note that for the training data `d`: `treatment_plan$fit_transform(d)` is **not** the same as `treatment_plan$fit(d)$transform(d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
+For other, later data, not seen during transform design `treatment_plan$transform(o)` is an appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
 
 ```{r}
-d_prepared_wrong <- prepare(transform_design, d)
+d_prepared_wrong <- prepare(treatment_plan, d)
 ```
 
 
@@ -220,7 +220,7 @@ Now apply the model to new data.
 dtest <- make_data(450)
 
 # prepare the new data with vtreat
-dtest_prepared = prepare(transform_design, dtest)
+dtest_prepared = prepare(treatment_plan, dtest)
 
 # apply the model to the prepared data
 dtest_prepared['prediction'] = predict(
