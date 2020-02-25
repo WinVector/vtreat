@@ -111,8 +111,8 @@ augment_score_frame <- function(score_frame) {
   n_treatment_types <- length(unique(score_frame$code))
   code_counts <- table(score_frame$code)
   vcount <- code_counts[score_frame$code]
-  score_frame$default_theshold <- 1/(n_treatment_types * vcount)
-  score_frame$recommended <- score_frame$varMoves & (score_frame$sig < score_frame$default_theshold)
+  score_frame$default_threshold <- 1/(n_treatment_types * vcount)
+  score_frame$recommended <- score_frame$varMoves & (score_frame$sig < score_frame$default_threshold)
   score_frame
 }
 
