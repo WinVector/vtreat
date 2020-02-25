@@ -123,17 +123,17 @@ First create the data treatment transform design object, in this case a treatmen
 We use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
 ``` r
-transform_design <- vtreat::BinomialOutcomeTreatment(
+transform_spec <- vtreat::BinomialOutcomeTreatment(
     var_list = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
     outcome_name = 'yc',                            # outcome variable
     outcome_target = TRUE                           # outcome of interest
 )
 
-# learn transform from data
+# learn transform from data (add link in comment to multiassignment vignette)
 unpack[
-  transform_design = vtreat_pipe_step,
+  transform_design = treatments,
   d_prepared = cross_frame
-  ] <- fit_prepare(transform_design, d)     
+  ] <- fit_prepare(transform_spec, d)     
 
 # list the derived variables
 get_feature_names(transform_design)
@@ -168,18 +168,18 @@ Now examine the score frame, which gives information about each new variable, in
 knitr::kable(score_frame)
 ```
 
-| varName                        | varMoves |        rsq|        sig| needsSplit |  extraModelDegrees| origName | code  |  default\_theshold| recommended |
-|:-------------------------------|:---------|----------:|----------:|:-----------|------------------:|:---------|:------|------------------:|:------------|
-| x                              | TRUE     |  0.0005756|  0.5470919| FALSE      |                  0| x        | clean |               0.10| FALSE       |
-| x\_isBAD                       | TRUE     |  0.0000771|  0.8255885| FALSE      |                  0| x        | isBAD |               0.20| FALSE       |
-| xc\_catP                       | TRUE     |  0.0008468|  0.4652101| TRUE       |                  5| xc       | catP  |               0.20| FALSE       |
-| xc\_catB                       | TRUE     |  0.7883578|  0.0000000| TRUE       |                  5| xc       | catB  |               0.20| TRUE        |
-| x2                             | TRUE     |  0.0026075|  0.2000083| FALSE      |                  0| x2       | clean |               0.10| FALSE       |
-| xc\_lev\_NA                    | TRUE     |  0.1750095|  0.0000000| FALSE      |                  0| xc       | lev   |               0.04| TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |  0.1328708|  0.0000000| FALSE      |                  0| xc       | lev   |               0.04| TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     |  0.1185254|  0.0000000| FALSE      |                  0| xc       | lev   |               0.04| TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     |  0.0644178|  0.0000000| FALSE      |                  0| xc       | lev   |               0.04| TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     |  0.4701626|  0.0000000| FALSE      |                  0| xc       | lev   |               0.04| TRUE        |
+| varName                        | varMoves |        rsq|        sig| needsSplit |  extraModelDegrees| origName | code  |  default\_threshold| recommended |
+|:-------------------------------|:---------|----------:|----------:|:-----------|------------------:|:---------|:------|-------------------:|:------------|
+| x                              | TRUE     |  0.0005756|  0.5470919| FALSE      |                  0| x        | clean |                0.10| FALSE       |
+| x\_isBAD                       | TRUE     |  0.0000771|  0.8255885| FALSE      |                  0| x        | isBAD |                0.20| FALSE       |
+| xc\_catP                       | TRUE     |  0.0008468|  0.4652101| TRUE       |                  5| xc       | catP  |                0.20| FALSE       |
+| xc\_catB                       | TRUE     |  0.7883578|  0.0000000| TRUE       |                  5| xc       | catB  |                0.20| TRUE        |
+| x2                             | TRUE     |  0.0026075|  0.2000083| FALSE      |                  0| x2       | clean |                0.10| FALSE       |
+| xc\_lev\_NA                    | TRUE     |  0.1750095|  0.0000000| FALSE      |                  0| xc       | lev   |                0.04| TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |  0.1328708|  0.0000000| FALSE      |                  0| xc       | lev   |                0.04| TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     |  0.1185254|  0.0000000| FALSE      |                  0| xc       | lev   |                0.04| TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     |  0.0644178|  0.0000000| FALSE      |                  0| xc       | lev   |                0.04| TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     |  0.4701626|  0.0000000| FALSE      |                  0| xc       | lev   |                0.04| TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 

@@ -88,17 +88,17 @@ First create the data treatment transform design object, in this case a treatmen
 We use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
 ```{r}
-transform_design <- vtreat::BinomialOutcomeTreatment(
+transform_spec <- vtreat::BinomialOutcomeTreatment(
     var_list = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
     outcome_name = 'yc',                            # outcome variable
     outcome_target = TRUE                           # outcome of interest
 )
 
-# learn transform from data
+# learn transform from data (add link in comment to multiassignment vignette)
 unpack[
-  transform_design = vtreat_pipe_step,
+  transform_design = treatments,
   d_prepared = cross_frame
-  ] <- fit_prepare(transform_design, d)     
+  ] <- fit_prepare(transform_spec, d)     
 
 # list the derived variables
 get_feature_names(transform_design)

@@ -1017,7 +1017,7 @@ prepare.vtreat_pipe_step <- function(treatmentplan, dframe, ...) {
 #' @param ... not used, forces later arguments to bind by name.
 #' @param weights optional, per-dframe data weights.
 #' @param parallelCluster optional, parallel cluster to run on.
-#' @return @return named list containing: vtreat_pipe_step and cross_frame
+#' @return @return named list containing: treatments and cross_frame
 #' 
 #' @export
 fit_transform <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -1029,7 +1029,7 @@ fit_transform.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, par
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_transform.vtreat_pipe_step") 
   vps <- vps$fresh_copy()
   cross_frame <- vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
-  list(vtreat_pipe_step = vps, cross_frame = cross_frame)
+  list(treatments = vps, cross_frame = cross_frame)
 }
 
 
@@ -1045,7 +1045,7 @@ fit_transform.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, par
 #' @param ... not used, forces later arguments to bind by name.
 #' @param weights optional, per-dframe data weights.
 #' @param parallelCluster optional, parallel cluster to run on.
-#' @return @return named list containing: vtreat_pipe_step and cross_frame
+#' @return @return named list containing: treatments and cross_frame
 #' 
 #' @export
 fit_prepare <- function(vps, dframe, ..., weights = NULL, parallelCluster = NULL) {
@@ -1057,7 +1057,7 @@ fit_prepare.vtreat_pipe_step <- function(vps, dframe, ..., weights = NULL, paral
   wrapr::stop_if_dot_args(substitute(list(...)), "vtreat::fit_prepare.vtreat_pipe_step") 
   vps <- vps$fresh_copy()
   cross_frame <- vps$fit_transform(dframe = dframe, weights = weights, parallelCluster = parallelCluster)
-  list(vtreat_pipe_step = vps, cross_frame = cross_frame)
+  list(treatments = vps, cross_frame = cross_frame)
 }
 
 
