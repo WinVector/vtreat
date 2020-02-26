@@ -150,7 +150,14 @@ test_imputation_control <- function() {
     w = 0
   )
   
-  check_all(d, global_imp, imp_map)
+  # cat(draw_frame(gs))
+  gs <- wrapr::build_frame(
+    "x"   , "x_isBAD", "w", "w_isBAD", "y" |
+      0   , 0        , 3  , 0        , 0   |
+      1   , 0        , 6  , 0        , 0   |
+      1000, 0        , 0  , 1        , 1   |
+      1000, 1        , 100, 0        , 1   )
+  gs = check_all(d, global_imp, imp_map, gold_standard = gs)
   
   
   global_imp = -1
