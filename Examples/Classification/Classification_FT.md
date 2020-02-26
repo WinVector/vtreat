@@ -4,7 +4,7 @@ Classification Fit Transform Notation
 Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
 ================================================================================
 
-Nina Zumel and John Mount Febrary 2020
+Nina Zumel and John Mount February 2020
 
 This article documents `vtreat`'s ["fit\_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) for classification problems. This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`.
 
@@ -187,7 +187,7 @@ d_prepared_wrong <- prepare(treatment_plan, d)
 The Score Frame
 ---------------
 
-Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome.
+Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) significance as a one-variable linear model for the outcome,and the (cross-validated) R-squared of its corresponding linear model.
 
 ``` r
 # get statistics on the variables

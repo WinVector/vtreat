@@ -6,7 +6,7 @@ Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
 
 Nina Zumel and John Mount
 
-updated Febrary 2020
+updated February 2020
 
 Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
 
@@ -136,9 +136,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 13:54:56 2020"
-    ## [1] " start cross frame work Wed Feb 26 13:54:57 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 13:54:57 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 15:00:42 2020"
+    ## [1] " start cross frame work Wed Feb 26 15:00:42 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 15:00:42 2020"
 
 Notice that `d_prepared` now only includes derived variables and the outcome `yc`. The derived variables will be discussed below.
 
@@ -171,7 +171,7 @@ d_prepared_wrong <- prepare(transform, d)
 
 ### The Score Frame
 
-Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome.
+Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) significance as a one-variable linear model for the outcome,and the (cross-validated) R-squared of its corresponding linear model.
 
 ``` r
 score_frame <- transform$scoreFrame
@@ -395,9 +395,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 13:54:59 2020"
-    ## [1] " start cross frame work Wed Feb 26 13:54:59 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 13:54:59 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 15:00:44 2020"
+    ## [1] " start cross frame work Wed Feb 26 15:00:45 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 15:00:45 2020"
 
 ``` r
 score_frame_thin <- transform_thin$scoreFrame
