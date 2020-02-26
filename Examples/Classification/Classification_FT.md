@@ -4,9 +4,9 @@ Classification Fit Transform Notation
 Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
 ================================================================================
 
-Nina Zumel and John Mount December 2019
+Nina Zumel and John Mount Febrary 2020
 
-This is the ["fit\_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) (a notation closer to that used in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat). The original `vtreat` notation version can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md). The same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+This is the ["fit\_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) (a notation closer to that used in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat). The original `vtreat` notation version can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md). The same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
 
 Preliminaries
 -------------
@@ -118,9 +118,7 @@ Build a transform appropriate for classification problems.
 
 Now that we have the data, we want to treat it prior to modeling: we want training data where all the input variables are numeric and have no missing values or `NA`s.
 
-First create the data treatment transform design object, in this case a treatment for a binomial classification problem.
-
-We use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
+First create the data treatment object, in this case a treatment for a binomial classification problem.
 
 ``` r
 transform_spec <- vtreat::BinomialOutcomeTreatment(
@@ -128,8 +126,14 @@ transform_spec <- vtreat::BinomialOutcomeTreatment(
     outcome_name = 'yc',                            # outcome variable
     outcome_target = TRUE                           # outcome of interest
 )
+```
 
-# learn transform from data (add link in comment to multiassignment vignette)
+Now call the `fit_prepare()` function with the training data `d` to fit the transform and also return a treated training set. The `fit_prepare()` function returns the fitted data treatment object (as `treatments`) and a statistically correct treated training set (as `cross_frame`) for training the model. The `cross_frame` is guaranteed to be completely numeric, with no missing values.
+
+``` r
+# the unpack notation is a multiassignment operator
+# see https://winvector.github.io/wrapr/articles/unpack_multiple_assignment.html
+# for more details
 unpack[
   treatment_plan = treatments,
   d_prepared = cross_frame
@@ -150,7 +154,26 @@ get_feature_names(treatment_plan)
 score_frame <- get_score_frame(treatment_plan)
 ```
 
-Note that for the training data `d`: `treatment_plan$fit_transform(d)` is **not** the same as `treatment_plan$fit(d)$transform(d)`; the second call can lead to nested model bias in some situations, and is **not** recommended. For other, later data, not seen during transform design `treatment_plan$transform(o)` is an appropriate step.
+Notice that `d_prepared` only includes derived variables and the outcome `y`:
+
+``` r
+d_prepared %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+|           x|  x\_isBAD|   xc\_catP|    xc\_catB|          x2|  xc\_lev\_NA|  xc\_lev\_x\_level\_minus\_0\_5|  xc\_lev\_x\_level\_0|  xc\_lev\_x\_level\_0\_5|  xc\_lev\_x\_level\_1| yc    |
+|-----------:|---------:|----------:|-----------:|-----------:|------------:|-------------------------------:|---------------------:|------------------------:|---------------------:|:------|
+|   1.8848606|         0|  0.2102102|   14.206543|   0.0046504|            0|                               0|                     0|                        0|                     1| TRUE  |
+|   1.5077419|         0|  0.2005988|   14.139786|  -1.2287497|            0|                               0|                     0|                        0|                     1| TRUE  |
+|  -5.4901159|         0|  0.2005988|   14.139786|  -0.1405980|            0|                               0|                     0|                        0|                     1| TRUE  |
+|  -0.1276897|         1|  0.1891892|    1.219475|  -0.2073270|            0|                               0|                     0|                        1|                     0| TRUE  |
+|  -0.3929879|         1|  0.2402402|  -12.844663|  -0.9215306|            1|                               0|                     0|                        0|                     0| FALSE |
+|  -0.2908461|         1|  0.1766467|  -12.563128|   0.3604742|            0|                               1|                     0|                        0|                     0| FALSE |
+
+As we will see below, the `prepare()` function applies the fitted data treatments to future data, prior to calling your model on the data. Note that for the training data `d`: `fit_prepare(transform_spec, d)` is **not** the same as `fit(transform_spec, d) %.>% prepare(., d)`; the second call can lead to nested model bias in some situations, and is **not** recommended. In other words, it is a bad idea to call `prepare()` on your original training data.
+
+For future application data `df` that is not seen during transform design, `prepare(treatment_plan, df)` is the appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
 
@@ -161,6 +184,9 @@ d_prepared_wrong <- prepare(treatment_plan, d)
     ## Warning in treatmentplan$transform(dframe = dframe, ...): possibly called
     ## transform() on same data frame as fit(), this can lead to over-fit. To avoid
     ## this, please use fit_transform().
+
+The Score Frame
+---------------
 
 Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome.
 
@@ -190,7 +216,7 @@ Note that the variable `xc` has been converted to multiple variables:
 
 Any or all of these new variables are available for downstream modeling.
 
-The `recommended` column indicates which variables are non constant (`varMoves` == TRUE) and have a significance value smaller than `1/nrow(score_frame)`. See the section *Deriving the Default Thresholds* below for the reasoning behind such a default threshold. Recommended columns are intended as advice about which variables appear to be most likely to be useful in a downstream model. This advice attempts to be conservative, to reduce the possibility of mistakenly eliminating variables that may in fact be useful (although, obviously, it can still mistakenly eliminate variables that have a real but non-linear relationship to the output, as is the case with `x`, in our example).
+The `recommended` column indicates which variables are non constant (`varMoves` == TRUE) and have a significance value smaller than `score_frame$default_threshold`. See the section *Deriving the Default Thresholds* below for the reasoning behind the default thresholds. Recommended columns are intended as advice about which variables appear to be most likely to be useful in a downstream model. This advice attempts to be conservative, to reduce the possibility of mistakenly eliminating variables that may in fact be useful (although, obviously, it can still mistakenly eliminate variables that have a real but non-linear relationship to the output, as is the case with `x`, in our example).
 
 Let's look at the variables that are and are not recommended:
 
@@ -222,23 +248,6 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
 | 3   | xc\_catP |
 | 5   | x2       |
 
-Notice that `d_prepared` only includes derived variables and the outcome `y`:
-
-``` r
-d_prepared %.>%
-  head(.) %.>%
-  knitr::kable(.)
-```
-
-|           x|  x\_isBAD|   xc\_catP|    xc\_catB|          x2|  xc\_lev\_NA|  xc\_lev\_x\_level\_minus\_0\_5|  xc\_lev\_x\_level\_0|  xc\_lev\_x\_level\_0\_5|  xc\_lev\_x\_level\_1| yc    |
-|-----------:|---------:|----------:|-----------:|-----------:|------------:|-------------------------------:|---------------------:|------------------------:|---------------------:|:------|
-|   1.8848606|         0|  0.2102102|   14.206543|   0.0046504|            0|                               0|                     0|                        0|                     1| TRUE  |
-|   1.5077419|         0|  0.2005988|   14.139786|  -1.2287497|            0|                               0|                     0|                        0|                     1| TRUE  |
-|  -5.4901159|         0|  0.2005988|   14.139786|  -0.1405980|            0|                               0|                     0|                        0|                     1| TRUE  |
-|  -0.1276897|         1|  0.1891892|    1.219475|  -0.2073270|            0|                               0|                     0|                        1|                     0| TRUE  |
-|  -0.3929879|         1|  0.2402402|  -12.844663|  -0.9215306|            1|                               0|                     0|                        0|                     0| FALSE |
-|  -0.2908461|         1|  0.1766467|  -12.563128|   0.3604742|            0|                               1|                     0|                        0|                     0| FALSE |
-
 A Closer Look at `catB` variables
 ---------------------------------
 
@@ -255,7 +264,7 @@ WVPlots::ROCPlot(
   title = 'performance of xc_catB variable')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](Classification_FT_files/figure-markdown_github/unnamed-chunk-14-1.png)
 
 This indicates that `xc_catB` is strongly predictive of the outcome. Negative values of `xc_catB` correspond strongly to negative outcomes, and positive values correspond strongly to positive outcomes.
 
@@ -267,7 +276,7 @@ WVPlots::DoubleDensityPlot(
   title = 'performance of xc_catB variable')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](Classification_FT_files/figure-markdown_github/unnamed-chunk-15-1.png)
 
 The values of `xc_catB` are in "link space".
 
@@ -279,6 +288,8 @@ Using the Prepared Data in a Model
 Of course, what we really want to do with the prepared training data is to fit a model jointly with all the (recommended) variables. Let's try fitting a logistic regression model to `d_prepared`.
 
 ``` r
+# to use all the variables:
+# model_vars <- score_frame$varName
 model_vars <- score_frame$varName[score_frame$recommended]
 f <- wrapr::mk_formula('yc', model_vars, outcome_target = TRUE)
 
@@ -299,7 +310,7 @@ WVPlots::ROCPlot(
   title = 'Performance of logistic regression model on training data')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-15-1.png)
+![](Classification_FT_files/figure-markdown_github/unnamed-chunk-16-1.png)
 
 Now apply the model to new data.
 
@@ -324,7 +335,7 @@ WVPlots::ROCPlot(
   title = 'Performance of logistic regression model on test data')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](Classification_FT_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 Parameters for `BinomialOutcomeTreatment`
 -----------------------------------------
@@ -400,13 +411,13 @@ classification_parameters()
 
 Some parameters of note include:
 
-**codeRestriction**: The types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below.
+**codeRestriction** (default: NULL): he types of synthetic variables that `vtreat` will (potentially) produce. See *Types of prepared variables* below. By default, produces all applicable variable types.
 
-**minFraction**: For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
+**minFraction** (default: 0.02): For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `minFraction` of the time (by default, 2% of the time). A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
 
 **splitFunction**: The cross validation method used by `vtreat`. Most people won't have to change this.
 
-**ncross**: The number of folds to use for cross-validation
+**ncross** (default: 3): The number of folds to use for cross-validation
 
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
@@ -415,43 +426,85 @@ Types of prepared variables
 
 **clean**: Produced from numerical variables: a clean numerical variable with no `NAs` or missing values
 
-**lev**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
+**lev**: Produced from categorical variables, one for each (common) level: a 0/1 indicator variable that indicates if that level was "on"
 
-**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on" (its prevalence)
 
 **catB**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the variable
 
-**is\_BAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or `NaN`.
+**is\_BAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
 More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
+
+### Example: Produce only a subset of variable types
+
+In this example, suppose you only want to use indicators and continuous variables in your model; in other words, you only want to use variables of types (`clean`, `isBAD`, and `lev`), and no `catB` or `catP` variables.
+
+``` r
+# create a new set of parameters, overriding 
+# the default for codeRestriction
+newparams = classification_parameters(
+  list(
+    codeRestriction = c('clean', 'isBAD', 'lev')
+  ))
+
+thin_spec <- vtreat::BinomialOutcomeTreatment(
+    var_list = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
+    outcome_name = 'yc',                            # outcome variable
+    outcome_target = TRUE,                          # outcome of interest
+    params = newparams                              # set the parameters 
+)
+
+unpack[
+  thin_plan = treatments,
+  thin_frame = cross_frame
+  ] <- fit_prepare(thin_spec, d)     
+
+# examine the new prepared training data
+# no catB or catP
+knitr::kable(head(thin_frame))
+```
+
+|           x|  x\_isBAD|          x2|  xc\_lev\_NA|  xc\_lev\_x\_level\_minus\_0\_5|  xc\_lev\_x\_level\_0|  xc\_lev\_x\_level\_0\_5|  xc\_lev\_x\_level\_1| yc    |
+|-----------:|---------:|-----------:|------------:|-------------------------------:|---------------------:|------------------------:|---------------------:|:------|
+|   1.8848606|         0|   0.0046504|            0|                               0|                     0|                        0|                     1| TRUE  |
+|   1.5077419|         0|  -1.2287497|            0|                               0|                     0|                        0|                     1| TRUE  |
+|  -5.4901159|         0|  -0.1405980|            0|                               0|                     0|                        0|                     1| TRUE  |
+|  -0.0453530|         1|  -0.2073270|            0|                               0|                     0|                        1|                     0| TRUE  |
+|  -0.0453530|         1|  -0.9215306|            1|                               0|                     0|                        0|                     0| FALSE |
+|  -0.4926751|         1|   0.3604742|            0|                               1|                     0|                        0|                     0| FALSE |
+
+``` r
+# examine the score frame for the new treatment plan
+# no catB or catP
+knitr::kable(get_score_frame(thin_plan))
+```
+
+| varName                        | varMoves |        rsq|        sig| needsSplit |  extraModelDegrees| origName | code  |  default\_threshold| recommended |
+|:-------------------------------|:---------|----------:|----------:|:-----------|------------------:|:---------|:------|-------------------:|:------------|
+| x                              | TRUE     |  0.0005756|  0.5470919| FALSE      |                  0| x        | clean |          0.16666667| FALSE       |
+| x\_isBAD                       | TRUE     |  0.0000771|  0.8255885| FALSE      |                  0| x        | isBAD |          0.33333333| FALSE       |
+| x2                             | TRUE     |  0.0026075|  0.2000083| FALSE      |                  0| x2       | clean |          0.16666667| FALSE       |
+| xc\_lev\_NA                    | TRUE     |  0.1750095|  0.0000000| FALSE      |                  0| xc       | lev   |          0.06666667| TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |  0.1328708|  0.0000000| FALSE      |                  0| xc       | lev   |          0.06666667| TRUE        |
+| xc\_lev\_x\_level\_0           | TRUE     |  0.1185254|  0.0000000| FALSE      |                  0| xc       | lev   |          0.06666667| TRUE        |
+| xc\_lev\_x\_level\_0\_5        | TRUE     |  0.0644178|  0.0000000| FALSE      |                  0| xc       | lev   |          0.06666667| TRUE        |
+| xc\_lev\_x\_level\_1           | TRUE     |  0.4701626|  0.0000000| FALSE      |                  0| xc       | lev   |          0.06666667| TRUE        |
 
 Deriving the Default Thresholds
 -------------------------------
 
 While machine learning algorithms are generally tolerant to a reasonable number of irrelevant or noise variables, too many irrelevant variables can lead to serious overfit; see [this article](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/) for an extreme example, one we call "Bad Bayes". The default threshold is an attempt to eliminate obviously irrelevant variables early.
 
-Imagine that you have a pure noise dataset, where none of the *n* inputs are related to the output. If you treat each variable as a one-variable model for the output, and look at the significances of each model, these significance-values will be uniformly distributed in the range \[0:1\]. You want to pick a weakest possible significance threshold that eliminates as many noise variables as possible. A moment's thought should convince you that a threshold of *1/n* allows only one variable through, in expectation. This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we developed the R version of `vtreat`.
+Imagine that you have a pure noise dataset, where none of the *n* inputs are related to the output. If you treat each variable as a one-variable model for the output, and look at the significances of each model, these significance-values will be uniformly distributed in the range \[0:1\]. You want to pick a weakest possible significance threshold that eliminates as many noise variables as possible. A moment's thought should convince you that a threshold of *1/n* allows only one variable through, in expectation.
 
-As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship to the output may fail to pass the threshold. So it may make sense for the data scientist to filter (or not) as they will.
+This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we originally developed the R version of `vtreat`.
 
-The variables can be appraised in a non-linear fashion as follows:
+We noticed, however, that this biases the filtering against numerical variables, since there are at most two derived variables (of types *clean* and *is\_BAD*) for every numerical variable in the original data. Categorical variables, on the other hand, are expanded to many derived variables: several indicators (one for every common level), plus a *catB* and a *catP*. So we now reweight the thresholds.
 
-``` r
-d %.>%
-  value_variables_C(dframe = .,
-                  varlist = setdiff(colnames(.), c('y', 'yc')), 
-                  outcomename = 'yc',
-                  outcometarget = TRUE) %.>%
-  knitr::kable(.)
-```
+Suppose you have a (treated) data set with *ntreat* different types of `vtreat` variables (`clean`, `lev`, etc). There are *nT* variables of type *T*. Then the default threshold for all the variables of type *T* is *1/(ntreat nT)*. This reweighting helps to reduce the bias against any particular type of variable. The heuristic is still that the set of recommended variables will allow at most one noise variable into the set of candidate variables.
 
-|        rsq|  count|        sig| var |
-|----------:|------:|----------:|:----|
-|  0.0005756|      2|  1.0000000| x   |
-|  0.0026075|      3|  0.6000248| x2  |
-|  0.7883477|      2|  0.0000000| xc  |
-
-More on non-linear variable scoring can be found [here](https://cran.r-project.org/web/packages/vtreat/vignettes/VariableImportance.html).
+As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship to the output may fail to pass the threshold. In this case, you may not wish to filter the variables to be used in the models to only recommended variables (as we did in the main example above), but instead use all the variables, or select the variables to use by your own criteria.
 
 Conclusion
 ----------
@@ -460,9 +513,9 @@ In all cases (classification, regression, unsupervised, and multinomial classifi
 
 The preparation commands are organized as follows:
 
--   **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
--   **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
--   **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
--   **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+-   **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FT.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+-   **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FT.md), [`Python` classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+-   **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FT.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+-   **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FT.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 These current revisions of the examples are designed to be small, yet complete. So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.

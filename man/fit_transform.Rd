@@ -18,7 +18,7 @@ fit_transform(vps, dframe, ..., weights = NULL, parallelCluster = NULL)
 \item{parallelCluster}{optional, parallel cluster to run on.}
 }
 \value{
-@return named list containing: vtreat_pipe_step and cross_frame
+@return named list containing: treatments and cross_frame
 }
 \description{
 Update the state of first argument to have learned or fit from second argument, and compute a cross

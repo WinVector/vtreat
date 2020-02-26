@@ -251,6 +251,9 @@ Some parameters of note include:
 
 **ncross**: The number of folds to use for cross-validation
 
+****TODO: need the missingess imputation vignette in the new notation ****
+**missingness_imputation**: The function or value that vtreat uses to impute or "fill in" missing numerical values. The default is `mean()`. To change the imputation function or use different functions/values for different columns, see the Imputation example [TODO - do I have one?]
+
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
 

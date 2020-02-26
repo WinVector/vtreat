@@ -27,7 +27,7 @@ NumericOutcomeTreatment(
 \item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \description{
-Hold settings are results for regression data preparation.
+Hold settings and results for regression data preparation.
 }
 \details{
 Please see

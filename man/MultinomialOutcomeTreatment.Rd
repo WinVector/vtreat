@@ -27,7 +27,7 @@ MultinomialOutcomeTreatment(
 \item{imputation_map}{map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.}
 }
 \description{
-Hold settings are results for multinomial classification data preparation.
+Hold settings and results for multinomial classification data preparation.
 }
 \details{
 Please see
