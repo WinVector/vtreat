@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Stateful object for designing and applying numeric outcome treatments. — NumericOutcomeTreatment • vtreat</title>
+<title>Return underlying transform from vps. — get_transform • vtreat</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Stateful object for designing and applying numeric outcome treatments. — NumericOutcomeTreatment" />
-<meta property="og:description" content="Hold settings and results for regression data preparation." />
+<meta property="og:title" content="Return underlying transform from vps. — get_transform" />
+<meta property="og:description" content="Return previously fit transform." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -150,67 +150,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Stateful object for designing and applying numeric outcome treatments.</h1>
+    <h1>Return underlying transform from vps.</h1>
     <small class="dont-index">Source: <a href='https://github.com/WinVector/vtreat/blob/master/R/ft.R'><code>R/ft.R</code></a></small>
-    <div class="hidden name"><code>NumericOutcomeTreatment.Rd</code></div>
+    <div class="hidden name"><code>get_transform.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Hold settings and results for regression data preparation.</p>
+    <p>Return previously fit transform.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>NumericOutcomeTreatment</span>(
-  <span class='no'>...</span>,
-  <span class='no'>var_list</span>,
-  <span class='no'>outcome_name</span>,
-  <span class='kw'>cols_to_copy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>get_transform</span>(<span class='no'>vps</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>not used, force arguments to be specified by name.</p></td>
-    </tr>
-    <tr>
-      <th>var_list</th>
-      <td><p>Names of columns to treat (effective variables).</p></td>
-    </tr>
-    <tr>
-      <th>outcome_name</th>
-      <td><p>Name of column holding outcome variable. <code>dframe[[outcomename]]</code> must be only finite non-missing values.</p></td>
-    </tr>
-    <tr>
-      <th>cols_to_copy</th>
-      <td><p>list of extra columns to copy.</p></td>
-    </tr>
-    <tr>
-      <th>params</th>
-      <td><p>parameters list from <code>regression_parameters</code></p></td>
-    </tr>
-    <tr>
-      <th>imputation_map</th>
-      <td><p>map from column names to functions of signature f(values: numeric, weights: numeric), simple missing value imputers.</p></td>
+      <th>vps</th>
+      <td><p>vtreat pipe step, mutable object to read from.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Please see
-<a href='https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md'>https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md</a>,
-<code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></code>, 
-<code><a href='designTreatmentsN.html'>designTreatmentsN</a></code>, and
-<code><a href='prepare.treatmentplan.html'>prepare.treatmentplan</a></code> for details.</p>
+    <p>transform</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#details">Details</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

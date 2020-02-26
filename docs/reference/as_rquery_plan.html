@@ -199,31 +199,31 @@
    <span class='no'>ops</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='flatten_fn_list.html'>flatten_fn_list</a></span>(<span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/local_td.html'>local_td</a></span>(<span class='no'>dTrainC</span>), <span class='no'>rqplan</span>$<span class='no'>optree_generators</span>)
    <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='no'>ops</span>))
    <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"rqdatatable"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-      <span class='no'>treated</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rqdatatable</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rqdatatable/man/ex_data_table.html'>ex_data_table</a></span>(<span class='no'>ops</span>, <span class='kw'>tables</span> <span class='kw'>=</span> <span class='no'>rqplan</span>$<span class='no'>tables</span>)
+      <span class='no'>treated</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rqdatatable</span><span class='kw ns'>::</span><span class='fu'>ex_data_table</span>(<span class='no'>ops</span>, <span class='kw'>tables</span> <span class='kw'>=</span> <span class='no'>rqplan</span>$<span class='no'>tables</span>)
       <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>treated</span>[])
    }
    <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"DBI"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>&amp;&amp;</span>
       <span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"RSQLite"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-      <span class='no'>db</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbConnect.html'>dbConnect</a></span>(<span class='kw pkg'>RSQLite</span><span class='kw ns'>::</span><span class='fu'><a href='https://rsqlite.r-dbi.org/reference/SQLite.html'>SQLite</a></span>(), <span class='st'>":memory:"</span>)
+      <span class='no'>db</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'>dbConnect</span>(<span class='kw pkg'>RSQLite</span><span class='kw ns'>::</span><span class='fu'>SQLite</span>(), <span class='st'>":memory:"</span>)
       <span class='no'>source_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_copy_to.html'>rq_copy_to</a></span>(<span class='no'>db</span>, <span class='st'>"dTrainC"</span>, <span class='no'>dTrainC</span>,
                                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
       <span class='no'>rest</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rquery_prepare.html'>rquery_prepare</a></span>(<span class='no'>db</span>, <span class='no'>rqplan</span>, <span class='no'>source_data</span>, <span class='st'>"dTreatedC"</span>,
                                   <span class='kw'>extracols</span> <span class='kw'>=</span> <span class='st'>"id"</span>)
-      <span class='no'>resd</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbReadTable.html'>dbReadTable</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
+      <span class='no'>resd</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'>dbReadTable</span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
       <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>resd</span>)
 
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_remove_table.html'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>source_data</span>$<span class='no'>table_name</span>)
       <span class='kw pkg'>rquery</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rquery/man/rq_remove_table.html'>rq_remove_table</a></span>(<span class='no'>db</span>, <span class='no'>rest</span>$<span class='no'>table_name</span>)
-      <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>db</span>)
+      <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'>dbDisconnect</span>(<span class='no'>db</span>)
    }
-}</div><div class='output co'>#&gt; [1] "vtreat 1.6.0 inspecting inputs Fri Feb 21 15:31:37 2020"
-#&gt; [1] "designing treatments Fri Feb 21 15:31:37 2020"
-#&gt; [1] " have initial level statistics Fri Feb 21 15:31:37 2020"
-#&gt; [1] " scoring treatments Fri Feb 21 15:31:37 2020"
-#&gt; [1] "have treatment plan Fri Feb 21 15:31:37 2020"
-#&gt; [1] "rescoring complex variables Fri Feb 21 15:31:37 2020"
-#&gt; [1] "done rescoring complex variables Fri Feb 21 15:31:37 2020"</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='output co'>#&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
+}</div><div class='output co'>#&gt; [1] "vtreat 1.6.0 inspecting inputs Tue Feb 25 19:06:34 2020"
+#&gt; [1] "designing treatments Tue Feb 25 19:06:34 2020"
+#&gt; [1] " have initial level statistics Tue Feb 25 19:06:34 2020"
+#&gt; [1] " scoring treatments Tue Feb 25 19:06:34 2020"
+#&gt; [1] "have treatment plan Tue Feb 25 19:06:34 2020"
+#&gt; [1] "rescoring complex variables Tue Feb 25 19:06:34 2020"
+#&gt; [1] "done rescoring complex variables Tue Feb 25 19:06:34 2020"</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='output co'>#&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
 #&gt; 1 0.5000000 -0.6930972 1.0       0        0         1         0 FALSE
 #&gt; 2 0.5000000 -0.6930972 2.0       0        0         1         0 FALSE
 #&gt; 3 0.5000000 -0.6930972 3.6       1        0         1         0  TRUE
@@ -253,21 +253,7 @@
 #&gt;   x_catB := ifelse(is.na(x), 9.21044036697607, ifelse(is.na(x_catB), 0, x_catB)),
 #&gt;   z := ifelse(is.na(z), 3.6, z)) %.&gt;%
 #&gt;  extend(.,
-#&gt;   z_isBAD := ifelse(is.na(z), 1, 0))
-#&gt;      x id     y   z    x_catP     x_catB x_lev_NA x_lev_x_a x_lev_x_b z_isBAD
-#&gt; 1 &lt;NA&gt;  5  TRUE 5.0 0.1666667  9.2104404        1         0         0       0
-#&gt; 2    a  1 FALSE 1.0 0.5000000 -0.6930972        0         1         0       0
-#&gt; 3    a  2 FALSE 2.0 0.5000000 -0.6930972        0         1         0       0
-#&gt; 4    a  3  TRUE 3.6 0.5000000 -0.6930972        0         1         0       0
-#&gt; 5    b  4 FALSE 4.0 0.3333333  0.0000000        0         0         1       0
-#&gt; 6    b  6  TRUE 6.0 0.3333333  0.0000000        0         0         1       0
-#&gt;     z y id    x_catP     x_catB x_lev_NA x_lev_x_a x_lev_x_b z_isBAD
-#&gt; 1 1.0 0  1 0.5000000 -0.6930972        0         1         0       0
-#&gt; 2 2.0 0  2 0.5000000 -0.6930972        0         1         0       0
-#&gt; 3 3.6 1  3 0.5000000 -0.6930972        0         1         0       0
-#&gt; 4 4.0 0  4 0.3333333  0.0000000        0         0         1       0
-#&gt; 5 5.0 1  5 0.1666667  9.2104404        1         0         0       0
-#&gt; 6 6.0 1  6 0.3333333  0.0000000        0         0         1       0</div><div class='input'>
+#&gt;   z_isBAD := ifelse(is.na(z), 1, 0))</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
