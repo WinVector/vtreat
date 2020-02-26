@@ -85,13 +85,18 @@ test_imputation_control <- function() {
     d_treated
   }
   
-  equal_df = function(a, b) {
-    isTRUE(all.equal(a, b))
+  equal_df = function(a, b, tolerance = 0.1) {
+    isTRUE(all.equal(a, b, tolerance = tolerance))
   }
   
-  check_all = function(d, global_val, map) {
+  check_all = function(d, global_val, map, gold_standard=NULL) {
     # unsupervised is the gold standard
-    gold_standard = check_unsupervised(d, global_val, map)
+    c0 = check_unsupervised(d, global_val, map)
+    if(!is.null(gold_standard)) {
+      RUnit::checkTrue(equal_df(c0, gold_standard))
+    } else {
+      gold_standard = c0
+    }
     
     # classification
     c1 = check_classification(d, global_val, map)
@@ -106,14 +111,20 @@ test_imputation_control <- function() {
     
     r2 = check_regression(d, global_val, map, useFT=FALSE)
     RUnit::checkTrue(equal_df(r2, gold_standard))
-    invisible(NULL)
+    invisible(gold_standard)
   }
   
   
   global_imp = NULL
   imp_map = NULL
   
-  check_all(d, global_imp, imp_map)
+  gs <- wrapr::build_frame(
+    "x"    , "x_isBAD", "w"  , "w_isBAD", "y" |
+      0    , 0        , 3    , 0        , 0   |
+      1    , 0        , 6    , 0        , 0   |
+      1000 , 0        , 36.33, 1        , 1   |
+      333.7, 1        , 100  , 0        , 1   )
+  check_all(d, global_imp, imp_map, gold_standard = gs)
   
   median2 <- function(x, wts) {
     median(x)
