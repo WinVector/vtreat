@@ -142,7 +142,7 @@ BinomialOutcomeTreatment <- function(...,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
-      imputation_map = settings$params$imputation_map)
+      imputation_map = settings$imputation_map)
     assign("transform", tp, envir = settings$state)
     assign("score_frame", tp$scoreFrame, envir = settings$state)
     invisible(obj) # allow method chaining
@@ -208,7 +208,7 @@ BinomialOutcomeTreatment <- function(...,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
-      imputation_map = settings$params$imputation_map)
+      imputation_map = settings$imputation_map)
     tp <- ce$treatments
     assign("transform", tp, envir = settings$state)
     assign("score_frame", tp$scoreFrame, envir = settings$state)
@@ -390,7 +390,7 @@ NumericOutcomeTreatment <- function(...,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
-      imputation_map = settings$params$imputation_map)
+      imputation_map = settings$imputation_map)
     assign("transform", tp, envir = settings$state)
     assign("score_frame", tp$scoreFrame, envir = settings$state)
     invisible(obj) # allow method chaining
@@ -454,7 +454,7 @@ NumericOutcomeTreatment <- function(...,
       parallelCluster = parallelCluster,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
-      imputation_map = settings$params$imputation_map)
+      imputation_map = settings$imputation_map)
     tp <- ce$treatments
     assign("transform", tp, envir = settings$state)
     assign("score_frame", tp$scoreFrame, envir = settings$state)
@@ -830,7 +830,7 @@ UnsupervisedTreatment <- function(...,
       verbose = settings$params$verbose,
       use_parallel = settings$params$use_parallel,
       missingness_imputation = settings$params$missingness_imputation, 
-      imputation_map = settings$params$imputation_map)
+      imputation_map = settings$imputation_map)
     assign("transform", tp, envir = settings$state)
     assign("score_frame", tp$scoreFrame, envir = settings$state)
     invisible(obj) # allow method chaining
