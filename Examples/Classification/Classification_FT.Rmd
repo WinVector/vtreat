@@ -8,7 +8,12 @@ output: github_document
 Nina Zumel and John Mount
 Febrary 2020
 
-This is the ["fit_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) (a notation closer to that used in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat). The original `vtreat` notation version can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md). The same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+This article documents `vtreat`'s ["fit_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) for classification problems.
+This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`. 
+
+The same example in the original `R` `vtreat` notation can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md). 
+
+The same example in the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
 
 ## Preliminaries
 
@@ -277,7 +282,7 @@ Some parameters of note include:
 
 **ncross** (default: 3): The number of folds to use for cross-validation
 
-**missingness_imputation**: The function or value that vtreat uses to impute or "fill in" missing numerical values. The default is `mean()`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation_FT.md)
+**missingness_imputation**: The function or value that vtreat uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation_FT.md)
 
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
@@ -330,7 +335,7 @@ knitr::kable(head(thin_frame))
 
 # examine the score frame for the new treatment plan
 # no catB or catP
-knitr::kable(get_score_frame(thin_plan))
+knitr::kable(get_score_frame(thin_plan)[,cols])
 ```
 
 ## Deriving the Default Thresholds

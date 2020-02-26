@@ -136,9 +136,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Tue Feb 25 17:46:33 2020"
-    ## [1] " start cross frame work Tue Feb 25 17:46:34 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Feb 25 17:46:34 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 13:54:56 2020"
+    ## [1] " start cross frame work Wed Feb 26 13:54:57 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 13:54:57 2020"
 
 Notice that `d_prepared` now only includes derived variables and the outcome `yc`. The derived variables will be discussed below.
 
@@ -395,9 +395,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Tue Feb 25 17:46:36 2020"
-    ## [1] " start cross frame work Tue Feb 25 17:46:36 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Tue Feb 25 17:46:36 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 13:54:59 2020"
+    ## [1] " start cross frame work Wed Feb 26 13:54:59 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 13:54:59 2020"
 
 ``` r
 score_frame_thin <- transform_thin$scoreFrame
