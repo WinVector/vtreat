@@ -6,7 +6,7 @@ Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
 
 Nina Zumel and John Mount February 2020
 
-This article documents `vtreat`'s ["fit\_prepare" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) for classification problems. This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`.
+This article documents `vtreat`'s ["fit\_prepare" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_prepare_api.md) for classification problems. This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`.
 
 The same example in the original `R` `vtreat` notation can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md).
 
