@@ -1,16 +1,21 @@
 ---
-title: "Regression"
+title: "Regression Fit Prepare Notation"
 output: github_document
 ---
 
 
-# Using vtreat with Regression Problems
+# Using vtreat with Regression Problems 
 
 
 Nina Zumel and John Mount
-updated February 2020
+February 2020
 
-Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+This article documents `vtreat`'s ["fit_prepare" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) for regression problems.
+This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`. 
+
+The same example in the original `R` `vtreat` notation can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md). 
+
+The same example in the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
 
 
 ## Preliminaries
@@ -89,17 +94,31 @@ Now that we have the data, we want to treat it prior to modeling: we want traini
 First create the data treatment transform object, in this case a treatment for a regression problem.
 
 ```{r}
-unpack[
-  transform = treatments,
-  d_prepared = crossFrame
-  ] <- vtreat::mkCrossFrameNExperiment(
-    dframe = d,                              # data to learn transform from
-    varlist = setdiff(colnames(d), c('y')),  # columns to transform
-    outcomename = 'y'                        # outcome variable
-  )
+transform_design <- vtreat::NumericOutcomeTreatment(
+    var_list = setdiff(colnames(d), c('y')),  # columns to transform
+    outcome_name = 'y'                        # outcome variable
+)
+
 ```
 
-Let's look at the top of `d_prepared`. Notice that the new treated data frame includes only new derived variables (along with `y`). The derived variables will be discussed below.
+Now call the `fit_prepare()` function with the training data `d` to fit the transform and also return a treated training set. The `fit_prepare()` function returns the fitted data treatment object (as `treatments`) and a
+statistically correct treated training set (as `cross_frame`) for training the model. The `cross_frame` is guaranteed to be completely numeric, with no missing values.
+
+
+```{r}
+# the unpack notation is a multiassignment operator
+# see https://winvector.github.io/wrapr/articles/unpack_multiple_assignment.html
+# for more details
+
+unpack[treatment_plan = treatments,
+       d_prepared = cross_frame] <- fit_prepare(transform_design, d)
+
+# list the derived variables
+get_feature_names(treatment_plan)
+
+```
+
+Notice that `d_prepared` only includes derived variables and the outcome `y`. We will discuss the types of derived variables below.
 
 ```{r}
 d_prepared %.>%
@@ -107,27 +126,30 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-Note that for the training data `d`: `crossFrame` is **not** the same as `prepare(transform, d)`; the second call can lead to nested model bias in some situations, and is **not** recommended.
-For other, later data, not seen during transform design `transform.preprare(o)` is an appropriate step.
+As we will see below, the `prepare()` function applies the fitted data treatments to future data, prior to calling your model on the data. Note that for the training data `d`: `fit_prepare(transform_spec, d)` is **not** the same as
+`fit(transform_spec, d) %.>% prepare(., d)`; the second call can lead to nested model bias in some
+situations, and is **not** recommended. In other words, it is a bad idea to call `prepare()` on your original training data.
+
+For future application data `df` that is not seen during transform design, `prepare(treatment_plan, df)` is the appropriate step.
 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
 
 ```{r}
-d_prepared_wrong <- prepare(transform, d)
+d_prepared_wrong <- prepare(treatment_plan, d)
 ```
 
-The prepared data should be clean: completely numeric, with no missing values.
 
-### The Score Frame
+## The Score Frame
 
-Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) significance as a one-variable linear model for the outcome, and the (cross-validated) R-squared of its corresponding linear model.
+Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) significance as a one-variable linear model for the outcome,and the (cross-validated) R-squared of its corresponding linear model.
 
 ```{r}
-score_frame <- transform$scoreFrame
+# get statistics on the variables
+score_frame <- get_score_frame(treatment_plan)
 
-# look at a subset of the columns
+# only print a subset of the columns
 cols = c("varName", "origName", "code", "rsq", "sig", "varMoves", "default_threshold", "recommended")
-knitr::kable(score_frame[, cols])
+knitr::kable(score_frame[,cols])
 ```
 
 Notice that the variable `xc` has been converted to multiple variables: 
@@ -162,7 +184,7 @@ score_frame[!score_frame[['recommended']], 'varName', drop = FALSE] %.>%
 
 ## A Closer Look at the `catN` variables
 
-Variables of type `catN` are the outputs of a one-variable linear regression of a categorical variable (in our example, `xc`) against the centered output on the (cross-validated) treated training data. 
+Variables of type `catN` are the outputs of a one-variable hierarchical linear regression of a categorical variable (in our example, `xc`) against the centered output on the (cross-validated) treated training data. 
 
 Let's look at the relationship between `xc_catN` and `y` (actually `y_centered`, a centered version of `y`). 
 
@@ -192,7 +214,9 @@ Note also that the impact code values are jittered; this is because `d_prepared`
 # jittered
 summary(d_prepared$xc_catN[(!is.na(d$xc)) & (d$xc == 'level_1')])
 
-dtmp = prepare(transform, d)
+# notice this generates a warning!
+dtmp = prepare(treatment_plan, d)
+
 dtmp['y_centered'] = dtmp$y - mean(dtmp$y)
 
 # the scores for the rows of "new" prepared data where xc == 'level_1'
@@ -206,6 +230,7 @@ Variables of type `catN` are useful when dealing with categorical variables with
 
 Of course, what we really want to do with the prepared training data is to fit a model jointly with all the (recommended) variables. 
 Let's try fitting a linear regression model to `d_prepared`.
+
 
 ```{r}
 model_vars <- score_frame$varName[score_frame$recommended]
@@ -238,8 +263,7 @@ Now apply the model to new data.
 dtest <- make_data(450)
 
 # prepare the new data with vtreat
-dtest_prepared = prepare(transform, dtest)
-# dtest %.>% transform is an alias for prepare(transform, dtest)
+dtest_prepared = prepare(treatment_plan, dtest)
 
 # apply the model to the prepared data
 dtest_prepared['prediction'] = predict(
@@ -262,26 +286,27 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-## Parameters for `mkCrossFrameNExperiment`
+## Parameters for `NumericOutcomeTreatment`
 
 We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications.
 
+
 ```{r}
-suppressPackageStartupMessages(library(printr))
-args("mkCrossFrameNExperiment")
+regression_parameters()
 ```
 
 Some parameters of note include:
 
 **codeRestriction**: The types of synthetic variables that `vtreat` will (potentially) produce. By default, all possible applicable types will be produced. See *Types of prepared variables* below.
 
-**minFraction** (default: 0.02): For categorical variables, indicator variables (type `levs`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
+**minFraction** (default: 0.02): For categorical variables, indicator variables (type `indicator_code`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
 
 **splitFunction**: The cross validation method used by `vtreat`. Most people won't have to change this.
 
 **ncross** (default: 3): The number of folds to use for cross-validation
 
-**missingness_imputation**: The function or value that `vtreat` uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation.md).
+**missingness_imputation**: The function or value that vtreat uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation_FP.md)
+
 
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
@@ -302,7 +327,6 @@ Some parameters of note include:
 
 More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
 
-
 ### Example: Produce only a subset of variable types
 
 In this example, suppose you only want to use indicators and continuous variables in your model; 
@@ -310,29 +334,34 @@ in other words, you only want to use variables of types (`clean`, `is_BAD`, and 
 
 
 ```{r}
+# create a new set of parameters, overriding 
+# the default for codeRestriction
+newparams = regression_parameters(
+  list(
+    codeRestriction = c('clean', 'isBAD', 'lev')
+  ))
+
+thin_spec <- vtreat::NumericOutcomeTreatment(
+    var_list = setdiff(colnames(d), c('y')),  # columns to transform
+    outcome_name = 'y',                       # outcome variable
+    params = newparams                        # set the parameters 
+)
+
 unpack[
-  transform_thin = treatments,
-  d_prepared_thin = crossFrame
-  ] <- vtreat::mkCrossFrameNExperiment(
-    dframe = d,                                    # data to learn transform from
-    varlist = setdiff(colnames(d), c('y', 'y_centered')),  # columns to transform
-    outcomename = 'y',                             # outcome variable
-    codeRestriction = c('lev',                     # transforms we want
-                        'clean',
-                        'isBAD')
-  )
+  thin_plan = treatments,
+  thin_frame = cross_frame
+  ] <- fit_prepare(thin_spec, d)   
 
-score_frame_thin <- transform_thin$scoreFrame
-
-d_prepared_thin %.>%
-  head(.) %.>%
-  knitr::kable(.)
-```
-
-```{r}
+# examine the new prepared training data
 # no catX variables
-knitr::kable(score_frame_thin[,cols])
+knitr::kable(head(thin_frame))
+
+# examine the score frame for the new treatment plan
+# no catX variables
+knitr::kable(get_score_frame(thin_plan)[,cols])
+
 ```
+
 
 ## Deriving the Default Thresholds
 
@@ -356,10 +385,10 @@ In all cases (classification, regression, unsupervised, and multinomial classifi
 
 The preparation commands are organized as follows:
 
- * **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
- * **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
- * **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
- * **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+ * **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+ * **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+ * **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+ * **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 These current revisions of the examples are designed to be small, yet complete.  So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
 
