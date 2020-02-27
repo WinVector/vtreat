@@ -8,7 +8,7 @@ output: github_document
 
 
 Nina Zumel and John Mount
-December 2019
+February 2020
 
 This is the ["fit_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) (a notation closer to that used in [`pyvtreat`](https://github.com/WinVector/pyvtreat)) of the description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat). The original `vtreat` notation version can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md). The same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
 
@@ -89,10 +89,14 @@ Now that we have the data, we want to treat it prior to modeling: we want traini
 First create the data treatment transform object, in this case a treatment for a regression problem.
 
 ```{r}
-transform_design = vtreat::NumericOutcomeTreatment(
+transform_design <- vtreat::NumericOutcomeTreatment(
     var_list = setdiff(colnames(d), c('y')),  # columns to transform
     outcome_name = 'y'                        # outcome variable
 )
+
+
+unpack[treatment_plan = treatments,
+       d_prepared = cross_frame] <- fit_prepare(transform_design, d)
 
 # learn transform from data
 d_prepared <-  transform_design$fit_transform(d)

@@ -1,4 +1,4 @@
-Classification Fit Transform Notation
+Classification Fit Prepare Notation
 ================
 
 Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
@@ -6,7 +6,7 @@ Using [vtreat](https://github.com/WinVector/vtreat) with Classification Problems
 
 Nina Zumel and John Mount February 2020
 
-This article documents `vtreat`'s ["fit\_transform" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) for classification problems. This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`.
+This article documents `vtreat`'s ["fit\_prepare" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md) for classification problems. This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`.
 
 The same example in the original `R` `vtreat` notation can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md).
 
@@ -115,7 +115,7 @@ ggplot(d, aes(x=x, y=as.numeric(yc))) +
 
     ## Warning: Removed 7 rows containing missing values (geom_path).
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](Classification_FP_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Build a transform appropriate for classification problems.
 ----------------------------------------------------------
@@ -272,7 +272,7 @@ WVPlots::ROCPlot(
   title = 'performance of xc_catB variable')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](Classification_FP_files/figure-markdown_github/unnamed-chunk-14-1.png)
 
 This indicates that `xc_catB` is strongly predictive of the outcome. Negative values of `xc_catB` correspond strongly to negative outcomes, and positive values correspond strongly to positive outcomes.
 
@@ -284,7 +284,7 @@ WVPlots::DoubleDensityPlot(
   title = 'performance of xc_catB variable')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-15-1.png)
+![](Classification_FP_files/figure-markdown_github/unnamed-chunk-15-1.png)
 
 The values of `xc_catB` are in "link space".
 
@@ -321,7 +321,7 @@ WVPlots::ROCPlot(
   title = 'Performance of logistic regression model on training data')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](Classification_FP_files/figure-markdown_github/unnamed-chunk-16-1.png)
 
 Now apply the model to new data.
 
@@ -346,7 +346,7 @@ WVPlots::ROCPlot(
   title = 'Performance of logistic regression model on test data')
 ```
 
-![](Classification_FT_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](Classification_FP_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 Parameters for `BinomialOutcomeTreatment`
 -----------------------------------------
@@ -430,7 +430,7 @@ Some parameters of note include:
 
 **ncross** (default: 3): The number of folds to use for cross-validation
 
-**missingness\_imputation**: The function or value that vtreat uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation_FT.md)
+**missingness\_imputation**: The function or value that vtreat uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation_FP.md)
 
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
@@ -528,9 +528,9 @@ In all cases (classification, regression, unsupervised, and multinomial classifi
 
 The preparation commands are organized as follows:
 
--   **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FT.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
--   **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FT.md), [`Python` classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
--   **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FT.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
--   **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FT.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+-   **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+-   **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md), [`Python` classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+-   **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+-   **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 These current revisions of the examples are designed to be small, yet complete. So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
