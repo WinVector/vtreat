@@ -1,5 +1,5 @@
 ---
-title: "Unsupervised.Rmd"
+title: "vtreat for Unsupervised problems"
 output: github_document
 ---
 
@@ -9,7 +9,7 @@ output: github_document
 
 
 Nina Zumel and John Mount
-September 2019
+updated February 2020
 
 Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
 
@@ -100,7 +100,7 @@ d_prepared = prepare(transform, d)
 d_prepared$y = d$y
 ```
 
-Now examine the score frame, which gives information about each new variable, including its type and which original variable it is  derived from. Some of the columns of the score frame (`rsq`, 'sig`) are not relevant to the unsupervised case; those columns are used by the Regression and Classification transforms.
+Now examine the score frame, which gives information about each new variable, including its type and which original variable it is  derived from. Some of the columns of the score frame (`rsq`, `sig`) are not relevant to the unsupervised case; those columns are used by the Regression and Classification transforms.
 
 ```{r}
 knitr::kable(score_frame)
@@ -216,7 +216,7 @@ sigr::wrapFTest(dtest_prepared,
 
 ## Parameters for `UnsupervisedTreatment`
 
-We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications. Notice that the parameter object for unsupervised treatment defines a different set of parameters than the parameter object for supervised treatments (`vtreat.vtreat_parameters`).
+We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications. 
 
 ```{r}
 suppressPackageStartupMessages(library(printr))
@@ -229,7 +229,7 @@ Some parameters of note include:
 
 **minFraction** (default: 0): For categorical variables, indicator variables (type `levs`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. By default, all possible indicator variables are produced.
 
-**missingness_imputation**: The function or value that `vtreat` uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, use **imputation_map**; see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation.md) for examples.
+**missingness_imputation**: The function or value that `vtreat` uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation.md) for examples.
 
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
@@ -246,19 +246,13 @@ transform_common = designTreatmentsZ(
     minFraction = 0.2                        # only make indicators for levels that appear more than 20% of the time
 )
 
-d_prepared = prepare(transform_common, d)     # fit the transform
-knitr::kable(transform_common$scoreFrame)    # examine the score frame
+d_prepared = prepare(transform_common, d)   # fit the transform
+knitr::kable(transform_common$scoreFrame)   # examine the score frame
 ```
 
 In this case, the unsupervised treatment only created levels for the two most common levels, `level_1` and `NA`, which are both present more than 20% of the time. 
 
-In unsupervised situations, this may only be desirable when there are an unworkably large number of possible levels (for example, when using ZIP code as a variable). It is more useful in conjunction with the y-aware variables produced by the 
-
-
-
-
-
-`NumericOutputTreatment`, `BinomialOutcomeTreatment`, or `MultinomialOutcomeTreatment`.
+In unsupervised situations, this may only be desirable when there are an unworkably large number of possible levels (for example, when using ZIP code as a variable). It is more useful in conjunction with the y-aware variables produced by `designTreatmentsN`/`mkCrossFrameNExperiment` (regression), `designTreatmentsC`/`mkCrossFrameCExperiment` (binary classification), or `designTreatmentsM`/`mkCrossFrameMExperiment` (multiclass classification).
 
 ## Types of prepared variables
 
@@ -266,9 +260,9 @@ In unsupervised situations, this may only be desirable when there are an unworka
 
 **lev**: Produced from categorical variables, one for each level: for each level of the variable, indicates if that level was "on"
 
-**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on" (its prevalence)
 
-**isBAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or  `NaN`
+**isBAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or  `NaN`
 
 ### Example: Produce only a subset of variable types
 
@@ -285,7 +279,6 @@ knitr::kable(score_frame_thin)
 ```
 
 ## Conclusion
-
 
 In all cases (classification, regression, unsupervised, and multinomial classification) the intent is that `vtreat` transforms are essentially one liners.
 
