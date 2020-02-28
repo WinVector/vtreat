@@ -1,4 +1,4 @@
-vtreat for unsupervised problems
+Unsupervised Problems with Fit Prepare Notation
 ================
 
 Using vtreat with unsupervised problems and non-Y-aware data treatment
@@ -6,7 +6,11 @@ Using vtreat with unsupervised problems and non-Y-aware data treatment
 
 Nina Zumel and John Mount updated February 2020
 
-Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+This article documents `vtreat`'s ["fit\_prepare" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_prepare_api.md) for unsupervised problems. This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`.
+
+The same example in the original `R` `vtreat` notation can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+
+The same example in the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
 
 Preliminaries
 -------------
@@ -104,7 +108,7 @@ table(d$xc, useNA = 'always')
 Build a transform appropriate for unsupervised (or non-y-aware) problems.
 -------------------------------------------------------------------------
 
-The `vtreat` package is primarily intended for data treatment prior to supervised learning, as detailed in the [Classification](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md) and [Regression](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md) examples. In these situations, `vtreat` specifically uses the relationship between the inputs and the outcomes in the training data to create certain types of synthetic variables. We call these more complex synthetic variables *y-aware variables*.
+The `vtreat` package is primarily intended for data treatment prior to supervised learning, as detailed in the [Classification](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md) and [Regression](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md) examples. In these situations, `vtreat` specifically uses the relationship between the inputs and the outcomes in the training data to create certain types of synthetic variables. We call these more complex synthetic variables *y-aware variables*.
 
 However, you may also want to use `vtreat` for basic data treatment for unsupervised problems, when there is no outcome variable. Or, you may not want to create any y-aware variables when preparing the data for supervised modeling. For these applications, `vtreat` is a convenient alternative to `model.matrix()` that keeps information about the levels of factor variables observed in the data, and can manage novel levels that appear in future data.
 
@@ -113,31 +117,43 @@ In any case, we still want training data where all the input variables are numer
 First create the data treatment transform object, in this case a treatment for an unsupervised problem.
 
 ``` r
-transform = vtreat::designTreatmentsZ(
-    dframe = d,                              # data to learn transform from
-    varlist = setdiff(colnames(d), c('y'))   # columns to transform
+transform_design <- vtreat::UnsupervisedTreatment(
+    var_list = setdiff(colnames(d), c('y')),   # columns to transform
+    cols_to_copy = 'y'                         # copy y to the treated data
 )
+
+# learn transform from data
+treatment_plan <- fit(transform_design, d)
+
+# prepare the data using the treatment plan
+d_prepared <- prepare(treatment_plan, d)
+
+# for unsupervised problems fit_transform(transform_design, d)
+# will produce the same treatment plan and treated data set
+# as the above, in one step
+
+# unpack[treatment_plan = treatments,
+#        d_prepared = cross_frame] <- fit_prepare(transform_design, d)
+
+
+# list the derived variables
+get_feature_names(treatment_plan)
 ```
 
-    ## [1] "vtreat 1.6.0 inspecting inputs Thu Feb 27 16:03:18 2020"
-    ## [1] "designing treatments Thu Feb 27 16:03:18 2020"
-    ## [1] " have initial level statistics Thu Feb 27 16:03:18 2020"
-    ## [1] " scoring treatments Thu Feb 27 16:03:18 2020"
-    ## [1] "have treatment plan Thu Feb 27 16:03:18 2020"
+    ## [1] "x"                        "x_isBAD"                 
+    ## [3] "xc_catP"                  "x2"                      
+    ## [5] "xc_lev_NA"                "xc_lev_x_level_minus_0_5"
+    ## [7] "xc_lev_x_level_0"         "xc_lev_x_level_0_5"      
+    ## [9] "xc_lev_x_level_1"
 
-Use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
-
-``` r
-d_prepared = prepare(transform, d)
-d_prepared$y = d$y  # copy y to the prepared data
-```
+The treated training set should be clean: completely numeric, with no missing values.
 
 ### The Score Frame
 
 Now examine the score frame, which gives information about each new variable, including its type and which original variable it is derived from. Some of the columns of the score frame (`rsq`, `sig`) are not relevant to the unsupervised case; those columns are used by the Regression and Classification transforms.
 
 ``` r
-score_frame = transform$scoreFrame
+score_frame <- get_score_frame(treatment_plan)
 knitr::kable(score_frame)
 ```
 
@@ -149,7 +165,6 @@ knitr::kable(score_frame)
 | x2                             | TRUE     |    0|    1| FALSE      |                  0| x2       | clean |
 | xc\_lev\_NA                    | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
 | xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-| xc\_lev\_x\_level\_minus\_1\_5 | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
 | xc\_lev\_x\_level\_0           | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
 | xc\_lev\_x\_level\_0\_5        | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
 | xc\_lev\_x\_level\_1           | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
@@ -176,14 +191,14 @@ d_prepared %.>%
   knitr::kable(.)
 ```
 
-|           x|  x\_isBAD|  xc\_catP|          x2|  xc\_lev\_NA|  xc\_lev\_x\_level\_minus\_0\_5|  xc\_lev\_x\_level\_minus\_1\_5|  xc\_lev\_x\_level\_0|  xc\_lev\_x\_level\_0\_5|  xc\_lev\_x\_level\_1|           y|
-|-----------:|---------:|---------:|-----------:|------------:|-------------------------------:|-------------------------------:|---------------------:|------------------------:|---------------------:|-----------:|
-|   1.8848606|         0|     0.212|   0.0046504|            0|                               0|                               0|                     0|                        0|                     1|   1.0906132|
-|   1.5077419|         0|     0.212|  -1.2287497|            0|                               0|                               0|                     0|                        0|                     1|   1.0108804|
-|  -5.4901159|         0|     0.212|  -0.1405980|            0|                               0|                               0|                     0|                        0|                     1|   0.7766693|
-|  -0.2704873|         1|     0.182|  -0.2073270|            0|                               0|                               0|                     0|                        1|                     0|   0.5442452|
-|  -0.2704873|         1|     0.236|  -0.9215306|            1|                               0|                               0|                     0|                        0|                     0|  -0.9738103|
-|  -0.2704873|         1|     0.182|   0.3604742|            0|                               1|                               0|                     0|                        0|                     0|  -0.4968719|
+|           x|  x\_isBAD|  xc\_catP|          x2|  xc\_lev\_NA|  xc\_lev\_x\_level\_minus\_0\_5|  xc\_lev\_x\_level\_0|  xc\_lev\_x\_level\_0\_5|  xc\_lev\_x\_level\_1|           y|
+|-----------:|---------:|---------:|-----------:|------------:|-------------------------------:|---------------------:|------------------------:|---------------------:|-----------:|
+|   1.8848606|         0|     0.212|   0.0046504|            0|                               0|                     0|                        0|                     1|   1.0906132|
+|   1.5077419|         0|     0.212|  -1.2287497|            0|                               0|                     0|                        0|                     1|   1.0108804|
+|  -5.4901159|         0|     0.212|  -0.1405980|            0|                               0|                     0|                        0|                     1|   0.7766693|
+|  -0.2704873|         1|     0.182|  -0.2073270|            0|                               0|                     0|                        1|                     0|   0.5442452|
+|  -0.2704873|         1|     0.236|  -0.9215306|            1|                               0|                     0|                        0|                     0|  -0.9738103|
+|  -0.2704873|         1|     0.182|   0.3604742|            0|                               1|                     0|                        0|                     0|  -0.4968719|
 
 Using the Prepared Data to Model
 --------------------------------
@@ -215,7 +230,7 @@ ggplot(data = d_prepared, aes(x=x, y=y, color=as.character(clusterID))) +
   scale_colour_brewer(palette = "Dark2")
 ```
 
-![](Unsupervised_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](Unsupervised_FP_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ### Supervised modeling with non-y-aware variables
 
@@ -246,7 +261,7 @@ WVPlots::ScatterHist(
   title = 'Relationship between prediction and y')
 ```
 
-![](Unsupervised_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](Unsupervised_FP_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 Now apply the model to new data.
 
@@ -255,8 +270,7 @@ Now apply the model to new data.
 dtest <- make_data(450)
 
 # prepare the new data with vtreat
-dtest_prepared = prepare(transform, dtest)
-# dtest %.>% transform is an alias for prepare(transform, dtest)
+dtest_prepared = prepare(treatment_plan, dtest)
 dtest_prepared$y = dtest$y
 
 # apply the model to the prepared data
@@ -279,7 +293,7 @@ WVPlots::ScatterHist(
   title = 'Relationship between prediction and y')
 ```
 
-![](Unsupervised_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](Unsupervised_FP_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ``` r
 # get r-squared
@@ -289,23 +303,58 @@ sigr::wrapFTest(dtest_prepared,
                 nParameters = length(model_vars) + 1)
 ```
 
-    ## [1] "F Test summary: (R2=0.9683, F(11,438)=1218, p<1e-05)."
+    ## [1] "F Test summary: (R2=0.9683, F(10,439)=1343, p<1e-05)."
 
-Parameters for `designTreatmentsZ`
-----------------------------------
+Parameters for `UnsupervisedTreatment`
+--------------------------------------
 
 We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications.
 
 ``` r
-suppressPackageStartupMessages(library(printr))
-args("designTreatmentsZ")
+unsupervised_parameters()
 ```
 
-    ## function (dframe, varlist, ..., minFraction = 0, weights = c(), 
-    ##     rareCount = 0, collarProb = 0, codeRestriction = NULL, customCoders = NULL, 
-    ##     verbose = TRUE, parallelCluster = NULL, use_parallel = TRUE, 
-    ##     missingness_imputation = NULL, imputation_map = NULL) 
+    ## $minFraction
+    ## [1] 0.02
+    ## 
+    ## $rareCount
+    ## [1] 0
+    ## 
+    ## $collarProb
+    ## [1] 0
+    ## 
+    ## $codeRestriction
     ## NULL
+    ## 
+    ## $customCoders
+    ## NULL
+    ## 
+    ## $verbose
+    ## [1] FALSE
+    ## 
+    ## $use_parallel
+    ## [1] TRUE
+    ## 
+    ## $missingness_imputation
+    ## NULL
+    ## 
+    ## $pruneSig
+    ## NULL
+    ## 
+    ## $scale
+    ## [1] FALSE
+    ## 
+    ## $doCollar
+    ## [1] FALSE
+    ## 
+    ## $varRestriction
+    ## NULL
+    ## 
+    ## $trackedValues
+    ## NULL
+    ## 
+    ## attr(,"class")
+    ## [1] "unsupervised_parameters"
 
 Some parameters of note include:
 
@@ -313,7 +362,7 @@ Some parameters of note include:
 
 **minFraction** (default: 0): For categorical variables, indicator variables (type `levs`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. By default, all possible indicator variables are produced.
 
-**missingness\_imputation**: The function or value that `vtreat` uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation.md) for examples.
+**missingness\_imputation**: The function or value that `vtreat` uses to impute or "fill in" missing numerical values. The default is `mean`. To change the imputation function or use different functions/values for different columns, see the [Imputation example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation_FP.md) for examples.
 
 **customCoders**: For passing in user-defined transforms for custom data preparation. Won't be needed in most situations, but see [here](http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/) for an example of applying a GAM transform to input variables.
 
@@ -324,27 +373,29 @@ Some parameters of note include:
 table(d$xc, useNA = "ifany")/nrow(d)
 ```
 
-|  level\_-0.5|  level\_-1.5|  level\_0|  level\_0.5|  level\_1|     NA|
-|------------:|------------:|---------:|-----------:|---------:|------:|
-|        0.182|        0.004|     0.184|       0.182|     0.212|  0.236|
+    ## 
+    ## level_-0.5 level_-1.5    level_0  level_0.5    level_1       <NA> 
+    ##      0.182      0.004      0.184      0.182      0.212      0.236
 
 ``` r
-transform_common = designTreatmentsZ(
-    dframe = d,                              # data to learn transform from
-    varlist = setdiff(colnames(d), c('y')),  # columns to transform
-    minFraction = 0.2                        # only make indicators for levels that appear more than 20% of the time
+# create a parameter list, overriding the default for minFraction
+newparams = unsupervised_parameters(
+  list(minFraction = 0.2)     # only make indicators for levels that appear more than 20% of the time
 )
-```
 
-    ## [1] "vtreat 1.6.0 inspecting inputs Thu Feb 27 16:03:21 2020"
-    ## [1] "designing treatments Thu Feb 27 16:03:21 2020"
-    ## [1] " have initial level statistics Thu Feb 27 16:03:21 2020"
-    ## [1] " scoring treatments Thu Feb 27 16:03:21 2020"
-    ## [1] "have treatment plan Thu Feb 27 16:03:21 2020"
+transform_common = UnsupervisedTreatment(
+    var_list = setdiff(colnames(d), c('y')), # columns to transform
+    params = newparams                       # set the parameters                        
+)
 
-``` r
-d_prepared = prepare(transform_common, d)   # fit the transform
-knitr::kable(transform_common$scoreFrame)   # examine the score frame
+# learn transform from data
+treatment_plan <- fit(transform_common, d)
+
+# prepare the data using the treatment plan
+d_prepared <- prepare(treatment_plan, d)
+
+# examine the score frame
+knitr::kable(get_score_frame(treatment_plan))  
 ```
 
 | varName              | varMoves |  rsq|  sig| needsSplit |  extraModelDegrees| origName | code  |
@@ -358,7 +409,7 @@ knitr::kable(transform_common$scoreFrame)   # examine the score frame
 
 In this case, the unsupervised treatment only created levels for the two most common levels, `level_1` and `NA`, which are both present more than 20% of the time.
 
-In unsupervised situations, this may only be desirable when there are an unworkably large number of possible levels (for example, when using ZIP code as a variable). It is more useful in conjunction with the y-aware variables produced by `designTreatmentsN`/`mkCrossFrameNExperiment` (regression), `designTreatmentsC`/`mkCrossFrameCExperiment` (binary classification), or `designTreatmentsM`/`mkCrossFrameMExperiment` (multiclass classification).
+In unsupervised situations, this may only be desirable when there are an unworkably large number of possible levels (for example, when using ZIP code as a variable). It is more useful in conjunction with the y-aware variables produced by `NumericOutcomeTreatment`, `BinomialOutcomeTreatment`, or `MultinomialOutcomeTreatment`.
 
 Types of prepared variables
 ---------------------------
@@ -371,40 +422,6 @@ Types of prepared variables
 
 **isBAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`
 
-### Example: Produce only a subset of variable types
-
-In this example, suppose you only want to use indicators and continuous variables in your model; in other words, you only want to use variables of types (`clean`, `isBAD`, and `lev`), and no `catP` variables.
-
-``` r
-transform_thin = vtreat::designTreatmentsZ(
-    dframe = d,                              # data to learn transform from
-    varlist = setdiff(colnames(d), c('y')),  # columns to transform
-    codeRestriction = c('clean', 'lev', 'isBAD'))
-```
-
-    ## [1] "vtreat 1.6.0 inspecting inputs Thu Feb 27 16:03:21 2020"
-    ## [1] "designing treatments Thu Feb 27 16:03:21 2020"
-    ## [1] " have initial level statistics Thu Feb 27 16:03:21 2020"
-    ## [1] " scoring treatments Thu Feb 27 16:03:21 2020"
-    ## [1] "have treatment plan Thu Feb 27 16:03:21 2020"
-
-``` r
-score_frame_thin = transform_thin$scoreFrame
-knitr::kable(score_frame_thin)
-```
-
-| varName                        | varMoves |  rsq|  sig| needsSplit |  extraModelDegrees| origName | code  |
-|:-------------------------------|:---------|----:|----:|:-----------|------------------:|:---------|:------|
-| x                              | TRUE     |    0|    1| FALSE      |                  0| x        | clean |
-| x\_isBAD                       | TRUE     |    0|    1| FALSE      |                  0| x        | isBAD |
-| x2                             | TRUE     |    0|    1| FALSE      |                  0| x2       | clean |
-| xc\_lev\_NA                    | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-| xc\_lev\_x\_level\_minus\_1\_5 | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-| xc\_lev\_x\_level\_0           | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-| xc\_lev\_x\_level\_0\_5        | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-| xc\_lev\_x\_level\_1           | TRUE     |    0|    1| FALSE      |                  0| xc       | lev   |
-
 Conclusion
 ----------
 
@@ -412,9 +429,9 @@ In all cases (classification, regression, unsupervised, and multinomial classifi
 
 The preparation commands are organized as follows:
 
--   **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
--   **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
--   **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
--   **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+-   **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+-   **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md), [`Python` classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+-   **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+-   **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 These current revisions of the examples are designed to be small, yet complete. So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
