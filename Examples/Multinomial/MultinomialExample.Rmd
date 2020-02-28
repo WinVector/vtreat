@@ -134,7 +134,7 @@ Any or all of these new variables are available for downstream modeling.
 
 Note that unlike `mkCrossFrameCExperiment` (binomial classification), `mkCrossFrameMExperiment` produces multiple `catB` variables for a single categorical variable: one for each possible outcome class. Each `catB` variable is the output of a one-variable regularized logistic regression of the original variable against a single target outcome class. In other words, `mkCrossFrameMExperiment` treats multiclass classification as multiple "one against rest" classification problems. For a more detailed discussion of the `catB` variables, see the [binary classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.Rmd).
 
-Similarly, the `rsq` and `sig` columns report the variable's cross-validated correlation and its cross-validated significance os a one-variable linear model for each target outcome.
+Similarly, the `rsq` and `sig` columns report the variable's cross-validated correlation and its cross-validated significance as a one-variable linear model for each target outcome.
 
 This means that for multiclass classification problems, the score frame has multiple rows per new variable. In this example,
 the score frame has `r nrow(score_frame)` rows for `r ncol(d_prepared)-1` variables.
@@ -258,8 +258,6 @@ args("mkCrossFrameMExperiment")
 
 Some parameters of note include:
 
-Some parameters of note include:
-
 **codeRestriction**: The types of synthetic variables that `vtreat` will (potentially) produce. By default, all possible applicable types will be produced. See *Types of prepared variables* below.
 
 **minFraction** (default: 0.02): For categorical variables, indicator variables (type `lev`) are only produced for levels that are present at least `minFraction` of the time. A consequence of this is that 1/`minFraction` is the maximum number of indicators that will be produced for a given categorical variable. To make sure that *all* possible indicator variables are produced, set `minFraction = 0`
@@ -311,13 +309,10 @@ d_prepared_thin %.>%
   knitr::kable(.)
 ```
 
-**BUG** -- the `catB` vars still show up
 
 ```{r}
+# no catB or catP
 knitr::kable(score_frame_thin[,cols])
-
-unique(score_frame_thin$code)
-unique(score_frame$code)
 
 ```
 
@@ -327,9 +322,15 @@ unique(score_frame$code)
 While machine learning algorithms are generally tolerant to a reasonable number of irrelevant or noise variables, too many irrelevant variables can lead to serious overfit; see [this article](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/) for an extreme example, one we call "Bad Bayes". The default threshold is an attempt to eliminate obviously irrelevant variables early.
 
 Imagine that you have a pure noise dataset, where none of the *n* inputs are related to the output. If you treat each variable as a one-variable model for the output, and look at the significances of each model, these significance-values will be uniformly distributed in the range [0:1]. You want to pick a weakest possible significance threshold that eliminates as many noise variables as possible. A moment's thought should convince you that a threshold of *1/n* allows only one variable through, in expectation. 
-This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we developed the R version of `vtreat`.
 
-As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship  to the output may fail to pass the threshold. So it may make sense for the data scientist to filter (or not) as they will.
+This leads to the general-case heuristic that a significance threshold of *1/n* on your variables should allow only one irrelevant variable through, in expectation (along with all the relevant variables). Hence, *1/n* used to be our recommended threshold, when we originally developed the R version of `vtreat`.
+
+We noticed, however, that this biases the filtering against numerical variables, since there are at most two derived variables (of types *clean* and *isBAD*) for every numerical variable in the original data. Categorical variables, on the other hand, are expanded to many derived variables: several indicators (one for every common level), plus a *catB* and a *catP*. So we now reweight the thresholds.
+
+Suppose you have a (treated) data set with *ntreat* different types of `vtreat` variables (`clean`, `lev`, etc). There are *nT* variables of type *T*. Then the default threshold for all the variables of type *T* is *1/(ntreat nT)*. This reweighting helps to reduce the bias against any particular type of variable. The heuristic is still that the set of recommended variables will allow at most one noise variable into the set of candidate variables.
+
+As noted above, because `vtreat` estimates variable significances using linear methods by default, some variables with a non-linear relationship to the output may fail to pass the threshold. In this case, you may not wish to filter the variables to be used in the models to only recommended variables (as we did in the main example above), but instead use all the variables, or select the variables to use by your own criteria.
+
 
 ## Conclusion
 
