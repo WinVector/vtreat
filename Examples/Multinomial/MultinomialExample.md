@@ -28,7 +28,7 @@ library(vtreat)
 packageVersion('vtreat')
 ```
 
-    ## [1] '1.5.2'
+    ## [1] '1.6.0'
 
 ``` r
 suppressPackageStartupMessages(library(ggplot2))
@@ -118,7 +118,7 @@ want training data where all the input variables are numeric and have no
 missing values or `NA`s.
 
 First create the data treatment transform design object, in this case a
-treatment for a binomial classification problem.
+treatment for a multinomial classification problem.
 
 We use the training data `d` to fit the transform and the return a
 treated training set: completely numeric, with no missing values.
@@ -133,9 +133,25 @@ unpack[
     setdiff(colnames(d), c('y', 'yc')),   # columns to transform
     'yc'                                  # outcome variable
   )
-
-score_frame$recommended <- score_frame$varMoves & (score_frame$sig < 1/nrow(score_frame))
 ```
+
+Notice that `d_prepared` now only includes derived variables and the
+outcome `yc`. The derived variables will be discussed below.
+
+``` r
+d_prepared %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc    |
+| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :---- |
+|   1.8848606 |        0 |    0.206 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 |       14.169093 |      \-12.5759659 |    \-12.8410398 | large |
+|   1.5077419 |        0 |    0.206 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 |       14.181970 |      \-12.8643483 |    \-12.6639435 | large |
+| \-5.4901159 |        0 |    0.206 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 |       14.169093 |      \-12.5759659 |    \-12.8410398 | large |
+| \-0.2704873 |        1 |    0.196 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 |        1.096309 |         0.3616142 |    \-12.7584224 | large |
+| \-0.2704873 |        1 |    0.238 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 |     \-12.940744 |      \-12.7354342 |      14.1933572 | small |
+| \-0.2704873 |        1 |    0.188 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 |     \-12.773690 |         0.5879950 |       0.8699281 | small |
 
 Note that for the training data `d`: `crossFrame` is **not** the same as
 `prepare(transform, d)`; the second call can lead to nested model bias
@@ -162,65 +178,91 @@ from, its (cross-validated) correlation with the outcome, and its
 outcome.
 
 ``` r
-knitr::kable(score_frame)
+# only show a subset of the columns
+cols = c("varName", "origName", "code", "outcome_level", "rsq", "sig", "varMoves", "default_threshold", "recommended")
+knitr::kable(score_frame[,cols])
 ```
 
-| varName                        | varMoves |       rsq |       sig | outcome\_level | needsSplit | extraModelDegrees | origName | code  | recommended |
-| :----------------------------- | :------- | --------: | --------: | :------------- | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0005756 | 0.5470919 | large          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0000771 | 0.8255885 | large          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0026075 | 0.2000083 | large          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_catP                       | TRUE     | 0.0002361 | 0.6997734 | large          | TRUE       |                 5 | xc       | catP  | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1750095 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1185254 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0644178 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4701626 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1328708 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0022396 | 0.2338771 | liminal        | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0020122 | 0.2591571 | liminal        | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0023614 | 0.2215731 | liminal        | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_catP                       | TRUE     | 0.4410001 | 0.0000000 | liminal        | TRUE       |                 5 | xc       | catP  | TRUE        |
-| xc\_lev\_NA                    | TRUE     | 0.1769596 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.3615209 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0041777 | 0.1039765 | liminal        | FALSE      |                 0 | xc       | lev   | FALSE       |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.1492650 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0076508 | 0.0277896 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0048286 | 0.0773262 | small          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0022777 | 0.2250506 | small          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000045 | 0.9569844 | small          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_catP                       | TRUE     | 0.3117712 | 0.0000000 | small          | TRUE       |                 5 | xc       | catP  | TRUE        |
-| xc\_lev\_NA                    | TRUE     | 0.5132320 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1265119 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1488474 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.1576977 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0387613 | 0.0000006 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| large\_xc\_catB                | TRUE     | 0.7904963 | 0.0000000 | large          | TRUE       |                 5 | xc       | catB  | TRUE        |
-| liminal\_xc\_catB              | TRUE     | 0.5786498 | 0.0000000 | liminal        | TRUE       |                 5 | xc       | catB  | TRUE        |
-| small\_xc\_catB                | TRUE     | 0.7914976 | 0.0000000 | small          | TRUE       |                 5 | xc       | catB  | TRUE        |
+| varName                        | origName | code  | outcome\_level |       rsq |       sig | varMoves | default\_threshold | recommended |
+| :----------------------------- | :------- | :---- | :------------- | --------: | --------: | :------- | -----------------: | :---------- |
+| x                              | x        | clean | large          | 0.0005756 | 0.5470919 | TRUE     |         0.03333333 | FALSE       |
+| x\_isBAD                       | x        | isBAD | large          | 0.0000771 | 0.8255885 | TRUE     |         0.06666667 | FALSE       |
+| x2                             | x2       | clean | large          | 0.0026075 | 0.2000083 | TRUE     |         0.03333333 | FALSE       |
+| xc\_catP                       | xc       | catP  | large          | 0.0002361 | 0.6997734 | TRUE     |         0.06666667 | FALSE       |
+| xc\_lev\_NA                    | xc       | lev   | large          | 0.1750095 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_0           | xc       | lev   | large          | 0.1185254 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | xc       | lev   | large          | 0.0644178 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_1           | xc       | lev   | large          | 0.4701626 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | xc       | lev   | large          | 0.1328708 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| x                              | x        | clean | liminal        | 0.0022396 | 0.2338771 | TRUE     |         0.03333333 | FALSE       |
+| x\_isBAD                       | x        | isBAD | liminal        | 0.0020122 | 0.2591571 | TRUE     |         0.06666667 | FALSE       |
+| x2                             | x2       | clean | liminal        | 0.0023614 | 0.2215731 | TRUE     |         0.03333333 | FALSE       |
+| xc\_catP                       | xc       | catP  | liminal        | 0.4410001 | 0.0000000 | TRUE     |         0.06666667 | TRUE        |
+| xc\_lev\_NA                    | xc       | lev   | liminal        | 0.1769596 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_0           | xc       | lev   | liminal        | 0.3615209 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | xc       | lev   | liminal        | 0.0041777 | 0.1039765 | TRUE     |         0.01333333 | FALSE       |
+| xc\_lev\_x\_level\_1           | xc       | lev   | liminal        | 0.1492650 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | xc       | lev   | liminal        | 0.0076508 | 0.0277896 | TRUE     |         0.01333333 | FALSE       |
+| x                              | x        | clean | small          | 0.0048286 | 0.0773262 | TRUE     |         0.03333333 | FALSE       |
+| x\_isBAD                       | x        | isBAD | small          | 0.0022777 | 0.2250506 | TRUE     |         0.06666667 | FALSE       |
+| x2                             | x2       | clean | small          | 0.0000045 | 0.9569844 | TRUE     |         0.03333333 | FALSE       |
+| xc\_catP                       | xc       | catP  | small          | 0.3117712 | 0.0000000 | TRUE     |         0.06666667 | TRUE        |
+| xc\_lev\_NA                    | xc       | lev   | small          | 0.5132320 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_0           | xc       | lev   | small          | 0.1265119 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | xc       | lev   | small          | 0.1488474 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_1           | xc       | lev   | small          | 0.1576977 | 0.0000000 | TRUE     |         0.01333333 | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | xc       | lev   | small          | 0.0387613 | 0.0000006 | TRUE     |         0.01333333 | TRUE        |
+| large\_xc\_catB                | xc       | catB  | large          | 0.7904963 | 0.0000000 | TRUE     |         0.06666667 | TRUE        |
+| liminal\_xc\_catB              | xc       | catB  | liminal        | 0.5786498 | 0.0000000 | TRUE     |         0.06666667 | TRUE        |
+| small\_xc\_catB                | xc       | catB  | small          | 0.7914976 | 0.0000000 | TRUE     |         0.06666667 | TRUE        |
 
 Note that the variable `xc` has been converted to multiple variables:
 
-  - an indicator variable for each possible level (`xc_lev_*`)
-  - the value of a (cross-validated) one-variable model for `yc` as a
-    function of `xc` (`xc_catB`)
+  - an indicator variable for each possible level, plus `NA`
+    (`xc_lev_*`)
+  - the value of a (cross-validated) one-variable model for *each level*
+    of `yc` as a function of `xc` (`*_xc_catB`)
   - a variable that returns how prevalent this particular value of `xc`
     is in the training data (`xc_catP`)
-  - a variable indicating when `xc` was `NA` in the original data
-    (`xc_lev_NA` for categorical variables, `x_isBAD` for continuous
-    variables).
+
+The variable `x` has been converted to two new variables:
+
+  - a clean version of `x` that has no missing values or `NaN`s
+  - a variable indicating when `x` was `NA` in the original data
+    (`x_isBAD`).
 
 Any or all of these new variables are available for downstream modeling.
 
+Note that unlike `mkCrossFrameCExperiment` (binomial classification),
+`mkCrossFrameMExperiment` produces multiple `catB` variables for a
+single categorical variable: one for each possible outcome class. Each
+`catB` variable is the output of a one-variable regularized logistic
+regression of the original variable against a single target outcome
+class. In other words, `mkCrossFrameMExperiment` treats multiclass
+classification as multiple “one against rest” classification problems.
+For a more detailed discussion of the `catB` variables, see the [binary
+classification
+example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.Rmd).
+
+Similarly, the `rsq` and `sig` columns report the variable’s
+cross-validated correlation and its cross-validated significance os a
+one-variable linear model for each target outcome.
+
+This means that for multiclass classification problems, the score frame
+has multiple rows per new variable. In this example, the score frame has
+30 rows for 12 variables.
+
 The `recommended` column indicates which variables are non constant
 (`varMoves` == TRUE) and have a significance value smaller than
-`1/nrow(score_frame)`. See the section *Deriving the Default Thresholds*
-below for the reasoning behind the default thresholds. Recommended
+`default_threshold`. See the section *Deriving the Default Thresholds*
+below for the reasoning behind such a default threshold. Recommended
 columns are intended as advice about which variables appear to be most
 likely to be useful in a downstream model. This advice attempts to be
 conservative, to reduce the possibility of mistakenly eliminating
 variables that may in fact be useful (although, obviously, it can still
 mistakenly eliminate variables that have a real but non-linear
 relationship to the output, as is the case with `x`, in our example).
+
 Since each variable has multiple recommendations, one can consider a
 variable to be recommended if it is recommended for any of the outcome
 targets: an OR of all the recommendations.
@@ -252,26 +294,8 @@ good_original_variables
 
     ## [1] "xc"
 
-Notice, in each case we must call `unique()` as each variable (derived
-or original) is potentially qualified against each possible outcome.
-
-Notice that `d_prepared` only includes derived variables and the outcome
-`yc`:
-
-``` r
-d_prepared %.>%
-  head(.) %.>%
-  knitr::kable(.)
-```
-
-|           x | x\_isBAD | xc\_catP |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc    |
-| ----------: | -------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :---- |
-|   1.8848606 |        0 |    0.206 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 |       14.169093 |      \-12.5759659 |    \-12.8410398 | large |
-|   1.5077419 |        0 |    0.206 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 |       14.181970 |      \-12.8643483 |    \-12.6639435 | large |
-| \-5.4901159 |        0 |    0.206 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 |       14.169093 |      \-12.5759659 |    \-12.8410398 | large |
-| \-0.2704873 |        1 |    0.196 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 |        1.096309 |         0.3616142 |    \-12.7584224 | large |
-| \-0.2704873 |        1 |    0.238 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 |     \-12.940744 |      \-12.7354342 |      14.1933572 | small |
-| \-0.2704873 |        1 |    0.188 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 |     \-12.773690 |         0.5879950 |       0.8699281 | small |
+In each case we must call `unique()` as each variable (derived or
+original) is potentially qualified against each possible outcome.
 
 ## Using the Prepared Data in a Model
 
@@ -299,7 +323,8 @@ library(glmnet)
     ## Loaded glmnet 3.0-2
 
 ``` r
-model_vars <- score_frame$varName[score_frame$recommended]
+# use only the recommended variables for this example
+model_vars <- good_new_variables
 
 model <- glmnet(x = as.matrix(d_prepared[, model_vars, drop=FALSE]), 
                y = d_prepared[['yc']],
@@ -350,12 +375,12 @@ d_prepared[, to_print, drop = FALSE] %.>%
 
 | yc    | predict |     large |   liminal |     small | prob\_on\_predicted\_class | prob\_on\_correct\_class |
 | :---- | :------ | --------: | --------: | --------: | -------------------------: | -----------------------: |
-| large | large   | 0.9999301 | 0.0000699 | 0.0000000 |                  0.9999301 |                0.9999301 |
-| large | large   | 0.9999257 | 0.0000743 | 0.0000000 |                  0.9999257 |                0.9999257 |
-| large | large   | 0.9999301 | 0.0000699 | 0.0000000 |                  0.9999301 |                0.9999301 |
-| large | large   | 0.5977798 | 0.4020363 | 0.0001839 |                  0.5977798 |                0.5977798 |
-| small | small   | 0.0000020 | 0.0000794 | 0.9999186 |                  0.9999186 |                0.9999186 |
-| small | small   | 0.0001275 | 0.3634824 | 0.6363902 |                  0.6363902 |                0.6363902 |
+| large | large   | 0.9999509 | 0.0000491 | 0.0000000 |                  0.9999509 |                0.9999509 |
+| large | large   | 0.9999472 | 0.0000528 | 0.0000000 |                  0.9999472 |                0.9999472 |
+| large | large   | 0.9999509 | 0.0000491 | 0.0000000 |                  0.9999509 |                0.9999509 |
+| large | large   | 0.5977609 | 0.4020513 | 0.0001879 |                  0.5977609 |                0.5977609 |
+| small | small   | 0.0000012 | 0.0000695 | 0.9999292 |                  0.9999292 |                0.9999292 |
+| small | small   | 0.0001415 | 0.3623118 | 0.6375467 |                  0.6375467 |                0.6375467 |
 
 ``` r
 table(truth = d_prepared$yc, prediction = d_prepared$predict)
@@ -392,12 +417,12 @@ dtest_prepared[, to_print, drop = FALSE] %.>%
 
 | yc      | predict |     large |   liminal |     small | prob\_on\_predicted\_class | prob\_on\_correct\_class |
 | :------ | :------ | --------: | --------: | --------: | -------------------------: | -----------------------: |
-| small   | small   | 0.0001329 | 0.4484289 | 0.5514382 |                  0.5514382 |                0.5514382 |
-| small   | small   | 0.0001329 | 0.4484289 | 0.5514382 |                  0.5514382 |                0.5514382 |
-| small   | small   | 0.0000035 | 0.0001621 | 0.9998344 |                  0.9998344 |                0.9998344 |
-| liminal | liminal | 0.0000099 | 0.9996924 | 0.0002977 |                  0.9996924 |                0.9996924 |
-| large   | large   | 0.9999385 | 0.0000615 | 0.0000000 |                  0.9999385 |                0.9999385 |
-| liminal | large   | 0.6083267 | 0.3915074 | 0.0001659 |                  0.6083267 |                0.3915074 |
+| small   | small   | 0.0001459 | 0.4512153 | 0.5486388 |                  0.5486388 |                0.5486388 |
+| small   | small   | 0.0001459 | 0.4512153 | 0.5486388 |                  0.5486388 |                0.5486388 |
+| small   | small   | 0.0000021 | 0.0001456 | 0.9998523 |                  0.9998523 |                0.9998523 |
+| liminal | liminal | 0.0000054 | 0.9996821 | 0.0003125 |                  0.9996821 |                0.9996821 |
+| large   | large   | 0.9999566 | 0.0000434 | 0.0000000 |                  0.9999566 |                0.9999566 |
+| liminal | large   | 0.6084001 | 0.3914308 | 0.0001691 |                  0.6084001 |                0.3914308 |
 
 ``` r
 table(truth = dtest_prepared$yc, prediction = dtest_prepared$predict)
@@ -416,189 +441,43 @@ usable out of the box for most applications.
 
 ``` r
 suppressPackageStartupMessages(library(printr))
-help("mkCrossFrameMExperiment")
+args("mkCrossFrameMExperiment")
 ```
 
-    ## Function to build multi-outcome vtreat cross frame and treatment plan.
-    ## 
-    ## Description:
-    ## 
-    ##      Please see 'vignette("MultiClassVtreat", package = "vtreat")'
-    ##      <URL:
-    ##      https://winvector.github.io/vtreat/articles/MultiClassVtreat.html>.
-    ## 
-    ## Usage:
-    ## 
-    ##      mkCrossFrameMExperiment(
-    ##        dframe,
-    ##        varlist,
-    ##        outcomename,
-    ##        ...,
-    ##        weights = c(),
-    ##        minFraction = 0.02,
-    ##        smFactor = 0,
-    ##        rareCount = 0,
-    ##        rareSig = 1,
-    ##        collarProb = 0,
-    ##        codeRestriction = NULL,
-    ##        customCoders = NULL,
-    ##        scale = FALSE,
-    ##        doCollar = FALSE,
-    ##        splitFunction = vtreat::kWayCrossValidation,
-    ##        ncross = 3,
-    ##        forceSplit = FALSE,
-    ##        catScaling = FALSE,
-    ##        y_dependent_treatments = c("catB"),
-    ##        verbose = FALSE,
-    ##        parallelCluster = NULL,
-    ##        use_parallel = TRUE,
-    ##        missingness_imputation = NULL,
-    ##        imputation_map = NULL
-    ##      )
-    ##      
-    ## Arguments:
-    ## 
-    ##   dframe: data to learn from
-    ## 
-    ##  varlist: character, vector of indpendent variable column names.
-    ## 
-    ## outcomename: character, name of outcome column.
-    ## 
-    ##      ...: not used, declared to forced named binding of later arguments
-    ## 
-    ##  weights: optional training weights for each row
-    ## 
-    ## minFraction: optional minimum frequency a categorical level must have
-    ##           to be converted to an indicator column.
-    ## 
-    ## smFactor: optional smoothing factor for impact coding models.
-    ## 
-    ## rareCount: optional integer, allow levels with this count or below to
-    ##           be pooled into a shared rare-level.  Defaults to 0 or off.
-    ## 
-    ##  rareSig: optional numeric, suppress levels from pooling at this
-    ##           significance value greater.  Defaults to NULL or off.
-    ## 
-    ## collarProb: what fraction of the data (pseudo-probability) to collar
-    ##           data at if doCollar is set during 'prepare.multinomial_plan'.
-    ## 
-    ## codeRestriction: what types of variables to produce (character array of
-    ##           level codes, NULL means no restriction).
-    ## 
-    ## customCoders: map from code names to custom categorical variable
-    ##           encoding functions (please see <URL:
-    ##           https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md>).
-    ## 
-    ##    scale: optional if TRUE replace numeric variables with regression
-    ##           ("move to outcome-scale").
-    ## 
-    ## doCollar: optional if TRUE collar numeric variables by cutting off
-    ##           after a tail-probability specified by collarProb during
-    ##           treatment design.
-    ## 
-    ## splitFunction: (optional) see vtreat::buildEvalSets .
-    ## 
-    ##   ncross: optional scalar>=2 number of cross-validation rounds to
-    ##           design.
-    ## 
-    ## forceSplit: logical, if TRUE force cross-validated significance
-    ##           calculations on all variables.
-    ## 
-    ## catScaling: optional, if TRUE use glm() linkspace, if FALSE use lm()
-    ##           for scaling.
-    ## 
-    ## y_dependent_treatments: character what treatment types to build
-    ##           per-outcome level.
-    ## 
-    ##  verbose: if TRUE print progress.
-    ## 
-    ## parallelCluster: (optional) a cluster object created by package
-    ##           parallel or package snow.
-    ## 
-    ## use_parallel: logical, if TRUE use parallel methods.
-    ## 
-    ## missingness_imputation: function of signature f(values: numeric,
-    ##           weights: numeric), simple missing value imputer.
-    ## 
-    ## imputation_map: map from column names to functions of signature
-    ##           f(values: numeric, weights: numeric), simple missing value
-    ##           imputers.
-    ## 
-    ## Value:
-    ## 
-    ##      a names list containing cross_frame, treat_m, score_frame, and
-    ##      fit_obj_id
-    ## 
-    ## See Also:
-    ## 
-    ##      'prepare.multinomial_plan'
-    ## 
-    ## Examples:
-    ## 
-    ##      # numeric example
-    ##      set.seed(23525)
-    ##      
-    ##      # we set up our raw training and application data
-    ##      dTrainM <- data.frame(
-    ##        x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
-    ##        z = c(1, 2, 3, 4, 5, NA, 7, NA), 
-    ##        y = c(0, 0, 0, 1, 0, 1, 2, 1))
-    ##      
-    ##      dTestM <- data.frame(
-    ##        x = c('a', 'b', 'c', NA), 
-    ##        z = c(10, 20, 30, NA))
-    ##      
-    ##      # we perform a vtreat cross frame experiment
-    ##      # and unpack the results into treatmentsM,
-    ##      # dTrainMTreated, and score_frame
-    ##      unpack[
-    ##        treatmentsM = treat_m,
-    ##        dTrainMTreated = cross_frame,
-    ##        score_frame = score_frame
-    ##        ] <- mkCrossFrameMExperiment(
-    ##          dframe = dTrainM,
-    ##          varlist = setdiff(colnames(dTrainM), 'y'),
-    ##          outcomename = 'y',
-    ##          verbose = FALSE)
-    ##      
-    ##      # the score_frame relates new
-    ##      # derived variables to original columns
-    ##      score_frame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'outcome_level')] %.>%
-    ##        print(.)
-    ##      
-    ##      # the treated frame is a "cross frame" which
-    ##      # is a transform of the training data built 
-    ##      # as if the treatment were learned on a different
-    ##      # disjoint training set to avoid nested model
-    ##      # bias and over-fit.
-    ##      dTrainMTreated %.>%
-    ##        head(.) %.>%
-    ##        print(.)
-    ##      
-    ##      # Any future application data is prepared with
-    ##      # the prepare method.
-    ##      dTestMTreated <- prepare(treatmentsM, dTestM, pruneSig=NULL)
-    ##      
-    ##      dTestMTreated %.>%
-    ##        head(.) %.>%
-    ##        print(.)
+    ## function (dframe, varlist, outcomename, ..., weights = c(), minFraction = 0.02, 
+    ##     smFactor = 0, rareCount = 0, rareSig = 1, collarProb = 0, 
+    ##     codeRestriction = NULL, customCoders = NULL, scale = FALSE, 
+    ##     doCollar = FALSE, splitFunction = vtreat::kWayCrossValidation, 
+    ##     ncross = 3, forceSplit = FALSE, catScaling = FALSE, y_dependent_treatments = c("catB"), 
+    ##     verbose = FALSE, parallelCluster = NULL, use_parallel = TRUE, 
+    ##     missingness_imputation = NULL, imputation_map = NULL) 
+    ## NULL
+
+Some parameters of note include:
 
 Some parameters of note include:
 
 **codeRestriction**: The types of synthetic variables that `vtreat` will
-(potentially) produce. See *Types of prepared variables* below.
+(potentially) produce. By default, all possible applicable types will be
+produced. See *Types of prepared variables* below.
 
-**minFraction**: For categorical variables, indicator variables (type
-`indicator_code`) are only produced for levels that are present at least
-`minFraction` of the time. A consequence of this is that 1/`minFraction`
-is the maximum number of indicators that will be produced for a given
-categorical variable. To make sure that *all* possible indicator
-variables are produced, set `minFraction = 0`
+**minFraction** (default: 0.02): For categorical variables, indicator
+variables (type `lev`) are only produced for levels that are present at
+least `minFraction` of the time. A consequence of this is that
+1/`minFraction` is the maximum number of indicators that will be
+produced for a given categorical variable. To make sure that *all*
+possible indicator variables are produced, set `minFraction = 0`
 
 **splitFunction**: The cross validation method used by `vtreat`. Most
 people won’t have to change this.
 
-**ncross**: The number of folds to use for cross-validation
+**ncross** (default: 3): The number of folds to use for cross-validation
+
+**missingness\_imputation**: The function or value that vtreat uses to
+impute or “fill in” missing numerical values. The default is `mean`. To
+change the imputation function or use different functions/values for
+different columns, see the [Imputation
+example](https://github.com/WinVector/vtreat/blob/master/Examples/Imputation/Imputation.md).
 
 **customCoders**: For passing in user-defined transforms for custom data
 preparation. Won’t be needed in most situations, but see
@@ -614,15 +493,14 @@ with no `NAs` or missing values
 level: for each level of the variable, indicates if that level was “on”
 
 **catP**: Produced from categorical variables: indicates how often each
-level of the variable was “on”
+level of the variable was “on” (its prevalence)
 
 **catB**: Produced from categorical variables: score from a
 one-dimensional model of the centered output as a function of the
 variable
 
-**is\_BAD**: Produced for both numerical and categorical variables: an
-indicator variable that marks when the original variable was missing or
-`NaN`.
+**isBAD**: Produced for numerical variables: an indicator variable that
+marks when the original variable was missing or `NaN`.
 
 More on the coding types can be found
 [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
@@ -631,8 +509,8 @@ More on the coding types can be found
 
 In this example, suppose you only want to use indicators and continuous
 variables in your model; in other words, you only want to use variables
-of types (`clean_copy`, `missing_indicator`, and `indicator_code`), and
-no `catB` or `prevalence_code` variables.
+of types (`clean`, `isBAD`, and `lev`), and no `catB` or `catP`
+variables.
 
 ``` r
 unpack[
@@ -648,56 +526,65 @@ unpack[
                         'isBAD')
   )
 
-score_frame_thin$recommended <- score_frame_thin$varMoves & (score_frame_thin$sig < 1/nrow(score_frame))
-
-
 d_prepared_thin %.>%
   head(.) %.>%
   knitr::kable(.)
 ```
 
-|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | large\_xc\_catB | liminal\_xc\_catB | small\_xc\_catB | yc    |
-| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | --------------: | ----------------: | --------------: | :---- |
-|   1.8848606 |        0 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 |       14.163818 |      \-12.6124052 |    \-12.8949267 | large |
-|   1.5077419 |        0 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 |       14.198173 |      \-12.7486046 |    \-12.8561034 | large |
-| \-5.4901159 |        0 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 |       14.163818 |      \-12.6124052 |    \-12.8949267 | large |
-| \-0.2704873 |        1 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 |        1.378323 |         0.1730896 |    \-12.7862930 | large |
-| \-0.2704873 |        1 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 |     \-12.918017 |      \-12.8907789 |      14.2600867 | small |
-| \-0.2704873 |        1 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 |     \-12.635256 |         0.5023643 |       0.8500029 | small |
+|           x | x\_isBAD |          x2 | xc\_lev\_NA | xc\_lev\_x\_level\_minus\_0\_5 | xc\_lev\_x\_level\_0 | xc\_lev\_x\_level\_0\_5 | xc\_lev\_x\_level\_1 | yc    |
+| ----------: | -------: | ----------: | ----------: | -----------------------------: | -------------------: | ----------------------: | -------------------: | :---- |
+|   1.8848606 |        0 |   0.0046504 |           0 |                              0 |                    0 |                       0 |                    1 | large |
+|   1.5077419 |        0 | \-1.2287497 |           0 |                              0 |                    0 |                       0 |                    1 | large |
+| \-5.4901159 |        0 | \-0.1405980 |           0 |                              0 |                    0 |                       0 |                    1 | large |
+| \-0.2704873 |        1 | \-0.2073270 |           0 |                              0 |                    0 |                       1 |                    0 | large |
+| \-0.2704873 |        1 | \-0.9215306 |           1 |                              0 |                    0 |                       0 |                    0 | small |
+| \-0.2704873 |        1 |   0.3604742 |           0 |                              1 |                    0 |                       0 |                    0 | small |
+
+**BUG** – the `catB` vars still show
+up
 
 ``` r
-knitr::kable(score_frame_thin)
+knitr::kable(score_frame_thin[,cols])
 ```
 
-| varName                        | varMoves |       rsq |       sig | outcome\_level | needsSplit | extraModelDegrees | origName | code  | recommended |
-| :----------------------------- | :------- | --------: | --------: | :------------- | :--------- | ----------------: | :------- | :---- | :---------- |
-| x                              | TRUE     | 0.0005756 | 0.5470919 | large          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0000771 | 0.8255885 | large          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0026075 | 0.2000083 | large          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1750095 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1185254 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0644178 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.4701626 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.1328708 | 0.0000000 | large          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0022396 | 0.2338771 | liminal        | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0020122 | 0.2591571 | liminal        | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0023614 | 0.2215731 | liminal        | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.1769596 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.3615209 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.0041777 | 0.1039765 | liminal        | FALSE      |                 0 | xc       | lev   | FALSE       |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.1492650 | 0.0000000 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0076508 | 0.0277896 | liminal        | FALSE      |                 0 | xc       | lev   | TRUE        |
-| x                              | TRUE     | 0.0048286 | 0.0773262 | small          | FALSE      |                 0 | x        | clean | FALSE       |
-| x\_isBAD                       | TRUE     | 0.0022777 | 0.2250506 | small          | FALSE      |                 0 | x        | isBAD | FALSE       |
-| x2                             | TRUE     | 0.0000045 | 0.9569844 | small          | FALSE      |                 0 | x2       | clean | FALSE       |
-| xc\_lev\_NA                    | TRUE     | 0.5132320 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0           | TRUE     | 0.1265119 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_0\_5        | TRUE     | 0.1488474 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_1           | TRUE     | 0.1576977 | 0.0000000 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| xc\_lev\_x\_level\_minus\_0\_5 | TRUE     | 0.0387613 | 0.0000006 | small          | FALSE      |                 0 | xc       | lev   | TRUE        |
-| large\_xc\_catB                | TRUE     | 0.7858496 | 0.0000000 | large          | TRUE       |                 5 | xc       | catB  | TRUE        |
-| liminal\_xc\_catB              | TRUE     | 0.5836983 | 0.0000000 | liminal        | TRUE       |                 5 | xc       | catB  | TRUE        |
-| small\_xc\_catB                | TRUE     | 0.7965381 | 0.0000000 | small          | TRUE       |                 5 | xc       | catB  | TRUE        |
+| varName                        | origName | code  | outcome\_level |       rsq |       sig | varMoves | default\_threshold | recommended |
+| :----------------------------- | :------- | :---- | :------------- | --------: | --------: | :------- | -----------------: | :---------- |
+| x                              | x        | clean | large          | 0.0005756 | 0.5470919 | TRUE     |         0.05555556 | FALSE       |
+| x\_isBAD                       | x        | isBAD | large          | 0.0000771 | 0.8255885 | TRUE     |         0.11111111 | FALSE       |
+| x2                             | x2       | clean | large          | 0.0026075 | 0.2000083 | TRUE     |         0.05555556 | FALSE       |
+| xc\_lev\_NA                    | xc       | lev   | large          | 0.1750095 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_0           | xc       | lev   | large          | 0.1185254 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | xc       | lev   | large          | 0.0644178 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_1           | xc       | lev   | large          | 0.4701626 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | xc       | lev   | large          | 0.1328708 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| x                              | x        | clean | liminal        | 0.0022396 | 0.2338771 | TRUE     |         0.05555556 | FALSE       |
+| x\_isBAD                       | x        | isBAD | liminal        | 0.0020122 | 0.2591571 | TRUE     |         0.11111111 | FALSE       |
+| x2                             | x2       | clean | liminal        | 0.0023614 | 0.2215731 | TRUE     |         0.05555556 | FALSE       |
+| xc\_lev\_NA                    | xc       | lev   | liminal        | 0.1769596 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_0           | xc       | lev   | liminal        | 0.3615209 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | xc       | lev   | liminal        | 0.0041777 | 0.1039765 | TRUE     |         0.02222222 | FALSE       |
+| xc\_lev\_x\_level\_1           | xc       | lev   | liminal        | 0.1492650 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | xc       | lev   | liminal        | 0.0076508 | 0.0277896 | TRUE     |         0.02222222 | FALSE       |
+| x                              | x        | clean | small          | 0.0048286 | 0.0773262 | TRUE     |         0.05555556 | FALSE       |
+| x\_isBAD                       | x        | isBAD | small          | 0.0022777 | 0.2250506 | TRUE     |         0.11111111 | FALSE       |
+| x2                             | x2       | clean | small          | 0.0000045 | 0.9569844 | TRUE     |         0.05555556 | FALSE       |
+| xc\_lev\_NA                    | xc       | lev   | small          | 0.5132320 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_0           | xc       | lev   | small          | 0.1265119 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_0\_5        | xc       | lev   | small          | 0.1488474 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_1           | xc       | lev   | small          | 0.1576977 | 0.0000000 | TRUE     |         0.02222222 | TRUE        |
+| xc\_lev\_x\_level\_minus\_0\_5 | xc       | lev   | small          | 0.0387613 | 0.0000006 | TRUE     |         0.02222222 | TRUE        |
+
+``` r
+unique(score_frame_thin$code)
+```
+
+    ## [1] "clean" "isBAD" "lev"
+
+``` r
+unique(score_frame$code)
+```
+
+    ## [1] "clean" "isBAD" "catP"  "lev"   "catB"
 
 ## Deriving the Default Thresholds
 

@@ -109,6 +109,9 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
   if(length(y_levels)<2) {
     stop("vtreat::mkCrossFrameMExperiment outcome must have 2 or more levels")
   }
+  if(length(codeRestriction) > 0) {
+    y_dependent_treatments = intersect(y_dependent_treatments, codeRestriction)
+  }
   # build y-independent variable treatments
   treatments_0 <- designTreatmentsZ(dframe, varlist, 
                                     weights=weights,
@@ -152,6 +155,7 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
       sframe_0
     })
   sframe_0 <- do.call(rbind, sframe_0)
+  sframe_0 <- augment_score_frame(sframe_0)  # get columns to match
   rownames(sframe_0) <- NULL
   rm(list = c("tf_0"))
   # get a shared split plan to minimize data leakage
@@ -162,50 +166,53 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
   splitFunction <- pre_comp_xval(nRows=nrow(dframe), ncross, evalSets)
   # build one set of y-dependent treatments per possible y outcome
   names(y_l_names) <- y_levels
-  cfe_list <- lapply(
-    y_levels,
-    function(y_target) {
-      cfe <- mkCrossFrameCExperiment(
-        dframe, varlist, outcomename, y_target,
-        weights=weights,
-        minFraction=minFraction,
-        smFactor=smFactor,
-        rareCount=rareCount,
-        rareSig=rareSig,
-        collarProb=collarProb,
-        codeRestriction=y_dependent_treatments,
-        customCoders=customCoders,
-        scale=scale,
-        doCollar=doCollar,
-        splitFunction=splitFunction,
-        ncross=ncross,
-        forceSplit = forceSplit,
-        catScaling=catScaling,
-        verbose= verbose,
-        parallelCluster=parallelCluster,
-        use_parallel = use_parallel,
-        missingness_imputation = missingness_imputation, imputation_map = imputation_map)
-      cross_frame_i = cfe$crossFrame
-      cross_frame_i[[outcomename]] <- NULL
-      score_frame_i <- cfe$treatments$scoreFrame
-      vars_found <- score_frame_i$varName
-      new_vars <- paste0(y_l_names[[y_target]], 
-                         "_", 
-                         vars_found)
-      vars_forward_map_i <- new_vars
-      names(vars_forward_map_i) <- vars_found
-      vars_reverse_map_i <- vars_found
-      names(vars_reverse_map_i) <- new_vars
-      colnames(cross_frame_i) <- vars_forward_map_i[colnames(cross_frame_i)]
-      score_frame_i$outcome_level <- y_target
-      score_frame_i$varName <- vars_forward_map_i[score_frame_i$varName]
-      list(treatments_i = cfe$treatments,
-           cross_frame_i = cross_frame_i,
-           score_frame_i = score_frame_i,
-           vars_forward_map_i = vars_forward_map_i,
-           vars_reverse_map_i = vars_reverse_map_i)
-    })
-  names(cfe_list) <- NULL # make sure no names
+  cfe_list <- NULL
+  if(length(y_dependent_treatments) > 0) {
+    cfe_list <- lapply(
+      y_levels,
+      function(y_target) {
+        cfe <- mkCrossFrameCExperiment(
+          dframe, varlist, outcomename, y_target,
+          weights=weights,
+          minFraction=minFraction,
+          smFactor=smFactor,
+          rareCount=rareCount,
+          rareSig=rareSig,
+          collarProb=collarProb,
+          codeRestriction=y_dependent_treatments,
+          customCoders=customCoders,
+          scale=scale,
+          doCollar=doCollar,
+          splitFunction=splitFunction,
+          ncross=ncross,
+          forceSplit = forceSplit,
+          catScaling=catScaling,
+          verbose= verbose,
+          parallelCluster=parallelCluster,
+          use_parallel = use_parallel,
+          missingness_imputation = missingness_imputation, imputation_map = imputation_map)
+        cross_frame_i = cfe$crossFrame
+        cross_frame_i[[outcomename]] <- NULL
+        score_frame_i <- cfe$treatments$scoreFrame
+        vars_found <- score_frame_i$varName
+        new_vars <- paste0(y_l_names[[y_target]], 
+                           "_", 
+                           vars_found)
+        vars_forward_map_i <- new_vars
+        names(vars_forward_map_i) <- vars_found
+        vars_reverse_map_i <- vars_found
+        names(vars_reverse_map_i) <- new_vars
+        colnames(cross_frame_i) <- vars_forward_map_i[colnames(cross_frame_i)]
+        score_frame_i$outcome_level <- y_target
+        score_frame_i$varName <- vars_forward_map_i[score_frame_i$varName]
+        list(treatments_i = cfe$treatments,
+             cross_frame_i = cross_frame_i,
+             score_frame_i = score_frame_i,
+             vars_forward_map_i = vars_forward_map_i,
+             vars_reverse_map_i = vars_reverse_map_i)
+      })
+    names(cfe_list) <- NULL # make sure no names
+  }
   
   # build an overall cross-frame for training
   dy <- data.frame(y = as.character(dframe[[outcomename]]),
@@ -217,21 +224,27 @@ mkCrossFrameMExperiment <- function(dframe, varlist, outcomename,
                   stringsAsFactors = FALSE)
   cross_frame <- do.call(
     cbind, cbind_args) 
-  score_frame <- do.call(
-    rbind, 
-    lapply(cfe_list, function(cfei) cfei$score_frame_i))
-  rownames(score_frame) <- NULL
-  # build a prepare function for new data
-  treatments_m <- lapply(cfe_list, 
-                         function(cfei) {
-                           list(treatment = cfei$treatments_i,
-                                score_frame_i = cfei$score_frame_i,
-                                vars_forward_map = cfei$vars_forward_map_i,
-                                vars_reverse_map = cfei$vars_reverse_map_i)
+  treatments_m <- NULL
+  if(length(cfe_list) > 0) {
+    score_frame <- do.call(
+      rbind, 
+      lapply(cfe_list, function(cfei) cfei$score_frame_i))
+    rownames(score_frame) <- NULL
+    # build a prepare function for new data
+    
+    treatments_m <- lapply(cfe_list, 
+                           function(cfei) {
+                             list(treatment = cfei$treatments_i,
+                                  score_frame_i = cfei$score_frame_i,
+                                  vars_forward_map = cfei$vars_forward_map_i,
+                                  vars_reverse_map = cfei$vars_reverse_map_i)
                            })
-  sframe_0 <- augment_score_frame(sframe_0)  # get columns to match
-  score_frame <- rbind(sframe_0, score_frame)
-  score_frame <- augment_score_frame(score_frame)  # recompute augment on joined frame
+    
+    score_frame <- rbind(sframe_0, score_frame)
+    score_frame <- augment_score_frame(score_frame)  # recompute augment on joined frame
+  } else {
+    score_frame = sframe_0
+  }
   # return components
   treat_m <- list(
     y_l_names = y_l_names,
