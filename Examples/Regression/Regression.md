@@ -136,9 +136,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 16:36:30 2020"
-    ## [1] " start cross frame work Wed Feb 26 16:36:30 2020"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Feb 26 16:36:30 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Fri Feb 28 10:44:06 2020"
+    ## [1] " start cross frame work Fri Feb 28 10:44:06 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Feb 28 10:44:06 2020"
 
 Let's look at the top of `d_prepared`. Notice that the new treated data frame includes only new derived variables (along with `y`). The derived variables will be discussed below.
 
@@ -412,13 +412,13 @@ Types of prepared variables
 
 **lev**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
 
-**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on" (its prevalence)
 
 **catN**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the explanatory variable
 
 **catD**: Produced from categorical variables: deviation of outcome as a function of the explanatory variable
 
-**is\_BAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or `NaN`.
+**isBAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
 More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
 
@@ -440,9 +440,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 16:36:34 2020"
-    ## [1] " start cross frame work Wed Feb 26 16:36:34 2020"
-    ## [1] " vtreat::mkCrossFrameNExperiment done Wed Feb 26 16:36:34 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Fri Feb 28 10:44:10 2020"
+    ## [1] " start cross frame work Fri Feb 28 10:44:10 2020"
+    ## [1] " vtreat::mkCrossFrameNExperiment done Fri Feb 28 10:44:10 2020"
 
 ``` r
 score_frame_thin <- transform_thin$scoreFrame

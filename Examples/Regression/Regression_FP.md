@@ -485,13 +485,13 @@ Types of prepared variables
 
 **lev**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
 
-**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on" (its prevalence)
 
 **catN**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the explanatory variable
 
 **catD**: Produced from categorical variables: deviation of outcome as a function of the explanatory variable
 
-**is\_BAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or `NaN`.
+**isBAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
 More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
 

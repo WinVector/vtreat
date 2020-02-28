@@ -301,7 +301,7 @@ Some parameters of note include:
 
 **catB**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the variable
 
-**is_BAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`.
+**isBAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
 More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
 

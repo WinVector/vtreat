@@ -136,9 +136,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 15:00:42 2020"
-    ## [1] " start cross frame work Wed Feb 26 15:00:42 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 15:00:42 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Fri Feb 28 10:43:16 2020"
+    ## [1] " start cross frame work Fri Feb 28 10:43:16 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Fri Feb 28 10:43:16 2020"
 
 Notice that `d_prepared` now only includes derived variables and the outcome `yc`. The derived variables will be discussed below.
 
@@ -368,11 +368,11 @@ Types of prepared variables
 
 **lev**: Produced from categorical variables, one for each (common) level: for each level of the variable, indicates if that level was "on"
 
-**catP**: Produced from categorical variables: indicates how often each level of the variable was "on"
+**catP**: Produced from categorical variables: indicates how often each level of the variable was "on" (its prevalence)
 
 **catB**: Produced from categorical variables: score from a one-dimensional model of the centered output as a function of the variable
 
-**is\_BAD**: Produced for both numerical and categorical variables: an indicator variable that marks when the original variable was missing or `NaN`.
+**isBAD**: Produced for numerical variables: an indicator variable that marks when the original variable was missing or `NaN`.
 
 More on the coding types can be found [here](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html).
 
@@ -395,9 +395,9 @@ unpack[
   )
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Wed Feb 26 15:00:44 2020"
-    ## [1] " start cross frame work Wed Feb 26 15:00:45 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Wed Feb 26 15:00:45 2020"
+    ## [1] "vtreat 1.6.0 start initial treatment design Fri Feb 28 10:43:19 2020"
+    ## [1] " start cross frame work Fri Feb 28 10:43:19 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Fri Feb 28 10:43:19 2020"
 
 ``` r
 score_frame_thin <- transform_thin$scoreFrame
