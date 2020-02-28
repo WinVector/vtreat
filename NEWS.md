@@ -1,5 +1,5 @@
 
-# vtreat 1.6.0 2020/02/20
+# vtreat 1.6.0 2020/02/28
 
  * More S3 methods.
  * Back-port pyvtreat recommendation to Rvtreat.
