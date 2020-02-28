@@ -1,5 +1,5 @@
 ---
-title: "Multinomial Classification"
+title: "Multinomial Classification (Fit Prepare Notation)"
 output: github_document
 ---
 
@@ -8,7 +8,12 @@ output: github_document
 Nina Zumel and John Mount
 October 2019
 
-Note this is a description of the [`R` version of `vtreat`](https://github.com/WinVector/vtreat), the same example for the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+This article documents `vtreat`'s ["fit_prepare" variation](https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_prepare_api.md) for classification problems.
+This API was inspired by the [`pyvtreat`](https://github.com/WinVector/pyvtreat) API, which was in turn based on the `.fit()`, `.transform()`, `.fit_transform()` workflow of `scikit-learn` in `Python`. 
+
+The same example in the original `R` `vtreat` notation can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md). 
+
+The same example in the [`Python` version of `vtreat`](https://github.com/WinVector/pyvtreat) can be found [here](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 ## Preliminaries
 
@@ -80,15 +85,25 @@ First create the data treatment transform design object, in this case a treatmen
 We use the training data `d` to fit the transform and the return a treated training set: completely numeric, with no missing values.
 
 ```{r}
+
+transform_spec <- vtreat::MultinomialOutcomeTreatment(
+    var_list = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
+    outcome_name = 'yc'                             # outcome variable
+)
+```
+
+Now call the `fit_prepare()` function with the training data `d` to fit the transform and also return a treated training set. The `fit_prepare()` function returns the fitted data treatment object (as `treatments`) and a
+statistically correct treated training set (as `cross_frame`) for training the model. The `cross_frame` is guaranteed to be completely numeric, with no missing values.
+
+
+```{r}
+# the unpack notation is a multiassignment operator
+# see https://winvector.github.io/wrapr/articles/unpack_multiple_assignment.html
+# for more details
 unpack[
-  transform = treat_m,
-  d_prepared = cross_frame,
-  score_frame = score_frame
-  ] <- vtreat::mkCrossFrameMExperiment(
-    d,                                    # data to learn transform from
-    setdiff(colnames(d), c('y', 'yc')),   # columns to transform
-    'yc'                                  # outcome variable
-  )
+  treatment_plan = treatments,
+  d_prepared = cross_frame
+  ] <- fit_prepare(transform_spec, d)     
 
 ```
 
@@ -106,7 +121,7 @@ For other, later data, not seen during transform design `transform.preprare(o)` 
 `vtreat` version `1.5.1` and newer issue a warning if you call the incorrect transform pattern on your original training data:
 
 ```{r}
-d_prepared_wrong <- prepare(transform, d)
+d_prepared_wrong <- prepare(treatment_plan, d)
 ```
 
 ### The Score Frame
@@ -114,12 +129,13 @@ d_prepared_wrong <- prepare(transform, d)
 Now examine the score frame, which gives information about each new variable, including its type, which original variable it is  derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome. 
 
 ```{r}
+score_frame = get_score_frame(treatment_plan)
+
 # only show a subset of the columns
 cols = c("varName", "origName", "code", "outcome_level", "rsq", "sig", "varMoves", "default_threshold", "recommended")
 knitr::kable(score_frame[,cols])
 
 ```
-
 
 Note that the variable `xc` has been converted to multiple variables: 
 
@@ -234,7 +250,7 @@ Now apply the model to new data.
 dtest <- make_data(450)
 
 # prepare the new data with vtreat
-dtest_prepared = prepare(transform, dtest)
+dtest_prepared = prepare(treatment_plan, dtest)
 # dtest %.>% transform is an alias for prepare(transform, dtest)
 
 dtest_prepared <- add_predictions(dtest_prepared, model_vars, model)
@@ -254,8 +270,7 @@ table(truth = dtest_prepared$yc, prediction = dtest_prepared$predict)
 We've tried to set the defaults for all parameters so that `vtreat` is usable out of the box for most applications.
 
 ```{r}
-suppressPackageStartupMessages(library(printr))
-args("mkCrossFrameMExperiment")
+multinomial_parameters()
 ```
 
 Some parameters of note include:
@@ -293,18 +308,22 @@ In this example, suppose you only want to use indicators and continuous variable
 in other words, you only want to use variables of types (`clean`, `isBAD`, and `lev`), and no `catB` or `catP` variables.
 
 ```{r}
+# make a new parameter list, overriding the default for codeRestriction
+newparams = multinomial_parameters(
+  list(codeRestriction = c('lev', 'clean', 'isBad'))
+)
+
+transform_spec <- vtreat::MultinomialOutcomeTreatment(
+    var_list = setdiff(colnames(d), c('y', 'yc')),  # columns to transform
+    outcome_name = 'yc',                            # outcome variable
+    params = newparams                              # parameter list
+)
+
 unpack[
-  transform_thin = treat_m,
-  d_prepared_thin = cross_frame,
-  score_frame_thin = score_frame
-  ] <- vtreat::mkCrossFrameMExperiment(
-    d,                                    # data to learn transform from
-    setdiff(colnames(d), c('y', 'yc')),   # columns to transform
-    'yc',                                 # outcome variable
-    codeRestriction = c('lev',            # transforms we want
-                        'clean',
-                        'isBAD')
-  )
+  treatment_plan_thin = treatments,
+  d_prepared_thin = cross_frame
+  ] <- fit_prepare(transform_spec, d)     
+
 
 d_prepared_thin %.>%
   head(.) %.>%
@@ -313,6 +332,8 @@ d_prepared_thin %.>%
 
 
 ```{r}
+score_frame_thin = get_score_frame(treatment_plan_thin)
+
 # no catB or catP
 knitr::kable(score_frame_thin[,cols])
 
@@ -341,10 +362,10 @@ In all cases (classification, regression, unsupervised, and multinomial classifi
 
 The preparation commands are organized as follows:
 
- * **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
- * **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
- * **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
- * **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+ * **Regression**: [`R` regression example](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+ * **Classification**: [`R` classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+ * **Unsupervised tasks**: [`R` unsupervised example](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+ * **Multinomial classification**: [`R` multinomial classification example](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 These current revisions of the examples are designed to be small, yet complete.  So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
 

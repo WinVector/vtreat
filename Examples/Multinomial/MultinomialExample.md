@@ -154,6 +154,8 @@ d_prepared_wrong <- prepare(transform, d)
     ## same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead
     ## to over-fit. To avoid this, please use mkCrossFrameMExperiment$crossFrame.
 
+### The Score Frame
+
 Now examine the score frame, which gives information about each new variable, including its type, which original variable it is derived from, its (cross-validated) correlation with the outcome, and its (cross-validated) significance as a one-variable linear model for the outcome.
 
 ``` r
