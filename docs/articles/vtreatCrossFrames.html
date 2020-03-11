@@ -115,7 +115,7 @@
       <h1>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-03-10</h4>
+            <h4 class="date">2020-03-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -168,13 +168,13 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Tue Mar 10 16:03:18 2020"
-## [1] "designing treatments Tue Mar 10 16:03:18 2020"
-## [1] " have initial level statistics Tue Mar 10 16:03:18 2020"
-## [1] " scoring treatments Tue Mar 10 16:03:18 2020"
-## [1] "have treatment plan Tue Mar 10 16:03:18 2020"
-## [1] "rescoring complex variables Tue Mar 10 16:03:18 2020"
-## [1] "done rescoring complex variables Tue Mar 10 16:03:19 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Wed Mar 11 16:34:52 2020"
+## [1] "designing treatments Wed Mar 11 16:34:52 2020"
+## [1] " have initial level statistics Wed Mar 11 16:34:52 2020"
+## [1] " scoring treatments Wed Mar 11 16:34:52 2020"
+## [1] "have treatment plan Wed Mar 11 16:34:52 2020"
+## [1] "rescoring complex variables Wed Mar 11 16:34:52 2020"
+## [1] "done rescoring complex variables Wed Mar 11 16:34:53 2020"</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/prepare.html">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">pruneSig=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">)</a></code></pre></div>
@@ -255,13 +255,13 @@
 <a class="sourceLine" id="cb16-10" data-line-number="10">                                        <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb16-11" data-line-number="11">  <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></a>
 <a class="sourceLine" id="cb16-12" data-line-number="12">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Tue Mar 10 16:03:19 2020"
-## [1] "designing treatments Tue Mar 10 16:03:19 2020"
-## [1] " have initial level statistics Tue Mar 10 16:03:19 2020"
-## [1] " scoring treatments Tue Mar 10 16:03:19 2020"
-## [1] "have treatment plan Tue Mar 10 16:03:19 2020"
-## [1] "rescoring complex variables Tue Mar 10 16:03:19 2020"
-## [1] "done rescoring complex variables Tue Mar 10 16:03:19 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Wed Mar 11 16:34:53 2020"
+## [1] "designing treatments Wed Mar 11 16:34:53 2020"
+## [1] " have initial level statistics Wed Mar 11 16:34:53 2020"
+## [1] " scoring treatments Wed Mar 11 16:34:53 2020"
+## [1] "have treatment plan Wed Mar 11 16:34:53 2020"
+## [1] "rescoring complex variables Wed Mar 11 16:34:53 2020"
+## [1] "done rescoring complex variables Wed Mar 11 16:34:53 2020"</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">dTrainTreated &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/prepare.html">prepare</a></span>(treatments,dTrain,</a>
 <a class="sourceLine" id="cb18-2" data-line-number="2">  <span class="dt">pruneSig=</span>pruneSig)</a>
 <a class="sourceLine" id="cb18-3" data-line-number="3">newvars &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dTrainTreated),<span class="st">'y'</span>)</a>
@@ -366,9 +366,9 @@
 <a class="sourceLine" id="cb24-5" data-line-number="5">           <span class="st">'y'</span>,<span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb24-6" data-line-number="6">           <span class="dt">rareCount=</span><span class="dv">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></a>
 <a class="sourceLine" id="cb24-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Tue Mar 10 16:03:19 2020"
-## [1] " start cross frame work Tue Mar 10 16:03:20 2020"
-## [1] " vtreat::mkCrossFrameCExperiment done Tue Mar 10 16:03:20 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Wed Mar 11 16:34:53 2020"
+## [1] " start cross frame work Wed Mar 11 16:34:54 2020"
+## [1] " vtreat::mkCrossFrameCExperiment done Wed Mar 11 16:34:54 2020"</code></pre>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">treatments &lt;-<span class="st"> </span>prep<span class="op">$</span>treatments</a>
 <a class="sourceLine" id="cb26-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb26-3" data-line-number="3">knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(treatments<span class="op">$</span>scoreFrame[,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</a></code></pre></div>
