@@ -137,14 +137,9 @@ test_r2 = vapply(seq_len(100), f, numeric(1))
 ```{r}
 df = data.frame(R2 = test_r2)
 
-# # density and histogram scales don't easilly match
-# ggplot(data = df, aes(x = R2)) +
-#   geom_density() +
-#   geom_histogram(bins = 10, color = 'blue', fill = 'blue', alpha = 0.5) + 
-#   ggtitle('distribution of test R2 under repeated draws')
-
 ggplot(data = df, aes(x = R2)) +
-  geom_histogram(bins = 10, color = 'blue', fill = 'blue', alpha = 0.5) + 
+  geom_histogram(aes(y = ..density..), bins = 10, fill = 'blue', alpha = 0.5) + 
+  geom_line(aes(y = ..density..), stat = 'density', color = 'blue') + 
   ggtitle('distribution of test R2 under repeated draws')
 ```
 
