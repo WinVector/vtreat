@@ -5,6 +5,8 @@ output: github_document
 
 The `vtreat` step from ["Cross-Methods are a Leak/Variance Trade-Off"](https://github.com/WinVector/pyvtreat/blob/master/Examples/CrossVal/LeakTradeOff/CrossFrameExample.ipynb) re-worked in `R`.
 
+For the purpose of each of these steps, please refer to the [original article](https://github.com/WinVector/pyvtreat/blob/master/Examples/CrossVal/LeakTradeOff/CrossFrameExample.ipynb), the purpose of this note is to show the related `vtreat` steps in `R` (and how similar they are to the `Python` steps).
+
 ```{r}
 # https://CRAN.R-project.org/package=wrapr
 library(wrapr)
