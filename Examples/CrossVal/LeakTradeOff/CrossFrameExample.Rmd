@@ -1,0 +1,77 @@
+---
+title: "CrossFrameExample"
+output: github_document
+---
+
+The `vtreat` step from ["Cross-Methods are a Leak/Variance Trade-Off"](https://github.com/WinVector/pyvtreat/blob/master/Examples/CrossVal/LeakTradeOff/CrossFrameExample.ipynb) re-worked in `R`.
+
+```{r}
+# https://CRAN.R-project.org/package=wrapr
+library(wrapr)
+
+# https://CRAN.R-project.org/package=vtreat
+library(vtreat)
+
+# https://github.com/WinVector/vtreat/blob/master/Examples/CrossVal/LeakTradeOff/break_cross_val.R
+source("break_cross_val.R")
+```
+
+```{r}
+set.seed(2020)
+```
+
+```{r}
+unpack[
+  d_example_s = d, 
+  y_example_s = y
+  ] <- mk_data(
+    nrow = 100,
+    n_noise_var = 10,
+    n_noise_level = 50,
+    n_signal_var = 5)
+
+d_example_s$y <- y_example_s
+```
+
+```{r}
+d_example_s %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+```{r}
+# https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md
+
+vtreat_coder <- vtreat::NumericOutcomeTreatment(
+  var_list = setdiff(colnames(d_example_s), 'y'),  # columns to transform
+  outcome_name = 'y',  # outcome variable,
+  params = vtreat::regression_parameters(
+    list(
+      codeRestriction = 'catN'
+    ))
+)
+
+unpack[
+  treatment_plan = treatments,
+  vtreat_cross_frame = cross_frame
+  ] <- fit_prepare(
+    vtreat_coder, 
+    d_example_s)
+```
+
+```{r}
+# the frame of cross-encoded variables
+vtreat_cross_frame %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+```{r}
+# the per-variable score frame
+cols_to_display <- c('varName', 'origName', 'rsq', 'sig', 'code', 'default_threshold', 'recommended')
+
+sf <- treatment_plan$get_score_frame()
+
+knitr::kable(sf[, cols_to_display, drop = FALSE])
+```
+
