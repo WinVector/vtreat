@@ -85,16 +85,10 @@ knitr::kable(sf[, cols_to_display, drop = FALSE])
 
 sf$variable_type = gsub("_.*$", "", sf$origName)
 
-# (doesn't work, due to ggplot2 issue)
-# ggplot(data = sf,
-#        aes(x = sig, color = variable_type)) +
-#   geom_density() + 
-#   scale_y_log10() +
-#   ggtitle("distribution of training R2 grouped by variable type\n(log y scale)")
-
 ggplot(data = sf,
-       aes(x = sig, color = variable_type)) +
-  geom_density() +
+       aes(x = sig, fill = variable_type)) +
+  geom_histogram(aes(y = ..density..), bins = 10, alpha = 0.5) + 
+  geom_line(aes(y = ..density.., color = variable_type), stat = 'density') + 
   facet_wrap( ~ variable_type, ncol = 1, scale = 'free_y') +
   ggtitle("distribution of training R2 grouped by variable type")
 ```
