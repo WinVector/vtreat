@@ -14,6 +14,9 @@ library(vtreat)
 
 # https://github.com/WinVector/vtreat/blob/master/Examples/CrossVal/LeakTradeOff/break_cross_val.R
 source("break_cross_val.R")
+
+# https://CRAN.R-project.org/package=ggplot2
+library(ggplot2)
 ```
 
 ```{r}
@@ -73,5 +76,75 @@ cols_to_display <- c('varName', 'origName', 'rsq', 'sig', 'code', 'default_thres
 sf <- treatment_plan$get_score_frame()
 
 knitr::kable(sf[, cols_to_display, drop = FALSE])
+```
+
+```{r}
+# show conditional distribution of estimated significances
+
+sf$variable_type = gsub("_.*$", "", sf$origName)
+
+# (doesn't work, due to ggplot2 issue)
+# ggplot(data = sf,
+#        aes(x = sig, color = variable_type)) +
+#   geom_density() + 
+#   scale_y_log10() +
+#   ggtitle("distribution of training R2 grouped by variable type\n(log y scale)")
+
+ggplot(data = sf,
+       aes(x = sig, color = variable_type)) +
+  geom_density() +
+  facet_wrap( ~ variable_type, ncol = 1, scale = 'free_y') +
+  ggtitle("distribution of training R2 grouped by variable type")
+```
+
+
+```{r}
+# using the re-encoded data in an lm
+formula <- wrapr::mk_formula(
+  'y', 
+  setdiff(colnames(vtreat_cross_frame), 'y'))
+print(formula)
+
+good_fit <- lm(formula, vtreat_cross_frame)
+summary(good_fit)
+```
+
+```{r}
+f <- function(...) {
+  unpack[
+    d_test_s = d, 
+    y_test_s = y] <- mk_data(
+      nrow=100,
+      n_noise_var=10,
+      n_noise_level=50,
+      n_signal_var=5)
+  
+  vtreat_test_frame <- prepare(
+    treatment_plan,
+    d_test_s)
+  vtreat_test_frame$y <- y_test_s
+  vtreat_test_frame$pred <- predict(
+    good_fit, 
+    newdata = vtreat_test_frame)
+  return(sigr::wrapFTest(vtreat_test_frame, 'pred', 'y')$R2)
+}
+
+
+# the array of R-squared for the repeated tests
+test_r2 = vapply(seq_len(100), f, numeric(1))
+```
+
+```{r}
+df = data.frame(R2 = test_r2)
+
+# # density and histogram scales don't easilly match
+# ggplot(data = df, aes(x = R2)) +
+#   geom_density() +
+#   geom_histogram(bins = 10, color = 'blue', fill = 'blue', alpha = 0.5) + 
+#   ggtitle('distribution of test R2 under repeated draws')
+
+ggplot(data = df, aes(x = R2)) +
+  geom_histogram(bins = 10, color = 'blue', fill = 'blue', alpha = 0.5) + 
+  ggtitle('distribution of test R2 under repeated draws')
 ```
 

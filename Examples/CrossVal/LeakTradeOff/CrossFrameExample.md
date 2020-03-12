@@ -14,6 +14,9 @@ library(vtreat)
 
 # https://github.com/WinVector/vtreat/blob/master/Examples/CrossVal/LeakTradeOff/break_cross_val.R
 source("break_cross_val.R")
+
+# https://CRAN.R-project.org/package=ggplot2
+library(ggplot2)
 ```
 
 ``` r
@@ -110,3 +113,117 @@ knitr::kable(sf[, cols_to_display, drop = FALSE])
 | signal\_3\_catN | signal\_3 | 0.2028512 | 0.0000026 | catN |         0.06666667 | TRUE        |
 | signal\_4\_catN | signal\_4 | 0.1612194 | 0.0000347 | catN |         0.06666667 | TRUE        |
 | signal\_5\_catN | signal\_5 | 0.1993979 | 0.0000032 | catN |         0.06666667 | TRUE        |
+
+``` r
+# show conditional distribution of estimated significances
+
+sf$variable_type = gsub("_.*$", "", sf$origName)
+
+# (doesn't work, due to ggplot2 issue)
+# ggplot(data = sf,
+#        aes(x = sig, color = variable_type)) +
+#   geom_density() + 
+#   scale_y_log10() +
+#   ggtitle("distribution of training R2 grouped by variable type\n(log y scale)")
+
+ggplot(data = sf,
+       aes(x = sig, color = variable_type)) +
+  geom_density() +
+  facet_wrap( ~ variable_type, ncol = 1, scale = 'free_y') +
+  ggtitle("distribution of training R2 grouped by variable type")
+```
+
+![](CrossFrameExample_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+# using the re-encoded data in an lm
+formula <- wrapr::mk_formula(
+  'y', 
+  setdiff(colnames(vtreat_cross_frame), 'y'))
+print(formula)
+```
+
+    ## y ~ noise_1_catN + noise_2_catN + noise_3_catN + noise_4_catN + 
+    ##     noise_5_catN + noise_6_catN + noise_7_catN + noise_8_catN + 
+    ##     noise_9_catN + noise_10_catN + signal_1_catN + signal_2_catN + 
+    ##     signal_3_catN + signal_4_catN + signal_5_catN
+    ## <environment: base>
+
+``` r
+good_fit <- lm(formula, vtreat_cross_frame)
+summary(good_fit)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = formula, data = vtreat_cross_frame)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.6862 -0.4922  0.0623  0.7192  2.3970 
+    ## 
+    ## Coefficients:
+    ##                Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)    0.396635   0.118691   3.342  0.00124 ** 
+    ## noise_1_catN   0.026185   0.091153   0.287  0.77462    
+    ## noise_2_catN  -0.008990   0.079528  -0.113  0.91027    
+    ## noise_3_catN   0.058069   0.074728   0.777  0.43930    
+    ## noise_4_catN  -0.009163   0.065700  -0.139  0.88942    
+    ## noise_5_catN   0.108580   0.077282   1.405  0.16372    
+    ## noise_6_catN   0.104138   0.060178   1.730  0.08721 .  
+    ## noise_7_catN  -0.089384   0.071534  -1.250  0.21494    
+    ## noise_8_catN   0.159752   0.067737   2.358  0.02067 *  
+    ## noise_9_catN   0.021987   0.059374   0.370  0.71208    
+    ## noise_10_catN -0.155359   0.082771  -1.877  0.06399 .  
+    ## signal_1_catN  1.192121   0.122969   9.694 2.38e-15 ***
+    ## signal_2_catN  1.339228   0.143098   9.359 1.12e-14 ***
+    ## signal_3_catN  0.784723   0.092979   8.440 7.96e-13 ***
+    ## signal_4_catN  0.851139   0.111055   7.664 2.84e-11 ***
+    ## signal_5_catN  0.814162   0.098251   8.287 1.62e-12 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 1.15 on 84 degrees of freedom
+    ## Multiple R-squared:  0.8359, Adjusted R-squared:  0.8066 
+    ## F-statistic: 28.53 on 15 and 84 DF,  p-value: < 2.2e-16
+
+``` r
+f <- function(...) {
+  unpack[
+    d_test_s = d, 
+    y_test_s = y] <- mk_data(
+      nrow=100,
+      n_noise_var=10,
+      n_noise_level=50,
+      n_signal_var=5)
+  
+  vtreat_test_frame <- prepare(
+    treatment_plan,
+    d_test_s)
+  vtreat_test_frame$y <- y_test_s
+  vtreat_test_frame$pred <- predict(
+    good_fit, 
+    newdata = vtreat_test_frame)
+  return(sigr::wrapFTest(vtreat_test_frame, 'pred', 'y')$R2)
+}
+
+
+# the array of R-squared for the repeated tests
+test_r2 = vapply(seq_len(100), f, numeric(1))
+```
+
+``` r
+df = data.frame(R2 = test_r2)
+
+# # density and histogram scales don't easilly match
+# ggplot(data = df, aes(x = R2)) +
+#   geom_density() +
+#   geom_histogram(bins = 10, color = 'blue', fill = 'blue', alpha = 0.5) + 
+#   ggtitle('distribution of test R2 under repeated draws')
+
+ggplot(data = df, aes(x = R2)) +
+  geom_histogram(bins = 10, color = 'blue', fill = 'blue', alpha = 0.5) + 
+  ggtitle('distribution of test R2 under repeated draws')
+```
+
+![](CrossFrameExample_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
