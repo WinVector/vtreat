@@ -1,9 +1,10 @@
 CrossFrameExample
 ================
 
-The `vtreat` step from [“Cross-Methods are a Leak/Variance
+The [`Python` `vtreat`](https://github.com/WinVector/pyvtreat) steps
+from [“Cross-Methods are a Leak/Variance
 Trade-Off”](https://github.com/WinVector/pyvtreat/blob/master/Examples/CrossVal/LeakTradeOff/CrossFrameExample.ipynb)
-re-worked in `R`.
+re-worked in [`R` `vtreat`](https://github.com/WinVector/vtreat).
 
 For the purpose of each of these steps, please refer to the [original
 article](https://github.com/WinVector/pyvtreat/blob/master/Examples/CrossVal/LeakTradeOff/CrossFrameExample.ipynb),
@@ -221,3 +222,37 @@ ggplot(data = df, aes(x = R2)) +
 ```
 
 ![](CrossFrameExample_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+The above concludes our translation of the `Python` `vtreat` steps of
+from [“Cross-Methods are a Leak/Variance
+Trade-Off”](https://github.com/WinVector/pyvtreat/blob/master/Examples/CrossVal/LeakTradeOff/CrossFrameExample.ipynb)
+re-worked in `R`.
+
+Tutorials on how to call any of the `Python` or `R` `vtreat` data
+preperation systems can be found here:
+
+  - **Regression**: [`R` regression example, fit/prepare
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md),
+    [`R` regression example, design/prepare/experiment
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md),
+    [`Python` regression
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+  - **Classification**: [`R` classification example, fit/prepare
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md),
+    [`R` classification example, design/prepare/experiment
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md),
+    [`Python` classification
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+  - **Unsupervised tasks**: [`R` unsupervised example, fit/prepare
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md),
+    [`R` unsupervised example, design/prepare/experiment
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md),
+    [`Python` unsupervised
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+  - **Multinomial classification**: [`R` multinomial classification
+    example, fit/prepare
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md),
+    [`R` multinomial classification example, design/prepare/experiment
+    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md),
+    [`Python` multinomial classification
+    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
