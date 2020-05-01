@@ -1,0 +1,332 @@
+---
+title: "KDD2009Example"
+output: github_document
+---
+
+Load packages
+
+```{r}
+#load some libraries
+library('vtreat')
+library('WVPlots') 
+library('sigr')
+library('parallel')
+library('xgboost')
+```
+
+Read in explanatory variables
+```{r}
+d <- read.table('orange_small_train.data.gz',  
+   header = TRUE,
+   sep = '\t',
+   na.strings = c('NA', '')) 	
+```
+
+Read in dependent variables we are trying to predict
+
+```{r}
+churn <- read.table('orange_small_train_churn.labels.txt',
+   header = FALSE, sep = '\t')
+colnames(churn) <- "churn"
+
+d$churn = churn$churn
+
+table(d$churn)
+```
+
+Arrange test/train split. The reported performance runs of this example were sensitive to the prevalance of the churn variable in the test set, so we are cutting down on this source of evaluation variance by using a stratified split. 
+
+```{r}
+set.seed(729375) 	
+
+plan <- kWayStratifiedY(nrow(d), 10, d, d["churn"])
+
+# use the first fold as our test/train split
+fold1 <- plan[[1]]
+train_idx <- fold1$train # training set indices
+test_idx <- fold1$app 
+
+d_train <- d[train_idx, , drop = FALSE]
+d_test <- d[test_idx, , drop = FALSE]
+                                                
+outcome <- 'churn' 
+vars <- setdiff(colnames(d_train), outcome)
+```
+
+Try to use xgboost without data treatment. This fails.
+
+```{r error=TRUE}
+model <- xgboost(data = as.matrix(d_train[, vars, drop = FALSE]),
+                 label = d_train[[outcome]],
+                 nrounds = 10,
+                 params = list(objective = "binary:logistic"))
+```
+
+Even if you fix this, you run into missing values, overly large categoricals, etc.
+
+```{r}
+dim(d_train)
+# count the number of missing values in each column
+nNAs <- vapply(d_train[, vars],
+              function(v) sum(is.na(v)),
+              numeric(1))
+summary(nNAs)
+
+is_categorical <- vapply(d_train[, vars],
+                         function(v) !is.numeric(v),
+                         logical(1))
+                        
+# count the number of levels in each categorical column
+nlevels <- vapply(d_train[, is_categorical],
+                  function(v) length(unique(v)),
+                  numeric(1))
+summary(nlevels)
+```
+
+## Use `vtreat` to prepare a clean data frame
+
+The correct way, with cross-validated training data to avoid nested-model bias.
+
+```{r}
+yTarget <- 1
+
+# not strictly necessary, just for speed
+ncore <- parallel::detectCores()
+cl <- parallel::makeCluster(ncore)
+
+# fit the treatment plan and construct new
+# treated training data
+unpack[
+  transform = treatments, # treatment plan
+  d_prepared = crossFrame # treated training data
+  ] <-  mkCrossFrameCExperiment(d_train,
+                              vars,
+                              outcomename=outcome,
+                              outcometarge=yTarget,
+                              parallelCluster=cl)
+
+
+scoreFrame <- transform$scoreFrame
+# count the number of different types of synthetic variables
+table(scoreFrame$code)
+selvars <- scoreFrame$varName
+
+# training data
+treatedTrainM <- d_prepared[,c(outcome,selvars),drop=FALSE]
+# change the outcome to boolean
+treatedTrainM[[outcome]] = treatedTrainM[[outcome]]==yTarget
+
+# use the treatment plan to prepare the holdout data
+treatedTest <- prepare(transform,
+                      d_test,
+                      parallelCluster=cl)
+treatedTest[[outcome]] = treatedTest[[outcome]]==yTarget
+
+# prepare plotting frames
+treatedTrainP = treatedTrainM[, outcome, drop=FALSE]
+treatedTestP = treatedTest[, outcome, drop=FALSE]
+
+```
+
+Note that the prepared data is all numeric with no missing variables.
+
+```{r}
+# count the number of missing values in each column
+nNAs <- vapply(treatedTrainM[, selvars],
+              function(v) sum(is.na(v)),
+              numeric(1))
+summary(nNAs)
+
+is_categorical <- vapply(treatedTrainM[, selvars],
+                         function(v) !is.numeric(v),
+                         logical(1))
+sum(is_categorical)
+
+```
+
+## Train the model
+
+First, use only the recommended variables
+```{r}
+nrow(scoreFrame) # total number of synthetic variables
+model_vars <- scoreFrame$varName[scoreFrame$recommended]
+length(model_vars)
+```
+
+Now fit the model.
+```{r}
+mname = 'xgboost'
+print(paste(mname,length(model_vars)))
+
+params <- list(max_depth = 5, 
+              objective = "binary:logistic",
+              nthread = ncore)
+
+# cross-val to determine a good number of trees
+model <- xgb.cv(data = as.matrix(treatedTrainM[, model_vars, drop = FALSE]),
+                label = treatedTrainM[[outcome]],
+                nrounds = 400,
+                params = params,
+                nfold = 5,
+                early_stopping_rounds = 10,
+                eval_metric = "logloss")
+nrounds <- model$best_iteration
+print(paste("nrounds", nrounds))
+
+# fit the model
+model <- xgboost(data = as.matrix(treatedTrainM[, model_vars, drop = FALSE]),
+                 label = treatedTrainM[[outcome]],
+                 nrounds = nrounds,
+                 params = params)
+
+```
+
+Get predictions on training and test data.
+
+```{r}
+treatedTrainP[[mname]] = predict(
+  model, 
+  newdata = as.matrix(treatedTrainM[, model_vars, drop = FALSE]), 
+  n.trees = nTrees,
+  type = 'response')
+
+treatedTestP[[mname]] = predict(
+  model,
+  newdata = as.matrix(treatedTest[, model_vars, drop = FALSE]), 
+  n.trees = nTrees,
+  type = "response")
+
+```
+
+```{r score}
+calcAUC(treatedTestP[[mname]], treatedTestP[[outcome]]==yTarget)
+
+permTestAUC(treatedTestP, mname, outcome, yTarget = yTarget)
+
+wrapChiSqTest(treatedTestP, mname, outcome, yTarget = yTarget)
+```
+
+```{r kddplot, tidy=FALSE}
+
+t1 = paste(mname,'model on training')
+print(DoubleDensityPlot(treatedTrainP, mname, outcome, 
+                        title=t1))
+print(ROCPlot(treatedTrainP, mname, outcome, yTarget,
+              title=t1))
+print(WVPlots::PRPlot(treatedTrainP, mname, outcome, yTarget,
+              title=t1))
+
+t2 = paste(mname,'model on test')
+print(DoubleDensityPlot(treatedTestP, mname, outcome, 
+                        title=t2))
+print(ROCPlot(treatedTestP, mname, outcome, yTarget,
+              title=t2))
+print(WVPlots::PRPlot(treatedTestP, mname, outcome, yTarget,
+              title=t2))
+
+```
+
+## vtreat` used incorrectly
+
+What happens if you don't account for nested model bias. Don't do this!
+
+```{r}
+
+# fit the treatment plan from the training data
+# without creating cross-validated training data
+transform <- designTreatmentsC(d_train,
+                              vars,
+                              outcomename=outcome,
+                              outcometarge=yTarget,
+                              parallelCluster=cl)
+
+# use the treatment plan to treat the treated data directly
+# (this is the incorrect step)
+d_prepared = prepare(transform, d_train, parallelCluster=cl)
+
+scoreFrame <- transform$scoreFrame
+selvars <- scoreFrame$varName
+
+# training data
+treatedTrainM <- d_prepared[,c(outcome,selvars),drop=FALSE]
+# change the outcome to boolean
+treatedTrainM[[outcome]] = treatedTrainM[[outcome]]==yTarget
+
+# use the treatment plan to prepare the holdout data
+treatedTest <- prepare(transform,
+                      d_test,
+                      parallelCluster=cl)
+treatedTest[[outcome]] = treatedTest[[outcome]]==yTarget
+
+# prepare plotting frames
+treatedTrainP = treatedTrainM[, outcome, drop=FALSE]
+treatedTestP = treatedTest[, outcome, drop=FALSE]
+
+# get recommended variables
+model_vars <- scoreFrame$varName[scoreFrame$recommended]
+
+```
+
+Fit the model.
+```{r}
+mname = 'naive xgboost'
+print(paste(mname,length(model_vars)))
+
+params <- list(max_depth = 5, 
+              objective = "binary:logistic",
+              nthread = ncore)
+
+# cross-val to determine a good number of trees
+model <- xgb.cv(data = as.matrix(treatedTrainM[, model_vars, drop = FALSE]),
+                label = treatedTrainM[[outcome]],
+                nrounds = 400,
+                params = params,
+                nfold = 5,
+                early_stopping_rounds = 10,
+                eval_metric = "logloss")
+nrounds <- model$best_iteration
+print(paste("nrounds", nrounds))
+
+# fit the model
+model <- xgboost(data = as.matrix(treatedTrainM[, model_vars, drop = FALSE]),
+                 label = treatedTrainM[[outcome]],
+                 nrounds = nrounds,
+                 params = params)
+
+```
+
+```{r}
+treatedTrainP[[mname]] = predict(
+  model, 
+  newdata = as.matrix(treatedTrainM[, model_vars, drop = FALSE]), 
+  n.trees = nTrees,
+  type = 'response')
+
+treatedTestP[[mname]] = predict(
+  model,
+  newdata = as.matrix(treatedTest[, model_vars, drop = FALSE]), 
+  n.trees = nTrees,
+  type = "response")
+
+```
+
+Look at the ROC Plots
+```{r  tidy=FALSE}
+
+t1 = paste(mname,'model on training')
+print(ROCPlot(treatedTrainP, mname, outcome, yTarget,
+              title=t1))
+
+t2 = paste(mname,'model on test')
+print(ROCPlot(treatedTestP, mname, outcome, yTarget,
+              title=t2))
+
+```
+
+```{r shutdown, tidy=FALSE}
+if(!is.null(cl)) {
+    parallel::stopCluster(cl)
+    cl = NULL
+}
+```
+
