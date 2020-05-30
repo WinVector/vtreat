@@ -37,20 +37,23 @@ selection a natural justifiable part of modeling? Or is it something
 that is already done (therefore redundant). Or is it something that is
 not done for important reasons (such as avoiding damaging bias)?
 
-In this note we will show that feature selection *is* in fact an obvious
-justified step when using a sufficiently sophisticated model of
-regression. This note is long, as it defines so many tiny elementary
-steps. However this note ends with a big point: variable selection *is*
-justified. It naturally appears in the right variation of Bayesian
-Regression. You *should* select variables, using your preferred
-methodology. And you *shouldn’t* feel bad about selecting variables.
+In [this
+note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
+we will show that feature selection *is* in fact an obvious justified
+step when using a sufficiently sophisticated model of regression. This
+note is long, as it defines so many tiny elementary steps. However this
+note ends with a big point: variable selection *is* justified. It
+naturally appears in the right variation of Bayesian Regression. You
+*should* select variables, using your preferred methodology. And you
+*shouldn’t* feel bad about selecting variables.
 
 ## Bayesian Regression in Action
 
-Let’s work a specific Bayesian Regression example in
-[`R`](https://www.r-project.org). We are going to use the direct
-generative method described in the last section instead of a package
-such as [`rstan`](https://CRAN.R-project.org/package=rstan) or
+To work towards variable selection/pruning, let’s work a specific
+Bayesian Regression example in [`R`](https://www.r-project.org). We are
+going to use the direct generative method described in the last section
+instead of a package such as
+[`rstan`](https://CRAN.R-project.org/package=rstan) or
 [`lme4`](https://CRAN.R-project.org/package=lme4). This is because:
 
   - We want to follow the exact didactic path above, in anticipation of

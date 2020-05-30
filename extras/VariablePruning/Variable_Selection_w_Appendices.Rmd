@@ -13,12 +13,12 @@ We recommend incorporating mild feature pruning into your machine learning and m
 
 Regardless of intuition or feelings, it is a fair question: is variable selection a natural justifiable part of modeling?  Or is it something that is already done (therefore redundant). Or is it something that is not done for important reasons (such as avoiding damaging bias)?
 
-In this note we will show that feature selection *is* in fact an obvious justified step when using a sufficiently sophisticated model of regression. This note is long, as it defines so many tiny elementary steps.  However this note ends with a big point: variable selection *is* justified. It naturally appears in the right variation of Bayesian Regression. You *should* select variables, using your preferred methodology.  And you *shouldn't* feel bad about selecting variables.
+In [this note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.pdf) we will show that feature selection *is* in fact an obvious justified step when using a sufficiently sophisticated model of regression. This note is long, as it defines so many tiny elementary steps.  However this note ends with a big point: variable selection *is* justified. It naturally appears in the right variation of Bayesian Regression. You *should* select variables, using your preferred methodology.  And you *shouldn't* feel bad about selecting variables.
 
 
 ## Bayesian Regression in Action
 
-Let's work a specific Bayesian Regression example in [`R`](https://www.r-project.org).  We are going to use the direct generative method described in the last section instead of a package such as [`rstan`](https://CRAN.R-project.org/package=rstan) or [`lme4`]( https://CRAN.R-project.org/package=lme4).  This is because:
+To work towards variable selection/pruning, let's work a specific Bayesian Regression example in [`R`](https://www.r-project.org).  We are going to use the direct generative method described in the last section instead of a package such as [`rstan`](https://CRAN.R-project.org/package=rstan) or [`lme4`]( https://CRAN.R-project.org/package=lme4).  This is because:
 
   * We want to follow the exact didactic path above, in anticipation of adding variable selection.
   * [`rstan` doesn't allow direct unobserved discrete parameters](https://mc-stan.org/docs/2_23/stan-users-guide/latent-discrete-parameterization.html) (a tool we will find convenient for variable selection).
@@ -584,3 +584,5 @@ And we have recovered Bayes' Law.
   * [PDF render of full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.pdf)
   * [`RMarkdown` source for full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.Rmd)
   * [`R` source for included `fns.R`](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/fns.R)
+  * [`RMarkdown` source for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.Rmd)
+    * [`RMarkdown` render for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
