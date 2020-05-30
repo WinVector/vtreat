@@ -1,6 +1,6 @@
 ---
 title: "Don't Feel Bad About Selecting Variables"
-output: github_document
+output: pdf_document
 author: "John Mount"
 date: "2020-05-30"
 ---
@@ -36,7 +36,7 @@ set.seed(2020)
 cl <- parallel::makeCluster(parallel::detectCores())
 ```
 
-Now we define our functions.  The first generates our proposed parameters `beta_0` and `beta_1` (standing in for both \(\beta\) and \(v\)).  The idea is: since the vector parameters were generated according to the normal distribution, picking one of them uniformly from the stored `data.frame` is also normally distributed.
+Now we define our functions.  The first generates our proposed parameters `beta_0` and `beta_1`.  The idea is: since the vector parameters were generated according to the normal distribution, picking one of them uniformly from the stored `data.frame` is also normally distributed.
 
 ```{r}
 generate_params <- function(
