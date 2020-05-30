@@ -490,9 +490,8 @@ plot_parameter(
 ![](Variable_Selection_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 Keep in mind that `beta_1` isn’t as interesting in this model
-formulation as `explanatory * beta_1`, so the distribution of `beta_1`
-isn’t as important as the distribution of `explanatory` or `explanatory
-* beta_1`.
+formulation as `explanatory beta_1`, so the distribution of `beta_1`
+isn’t as important as the distribution of `explanatory beta_1`.
 
 ``` r
 params$explanatory_beta_1 <- params$explanatory * params$beta_1

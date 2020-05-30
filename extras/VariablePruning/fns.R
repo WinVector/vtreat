@@ -49,7 +49,7 @@ plot_parameter <- function(params, param_name,
     levels = c("prior assumption", "posterior estimate"))
   post_est <- sum(params$posterior_weight * params[[param_name]]) / 
     sum(params$posterior_weight)
-  subtitle <- paste0(subtitle, '; posterior est. = ', 
+  subtitle <- paste0(subtitle, '; posterior ', param_name,' est. = ', 
                      sprintf("%.2g",post_est))
   plt <- ggplot(data = dsub,
                 aes_string(x = param_name, 
