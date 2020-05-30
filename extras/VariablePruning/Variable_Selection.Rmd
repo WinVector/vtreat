@@ -89,7 +89,7 @@ mk_fun_p_data_given_params <- function(params, data, sd_noise) {
 }
 ```
 
-`mk_fun_p_data_given_params` realizes the probability model we discussed before: a model is plausible if `data$y - (pi$beta_1 * data$x  + pi$beta_0)` is small.All of the definitions and math are to justify this block of code. `mk_fun_p_data_given_params` embodies the generative model illustrated in the following dependency diagram.  The only important bit is the starement `ei <- data$y - (pi$beta_1 * data$x  + pi$beta_0)`.
+`mk_fun_p_data_given_params` realizes the following probability model: parameterss are plausible if `data$y - (pi$beta_1 * data$x  + pi$beta_0)` is small.All of the definitions and math are to justify this block of code. `mk_fun_p_data_given_params` embodies the generative model illustrated in the following dependency diagram.  The only important bit is the starement `ei <- data$y - (pi$beta_1 * data$x  + pi$beta_0)`.
 
 <p/><img src="ClassicModel.png"><p/>
 
