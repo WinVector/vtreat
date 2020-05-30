@@ -1,5 +1,5 @@
 ---
-title: "Don't Feel Bad About Selecting Variables"
+title: "Don't Feel Guilty About Selecting Variables"
 output: github_document
 author: "John Mount"
 date: "2020-05-30"

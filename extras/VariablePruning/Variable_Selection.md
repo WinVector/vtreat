@@ -1,4 +1,4 @@
-Don’t Feel Bad About Selecting Variables
+Don’t Feel Guilty About Selecting Variables
 ================
 John Mount
 2020-05-30
