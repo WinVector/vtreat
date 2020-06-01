@@ -592,3 +592,14 @@ And we have recovered Bayes' Law.
   * [`R` source for included `fns.R`](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/fns.R)
   * [`RMarkdown` source for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.Rmd)
   * [`RMarkdown` render for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
+
+
+## Relation to common tests
+
+So what is the posterior on the variable <code>explanatory</code> that we have been calculating?  
+
+Roughly, by Bayes law <code>P[explanatory | data]</code> is going to be of the form <code>P[explanatory] P[data | explanatory]/Z</code>.  Under normality assumptions <code>P[data | explanatory]</code> is going to be of the form <code>c(1 - exp(-s residual_variance)/exp(-s initial_variance))</code>.  
+
+The classic F-statistic is very roughly (ignoring degrees of freedom) of the form <code>(initial_variance - residual_variance)/residual_variance</code>. Or <code>initial_variance/residual_variance - 1</code>.
+
+In both cases (ignoring priors, and ignoring degrees of freedom) for normalized data <code>initial_variance</code> is a constant. So for a given data set both the posterior <code>P[explanatory | data]</code> and the F-test are monotone functions in <code>residual_variance</code>.  Any choice on a threshold for one of these values is approximately equivalent to a choice subject to a transformed threshold on the other.
