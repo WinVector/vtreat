@@ -5,6 +5,8 @@ author: "John Mount"
 date: "2020-05-30"
 ---
 
+
+
 ## Introduction
 
 Feature selection or feature pruning is the removal of some proposed columns or potential explanatory variables from a model. It can be an important step in data science, where many available data columns are not in fact pre-screened as suitable for a given project. In fact one could say that what a statistician calls an explanatory variable has already been filtered for problem appropriateness, so you sometimes don't see variable selection in statistics because we are often starting statistical stories after the variable qualification chapter!
@@ -35,6 +37,9 @@ set.seed(2020)
 
 cl <- parallel::makeCluster(parallel::detectCores())
 ```
+
+The source to `fns.R` and the mathematical derivations of all the steps can be found in the long-version of this article [here](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.pdf).
+
 
 Now we define our functions.  The first generates our proposed parameters `beta_0` and `beta_1`.  The idea is: since the vector parameters were generated according to the normal distribution, picking one of them uniformly from the stored `data.frame` is also normally distributed.
 
@@ -579,8 +584,9 @@ $$
 
 And we have recovered Bayes' Law.  
 
-### Links
+## Links
 
+  * [Article announcement (and possible discussion)](http://www.win-vector.com/blog/2020/05/dont-feel-guilty-about-selecting-variables/)
   * [PDF render of full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.pdf)
   * [`RMarkdown` source for full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.Rmd)
   * [`R` source for included `fns.R`](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/fns.R)

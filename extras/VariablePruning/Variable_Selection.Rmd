@@ -381,4 +381,11 @@ parallel::stopCluster(cl)
 
 Variable selection falls out naturally from the right sort of Bayesian model. If a column is not explanatory, correct fitting procedures can have a high probability of exactly excluding it. If you are using columns that are not all strenuously pre-vetted for your problem you should probably introduce some variable selection to your data science or machine learning workflow. Identifying that a column may have no effect is not the same as saying a column has at most a small effect.  Though thinking in terms of mere averages or point estimates sometimes is not rich enough to distinguish these two concepts.
 
+## Links
 
+  * [Article announcement (and possible discussion)](http://www.win-vector.com/blog/2020/05/dont-feel-guilty-about-selecting-variables/)
+  * [PDF render of full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.pdf)
+  * [`RMarkdown` source for full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.Rmd)
+  * [`R` source for included `fns.R`](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/fns.R)
+  * [`RMarkdown` source for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.Rmd)
+    * [`RMarkdown` render for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
