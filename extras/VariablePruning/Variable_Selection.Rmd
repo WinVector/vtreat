@@ -388,4 +388,4 @@ Variable selection falls out naturally from the right sort of Bayesian model. If
   * [`RMarkdown` source for full article with appendices](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection_w_Appendices.Rmd)
   * [`R` source for included `fns.R`](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/fns.R)
   * [`RMarkdown` source for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.Rmd)
-    * [`RMarkdown` render for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
+  * [`RMarkdown` render for short version of note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)

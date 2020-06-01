@@ -622,5 +622,5 @@ is not rich enough to distinguish these two concepts.
     `fns.R`](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/fns.R)
   - [`RMarkdown` source for short version of
     note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.Rmd)
-      - [`RMarkdown` render for short version of
-        note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
+  - [`RMarkdown` render for short version of
+    note](https://github.com/WinVector/vtreat/blob/master/extras/VariablePruning/Variable_Selection.md)
