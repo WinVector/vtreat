@@ -40,5 +40,5 @@ Suggests:
     RUnit
 LazyData: true
 VignetteBuilder: knitr, R.rsp
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 ByteCompile: true

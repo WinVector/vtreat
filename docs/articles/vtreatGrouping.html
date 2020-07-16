@@ -6,19 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grouping Example • vtreat</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Grouping Example">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="vtreat">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -112,10 +112,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Grouping Example</h1>
+      <h1 data-toc-skip>Grouping Example</h1>
                         <h4 class="author">Nina Zumel, Nate Sutton</h4>
             
-            <h4 class="date">2020-03-11</h4>
+            <h4 class="date">2020-07-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatGrouping.Rmd"><code>vignettes/vtreatGrouping.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatGrouping.Rmd</code></div>
@@ -130,9 +130,9 @@
 <h2 class="hasAnchor">
 <a href="#the-data" class="anchor"></a>The Data</h2>
 <p>First, let’s look at the data.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># panel data for concentration in multiple subjects </span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">d &lt;-<span class="st"> </span>datasets<span class="op">::</span>Theoph</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(d)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># panel data for concentration in multiple subjects </span>
+<span class="no">d</span> <span class="kw">&lt;-</span> <span class="kw pkg">datasets</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/r/datasets/Theoph.html">Theoph</a></span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">d</span>)</pre></body></html></div>
 <pre><code>##   Subject   Wt Dose Time  conc
 ## 1       1 79.6 4.02 0.00  0.74
 ## 2       1 79.6 4.02 0.25  2.84
@@ -140,7 +140,7 @@
 ## 4       1 79.6 4.02 1.12 10.50
 ## 5       1 79.6 4.02 2.02  9.66
 ## 6       1 79.6 4.02 3.82  8.58</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(d)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">d</span>)</pre></body></html></div>
 <pre><code>##     Subject         Wt             Dose            Time             conc       
 ##  6      :11   Min.   :54.60   Min.   :3.100   Min.   : 0.000   Min.   : 0.000  
 ##  7      :11   1st Qu.:63.58   1st Qu.:4.305   1st Qu.: 0.595   1st Qu.: 2.877  
@@ -157,11 +157,11 @@
 <p>Suppose we wanted to fit a model to analyze how a patient’s weight affects how theophylline is metabolized, and validate that model with three-fold cross-validation. It would be important that all readings from a given patient stay in the same fold. We might also want the population in each fold to have similar distributions of theophylline concentrations curves.</p>
 <p>Recall that the goal of <em>y</em>-stratification is to insure that all samples from the data have as close to identical <em>y</em> distributions as possible. This becomes more difficult when we also have to obey a grouping constraint.</p>
 <p>Let’s look at three ways of splitting the data into folds. First, we will split the data arbitrarily into three groups, using the modulo of the Subject id to do the splitting.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># a somewhat arbitrary split of patients</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">subnum =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(d<span class="op">$</span>Subject))</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">d<span class="op">$</span>modSplit =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(subnum <span class="op">%%</span><span class="st"> </span><span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># a somewhat arbitrary split of patients</span>
+<span class="no">subnum</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">d</span>$<span class="no">Subject</span>))
+<span class="no">d</span>$<span class="no">modSplit</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(<span class="no">subnum</span> <span class="kw">%%</span> <span class="fl">3</span>)</pre></body></html></div>
 <p>We can verify that this split preserves groups, by looking at the table of subject observations in each fold. Each subject should only appear in a single fold.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>modSplit))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">Subject</span><span class="kw">=</span><span class="no">d</span>$<span class="no">Subject</span>, <span class="kw">groupid</span><span class="kw">=</span><span class="no">d</span>$<span class="no">modSplit</span>))</pre></body></html></div>
 <pre><code>##        groupid
 ## Subject  0  1  2
 ##      6  11  0  0
@@ -177,14 +177,14 @@
 ##      1   0 11  0
 ##      5   0  0 11</code></pre>
 <p>Now let’s try the standard <em>y</em> stratification in <code>vtreat</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># stratify by outcome only</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># forces concentration to be equivalent</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">pStrat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),<span class="dv">3</span>,d,d<span class="op">$</span>conc)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(pStrat, <span class="st">"splitmethod"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co"># stratify by outcome only</span>
+<span class="co"># forces concentration to be equivalent</span>
+<span class="no">pStrat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">d</span>),<span class="fl">3</span>,<span class="no">d</span>,<span class="no">d</span>$<span class="no">conc</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">pStrat</span>, <span class="st">"splitmethod"</span>)</pre></body></html></div>
 <pre><code>## [1] "kwaycrossystratified"</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">d<span class="op">$</span>stratSplit &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),pStrat)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>stratSplit))</a></code></pre></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">d</span>$<span class="no">stratSplit</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">d</span>),<span class="no">pStrat</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">Subject</span><span class="kw">=</span><span class="no">d</span>$<span class="no">Subject</span>, <span class="kw">groupid</span><span class="kw">=</span><span class="no">d</span>$<span class="no">stratSplit</span>))</pre></body></html></div>
 <pre><code>##        groupid
 ## Subject 1 2 3
 ##      6  6 2 3
@@ -201,15 +201,15 @@
 ##      5  2 5 4</code></pre>
 <p>We can see this partition didn’t preserve the <code>Subject</code> grouping.</p>
 <p>Finally, we can try <code>vtreat</code>’s group-preserving split, which also tries to <em>y</em>-stratify as much as possible (by stratifying on the mean <em>y</em> observation from each group).</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># stratify by patient and outcome</span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co"># allows concentration to vary amoung individual patients</span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">splitter &lt;-<span class="st"> </span><span class="kw"><a href="../reference/makekWayCrossValidationGroupedByColumn.html">makekWayCrossValidationGroupedByColumn</a></span>(<span class="st">'Subject'</span>)</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">split &lt;-<span class="st"> </span><span class="kw">splitter</span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),<span class="dv">3</span>,d,d<span class="op">$</span>conc)</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(split, <span class="st">"splitmethod"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="co"># stratify by patient and outcome</span>
+<span class="co"># allows concentration to vary amoung individual patients</span>
+<span class="no">splitter</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/makekWayCrossValidationGroupedByColumn.html">makekWayCrossValidationGroupedByColumn</a></span>(<span class="st">'Subject'</span>)
+<span class="no">split</span> <span class="kw">&lt;-</span> <span class="fu">splitter</span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">d</span>),<span class="fl">3</span>,<span class="no">d</span>,<span class="no">d</span>$<span class="no">conc</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">split</span>, <span class="st">"splitmethod"</span>)</pre></body></html></div>
 <pre><code>## [1] "kwaycrossystratifiedgrouped"</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">d<span class="op">$</span>subjectSplit &lt;-<span class="st"> </span>vtreat<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/vtreat/man/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(d),split)</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="dt">Subject=</span>d<span class="op">$</span>Subject, <span class="dt">groupid=</span>d<span class="op">$</span>subjectSplit))</a></code></pre></div>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">d</span>$<span class="no">subjectSplit</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">d</span>),<span class="no">split</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">Subject</span><span class="kw">=</span><span class="no">d</span>$<span class="no">Subject</span>, <span class="kw">groupid</span><span class="kw">=</span><span class="no">d</span>$<span class="no">subjectSplit</span>))</pre></body></html></div>
 <pre><code>##        groupid
 ## Subject  1  2  3
 ##      6   0  0 11
@@ -247,17 +247,11 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#the-data">The Data</a></li>
-      <li><a href="#partitioning-the-data-for-modeling">Partitioning the Data for Modeling</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -268,7 +262,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

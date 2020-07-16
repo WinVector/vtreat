@@ -24,6 +24,8 @@ knitr::opts_chunk$set(
 real-world data for supervised machine learning or predictive modeling
 in a statistically sound manner.
 
+A nice video lecture on what sorts of problems `vtreat` solves can be found [here](https://youtu.be/sniHkkrAsOc?t=42).
+
 `vtreat` takes an input `data.frame`
 that has a specified column called "the outcome variable" (or "y")
 that is the quantity to be predicted (and must not have missing

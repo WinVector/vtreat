@@ -12,6 +12,9 @@
 real-world data for supervised machine learning or predictive modeling
 in a statistically sound manner.
 
+A nice video lecture on what sorts of problems `vtreat` solves can be
+found [here](https://youtu.be/sniHkkrAsOc?t=42).
+
 `vtreat` takes an input `data.frame` that has a specified column called
 “the outcome variable” (or “y”) that is the quantity to be predicted
 (and must not have missing values). Other input columns are possible
@@ -324,9 +327,8 @@ citation('vtreat')
  #  To cite package 'vtreat' in publications use:
  #  
  #    John Mount and Nina Zumel (2020). vtreat: A Statistically Sound
- #    'data.frame' Processor/Conditioner.
- #    https://github.com/WinVector/vtreat/,
- #    https://winvector.github.io/vtreat/.
+ #    'data.frame' Processor/Conditioner. R package version 1.6.0.
+ #    https://CRAN.R-project.org/package=vtreat
  #  
  #  A BibTeX entry for LaTeX users is
  #  
@@ -334,7 +336,8 @@ citation('vtreat')
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
  #      year = {2020},
- #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
+ #      note = {R package version 1.6.0},
+ #      url = {https://CRAN.R-project.org/package=vtreat},
  #    }
 ```
 
