@@ -43,6 +43,16 @@
     Ghostscript note is a proprety of the check infrastructure, not the package.
 
     devtools::check_win_devel()
+    * using R Under development (unstable) (2020-08-10 r79000)
+    * using platform: x86_64-w64-mingw32 (64-bit)
+    * using session charset: ISO8859-1
+    * checking for file 'vtreat/DESCRIPTION' ... OK
+    * checking extension type ... Package
+    * this is package 'vtreat' version '1.6.1'
+    * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
+    Maintainer: 'John Mount <jmount@win-vector.com>'
+    ...
+    Status: OK
 
 ## Downstream dependencies
 
