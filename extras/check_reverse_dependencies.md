@@ -8,13 +8,13 @@ package = "vtreat"
 packageVersion(package)
 ```
 
-    ## [1] '1.6.0'
+    ## [1] '1.6.1'
 
 ``` r
 date()
 ```
 
-    ## [1] "Wed Aug 12 09:42:49 2020"
+    ## [1] "Wed Aug 12 10:01:20 2020"
 
 ``` r
 parallelCluster <- NULL
@@ -33,7 +33,7 @@ setwd(td)
 print(td)
 ```
 
-    ## [1] "/var/folders/7f/sdjycp_d08n8wwytsbgwqgsw0000gn/T//Rtmp2KiO48"
+    ## [1] "/var/folders/7f/sdjycp_d08n8wwytsbgwqgsw0000gn/T//RtmpL4xZYk"
 
 ``` r
 options(repos = c(CRAN="https://cloud.r-project.org"))
@@ -58,8 +58,8 @@ if(!is.null(parallelCluster)) {
 }
 ```
 
-    ## ## Reverse depends check of vtreat 1.6.0 
-    ## crispRdesignR_1.1.5 started at 2020-08-12 09:42:51 failure at 2020-08-12 09:42:54 (0/0/1)
+    ## ## Reverse depends check of vtreat 1.6.1 
+    ## crispRdesignR_1.1.5 started at 2020-08-12 10:01:22 success at 2020-08-12 10:01:46 (1/0/0)
 
     ## [1] id     title  status
     ## <0 rows> (or 0-length row.names)
@@ -68,11 +68,11 @@ if(!is.null(parallelCluster)) {
 summariseQueue(package=package, directory=td)
 ```
 
-    ## Test of vtreat 1.6.0 had 0 successes, 1 failures, and 0 skipped packages. 
-    ## Ran from 2020-08-12 09:42:51 to 2020-08-12 09:42:54 for 3 secs 
-    ## Average of 3 secs relative to 2.886 secs using 1 runners
+    ## Test of vtreat 1.6.1 had 1 successes, 0 failures, and 0 skipped packages. 
+    ## Ran from 2020-08-12 10:01:22 to 2020-08-12 10:01:46 for 24 secs 
+    ## Average of 24 secs relative to 23.937 secs using 1 runners
     ## 
-    ## Failed packages:  crispRdesignR 
+    ## Failed packages:   
     ## 
     ## Skipped packages:   
     ## 
