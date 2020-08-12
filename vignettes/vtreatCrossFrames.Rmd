@@ -79,7 +79,7 @@ plotRes(dTest,'predM1','y','model1 on test')
 Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice
 the downstream model (the `glm`) erroneously thinks the `xBad?_cat` variables are
 significant (due to the large number of degrees of freedom hidden from the downstream
-model by the [impact/effect coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
+model by the [impact/effect coding](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
 
 ## The Right Way: A Calibration Set
 

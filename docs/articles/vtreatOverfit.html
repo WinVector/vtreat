@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -84,7 +84,7 @@
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -97,7 +97,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,13 +109,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="vtreatOverfit_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
@@ -124,7 +124,7 @@
 
     
     
-<p>Example showing safe “best practice” use of the <a href="https://cran.r-project.org/package=vtreat">‘vtreat’</a> variable preparation library. For more on vtreat see <a href="http://www.win-vector.com/blog/2015/09/vtreat-up-on-cran/">here</a> and <a href="https://github.com/WinVector/vtreat">here</a>.</p>
+<p>Example showing safe “best practice” use of the <a href="https://cran.r-project.org/package=vtreat">‘vtreat’</a> variable preparation library. For more on <code>vtreat</code> see <a href="https://github.com/WinVector/vtreat">here</a>.</p>
 <p>Below we generate an example data frame with no relation between x and y. We are using a synthetic data set so we know what the “right answer is” (no signal). False fitting on no-signal variables is bad for several reasons:</p>
 <ul>
 <li>It creates undesirable biases in variable quality estimates and in subsequent models.</li>
@@ -148,13 +148,13 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">treatments</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="no">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="fl">TRUE</span>,
   <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:06 2020"
-## [1] "designing treatments Thu Jul 16 09:51:06 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:06 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:06 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:06 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:06 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:07 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:38 2020"
+## [1] "designing treatments Wed Aug 12 09:50:38 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:38 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:38 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:39 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:39 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:39 2020"</code></pre>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">dTrainTreated</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="no">treatments</span>,<span class="no">dTrain</span>,
   <span class="kw">pruneSig</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
 )</pre></body></html></div>
@@ -252,13 +252,13 @@
                                         <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         <span class="kw">rareSig</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note set this to something like 0.3</span>
 )</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:07 2020"
-## [1] "designing treatments Thu Jul 16 09:51:07 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:07 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:07 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:07 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:07 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:07 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:39 2020"
+## [1] "designing treatments Wed Aug 12 09:50:39 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:39 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:39 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:39 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:39 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:39 2020"</code></pre>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">dTrainTreated</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="no">treatments</span>,<span class="no">dTrain</span>,
                                  <span class="kw">pruneSig</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
 )
@@ -331,9 +331,9 @@
 <span class="no">xdat</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span>(<span class="no">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="fl">TRUE</span>,
                                   <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                   <span class="kw">rareSig</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>())</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Thu Jul 16 09:51:07 2020"
-## [1] " start cross frame work Thu Jul 16 09:51:07 2020"
-## [1] " vtreat::mkCrossFrameCExperiment done Thu Jul 16 09:51:07 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 start initial treatment design Wed Aug 12 09:50:39 2020"
+## [1] " start cross frame work Wed Aug 12 09:50:39 2020"
+## [1] " vtreat::mkCrossFrameCExperiment done Wed Aug 12 09:50:39 2020"</code></pre>
 <div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="no">treatments</span> <span class="kw">&lt;-</span> <span class="no">xdat</span>$<span class="no">treatments</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">treatments</span>$<span class="no">scoreFrame</span>)</pre></body></html></div>
 <pre><code>##   varName varMoves          rsq          sig needsSplit extraModelDegrees

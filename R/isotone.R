@@ -69,8 +69,8 @@ solveNonDecreasing <- function(varName, x, y, w=NULL) {
   }
   dord <- order(d$x)
   # see:
-  # http://www.win-vector.com/blog/2017/09/permutation-theory-in-action/
-  # http://www.win-vector.com/blog/2017/05/on-indexing-operators-and-composition/
+  # https://win-vector.com/2017/09/02/permutation-theory-in-action/
+  # https://win-vector.com/2017/05/18/on-indexing-operators-and-composition/
   invPerm <- 1:n
   invPerm[dord] <- 1:n
   d <- d[dord, , drop=FALSE]

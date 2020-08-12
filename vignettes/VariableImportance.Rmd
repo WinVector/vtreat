@@ -13,7 +13,7 @@ vignette: >
 
 Part of the `vtreat` philosophy is to assume after the `vtreat` variable processing the next step is a sophisticated [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) method.  Under this assumption we assume the machine learning methodology (be it regression, tree methods, random forests, boosting, or neural nets) will handle issues of redundant variables, joint distributions of variables, overall regularization, and joint dimension reduction.
 
-However, an important exception is: variable screening.  In practice we have seen wide data-warehouses with hundreds of columns overwhelm and defeat state of the art machine learning algorithms due to over-fitting.  We have some synthetic examples of this ([here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/) and [here](http://www.win-vector.com/blog/tag/talks/)).
+However, an important exception is: variable screening.  In practice we have seen wide data-warehouses with hundreds of columns overwhelm and defeat state of the art machine learning algorithms due to over-fitting.  We have some synthetic examples of this ([here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/) and [here](https://win-vector.com/talks-and-presentations/)).
 
 The upshot is: even in 2018 you can not treat every column you find in a data warehouse as a variable.  You must at least perform some basic screening.
 
@@ -59,7 +59,7 @@ vf = vtreat::value_variables_N(
 knitr::kable(vf[, c("var", "rsq", "sig")])
 ```
 
-Now the difference is night and day.  The important variable `x` is singled out (scores very well), and the unimportant variable `x_noise` doesn't often score well. Though, as with all significance tests, useless variables can get lucky from time to time- (an issue that can be addressed by using a [Cohen's-`d` style calculation](http://www.win-vector.com/blog/2017/09/remember-p-values-are-not-effect-sizes/)).
+Now the difference is night and day.  The important variable `x` is singled out (scores very well), and the unimportant variable `x_noise` doesn't often score well. Though, as with all significance tests, useless variables can get lucky from time to time- (an issue that can be addressed by using a [Cohen's-`d` style calculation](https://win-vector.com/2017/09/08/remember-p-values-are-not-effect-sizes/)).
 
 Our modeling advice is:
 

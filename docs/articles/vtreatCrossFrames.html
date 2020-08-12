@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -84,7 +84,7 @@
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -97,7 +97,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,13 +109,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="vtreatCrossFrames_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat cross frames</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
@@ -168,13 +168,13 @@
                                         <span class="st">'y'</span>,<span class="fl">TRUE</span>,
   <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:01 2020"
-## [1] "designing treatments Thu Jul 16 09:51:01 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:01 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:02 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:02 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:02 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:02 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:34 2020"
+## [1] "designing treatments Wed Aug 12 09:50:34 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:34 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:34 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:34 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:34 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:34 2020"</code></pre>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">dTrainTreated</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="no">treatments</span>,<span class="no">dTrain</span>,
   <span class="kw">pruneSig</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
 )</pre></body></html></div>
@@ -237,7 +237,7 @@
 ##   FALSE   356  119
 ##   TRUE    147   45
 ## [1] "accuracy 0.60119940029985"</code></pre>
-<p>Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice the downstream model (the <code>glm</code>) erroneously thinks the <code>xBad?_cat</code> variables are significant (due to the large number of degrees of freedom hidden from the downstream model by the <a href="http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact/effect coding</a>).</p>
+<p>Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice the downstream model (the <code>glm</code>) erroneously thinks the <code>xBad?_cat</code> variables are significant (due to the large number of degrees of freedom hidden from the downstream model by the <a href="https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact/effect coding</a>).</p>
 </div>
 <div id="the-right-way-a-calibration-set" class="section level2">
 <h2 class="hasAnchor">
@@ -255,13 +255,13 @@
                                         <span class="st">'y'</span>,<span class="fl">TRUE</span>,
   <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 )</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:02 2020"
-## [1] "designing treatments Thu Jul 16 09:51:02 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:02 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:02 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:02 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:02 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:02 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:34 2020"
+## [1] "designing treatments Wed Aug 12 09:50:34 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:34 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:34 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:34 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:34 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:35 2020"</code></pre>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">dTrainTreated</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="no">treatments</span>,<span class="no">dTrain</span>,
   <span class="kw">pruneSig</span><span class="kw">=</span><span class="no">pruneSig</span>)
 <span class="no">newvars</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">dTrainTreated</span>),<span class="st">'y'</span>)
@@ -366,9 +366,9 @@
            <span class="st">'y'</span>,<span class="fl">TRUE</span>,
            <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
 )</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Thu Jul 16 09:51:02 2020"
-## [1] " start cross frame work Thu Jul 16 09:51:03 2020"
-## [1] " vtreat::mkCrossFrameCExperiment done Thu Jul 16 09:51:03 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 start initial treatment design Wed Aug 12 09:50:35 2020"
+## [1] " start cross frame work Wed Aug 12 09:50:35 2020"
+## [1] " vtreat::mkCrossFrameCExperiment done Wed Aug 12 09:50:35 2020"</code></pre>
 <div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="no">treatments</span> <span class="kw">&lt;-</span> <span class="no">prep</span>$<span class="no">treatments</span>
 
 <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">treatments</span>$<span class="no">scoreFrame</span>[,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>)])</pre></body></html></div>

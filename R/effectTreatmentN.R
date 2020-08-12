@@ -37,7 +37,7 @@ as_rquery.vtreat_can_num <- function(tstep,
 
 
 # build a numeric impact model
-# see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
+# see: https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatNum <- function(origVarName,vcolin,rescol,smFactor,levRestriction,weights) {
   vcol <- .preProcCat(vcolin,levRestriction)
   extraModelDegrees <- max(0,length(unique(vcolin))-1)

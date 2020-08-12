@@ -14,7 +14,7 @@ packageVersion(package)
 date()
 ```
 
-    ## [1] "Tue Mar 10 16:44:08 2020"
+    ## [1] "Wed Aug 12 09:42:49 2020"
 
 ``` r
 parallelCluster <- NULL
@@ -33,16 +33,12 @@ setwd(td)
 print(td)
 ```
 
-    ## [1] "/var/folders/7q/h_jp2vj131g5799gfnpzhdp80000gn/T//RtmpdwXShi"
+    ## [1] "/var/folders/7f/sdjycp_d08n8wwytsbgwqgsw0000gn/T//Rtmp2KiO48"
 
 ``` r
 options(repos = c(CRAN="https://cloud.r-project.org"))
 jobsdfe <- enqueueJobs(package=package, directory=td)
-```
 
-    ## Error: No dependencies for vtreat
-
-``` r
 mk_fn <- function(package, directory) {
   force(package)
   force(directory)
@@ -62,6 +58,9 @@ if(!is.null(parallelCluster)) {
 }
 ```
 
+    ## ## Reverse depends check of vtreat 1.6.0 
+    ## crispRdesignR_1.1.5 started at 2020-08-12 09:42:51 failure at 2020-08-12 09:42:54 (0/0/1)
+
     ## [1] id     title  status
     ## <0 rows> (or 0-length row.names)
 
@@ -69,13 +68,17 @@ if(!is.null(parallelCluster)) {
 summariseQueue(package=package, directory=td)
 ```
 
-    ## Test of vtreat had 0 successes, 0 failures, and 0 skipped packages.
-
-    ## Warning in min(starttime): no non-missing arguments to min; returning Inf
-
-    ## Warning in max(endtime): no non-missing arguments to max; returning -Inf
-
-    ## Error in as.POSIXct.numeric(time1): 'origin' must be supplied
+    ## Test of vtreat 1.6.0 had 0 successes, 1 failures, and 0 skipped packages. 
+    ## Ran from 2020-08-12 09:42:51 to 2020-08-12 09:42:54 for 3 secs 
+    ## Average of 3 secs relative to 2.886 secs using 1 runners
+    ## 
+    ## Failed packages:  crispRdesignR 
+    ## 
+    ## Skipped packages:   
+    ## 
+    ## None still working
+    ## 
+    ## None still scheduled
 
 ``` r
 setwd(orig_dir)

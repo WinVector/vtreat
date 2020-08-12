@@ -36,7 +36,7 @@ as_rquery.vtreat_cat_Bayes <- function(tstep,
 
 
 # build a classification impact model
-# see: http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
+# see: https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/
 .mkCatBayes <- function(origVarName,vcolin,rescol,resTarget,smFactor,levRestriction,weights,catScaling) {
   vcol <- .preProcCat(vcolin,levRestriction)
   extraModelDegrees <- max(0,length(unique(vcolin))-1)

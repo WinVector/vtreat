@@ -74,7 +74,7 @@ Note: each column is processed independently of all others." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -112,7 +112,7 @@ Note: each column is processed independently of all others." />
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -127,7 +127,7 @@ Note: each column is processed independently of all others." />
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -140,7 +140,7 @@ Note: each column is processed independently of all others." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
       
@@ -265,11 +265,11 @@ Note: each column is processed independently of all others.</p>
 <span class='no'>dTestZ</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
     <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
 <span class='no'>treatmentsZ</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsZ</span>(<span class='no'>dTrainZ</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainZ</span>),
-  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:50:46 2020"
-#&gt; [1] "designing treatments Thu Jul 16 09:50:46 2020"
-#&gt; [1] " have initial level statistics Thu Jul 16 09:50:46 2020"
-#&gt; [1] " scoring treatments Thu Jul 16 09:50:46 2020"
-#&gt; [1] "have treatment plan Thu Jul 16 09:50:46 2020"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
+  <span class='kw'>rareCount</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:20 2020"
+#&gt; [1] "designing treatments Wed Aug 12 09:50:20 2020"
+#&gt; [1] " have initial level statistics Wed Aug 12 09:50:20 2020"
+#&gt; [1] " scoring treatments Wed Aug 12 09:50:20 2020"
+#&gt; [1] "have treatment plan Wed Aug 12 09:50:20 2020"</div><div class='input'><span class='no'>dTrainZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTrainZ</span>)
 <span class='no'>dTestZTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsZ</span>, <span class='no'>dTestZ</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

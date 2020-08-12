@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![DOI](http://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 [![status](https://tinyverse.netlify.com/badge/vtreat)](https://CRAN.R-project.org/package=vtreat)
@@ -113,7 +113,7 @@ pre-processing” and implements:
     variables (with optional suppression of non-significant indicators).
   - Treatment of categorical variables with very large numbers of levels
     through sub-models (again [impact/effects
-    coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
+    coding](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
   - (optional) User specified significance pruning on levels coded into
     effects/impact sub-models.
   - Correct treatment of nested models or sub-models through data split
@@ -130,12 +130,12 @@ pre-processing” and implements:
     (something we have lectured on previously
     [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS)
     and
-    [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
+    [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
   - Collaring/Winsorizing of unexpected out of range numeric inputs.
   - (optional) Conversion of all variables into effects (or “y-scale”)
     units (through the optional `scale` argument to `vtreat::prepare()`,
     using some of the ideas discussed
-    [here](http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)).
+    [here](https://win-vector.com/2014/06/02/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)).
     This allows correct/sensible application of principal component
     analysis pre-processing in a machine learning context.
   - Joining in additional training distribution data (which can be
@@ -155,7 +155,7 @@ To help explain the methods we have prepared some documentation:
   - The [vtreat package
     overall](https://winvector.github.io/vtreat/index.html).
   - [Preparing data for analysis using R
-    white-paper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
+    white-paper](https://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
   - The [types of new
     variables](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html)
     introduced by vtreat processing (including how to limit down to
@@ -193,7 +193,7 @@ precautions to guard against the following real world data issues:
     
     We re-encode such variables as a family of indicator or dummy
     variables for common levels plus an additional [impact
-    code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+    code](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
     (also called “effects coded”). This allows principled use (including
     smoothing) of huge categorical variables (like zip-codes) when
     building models. This is critical for some libraries (such as
@@ -253,7 +253,7 @@ precautions to guard against the following real world data issues:
     It is a dirty secret that even popular machine learning techniques
     need some variable pruning (when exposed to very wide data frames,
     see
-    [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)
+    [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)
     and [here](https://www.youtube.com/watch?v=X_Rn3EOEjGE)). We make
     the necessary effect size estimates and significances easily
     available and supply initial variable pruning.
@@ -263,12 +263,13 @@ Automating these steps ensures they are easy enough that you actually
 perform them and leaves the analyst time to look for additional data
 issues. For example this allowed us to essentially automate a number of
 the steps taught in chapters 4 and 6 of [*Practical Data Science with R*
-(Zumel, Mount; Manning 2014)](http://practicaldatascience.com/) into a
+(Zumel, Mount; Manning
+2014)](https://win-vector.com/practical-data-science-with-r/) into a
 [very short
-worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we
-think for understanding it is *essential* to work all the steps by hand
-as we did in the book). The 2nd edition of *Practical Data Science with
-R* covers using `vtreat` in `R` in chapter 8 “Advanced Data
+worksheet](https://winvector.github.io/KDD2009/KDD2009RF.html) (though
+we think for understanding it is *essential* to work all the steps by
+hand as we did in the book). The 2nd edition of *Practical Data Science
+with R* covers using `vtreat` in `R` in chapter 8 “Advanced Data
 Preparation.”
 
 The idea is: `data.frame`s prepared with the `vtreat` library are
@@ -294,24 +295,24 @@ Some of our related articles (which should make clear some of our
 motivations, and design decisions):
 
   - [Modeling trick: impact coding of categorical variables with many
-    levels](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+    levels](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
   - [A bit more on impact
-    coding](http://www.win-vector.com/blog/2012/08/a-bit-more-on-impact-coding/)
+    coding](https://win-vector.com/2012/08/02/a-bit-more-on-impact-coding/)
   - [vtreat: designing a package for variable
-    treatment](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/)
+    treatment](https://win-vector.com/2014/08/07/vtreat-designing-a-package-for-variable-treatment/)
   - [A comment on preparing data for
-    classifiers](http://www.win-vector.com/blog/2014/12/a-comment-on-preparing-data-for-classifiers/)
+    classifiers](https://win-vector.com/2014/12/04/a-comment-on-preparing-data-for-classifiers/)
   - [Nina Zumel presenting on
-    vtreat](http://www.slideshare.net/ChesterChen/vtreat)
+    vtreat](https://www.slideshare.net/ChesterChen/vtreat)
   - [What is new in the vtreat
-    library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
+    library?](https://win-vector.com/2015/05/07/what-is-new-in-the-vtreat-library/)
   - [How do you know if your data has
-    signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
+    signal?](https://win-vector.com/2015/08/10/how-do-you-know-if-your-data-has-signal/)
 
 Examples of current best practice using `vtreat` (variable coding,
 train, test split) can be found
 [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)
-and [here](http://winvector.github.io/KDD2009/KDD2009RF.html).
+and [here](https://winvector.github.io/KDD2009/KDD2009RF.html).
 
 Some small examples:
 
@@ -321,14 +322,15 @@ We attach our packages.
 library("vtreat")
  #  Loading required package: wrapr
 packageVersion("vtreat")
- #  [1] '1.6.0'
+ #  [1] '1.6.1'
 citation('vtreat')
  #  
  #  To cite package 'vtreat' in publications use:
  #  
  #    John Mount and Nina Zumel (2020). vtreat: A Statistically Sound
- #    'data.frame' Processor/Conditioner. R package version 1.6.0.
- #    https://CRAN.R-project.org/package=vtreat
+ #    'data.frame' Processor/Conditioner.
+ #    https://github.com/WinVector/vtreat/,
+ #    https://winvector.github.io/vtreat/.
  #  
  #  A BibTeX entry for LaTeX users is
  #  
@@ -336,8 +338,7 @@ citation('vtreat')
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
  #      year = {2020},
- #      note = {R package version 1.6.0},
- #      url = {https://CRAN.R-project.org/package=vtreat},
+ #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
  #    }
 ```
 
@@ -516,11 +517,11 @@ Related work:
     Associates, Inc. ISBN 0-89859-268-2.
   - [“A preprocessing scheme for high-cardinality categorical attributes
     in classification and prediction
-    problems”](http://dl.acm.org/citation.cfm?id=507538) Daniele
+    problems”](https://dl.acm.org/doi/10.1145/507533.507538) Daniele
     Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001
     Pages 27-32.
   - [“Modeling Trick: Impact Coding of Categorical Variables with Many
-    Levels”](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+    Levels”](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
     Nina Zumel; Win-Vector blog, 2012.
   - “Big Learning Made Easy – with Counts\!”, Misha Bilenko, Cortana
     Intelligence and Machine Learning Blog, 2015.

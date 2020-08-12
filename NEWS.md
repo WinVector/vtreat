@@ -1,4 +1,8 @@
 
+# vtreat 1.6.1 2020/08/12
+
+ * Documentation improvements.
+
 # vtreat 1.6.0 2020/03/10
 
  * More S3 methods.

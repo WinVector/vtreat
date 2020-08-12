@@ -61,8 +61,8 @@ plapply <- function(workList, worker,
 # if the column is more exotic (multiple classes, AsIs, other issues) return null
 # protects downstream code from surprises
 # given how diverse R types are this is no way we can defend again everything, 
-# this is supposed to be a consistent defense against common unexpected convertions
-# see: http://www.win-vector.com/blog/2015/04/what-can-be-in-an-r-data-frame-column/
+# this is supposed to be a consistent defense against common unexpected conversions
+# see: https://win-vector.com/2015/04/09/what-can-be-in-an-r-data-frame-column/
 .cleanColumn <- function(xcol,expectedLength) {
   if(is.null(xcol)) {
     return(NULL)

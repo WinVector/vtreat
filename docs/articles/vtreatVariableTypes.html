@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -84,7 +84,7 @@
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -97,7 +97,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,13 +109,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="vtreatVariableTypes_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Variable Types</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatVariableTypes.Rmd"><code>vignettes/vtreatVariableTypes.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatVariableTypes.Rmd</code></div>
@@ -148,18 +148,18 @@
    <span class="kw">z</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),<span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>),
    <span class="kw">stringsAsFactors</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 <span class="no">treatmentsC</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="no">dTrainC</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">dTrainC</span>),<span class="st">'y'</span>,<span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:17 2020"
-## [1] "designing treatments Thu Jul 16 09:51:17 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:17 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:17 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:17 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:17 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:17 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:49 2020"
+## [1] "designing treatments Wed Aug 12 09:50:49 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:49 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:49 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:49 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:49 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:49 2020"</code></pre>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">scoreColsToPrint</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">treatmentsC</span>$<span class="no">scoreFrame</span>[,<span class="no">scoreColsToPrint</span>])</pre></body></html></div>
 <pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 0.24340634 0.1547700                 2
-## 2        x    x_catB  catB 0.05070201 0.5160763                 2
+## 1        x    x_catP  catP 0.11457614 0.3289524                 2
+## 2        x    x_catB  catB 0.12081050 0.3161341                 2
 ## 3        z         z clean 0.25792985 0.1429977                 0
 ## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
 ## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
@@ -175,9 +175,9 @@
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># Map significances back to original variables</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span>(<span class="no">sig</span>~<span class="no">origName</span>,<span class="kw">data</span><span class="kw">=</span><span class="no">treatmentsC</span>$<span class="no">scoreFrame</span>,<span class="kw">FUN</span><span class="kw">=</span><span class="no">min</span>)</pre></body></html></div>
 <pre><code>##   origName       sig
-## 1        x 0.1547700
+## 1        x 0.2076623
 ## 2        z 0.1429977</code></pre>
-<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
+<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="https://win-vector.com/2011/09/14/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
 <p>Essentially a derived variable name is built by concatenating an original variable name and a treatment type (also recorded in the <code>code</code> column for convenience). The codes give the different ‘vtreat’ variable types (or really meanings, as all derived variables are numeric).</p>
 <p>For categorical targets the possible variable types are as follows:</p>
 <ul>
@@ -202,23 +202,23 @@
    <span class="kw">z</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),<span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>)),
    <span class="kw">stringsAsFactors</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 <span class="no">treatmentsN</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(<span class="no">dTrainN</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">dTrainN</span>),<span class="st">'y'</span>)</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:17 2020"
-## [1] "designing treatments Thu Jul 16 09:51:17 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:17 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:17 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:17 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:17 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:17 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:49 2020"
+## [1] "designing treatments Wed Aug 12 09:50:49 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:49 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:49 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:49 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:49 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:49 2020"</code></pre>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">treatmentsN</span>$<span class="no">scoreFrame</span>[,<span class="no">scoreColsToPrint</span>])</pre></body></html></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catP  catP 4.385965e-01 0.1518345                 2
-## 2        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 3        x    x_catD  catD 1.111111e-01 0.5185185                 2
-## 4        z         z clean 3.045045e-01 0.2562868                 0
-## 5        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
-## 6        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 7        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
-## 8        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.2857143 0.2745766                 2
+## 2        x    x_catN  catN 0.1052632 0.5304117                 2
+## 3        x    x_catD  catD 0.1111111 0.5185185                 2
+## 4        z         z clean 0.3045045 0.2562868                 0
+## 5        z   z_isBAD isBAD 0.2000000 0.3739010                 0
+## 6        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 7        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 8        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>The treatment of numeric targets is similar to that of categorical targets. In the numeric case the possible derived variable types are:</p>
 <ul>
 <li>
@@ -235,7 +235,7 @@
 <strong>cat_D</strong> : a “deviation fact” about a categorical level tells us if ‘y’ is concentrated or diffuse when conditioned on the observed level of the original categorical variable. Probably not good for direct use in a model, but possibly useful for meta-analysis on the variable.</li>
 </ul>
 <p>Note: for categorical targets we don’t need <code>cat\_D</code> variables as this information is already encoded in <code>cat\_B</code> variables.</p>
-<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
+<p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="https://win-vector.com/2011/11/21/correlation-and-r-squared/">here</a>) for some notes).</p>
 </div>
 <div id="when-there-is-no-supplied-target-to-predict" class="section level2">
 <h2 class="hasAnchor">
@@ -246,11 +246,11 @@
    <span class="kw">z</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),
    <span class="kw">stringsAsFactors</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 <span class="no">treatmentsZ</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(<span class="no">dTrainZ</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">dTrainZ</span>))</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:17 2020"
-## [1] "designing treatments Thu Jul 16 09:51:17 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:17 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:17 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:17 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:49 2020"
+## [1] "designing treatments Wed Aug 12 09:50:49 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:49 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:49 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:49 2020"</code></pre>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">treatmentsZ</span>$<span class="no">scoreFrame</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</pre></body></html></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
@@ -337,13 +337,13 @@
                                                       <span class="st">'isBAD'</span>),
                                  <span class="kw">verbose</span><span class="kw">=</span><span class="fl">FALSE</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">treatmentsN</span>$<span class="no">scoreFrame</span>[,<span class="no">scoreColsToPrint</span>])</pre></body></html></div>
-<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 1.110223e-16 1.0000000                 2
-## 2        z         z clean 3.045045e-01 0.2562868                 0
-## 3        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
-## 4        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
-## 5        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
-## 6        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
+## 1        x    x_catN  catN 0.1052632 0.5304117                 2
+## 2        z         z clean 0.3045045 0.2562868                 0
+## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
+## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
+## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">pruneSig</span> <span class="kw">&lt;-</span> <span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
 <span class="no">vScoreFrame</span> <span class="kw">&lt;-</span> <span class="no">treatmentsN</span>$<span class="no">scoreFrame</span>
 <span class="no">varsToUse</span> <span class="kw">&lt;-</span> <span class="no">vScoreFrame</span>$<span class="no">varName</span>[(<span class="no">vScoreFrame</span>$<span class="no">sig</span><span class="kw">&lt;=</span><span class="no">pruneSig</span>)]
@@ -384,7 +384,6 @@
 <ul>
 <li><a href="https://github.com/WinVector/vtreat">‘vtreat’ on Github’</a></li>
 <li><a href="https://cran.r-project.org/package=vtreat">‘vtreat’ on CRAN</a></li>
-<li><a href="http://www.win-vector.com/blog/tag/variable-treatment/">‘vtreat’ at Win-Vector</a></li>
 </ul>
 </div>
   </div>

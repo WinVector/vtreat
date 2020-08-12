@@ -19,6 +19,6 @@ ppCoderN(v, vcol, y, w = NULL)
 scored training data column
 }
 \description{
-Please see \url{http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/} and
-\url{http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/}.
+Please see \url{https://win-vector.com/2017/09/25/custom-level-coding-in-vtreat/} and
+\url{https://win-vector.com/2017/09/28/partial-pooling-for-lower-variance-variable-encoding/}.
 }

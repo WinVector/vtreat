@@ -1,5 +1,5 @@
 ---
-title: "Grouping Example"
+title: "vtreat grouping example"
 author: "Nina Zumel, Nate Sutton"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

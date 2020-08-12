@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -84,7 +84,7 @@
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -97,7 +97,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,13 +109,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="VariableImportance_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat Variable Importance</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/VariableImportance.Rmd"><code>vignettes/VariableImportance.Rmd</code></a></small>
       <div class="hidden name"><code>VariableImportance.Rmd</code></div>
@@ -126,7 +126,7 @@
     
 <p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>’s purpose is to produce pure numeric <a href="https://www.r-project.org"><code>R</code></a> <code>data.frame</code>s that are ready for <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised predictive modeling</a> (predicting a value from other values). By ready we mean: a purely numeric data frame with no missing values and a reasonable number of columns (missing-values re-encoded with indicators, and high-degree categorical re-encode by effects codes or impact codes).</p>
 <p>Part of the <code>vtreat</code> philosophy is to assume after the <code>vtreat</code> variable processing the next step is a sophisticated <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised machine learning</a> method. Under this assumption we assume the machine learning methodology (be it regression, tree methods, random forests, boosting, or neural nets) will handle issues of redundant variables, joint distributions of variables, overall regularization, and joint dimension reduction.</p>
-<p>However, an important exception is: variable screening. In practice we have seen wide data-warehouses with hundreds of columns overwhelm and defeat state of the art machine learning algorithms due to over-fitting. We have some synthetic examples of this (<a href="http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a> and <a href="http://www.win-vector.com/blog/tag/talks/">here</a>).</p>
+<p>However, an important exception is: variable screening. In practice we have seen wide data-warehouses with hundreds of columns overwhelm and defeat state of the art machine learning algorithms due to over-fitting. We have some synthetic examples of this (<a href="https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a> and <a href="https://win-vector.com/talks-and-presentations/">here</a>).</p>
 <p>The upshot is: even in 2018 you can not treat every column you find in a data warehouse as a variable. You must at least perform some basic screening.</p>
 <p>To help with this <code>vtreat</code> incorporates a per-variable linear significance report. This report shows how useful each variable is taken alone in a linear or generalized linear model (some details can be found <a href="https://arxiv.org/abs/1611.09477">here</a>). However, this sort of calculation was optimized for speed, not discovery power.</p>
 <p><code>vtreat</code> now includes a direct variable valuation system that works very well with complex numeric relationships. It is a function called <a href="https://winvector.github.io/vtreat/reference/value_variables_N.html"><code><a href="../reference/value_variables_N.html">vtreat::value_variables_N()</a></code></a> for numeric or regression problems and <a href="https://winvector.github.io/vtreat/reference/value_variables_C.html"><code><a href="../reference/value_variables_C.html">vtreat::value_variables_C()</a></code></a> for binomial classification problems. It works by fitting two transformed copies of each numeric variable to the outcome. One transform is a low frequency transform realized as an optimal <code>k</code>-segment linear model for a moderate choice of <code>k</code>. The other fit is a high-frequency trasnform realized as a <code>k</code>-nearest neighbor average for moderate choice of <code>k</code>. Some of the methodology is shown <a href="https://github.com/WinVector/vtreat/blob/master/extras/SegFitter.md">here</a>.</p>
@@ -144,9 +144,9 @@
   <span class="no">d</span>,
   <span class="kw">varlist</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>),
   <span class="kw">outcomename</span> <span class="kw">=</span> <span class="st">"y"</span>)</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Thu Jul 16 09:50:58 2020"
-## [1] " start cross frame work Thu Jul 16 09:50:58 2020"
-## [1] " vtreat::mkCrossFrameNExperiment done Thu Jul 16 09:50:58 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 start initial treatment design Wed Aug 12 09:50:30 2020"
+## [1] " start cross frame work Wed Aug 12 09:50:30 2020"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Aug 12 09:50:30 2020"</code></pre>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">sf</span> <span class="kw">&lt;-</span> <span class="no">cfe</span>$<span class="no">treatments</span>$<span class="no">scoreFrame</span>
 <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">sf</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</pre></body></html></div>
 <table class="table">
@@ -195,7 +195,7 @@
 </tr>
 </tbody>
 </table>
-<p>Now the difference is night and day. The important variable <code>x</code> is singled out (scores very well), and the unimportant variable <code>x_noise</code> doesn’t often score well. Though, as with all significance tests, useless variables can get lucky from time to time- (an issue that can be addressed by using a <a href="http://www.win-vector.com/blog/2017/09/remember-p-values-are-not-effect-sizes/">Cohen’s-<code>d</code> style calculation</a>).</p>
+<p>Now the difference is night and day. The important variable <code>x</code> is singled out (scores very well), and the unimportant variable <code>x_noise</code> doesn’t often score well. Though, as with all significance tests, useless variables can get lucky from time to time- (an issue that can be addressed by using a <a href="https://win-vector.com/2017/09/08/remember-p-values-are-not-effect-sizes/">Cohen’s-<code>d</code> style calculation</a>).</p>
 <p>Our modeling advice is:</p>
 <ul>
 <li>Use <code>vtreat::value_variables_*()</code>

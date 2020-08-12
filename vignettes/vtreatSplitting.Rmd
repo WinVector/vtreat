@@ -1,5 +1,5 @@
 ---
-title: "vtreat splitting"
+title: "vtreat data splitting"
 author: "John Mount, Nina Zumel"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -18,9 +18,9 @@ knitr::opts_chunk$set(fig.width = 7)
 
 ### Motivation
 
-[`vtreat`](https://github.com/WinVector/vtreat) supplies a number of data set splitting or cross-validation planning facilities.  Some services are implicit such as the simulated out of sample scoring of high degree of freedom derived variables (such as `catB`, `catN`,`catD`, and `catP`; see [here](http://winvector.github.io/vtreathtml/vtreatVariableTypes.html) for a list of variable types).  Some services are explicit such as `vtreat::mkCrossFrameCExperiment` and `vtreat::mkCrossFrameNExperiment` (please see [here](http://winvector.github.io/vtreathtml/vtreatCrossFrames.html)).  And there is even a user-facing cross-validation planner in `vtreat::buildEvalSets` (try `help(buildEvalSets)` for details).
+[`vtreat`](https://github.com/WinVector/vtreat) supplies a number of data set splitting or cross-validation planning facilities.  Some services are implicit such as the simulated out of sample scoring of high degree of freedom derived variables (such as `catB`, `catN`,`catD`, and `catP`; see [here](https://winvector.github.io/vtreathtml/vtreatVariableTypes.html) for a list of variable types).  Some services are explicit such as `vtreat::mkCrossFrameCExperiment` and `vtreat::mkCrossFrameNExperiment` (please see [here](https://winvector.github.io/vtreathtml/vtreatCrossFrames.html)).  And there is even a user-facing cross-validation planner in `vtreat::buildEvalSets` (try `help(buildEvalSets)` for details).
 
-We (Nina Zumel and John Mount) have written a lot on structured cross-validation; the most relevant article being [Random Test/Train Split is not Always Enough](http://www.win-vector.com/blog/2015/01/random-testtrain-split-is-not-always-enough/).  The point is that in retrospective studies random test/train split is *at best* a simulation of how a model will be applied in the future.  It is not an actual experimental design as in a [randomized control trial](https://en.wikipedia.org/wiki/Randomized_controlled_trial).  To be an effective simulation you must work to preserve structure that will be true in future application.
+We (Nina Zumel and John Mount) have written a lot on structured cross-validation; the most relevant article being [Random Test/Train Split is not Always Enough](https://win-vector.com/2015/01/05/random-testtrain-split-is-not-always-enough/).  The point is that in retrospective studies random test/train split is *at best* a simulation of how a model will be applied in the future.  It is not an actual experimental design as in a [randomized control trial](https://en.wikipedia.org/wiki/Randomized_controlled_trial).  To be an effective simulation you must work to preserve structure that will be true in future application.
 
 The overall idea is: a better splitting plan helps build a model that actually performs better in practice.  And porting such a splitting plan back to your evaluation procedures gives you a better estimate of this future model performance.
 

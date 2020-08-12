@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -84,7 +84,7 @@
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -97,7 +97,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,13 +109,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="vtreatScaleMode_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat scale mode</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatScaleMode.Rmd"><code>vignettes/vtreatScaleMode.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatScaleMode.Rmd</code></div>
@@ -201,7 +201,7 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 ## 4 x_lev_x_a  0.000000e+00     1 0.4097258    FALSE
 ## 5 x_lev_x_b  0.000000e+00    NA 1.0000000     TRUE</code></pre>
 <p>The above claims are true with the exception of the derived variable <code>x_lev_x.b</code>. This is because the outcome variable <code>y</code> has identical distribution when the original variable <code>x==‘b’</code> and when <code>x!=‘b’</code> (on half the time in both cases). This means <code>y</code> is perfectly independent of <code>x==‘b’</code> and the regression slope must be zero (thus, cannot be 1). vtreat now treats this as needing to scale by a multiplicative factor of zero. Note also that the significance level associated with <code>x_lev_x.b</code> is large, making this variable easy to prune. The <code>varMoves</code> and significance facts in <code>treatmentsC$scoreFrame</code> are about the un-scaled frame (where <code>x_lev_x.b</code> does in fact move).</p>
-<p>For a good discussion of the application of <em>y</em>-aware scaling to Principal Components Analysis please see <a href="http://www.win-vector.com/blog/2016/05/pcr_part2_yaware/">here</a>.</p>
+<p>For a good discussion of the application of <em>y</em>-aware scaling to Principal Components Analysis please see <a href="https://win-vector.com/2016/05/23/pcr_part2_yaware/">here</a>.</p>
 <p>Previous versions of vtreat (0.5.22 and earlier) would copy variables that could not be sensibly scaled into the treated frame unaltered. This was considered the “most faithful” thing to do. However we now feel that this practice was not safe for many downstream procedures, such as principal components analysis and geometric clustering.</p>
 <div id="categorical-outcome-mode-catscalingtrue" class="section level3">
 <h3 class="hasAnchor">
@@ -276,9 +276,9 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <span class="no">cEraw</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(<span class="no">dTrainN</span>,
                                          <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'y'</span>,
                                          <span class="kw">scale</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Thu Jul 16 09:51:11 2020"
-## [1] " start cross frame work Thu Jul 16 09:51:11 2020"
-## [1] " vtreat::mkCrossFrameNExperiment done Thu Jul 16 09:51:11 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 start initial treatment design Wed Aug 12 09:50:43 2020"
+## [1] " start cross frame work Wed Aug 12 09:50:43 2020"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Aug 12 09:50:43 2020"</code></pre>
 <div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">newvars</span> <span class="kw">&lt;-</span> <span class="no">cEraw</span>$<span class="no">treatments</span>$<span class="no">scoreFrame</span>$<span class="no">varName</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">newvars</span>)</pre></body></html></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>
@@ -298,9 +298,9 @@ For classification problems (or categorical <code>y</code>’s) as of version <c
 <span class="no">cEscaled</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(<span class="no">dTrainN</span>,
                                             <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'x1'</span>,<span class="st">'x2'</span>,<span class="st">'x3'</span>),<span class="st">'yScaled'</span>,
                                             <span class="kw">scale</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 start initial treatment design Thu Jul 16 09:51:11 2020"
-## [1] " start cross frame work Thu Jul 16 09:51:11 2020"
-## [1] " vtreat::mkCrossFrameNExperiment done Thu Jul 16 09:51:11 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 start initial treatment design Wed Aug 12 09:50:43 2020"
+## [1] " start cross frame work Wed Aug 12 09:50:43 2020"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Aug 12 09:50:43 2020"</code></pre>
 <div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">newvars_s</span> <span class="kw">&lt;-</span> <span class="no">cEscaled</span>$<span class="no">treatments</span>$<span class="no">scoreFrame</span>$<span class="no">varName</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">newvars_s</span>)</pre></body></html></div>
 <pre><code>## [1] "x1" "x2" "x3"</code></pre>

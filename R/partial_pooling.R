@@ -1,8 +1,8 @@
 
 #' Solve a numeric partial pooling problem.
 #' 
-#' Please see \url{http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/} and
-#' \url{http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/}.
+#' Please see \url{https://win-vector.com/2017/09/25/custom-level-coding-in-vtreat/} and
+#' \url{https://win-vector.com/2017/09/28/partial-pooling-for-lower-variance-variable-encoding/}.
 #'
 #' @param v character variable name
 #' @param vcol character, independent or input variable
@@ -28,8 +28,8 @@ ppCoderN <- function(v, vcol,
 
 #' Solve a categorical partial pooling problem.
 #' 
-#' Please see \url{http://www.win-vector.com/blog/2017/09/custom-level-coding-in-vtreat/} and
-#' \url{http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/}.
+#' Please see \url{https://win-vector.com/2017/09/25/custom-level-coding-in-vtreat/} and
+#' \url{https://win-vector.com/2017/09/28/partial-pooling-for-lower-variance-variable-encoding/}.
 #' 
 #' @param v character variable name
 #' @param vcol character, independent or input variable

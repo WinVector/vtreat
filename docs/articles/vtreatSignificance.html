@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/vtreatCrossFrames.html">vtreat cross frames</a>
     </li>
     <li>
-      <a href="../articles/vtreatGrouping.html">Grouping Example</a>
+      <a href="../articles/vtreatGrouping.html">vtreat grouping example</a>
     </li>
     <li>
       <a href="../articles/vtreatOverfit.html">vtreat overfit</a>
@@ -84,7 +84,7 @@
       <a href="../articles/vtreatSignificance.html">vtreat significance</a>
     </li>
     <li>
-      <a href="../articles/vtreatSplitting.html">vtreat splitting</a>
+      <a href="../articles/vtreatSplitting.html">vtreat data splitting</a>
     </li>
     <li>
       <a href="../articles/vtreatVariableTypes.html">Variable Types</a>
@@ -97,7 +97,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,13 +109,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="vtreatSignificance_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -126,7 +126,7 @@
     
 <p><code><a href="../reference/prepare.html">vtreat::prepare</a></code> includes a required argument <code>pruneSig</code> that (if not NULL) is used to prune variables. Obviously significance depends on training set size (so is not an intrinsic property of just the variables) and there are issues of bias in the estimate (which vtreat attempts to eliminate by estimating significance of complex sub-model variables on cross-validated or out of sample data). As always there is a question of what to set a significance control to.</p>
 <p>Our advice is the following pragmatic:</p>
-<p>Use variable filtering on wide datasets (datasets with many columns or variables). Most machine learning algorithms can not defend themselves against large numbers of noise variables (including those algorithms that have cross-validation procedures built in). Examples are given <a href="http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a>.</p>
+<p>Use variable filtering on wide datasets (datasets with many columns or variables). Most machine learning algorithms can not defend themselves against large numbers of noise variables (including those algorithms that have cross-validation procedures built in). Examples are given <a href="https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a>.</p>
 <p>As an upper bound think of setting <code>pruneSig</code> below <em>1/numberOfColumns</em>. Setting <code>pruneSig</code> to <em>1/numberOfColumns</em> means that (in expectation) only a constant number of pure noise variables (variables with no actual relation to the outcome we are trying to predict) should create columns. This means (under some assumptions, and in expectation) we expect only a bounded number of noisy columns to be exposed to downstream statistical and machine learning algorithms (which they can presumably handle).</p>
 <p>As a lower bound think of what sort of good variables get thrown out at a given setting of <code>pruneSig</code>. For example suppose our problem is categorization in a data set with <em>n/2</em> positive examples and <em>n/2</em> negative examples. Consider the observed significance of a rare indicator variable that is on <em>k</em> times in training and is only on for positive instances. A random variable that is on <em>k</em> times would achieve this purity with probability <span class="math inline">\(2^{-k}\)</span>, so we expect it to have a <em>-log(significance)</em> in the ballpark of <em>k</em>. So a <code>pruneSig</code> of <span class="math inline">\(2^{-k}\)</span> will filter all such variables out (be they good or bad). Thus if you want levels or indicators that are on only a <em>z</em> fraction of the time on a training set of size <em>n</em> you want <code>pruneSig</code> &gt;&gt; <span class="math inline">\(2^{-z*n}\)</span>.</p>
 <p>Example:</p>
@@ -169,13 +169,13 @@
 ## 2   FALSE      lev002       lev002F
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">treatmentsC</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="no">d</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span>),<span class="st">'y'</span>,<span class="fl">TRUE</span>)</pre></body></html></div>
-<pre><code>## [1] "vtreat 1.6.0 inspecting inputs Thu Jul 16 09:51:13 2020"
-## [1] "designing treatments Thu Jul 16 09:51:13 2020"
-## [1] " have initial level statistics Thu Jul 16 09:51:13 2020"
-## [1] " scoring treatments Thu Jul 16 09:51:13 2020"
-## [1] "have treatment plan Thu Jul 16 09:51:13 2020"
-## [1] "rescoring complex variables Thu Jul 16 09:51:13 2020"
-## [1] "done rescoring complex variables Thu Jul 16 09:51:13 2020"</code></pre>
+<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:45 2020"
+## [1] "designing treatments Wed Aug 12 09:50:45 2020"
+## [1] " have initial level statistics Wed Aug 12 09:50:45 2020"
+## [1] " scoring treatments Wed Aug 12 09:50:45 2020"
+## [1] "have treatment plan Wed Aug 12 09:50:45 2020"
+## [1] "rescoring complex variables Wed Aug 12 09:50:45 2020"
+## [1] "done rescoring complex variables Wed Aug 12 09:50:46 2020"</code></pre>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 <span class="no">estSigGLM</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">xVar</span>,<span class="no">yVar</span>,<span class="no">numberOfHiddenDegrees</span><span class="kw">=</span><span class="fl">0</span>) {
   <span class="no">d</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">x</span><span class="kw">=</span><span class="no">xVar</span>,<span class="kw">y</span><span class="kw">=</span><span class="no">yVar</span>,<span class="kw">stringsAsFactors</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
@@ -200,7 +200,7 @@
 ## 1   catVarNoise_catB 0.001071310  2.231012e-01               249
 ## 2 catVarPerfect_catP 0.001512584  1.477140e-01               473
 ## 3 catVarPerfect_catB 0.695865944 1.125597e-211               473</code></pre>
-<p>For categorical targets we have in the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/">here</a> for some notes). For numeric targets the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">here</a>) for some notes).</p>
+<p>For categorical targets we have in the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="https://win-vector.com/2011/09/14/the-simpler-derivation-of-logistic-regression/">here</a> for some notes). For numeric targets the <code>sig</code> column is the significance of the single variable linear regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “r-squared” or portion of variance explained (please see <a href="https://win-vector.com/2011/11/21/correlation-and-r-squared/">here</a>) for some notes).</p>
 <p>Signal carrying complex variables can score as significant, even those composed of rare levels.</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(<span class="no">y</span>~<span class="no">d</span>$<span class="no">catVarPerfect</span><span class="kw">==</span><span class="st">'lev001T'</span>,<span class="kw">data</span><span class="kw">=</span><span class="no">d</span>,<span class="kw">family</span><span class="kw">=</span><span class="no">binomial</span>))</pre></body></html></div>
 <pre><code>## 

@@ -65,7 +65,7 @@ print(vmap['x_catB'])
 aggregate(sig~origName,data=treatmentsC$scoreFrame,FUN=min)
 ```
 
-In the `scoreFrame` the `sig` column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the `rsq` column is the "pseudo-r-squared" or portion of deviance explained (please see [here](http://www.win-vector.com/blog/2011/09/the-simpler-derivation-of-logistic-regression/) for some notes).
+In the `scoreFrame` the `sig` column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the `rsq` column is the "pseudo-r-squared" or portion of deviance explained (please see [here](https://win-vector.com/2011/09/14/the-simpler-derivation-of-logistic-regression/) for some notes).
 
 Essentially a derived variable name is built by concatenating an original variable name and
 a treatment type (also recorded in the `code` column for convenience).  The codes
@@ -106,7 +106,7 @@ case the possible derived variable types are:
 Note: for categorical targets we don't need `cat\_D` variables as this information is
 already encoded in `cat\_B` variables.
 
-In the `scoreFrame` the `sig` column is the significance of the single variable linear regression using the named variable (plus a constant term), and the `rsq` column is the "r-squared" or portion of variance explained (please see [here](http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/)) for some notes).
+In the `scoreFrame` the `sig` column is the significance of the single variable linear regression using the named variable (plus a constant term), and the `rsq` column is the "r-squared" or portion of variance explained (please see [here](https://win-vector.com/2011/11/21/correlation-and-r-squared/)) for some notes).
 
 ## When there is no supplied target to predict
 
@@ -234,6 +234,5 @@ aggregate(sig~origName,data=origVarSigs,FUN=min)
 
   *  ['vtreat' on Github'](https://github.com/WinVector/vtreat)
   *  ['vtreat' on CRAN](https://cran.r-project.org/package=vtreat)
-  *  ['vtreat' at Win-Vector](http://www.win-vector.com/blog/tag/variable-treatment/)
 
 

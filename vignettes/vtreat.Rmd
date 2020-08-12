@@ -10,9 +10,11 @@ vignette: >
 ---
 
 
-`vtreat` is a `data.frame` processor/conditioner that prepares
+`vtreat` is a `data.frame` processor/conditioner (available [for `R`](https://github.com/WinVector/vtreat), and [for `Python`](https://github.com/WinVector/pyvtreat)) that prepares
 real-world data for supervised machine learning or predictive modeling
 in a statistically sound manner.
+
+A nice video lecture on what sorts of problems `vtreat` solves can be found [here](https://youtu.be/sniHkkrAsOc?t=42).
 
 `vtreat` takes an input `data.frame`
 that has a specified column called "the outcome variable" (or "y")
@@ -22,7 +24,7 @@ values).  Other input columns are possible explanatory variables
 have missing values) that the user later wants to use to predict "y".
 In practice such an input `data.frame` may not be immediately suitable
 for machine learning procedures that often expect only numeric
-explanatory variables, and may not tolerate missing value.
+explanatory variables, and may not tolerate missing values.
 
 To solve this, `vtreat` builds a transformed `data.frame` where all
 explanatory variable columns have been transformed into a number of
@@ -41,6 +43,21 @@ learning using documented methods using `vtreat`.  Incorporating
 `vtreat` into your machine learning workflow lets you quickly work
 with very diverse structured data.
 
+In all cases (classification, regression, unsupervised, and multinomial classification) the intent is that `vtreat` transforms are essentially one liners.
+
+The preparation commands are organized as follows:
+
+
+ * **Regression**: [`R` regression example, fit/prepare interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md), [`R` regression example, design/prepare/experiment interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`Python` regression example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+ * **Classification**: [`R` classification example, fit/prepare interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md), [`R` classification example, design/prepare/experiment interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`Python` classification  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+ * **Unsupervised tasks**: [`R` unsupervised example, fit/prepare interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md), [`R` unsupervised example, design/prepare/experiment interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`Python` unsupervised example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+ * **Multinomial classification**: [`R` multinomial classification example, fit/prepare interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md), [`R` multinomial classification example, design/prepare/experiment interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`Python` multinomial classification example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+ 
+In all cases: variable preparation is intended to be a "one liner."
+
+These current revisions of the examples are designed to be small, yet complete.  So as a set they have some overlap, but the user can rely mostly on a single example for a single task type.
+
+
 For more detail please see here: [arXiv:1611.09477
 stat.AP](https://arxiv.org/abs/1611.09477) (the documentation describes the `R` version,
 however all of the examples can be found worked in `Python` [here](https://github.com/WinVector/pyvtreat/tree/master/Examples/vtreat_paper1)).
@@ -49,7 +66,6 @@ however all of the examples can be found worked in `Python` [here](https://githu
 as an [`R` package](https://github.com/WinVector/vtreat),
 and also as 
 a [`Python`/`Pandas` package](https://github.com/WinVector/vtreat).
-
 
 Even with modern machine learning techniques (random forests, support vector
 machines, neural nets, gradient boosted trees, and so on) or standard
@@ -71,7 +87,7 @@ In particular vtreat emphasizes a concept called
     variables (with optional suppression of non-significant indicators).
 -   Treatment of categorical variables with very large numbers of levels
     through sub-models (again [impact/effects
-    coding](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
+    coding](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
 -   (optional) User specified significance pruning on levels coded into
     effects/impact sub-models.
 -   Correct treatment of nested models or sub-models through data split
@@ -88,12 +104,12 @@ In particular vtreat emphasizes a concept called
     (something we have lectured on previously
     [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS)
     and
-    [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
+    [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
 -   Collaring/Winsorizing of unexpected out of range numeric inputs.
 -   (optional) Conversion of all variables into effects (or "y-scale")
     units (through the optional `scale` argument to `vtreat::prepare()`,
     using some of the ideas discussed
-    [here](http://www.win-vector.com/blog/2014/06/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)).
+    [here](https://win-vector.com/2014/06/02/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)).
     This allows correct/sensible application of principal component
     analysis pre-processing in a machine learning context.
 -   Joining in additional training distribution data (which can be
@@ -113,7 +129,7 @@ prepared some documentation:
 
 -   The [vtreat package
     overall](https://winvector.github.io/vtreat/index.html).
--   [Preparing data for analysis using R white-paper](http://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
+-   [Preparing data for analysis using R white-paper](https://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
 -   The [types of new
     variables](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html)
     introduced by vtreat processing (including how to limit down to
@@ -151,8 +167,7 @@ precautions to guard against the following real world data issues:
 -   Categorical variables with very many levels.
 
     We re-encode such variables as a family of indicator or dummy
-    variables for common levels plus an additional [impact
-    code](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+    variables for common levels plus an additional [impact code](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
     (also called "effects coded"). This allows principled use
     (including smoothing) of huge categorical variables (like zip-codes)
     when building models. This is critical for some libraries (such as
@@ -212,7 +227,7 @@ precautions to guard against the following real world data issues:
     It is a dirty secret that even popular machine learning techniques
     need some variable pruning (when exposed to very wide data frames,
     see
-    [here](http://www.win-vector.com/blog/2014/02/bad-bayes-an-example-of-why-you-need-hold-out-testing/)
+    [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)
     and [here](https://www.youtube.com/watch?v=X_Rn3EOEjGE)). We make
     the necessary effect size estimates and significances easily
     available and supply initial variable pruning.
@@ -222,9 +237,9 @@ Automating these steps ensures they are easy enough that you actually
 perform them and leaves the analyst time to look for additional data
 issues. For example this allowed us to essentially automate a number of
 the steps taught in chapters 4 and 6 of [*Practical Data Science with R*
-(Zumel, Mount; Manning 2014)](http://practicaldatascience.com/) into a
+(Zumel, Mount; Manning 2014)](https://win-vector.com/practical-data-science-with-r/) into a
 [very short
-worksheet](http://winvector.github.io/KDD2009/KDD2009RF.html) (though we
+worksheet](https://winvector.github.io/KDD2009/KDD2009RF.html) (though we
 think for understanding it is *essential* to work all the steps by hand
 as we did in the book). The 2nd edition of *Practical Data Science with R* covers
 using `vtreat` in `R` in chapter 8 "Advanced Data Preparation."
@@ -253,106 +268,140 @@ library, including:
 Some of our related articles (which should make clear some of our
 motivations, and design decisions):
 
--   [Modeling trick: impact coding of categorical variables with many
-    levels](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
--   [A bit more on impact
-    coding](http://www.win-vector.com/blog/2012/08/a-bit-more-on-impact-coding/)
--   [vtreat: designing a package for variable
-    treatment](http://www.win-vector.com/blog/2014/08/vtreat-designing-a-package-for-variable-treatment/)
--   [A comment on preparing data for
-    classifiers](http://www.win-vector.com/blog/2014/12/a-comment-on-preparing-data-for-classifiers/)
--   [Nina Zumel presenting on
-    vtreat](http://www.slideshare.net/ChesterChen/vtreat)
--   [What is new in the vtreat
-    library?](http://www.win-vector.com/blog/2015/05/what-is-new-in-the-vtreat-library/)
--   [How do you know if your data has signal?](http://www.win-vector.com/blog/2015/08/how-do-you-know-if-your-data-has-signal/)
+-   [Modeling trick: impact coding of categorical variables with many levels](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+-   [A bit more on impact coding](https://win-vector.com/2012/08/02/a-bit-more-on-impact-coding/)
+-   [vtreat: designing a package for variable treatment](https://win-vector.com/2014/08/07/vtreat-designing-a-package-for-variable-treatment/)
+-   [A comment on preparing data for classifiers](https://win-vector.com/2014/12/04/a-comment-on-preparing-data-for-classifiers/)
+-   [Nina Zumel presenting on vtreat](https://www.slideshare.net/ChesterChen/vtreat)
+-   [What is new in the vtreat library?](https://win-vector.com/2015/05/07/what-is-new-in-the-vtreat-library/)
+-   [How do you know if your data has signal?](https://win-vector.com/2015/08/10/how-do-you-know-if-your-data-has-signal/)
 
-Examples of current best practice using `vtreat` (variable
-coding, train, test split) can be found
-[here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html) and
-[here](http://winvector.github.io/KDD2009/KDD2009RF.html).
+Examples of current best practice using `vtreat` (variable coding, train, test split) can be found [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html) and [here](https://winvector.github.io/KDD2009/KDD2009RF.html).
 
 
-Trivial example:
+Some small examples:
 
+
+We attach our packages.
 
 ```{r}
 library("vtreat")
 packageVersion("vtreat")
 citation('vtreat')
-
-# categorical example
-dTrainC <- data.frame(x=c('a', 'a', 'a', 'b', 'b', NA, NA),
-   z=c(1, 2, 3, 4, NA, 6, NA),
-   y=c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
-dTestC <- data.frame(x=c('a', 'b', 'c', NA), z=c(10, 20, 30, NA))
-
-# help("designTreatmentsC")
-
-treatmentsC <- designTreatmentsC(dTrainC, colnames(dTrainC), 'y', TRUE,
-                                 verbose=FALSE)
-print(treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
-
-# help("prepare")
-
-dTrainCTreated <- prepare(treatmentsC, dTrainC, pruneSig=1.0, scale=TRUE)
-varsC <- setdiff(colnames(dTrainCTreated), 'y')
-# all input variables should be mean 0
-sapply(dTrainCTreated[, varsC, drop=FALSE], mean)
-# all non NA slopes should be 1
-sapply(varsC, function(c) { lm(paste('y', c, sep='~'),
-   data=dTrainCTreated)$coefficients[[2]]})
-dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=c(), scale=TRUE)
-print(dTestCTreated)
 ```
+
+A small categorical example.
+
+```{r}
+# categorical example
+set.seed(23525)
+
+# we set up our raw training and application data
+dTrainC <- data.frame(
+  x = c('a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, NA, 6, NA),
+  y = c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE))
+
+dTestC <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsC
+# and dTrainCTreated
+unpack[
+  treatmentsC = treatments,
+  dTrainCTreated = crossFrame
+  ] <- mkCrossFrameCExperiment(
+  dframe = dTrainC,
+  varlist = setdiff(colnames(dTrainC), 'y'),
+  outcomename = 'y',
+  outcometarget = TRUE,
+  verbose = FALSE)
+
+# the treatments include a score frame relating new
+# derived variables to original columns
+treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees', 'recommended')] %.>%
+  knitr::kable(.)
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainCTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+
+# Any future application data is prepared with
+# the prepare method.
+dTestCTreated <- prepare(treatmentsC, dTestC, pruneSig=NULL)
+
+dTestCTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+```
+
+A small numeric example.
 
 ```{r}
 # numeric example
-dTrainN <- data.frame(x=c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
-   z=c(1, 2, 3, 4, 5, NA, 7, NA), y=c(0, 0, 0, 1, 0, 1, 1, 1))
-dTestN <- data.frame(x=c('a', 'b', 'c', NA), z=c(10, 20, 30, NA))
-# help("designTreatmentsN")
-treatmentsN = designTreatmentsN(dTrainN, colnames(dTrainN), 'y',
-                                verbose=FALSE)
-print(treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')])
-dTrainNTreated <- prepare(treatmentsN, dTrainN, pruneSig=1.0, scale=TRUE)
-varsN <- setdiff(colnames(dTrainNTreated), 'y')
-# all input variables should be mean 0
-sapply(dTrainNTreated[, varsN, drop=FALSE], mean) 
-# all non NA slopes should be 1
-sapply(varsN, function(c) { lm(paste('y', c, sep='~'),
-   data=dTrainNTreated)$coefficients[[2]]}) 
-dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=c(), scale=TRUE)
-print(dTestNTreated)
+set.seed(23525)
 
-# for large data sets you can consider designing the treatments on 
-# a subset like: d[sample(1:dim(d)[[1]], 1000), ]
+# we set up our raw training and application data
+dTrainN <- data.frame(
+  x = c('a', 'a', 'a', 'a', 'b', 'b', NA, NA),
+  z = c(1, 2, 3, 4, 5, NA, 7, NA), 
+  y = c(0, 0, 0, 1, 0, 1, 1, 1))
 
-# One can also use treatment plans as pipe targets.
-dTrainN %.>% 
-  treatmentsN %.>% 
+dTestN <- data.frame(
+  x = c('a', 'b', 'c', NA), 
+  z = c(10, 20, 30, NA))
+
+# we perform a vtreat cross frame experiment
+# and unpack the results into treatmentsN
+# and dTrainNTreated
+unpack[
+  treatmentsN = treatments,
+  dTrainNTreated = crossFrame
+  ] <- mkCrossFrameNExperiment(
+  dframe = dTrainN,
+  varlist = setdiff(colnames(dTrainN), 'y'),
+  outcomename = 'y',
+  verbose = FALSE)
+
+# the treatments include a score frame relating new
+# derived variables to original columns
+treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraModelDegrees')] %.>%
+  knitr::kable(.)
+
+# the treated frame is a "cross frame" which
+# is a transform of the training data built 
+# as if the treatment were learned on a different
+# disjoint training set to avoid nested model
+# bias and over-fit.
+dTrainNTreated %.>%
+  head(.) %.>%
+  knitr::kable(.)
+
+# Any future application data is prepared with
+# the prepare method.
+dTestNTreated <- prepare(treatmentsN, dTestN, pruneSig=NULL)
+
+dTestNTreated %.>%
+  head(.) %.>%
   knitr::kable(.)
 ```
 
 Related work:
 
-  * Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation Analysis For The Behav-
-ioral Sciences. 2 edition. Lawrence Erlbaum Associates, Inc. ISBN 0-89859-268-2.
-  * ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](http://dl.acm.org/citation.cfm?id=507538) Daniele Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
-  * ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](http://www.win-vector.com/blog/2012/07/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel; Win-Vector blog, 2012.
+  * Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation Analysis For The Behavioral Sciences. 2 edition. Lawrence Erlbaum Associates, Inc. ISBN 0-89859-268-2.
+  * ["A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems"](https://dl.acm.org/doi/10.1145/507533.507538) Daniele Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001 Pages 27-32.
+  * ["Modeling Trick: Impact Coding of Categorical Variables with Many Levels"](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/) Nina Zumel; Win-Vector blog, 2012.
   * "Big Learning Made Easy – with Counts!", Misha Bilenko, Cortana Intelligence and Machine Learning Blog, 2015.
 
-## Installation
-
-
-To install, from inside `R` please run:
-
-```{r inst1, eval=FALSE}
-install.packages("vtreat")
-```
-
-
-
 ## Note
+
+Notes on controlling `vtreat`'s cross-validation plans can be found [here](https://github.com/WinVector/vtreat/blob/master/Examples/CustomizedCrossPlan/CustomizedCrossPlan.md).
 
 Note: `vtreat` is meant only for "tame names", that is: variables and column names that are also valid *simple* (without quotes) `R` variables names.
