@@ -175,26 +175,26 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
     </div>
 
     <pre class="usage"><span class='fu'>designTreatmentsN</span>(
-  <span class='no'>dframe</span>,
-  <span class='no'>varlist</span>,
-  <span class='no'>outcomename</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>minFraction</span> <span class='kw'>=</span> <span class='fl'>0.02</span>,
-  <span class='kw'>smFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>rareCount</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>rareSig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>collarProb</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>codeRestriction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>customCoders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ncross</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>forceSplit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>parallelCluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>use_parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>dframe</span>,
+  <span class='kw'>varlist</span>,
+  <span class='kw'>outcomename</span>,
+  <span class='kw'>...</span>,
+  weights = <span class='fu'><a href='#base/c.html'>c</a></span>(),
+  minFraction = <span class='fl'>0.02</span>,
+  smFactor = <span class='fl'>0</span>,
+  rareCount = <span class='fl'>0</span>,
+  rareSig = <span class='kw'>NULL</span>,
+  collarProb = <span class='fl'>0</span>,
+  codeRestriction = <span class='kw'>NULL</span>,
+  customCoders = <span class='kw'>NULL</span>,
+  splitFunction = <span class='kw'>NULL</span>,
+  ncross = <span class='fl'>3</span>,
+  forceSplit = <span class='fl'>FALSE</span>,
+  verbose = <span class='fl'>TRUE</span>,
+  parallelCluster = <span class='kw'>NULL</span>,
+  use_parallel = <span class='fl'>TRUE</span>,
+  missingness_imputation = <span class='kw'>NULL</span>,
+  imputation_map = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -299,15 +299,18 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>dTrainN</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>),
-    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>),<span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
-<span class='no'>dTestN</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
-    <span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='no'>treatmentsN</span> <span class='kw'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='no'>dTrainN</span>,<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dTrainN</span>),<span class='st'>'y'</span>)</div><div class='output co'>#&gt; [1] "vtreat 1.6.1 inspecting inputs Wed Aug 12 09:50:20 2020"
-#&gt; [1] "designing treatments Wed Aug 12 09:50:20 2020"
-#&gt; [1] " have initial level statistics Wed Aug 12 09:50:20 2020"
-#&gt; [1] " scoring treatments Wed Aug 12 09:50:20 2020"
-#&gt; [1] "have treatment plan Wed Aug 12 09:50:20 2020"</div><div class='input'><span class='no'>dTestNTreated</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>treatmentsN</span>,<span class='no'>dTestN</span>,<span class='kw'>pruneSig</span><span class='kw'>=</span><span class='fl'>0.99</span>)</div></pre>
+<span class='kw'>dTrainN</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>),
+    z=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>),y=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
+<span class='kw'>dTestN</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
+    z=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
+<span class='kw'>treatmentsN</span> <span class='op'>=</span> <span class='fu'>designTreatmentsN</span>(<span class='kw'>dTrainN</span>,<span class='fu'><a href='#base/colnames.html'>colnames</a></span>(<span class='kw'>dTrainN</span>),<span class='st'>'y'</span>)
+</div><div class='output co'>#&gt; [1] "vtreat 1.6.1 inspecting inputs Sun Sep  6 13:50:36 2020"
+#&gt; [1] "designing treatments Sun Sep  6 13:50:36 2020"
+#&gt; [1] " have initial level statistics Sun Sep  6 13:50:36 2020"
+#&gt; [1] " scoring treatments Sun Sep  6 13:50:36 2020"
+#&gt; [1] "have treatment plan Sun Sep  6 13:50:36 2020"</div><div class='input'><span class='kw'>dTestNTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>treatmentsN</span>,<span class='kw'>dTestN</span>,pruneSig=<span class='fl'>0.99</span>)
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -323,7 +326,7 @@ using <code><a href='mkCrossFrameNExperiment.html'>mkCrossFrameNExperiment</a></
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

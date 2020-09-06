@@ -162,7 +162,7 @@
     <p>Pre-computed cross-plan (so same split happens each time).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pre_comp_xval</span>(<span class='no'>nRows</span>, <span class='no'>nSplits</span>, <span class='no'>splitplan</span>)</pre>
+    <pre class="usage"><span class='fu'>pre_comp_xval</span>(<span class='kw'>nRows</span>, <span class='kw'>nSplits</span>, <span class='kw'>splitplan</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,9 +187,10 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>p1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='oneWayHoldout.html'>oneWayHoldout</a></span>(<span class='fl'>3</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>)
-<span class='no'>p2</span> <span class='kw'>&lt;-</span> <span class='fu'>pre_comp_xval</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='no'>p1</span>)
-<span class='fu'>p2</span>(<span class='fl'>3</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='kw'>p1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='oneWayHoldout.html'>oneWayHoldout</a></span>(<span class='fl'>3</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>,<span class='kw'>NULL</span>)
+<span class='kw'>p2</span> <span class='op'>&lt;-</span> <span class='fu'>pre_comp_xval</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='kw'>p1</span>)
+<span class='fu'>p2</span>(<span class='fl'>3</span>, <span class='fl'>3</span>)
+</div><div class='output co'>#&gt; [[1]]
 #&gt; [[1]]$train
 #&gt; [1] 2 3
 #&gt; 
@@ -231,7 +232,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

@@ -115,7 +115,7 @@
       <h1 data-toc-skip>vtreat Rare Levels</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2020-08-12</h4>
+            <h4 class="date">2020-09-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatRareLevels.Rmd"><code>vignettes/vtreatRareLevels.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatRareLevels.Rmd</code></div>
@@ -129,44 +129,48 @@
 <p>This capability was more of an experimental demonstration of possible extensions of <code>vtreat</code> to have more inference capabilities about rare level than a commonly useful feature. Most of this power has since been captured in the more useful <code>catP</code> feature (also demonstrated here). Even more power is found in using an interaction of <code>catN</code> or <code>catB</code> with <code>catP</code>.</p>
 <p>An example of the rare level feature using <code>vtreat</code> is given below.</p>
 <p>First we set up some data by defining a set of population centers (<code>populationFrame</code>) and code to observe individuals (with replacement) uniformly from the combined population with a rare condition (<code>inClass</code>) that has elevated occurrence in observations coming from the small population centers (<code>rareCodes</code>).</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">'vtreat'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="#base/library.html">library</a></span>(<span class="st"><a href="https://github.com/WinVector/vtreat/">'vtreat'</a></span>)</pre></div>
 <pre><code>## Loading required package: wrapr</code></pre>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2325</span>)
-<span class="no">populationFrame</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
-   <span class="kw">popsize</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html">rlnorm</a></span>(<span class="fl">100</span>,<span class="kw">meanlog</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="fl">4000</span>),<span class="kw">sdlog</span><span class="kw">=</span><span class="fl">1</span>)),
-   <span class="kw">stringsAsFactors</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="no">populationFrame</span>$<span class="no">code</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">'z'</span>,<span class="fu"><a href="https://rdrr.io/r/base/formatc.html">formatC</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample.int</a></span>(<span class="fl">100000</span>,
-                                              <span class="kw">size</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">populationFrame</span>),
-                                              <span class="kw">replace</span><span class="kw">=</span><span class="fl">FALSE</span>),<span class="kw">width</span><span class="kw">=</span><span class="fl">5</span>,<span class="kw">flag</span><span class="kw">=</span><span class="st">'0'</span>))
-<span class="no">rareCodes</span> <span class="kw">&lt;-</span> <span class="no">populationFrame</span>$<span class="no">code</span>[<span class="no">populationFrame</span>$<span class="no">popsize</span><span class="kw">&lt;</span><span class="fl">1000</span>]
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="#base/Random.html">set.seed</a></span>(<span class="fl">2325</span>)
+<span class="kw">populationFrame</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(
+   popsize = <span class="fu"><a href="#base/Round.html">round</a></span>(<span class="fu"><a href="#stats/Lognormal.html">rlnorm</a></span>(<span class="fl">100</span>,meanlog=<span class="fu"><a href="#base/Log.html">log</a></span>(<span class="fl">4000</span>),sdlog=<span class="fl">1</span>)),
+   stringsAsFactors = <span class="fl">FALSE</span>)
+<span class="kw">populationFrame</span><span class="op">$</span><span class="kw">code</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/paste.html">paste0</a></span>(<span class="st">'z'</span>,<span class="fu"><a href="#base/formatc.html">formatC</a></span>(<span class="fu"><a href="#base/sample.html">sample.int</a></span>(<span class="fl">100000</span>,
+                                              size=<span class="fu"><a href="#base/nrow.html">nrow</a></span>(<span class="kw">populationFrame</span>),
+                                              replace=<span class="fl">FALSE</span>),width=<span class="fl">5</span>,flag=<span class="st">'0'</span>))
+<span class="kw">rareCodes</span> <span class="op">&lt;-</span> <span class="kw">populationFrame</span><span class="op">$</span><span class="kw">code</span>[<span class="kw">populationFrame</span><span class="op">$</span><span class="kw">popsize</span><span class="op">&lt;</span><span class="fl">1000</span>]
 
 <span class="co"># Draw individuals from code-regions proportional to size of code region</span>
 <span class="co"># (or uniformly over all individuals labeled by code region).</span>
 <span class="co"># Also add the outcome which has altered conditional probability for rareCodes.</span>
-<span class="no">drawIndividualsAndReturnCodes</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">n</span>) {
-  <span class="no">ords</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample.int</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">populationFrame</span>$<span class="no">popsize</span>),<span class="kw">size</span><span class="kw">=</span><span class="no">n</span>,<span class="kw">replace</span><span class="kw">=</span><span class="fl">TRUE</span>))
-  <span class="no">cs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(<span class="no">populationFrame</span>$<span class="no">popsize</span>)
-  <span class="no">indexes</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/findInterval.html">findInterval</a></span>(<span class="no">ords</span>,<span class="no">cs</span>)+<span class="fl">1</span>
-  <span class="no">indexes</span> <span class="kw">&lt;-</span> <span class="no">indexes</span>[<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample.int</a></span>(<span class="no">n</span>,<span class="kw">size</span><span class="kw">=</span><span class="no">n</span>,<span class="kw">replace</span><span class="kw">=</span><span class="fl">FALSE</span>)]
-  <span class="no">samp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">code</span><span class="kw">=</span><span class="no">populationFrame</span>$<span class="no">code</span>[<span class="no">indexes</span>],
-                     <span class="kw">stringsAsFactors</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-  <span class="no">samp</span>$<span class="no">inClass</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">n</span>) <span class="kw">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">samp</span>$<span class="no">code</span> <span class="kw">%in%</span> <span class="no">rareCodes</span>,<span class="fl">0.3</span>,<span class="fl">0.01</span>)
-  <span class="no">samp</span>
-}</pre></body></html></div>
+<span class="kw">drawIndividualsAndReturnCodes</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">n</span>) {
+  <span class="kw">ords</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/sort.html">sort</a></span>(<span class="fu"><a href="#base/sample.html">sample.int</a></span>(<span class="fu"><a href="#base/sum.html">sum</a></span>(<span class="kw">populationFrame</span><span class="op">$</span><span class="kw">popsize</span>),size=<span class="kw">n</span>,replace=<span class="fl">TRUE</span>))
+  <span class="kw">cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/cumsum.html">cumsum</a></span>(<span class="kw">populationFrame</span><span class="op">$</span><span class="kw">popsize</span>)
+  <span class="kw">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/findInterval.html">findInterval</a></span>(<span class="kw">ords</span>,<span class="kw">cs</span>)<span class="op">+</span><span class="fl">1</span>
+  <span class="kw">indexes</span> <span class="op">&lt;-</span> <span class="kw">indexes</span>[<span class="fu"><a href="#base/sample.html">sample.int</a></span>(<span class="kw">n</span>,size=<span class="kw">n</span>,replace=<span class="fl">FALSE</span>)]
+  <span class="kw">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(code=<span class="kw">populationFrame</span><span class="op">$</span><span class="kw">code</span>[<span class="kw">indexes</span>],
+                     stringsAsFactors = <span class="fl">FALSE</span>)
+  <span class="kw">samp</span><span class="op">$</span><span class="kw">inClass</span> <span class="op">&lt;-</span> <span class="fu"><a href="#stats/Uniform.html">runif</a></span>(<span class="kw">n</span>) <span class="op">&lt;</span> <span class="fu"><a href="#base/ifelse.html">ifelse</a></span>(<span class="kw">samp</span><span class="op">$</span><span class="kw">code</span> <span class="op">%in%</span> <span class="kw">rareCodes</span>,<span class="fl">0.3</span>,<span class="fl">0.01</span>)
+  <span class="kw">samp</span>
+}</pre></div>
 <p>We then draw a sample we want to make some observations on.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">testSet</span> <span class="kw">&lt;-</span> <span class="fu">drawIndividualsAndReturnCodes</span>(<span class="fl">2000</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">generatedAsRare</span><span class="kw">=</span><span class="no">testSet</span>$<span class="no">code</span> <span class="kw">%in%</span> <span class="no">rareCodes</span>,<span class="kw">inClass</span><span class="kw">=</span><span class="no">testSet</span>$<span class="no">inClass</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">testSet</span> <span class="op">&lt;-</span> <span class="fu">drawIndividualsAndReturnCodes</span>(<span class="fl">2000</span>)
+<span class="fu"><a href="#base/table.html">table</a></span>(generatedAsRare=<span class="kw">testSet</span><span class="op">$</span><span class="kw">code</span> <span class="op">%in%</span> <span class="kw">rareCodes</span>,inClass=<span class="kw">testSet</span><span class="op">$</span><span class="kw">inClass</span>)</pre></div>
 <pre><code>##                inClass
 ## generatedAsRare FALSE TRUE
 ##           FALSE  1957   19
 ##           TRUE     17    7</code></pre>
 <p>Notice that in the sample we can observe the elevated rate of <code>inClass==TRUE</code> conditioned on coming from a <code>code</code> that is one of the <code>rareCodes</code>.</p>
 <p>We could try to learn this relation using <code>vtreat</code>. To do this we set up another sample (<code>designSet</code>) to work on, so we are not inferring from <code>testSet</code> (where we will evaluate results).</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">designSet</span> <span class="kw">&lt;-</span> <span class="fu">drawIndividualsAndReturnCodes</span>(<span class="fl">2000</span>)
-<span class="no">treatments</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="no">designSet</span>,<span class="st">'code'</span>,<span class="st">'inClass'</span>,<span class="fl">TRUE</span>,
-                                        <span class="kw">rareCount</span><span class="kw">=</span><span class="fl">5</span>,<span class="kw">rareSig</span><span class="kw">=</span><span class="kw">NULL</span>,
-                                        <span class="kw">verbose</span><span class="kw">=</span><span class="fl">FALSE</span>)
-<span class="no">treatments</span>$<span class="no">scoreFrame</span>[,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>),<span class="kw">drop</span><span class="kw">=</span><span class="fl">FALSE</span>]</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">designSet</span> <span class="op">&lt;-</span> <span class="fu">drawIndividualsAndReturnCodes</span>(<span class="fl">2000</span>)
+<span class="kw">treatments</span> <span class="op">&lt;-</span> <span class="kw">vtreat</span>::<span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="kw">designSet</span>,<span class="st">'code'</span>,<span class="st">'inClass'</span>,<span class="fl">TRUE</span>,
+                                        rareCount=<span class="fl">5</span>,rareSig=<span class="kw">NULL</span>,
+                                        verbose=<span class="fl">FALSE</span>)
+<span class="kw">treatments</span><span class="op">$</span><span class="kw">scoreFrame</span>[,<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'varName'</span>,<span class="st">'sig'</span>),drop=<span class="fl">FALSE</span>]</pre></div>
 <pre><code>##              varName         sig
 ## 1          code_catP 0.035934754
 ## 2          code_catB 0.025765020
@@ -188,55 +192,65 @@
 ## 18 code_lev_x_z86061 0.944465050
 ## 19 code_lev_x_z86248 0.178878966</code></pre>
 <p>We see in <code>treatments$scoreFrame</code> we have a level called <code>code_lev_rare</code>, which is where a number of rare levels are re-coding. We can also confirm levels that occur <code>rareCount</code> or fewer times are eligible to code to to <code>code_lev_rare</code>.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">designSetTreated</span> <span class="kw">&lt;-</span>  <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="no">treatments</span>,<span class="no">designSet</span>,<span class="kw">pruneSig</span><span class="kw">=</span><span class="fl">0.5</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw">designSetTreated</span> <span class="op">&lt;-</span>  <span class="kw">vtreat</span>::<span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="kw">treatments</span>,<span class="kw">designSet</span>,pruneSig=<span class="fl">0.5</span>)</pre></div>
 <pre><code>## Warning in prepare.treatmentplan(treatments, designSet, pruneSig = 0.5):
 ## possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
 ## mkCrossFrame*Experiment$crossFrame.</code></pre>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">designSetTreated</span>$<span class="no">code</span> <span class="kw">&lt;-</span> <span class="no">designSet</span>$<span class="no">code</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">designSetTreated</span>$<span class="no">code</span>[<span class="no">designSetTreated</span>$<span class="no">code_lev_rare</span><span class="kw">==</span><span class="fl">1</span>])))</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">designSetTreated</span><span class="op">$</span><span class="kw">code</span> <span class="op">&lt;-</span> <span class="kw">designSet</span><span class="op">$</span><span class="kw">code</span>
+<span class="fu"><a href="#base/summary.html">summary</a></span>(<span class="fu"><a href="#base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="#base/table.html">table</a></span>(<span class="kw">designSetTreated</span><span class="op">$</span><span class="kw">code</span>[<span class="kw">designSetTreated</span><span class="op">$</span><span class="kw">code_lev_rare</span><span class="op">==</span><span class="fl">1</span>])))</pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.000   2.000   2.000   2.655   4.000   5.000</code></pre>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">designSetTreated</span>$<span class="no">code</span>[<span class="no">designSetTreated</span>$<span class="no">code_lev_rare</span><span class="kw">!=</span><span class="fl">1</span>])))</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="fu"><a href="#base/summary.html">summary</a></span>(<span class="fu"><a href="#base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="#base/table.html">table</a></span>(<span class="kw">designSetTreated</span><span class="op">$</span><span class="kw">code</span>[<span class="kw">designSetTreated</span><span class="op">$</span><span class="kw">code_lev_rare</span>!=<span class="fl">1</span>])))</pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##    6.00   10.25   17.00   27.47   38.75  143.00</code></pre>
 <p>We can now apply this treatment to <code>testSet</code> to see how this inferred rare level performs. Notice also the <code>code_catP</code> which directly encodes prevalence or frequency of the level during training also gives usable estimate of size (likely a more useful one then the rare-level code itself).</p>
 <p>As we can see below the <code>code_lev_rare</code> correlates with the condition, and usefully re-codes novel levels (levels in <code>testSet</code> that were not seen in <code>designSet</code>) to rare.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">testSetTreated</span> <span class="kw">&lt;-</span> <span class="kw pkg">vtreat</span><span class="kw ns">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="no">treatments</span>,<span class="no">testSet</span>,<span class="kw">pruneSig</span><span class="kw">=</span><span class="fl">0.5</span>)
-<span class="no">testSetTreated</span>$<span class="no">code</span> <span class="kw">&lt;-</span> <span class="no">testSet</span>$<span class="no">code</span>
-<span class="no">testSetTreated</span>$<span class="no">newCode</span> <span class="kw">&lt;-</span> !(<span class="no">testSetTreated</span>$<span class="no">code</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">designSet</span>$<span class="no">code</span>))
-<span class="no">testSetTreated</span>$<span class="no">generatedAsRareCode</span> <span class="kw">&lt;-</span> <span class="no">testSetTreated</span>$<span class="no">code</span> <span class="kw">%in%</span> <span class="no">rareCodes</span>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="kw">testSetTreated</span> <span class="op">&lt;-</span> <span class="kw">vtreat</span>::<span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="kw">treatments</span>,<span class="kw">testSet</span>,pruneSig=<span class="fl">0.5</span>)
+<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code</span> <span class="op">&lt;-</span> <span class="kw">testSet</span><span class="op">$</span><span class="kw">code</span>
+<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">newCode</span> <span class="op">&lt;-</span> <span class="op">!</span>(<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code</span> <span class="op">%in%</span> <span class="fu"><a href="#base/unique.html">unique</a></span>(<span class="kw">designSet</span><span class="op">$</span><span class="kw">code</span>))
+<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">generatedAsRareCode</span> <span class="op">&lt;-</span> <span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code</span> <span class="op">%in%</span> <span class="kw">rareCodes</span>
 
 <span class="co"># Show code_lev_rare==1 corresponds to a subset of rows with elevated inClass==TRUE rate.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">code_lev_rare</span><span class="kw">=</span><span class="no">testSetTreated</span>$<span class="no">code_lev_rare</span>,
-      <span class="kw">inClass</span><span class="kw">=</span><span class="no">testSetTreated</span>$<span class="no">inClass</span>)</pre></body></html></div>
+<span class="fu"><a href="#base/table.html">table</a></span>(code_lev_rare=<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_lev_rare</span>,
+      inClass=<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">inClass</span>)</pre></div>
 <pre><code>##              inClass
 ## code_lev_rare FALSE TRUE
 ##             0  1894   18
 ##             1    80    8</code></pre>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="co"># Show newCodes get coded with code_level_rare==1.</span>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="co"># Show newCodes get coded with code_level_rare==1.</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">newCode</span><span class="kw">=</span><span class="no">testSetTreated</span>$<span class="no">newCode</span>,<span class="kw">code_lev_rare</span><span class="kw">=</span><span class="no">testSetTreated</span>$<span class="no">code_lev_rare</span>)</pre></body></html></div>
+<span class="fu"><a href="#base/table.html">table</a></span>(newCode=<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">newCode</span>,code_lev_rare=<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_lev_rare</span>)</pre></div>
 <pre><code>##        code_lev_rare
 ## newCode    0    1
 ##   FALSE 1912   88</code></pre>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="co"># Show newCodes tend to come from defined rareCodes.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">newCode</span><span class="kw">=</span><span class="no">testSetTreated</span>$<span class="no">newCode</span>,
-      <span class="kw">generatedAsRare</span><span class="kw">=</span><span class="no">testSetTreated</span>$<span class="no">generatedAsRareCode</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb18"><pre class="downlit">
+<span class="co"># Show newCodes tend to come from defined rareCodes.</span>
+<span class="fu"><a href="#base/table.html">table</a></span>(newCode=<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">newCode</span>,
+      generatedAsRare=<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">generatedAsRareCode</span>)</pre></div>
 <pre><code>##        generatedAsRare
 ## newCode FALSE TRUE
 ##   FALSE  1976   24</code></pre>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="co"># Show code_catP's behavior on rare and novel levels.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">testSetTreated</span>$<span class="no">code_catP</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><pre class="downlit">
+<span class="co"># Show code_catP's behavior on rare and novel levels.</span>
+<span class="fu"><a href="#base/summary.html">summary</a></span>(<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_catP</span>)</pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## 0.00050 0.00950 0.01950 0.02541 0.03450 0.07150</code></pre>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">testSetTreated</span>$<span class="no">code_catP</span>[<span class="no">testSetTreated</span>$<span class="no">code_lev_rare</span><span class="kw">==</span><span class="fl">1</span>])</pre></body></html></div>
+<div class="sourceCode" id="cb22"><pre class="downlit">
+<span class="fu"><a href="#base/summary.html">summary</a></span>(<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_catP</span>[<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_lev_rare</span><span class="op">==</span><span class="fl">1</span>])</pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000500 0.001000 0.001500 0.001398 0.002000 0.002500</code></pre>
-<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">testSetTreated</span>$<span class="no">code_catP</span>[<span class="no">testSetTreated</span>$<span class="no">newCode</span>])</pre></body></html></div>
+<div class="sourceCode" id="cb24"><pre class="downlit">
+<span class="fu"><a href="#base/summary.html">summary</a></span>(<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_catP</span>[<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">newCode</span>])</pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## </code></pre>
-<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">testSetTreated</span>$<span class="no">code_catP</span>[<span class="no">testSetTreated</span>$<span class="no">generatedAsRareCode</span>])</pre></body></html></div>
+<div class="sourceCode" id="cb26"><pre class="downlit">
+<span class="fu"><a href="#base/summary.html">summary</a></span>(<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">code_catP</span>[<span class="kw">testSetTreated</span><span class="op">$</span><span class="kw">generatedAsRareCode</span>])</pre></div>
 <pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 ## 0.0005000 0.0005000 0.0010000 0.0009792 0.0015000 0.0020000</code></pre>
   </div>
@@ -254,7 +268,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

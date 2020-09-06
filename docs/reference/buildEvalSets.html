@@ -165,12 +165,12 @@ nested model situation (such as data prep, stacking, or super-learning).</p>
     </div>
 
     <pre class="usage"><span class='fu'>buildEvalSets</span>(
-  <span class='no'>nRows</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>dframe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>y</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>splitFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nSplits</span> <span class='kw'>=</span> <span class='fl'>3</span>
+  <span class='kw'>nRows</span>,
+  <span class='kw'>...</span>,
+  dframe = <span class='kw'>NULL</span>,
+  y = <span class='kw'>NULL</span>,
+  splitFunction = <span class='kw'>NULL</span>,
+  nSplits = <span class='fl'>3</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -233,7 +233,8 @@ application a different number of times.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># use</span>
-<span class='fu'>buildEvalSets</span>(<span class='fl'>200</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>buildEvalSets</span>(<span class='fl'>200</span>)
+</div><div class='output co'>#&gt; [[1]]
 #&gt; [[1]]$train
 #&gt;   [1]   1   2   3   4   6   7   8   9  11  13  14  18  19  21  22  23  24  28
 #&gt;  [19]  29  30  32  33  35  38  40  41  43  44  47  48  49  50  51  52  53  56
@@ -292,36 +293,38 @@ application a different number of times.</p>
 <span class='co'># longer example</span>
 <span class='co'># helper fns</span>
 <span class='co'># fit models using experiment plan to estimate out of sample behavior</span>
-<span class='no'>fitModelAndApply</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>trainData</span>,<span class='no'>applicaitonData</span>) {
-   <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='no'>y</span>~<span class='no'>x</span>,<span class='kw'>data</span><span class='kw'>=</span><span class='no'>trainData</span>)
-   <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>model</span>,<span class='kw'>newdata</span><span class='kw'>=</span><span class='no'>applicaitonData</span>)
+<span class='kw'>fitModelAndApply</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>trainData</span>,<span class='kw'>applicaitonData</span>) {
+   <span class='kw'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#stats/lm.html'>lm</a></span>(<span class='kw'>y</span><span class='op'>~</span><span class='kw'>x</span>,data=<span class='kw'>trainData</span>)
+   <span class='fu'><a href='#stats/predict.html'>predict</a></span>(<span class='kw'>model</span>,newdata=<span class='kw'>applicaitonData</span>)
 }
-<span class='no'>simulateOutOfSampleTrainEval</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>d</span>,<span class='no'>fitApplyFn</span>) {
-   <span class='no'>eSets</span> <span class='kw'>&lt;-</span> <span class='fu'>buildEvalSets</span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>d</span>))
-   <span class='no'>evals</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='no'>eSets</span>,
-      <span class='kw'>function</span>(<span class='no'>ei</span>) { <span class='fu'>fitApplyFn</span>(<span class='no'>d</span>[<span class='no'>ei</span>$<span class='no'>train</span>,],<span class='no'>d</span>[<span class='no'>ei</span>$<span class='no'>app</span>,]) })
-   <span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>d</span>))
-   <span class='kw'>for</span>(<span class='no'>eii</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>eSets</span>))) {
-     <span class='no'>pred</span>[<span class='no'>eSets</span><span class='kw'>[[</span><span class='no'>eii</span>]]$<span class='no'>app</span>] <span class='kw'>&lt;-</span> <span class='no'>evals</span><span class='kw'>[[</span><span class='no'>eii</span>]]
+<span class='kw'>simulateOutOfSampleTrainEval</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>d</span>,<span class='kw'>fitApplyFn</span>) {
+   <span class='kw'>eSets</span> <span class='op'>&lt;-</span> <span class='fu'>buildEvalSets</span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>))
+   <span class='kw'>evals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/lapply.html'>lapply</a></span>(<span class='kw'>eSets</span>, 
+      <span class='fu'>function</span>(<span class='kw'>ei</span>) { <span class='fu'>fitApplyFn</span>(<span class='kw'>d</span>[<span class='kw'>ei</span><span class='op'>$</span><span class='kw'>train</span>,],<span class='kw'>d</span>[<span class='kw'>ei</span><span class='op'>$</span><span class='kw'>app</span>,]) })
+   <span class='kw'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/numeric.html'>numeric</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>))
+   <span class='co'>for</span>(<span class='kw'>eii</span> <span class='co'>in</span> <span class='fu'><a href='#base/seq.html'>seq_len</a></span>(<span class='fu'><a href='#base/length.html'>length</a></span>(<span class='kw'>eSets</span>))) {
+     <span class='kw'>pred</span>[<span class='kw'>eSets</span>[[<span class='kw'>eii</span>]]<span class='op'>$</span><span class='kw'>app</span>] <span class='op'>&lt;-</span> <span class='kw'>evals</span>[[<span class='kw'>eii</span>]]
    }
-   <span class='no'>pred</span>
+   <span class='kw'>pred</span>
 }
 
 <span class='co'># run the experiment</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>2352356</span>)
+<span class='fu'><a href='#base/Random.html'>set.seed</a></span>(<span class='fl'>2352356</span>)
 <span class='co'># example data</span>
-<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span>),<span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span>),
-        <span class='kw'>outOfSampleEst</span><span class='kw'>=</span><span class='fl'>NA</span>,<span class='kw'>inSampleEst</span><span class='kw'>=</span><span class='fl'>NA</span>)
-
+<span class='kw'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x=<span class='fu'><a href='#stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span>),y=<span class='fu'><a href='#stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span>),
+        outOfSampleEst=<span class='fl'>NA</span>,inSampleEst=<span class='fl'>NA</span>)
+        
 <span class='co'># fit model on all data</span>
-<span class='no'>d</span>$<span class='no'>inSampleEst</span> <span class='kw'>&lt;-</span> <span class='fu'>fitModelAndApply</span>(<span class='no'>d</span>,<span class='no'>d</span>)
+<span class='kw'>d</span><span class='op'>$</span><span class='kw'>inSampleEst</span> <span class='op'>&lt;-</span> <span class='fu'>fitModelAndApply</span>(<span class='kw'>d</span>,<span class='kw'>d</span>)
 <span class='co'># compute in-sample R^2 (above zero, falsely shows a </span>
 <span class='co'>#   relation until we adjust for degrees of freedom)</span>
-<span class='fl'>1</span>-<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='no'>d</span>$<span class='no'>inSampleEst</span>)^<span class='fl'>2</span>)/<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>d</span>$<span class='no'>y</span>))^<span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] 0.4193942</div><div class='input'>
-<span class='no'>d</span>$<span class='no'>outOfSampleEst</span> <span class='kw'>&lt;-</span> <span class='fu'>simulateOutOfSampleTrainEval</span>(<span class='no'>d</span>,<span class='no'>fitModelAndApply</span>)
+<span class='fl'>1</span><span class='op'>-</span><span class='fu'><a href='#base/sum.html'>sum</a></span>((<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span><span class='op'>-</span><span class='kw'>d</span><span class='op'>$</span><span class='kw'>inSampleEst</span>)<span class='op'>^</span><span class='fl'>2</span>)<span class='op'>/</span><span class='fu'><a href='#base/sum.html'>sum</a></span>((<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span><span class='op'>-</span><span class='fu'><a href='#base/mean.html'>mean</a></span>(<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span>))<span class='op'>^</span><span class='fl'>2</span>)
+</div><div class='output co'>#&gt; [1] 0.4193942</div><div class='input'>
+<span class='kw'>d</span><span class='op'>$</span><span class='kw'>outOfSampleEst</span> <span class='op'>&lt;-</span> <span class='fu'>simulateOutOfSampleTrainEval</span>(<span class='kw'>d</span>,<span class='kw'>fitModelAndApply</span>)
 <span class='co'># compute out-sample R^2 (not positive, </span>
 <span class='co'>#  evidence of no relation)</span>
-<span class='fl'>1</span>-<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='no'>d</span>$<span class='no'>outOfSampleEst</span>)^<span class='fl'>2</span>)/<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>((<span class='no'>d</span>$<span class='no'>y</span>-<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>d</span>$<span class='no'>y</span>))^<span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] -3.873148</div><div class='input'>
+<span class='fl'>1</span><span class='op'>-</span><span class='fu'><a href='#base/sum.html'>sum</a></span>((<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span><span class='op'>-</span><span class='kw'>d</span><span class='op'>$</span><span class='kw'>outOfSampleEst</span>)<span class='op'>^</span><span class='fl'>2</span>)<span class='op'>/</span><span class='fu'><a href='#base/sum.html'>sum</a></span>((<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span><span class='op'>-</span><span class='fu'><a href='#base/mean.html'>mean</a></span>(<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span>))<span class='op'>^</span><span class='fl'>2</span>)
+</div><div class='output co'>#&gt; [1] -3.873148</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -338,7 +341,7 @@ application a different number of times.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

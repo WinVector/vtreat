@@ -163,13 +163,13 @@
     </div>
 
     <pre class="usage"><span class='fu'>design_missingness_treatment</span>(
-  <span class='no'>dframe</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>varlist</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dframe</span>),
-  <span class='kw'>invalid_mark</span> <span class='kw'>=</span> <span class='st'>"_invalid_"</span>,
-  <span class='kw'>drop_constant_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>missingness_imputation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>imputation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>dframe</span>,
+  <span class='kw'>...</span>,
+  varlist = <span class='fu'><a href='#base/colnames.html'>colnames</a></span>(<span class='kw'>dframe</span>),
+  invalid_mark = <span class='st'>"_invalid_"</span>,
+  drop_constant_columns = <span class='fl'>FALSE</span>,
+  missingness_imputation = <span class='kw'>NULL</span>,
+  imputation_map = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -214,18 +214,20 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>wrapr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/wrapr/man/build_frame.html'>build_frame</a></span>(
-  <span class='st'>"x1"</span>, <span class='st'>"x2"</span>, <span class='st'>"x3"</span> <span class='kw'>|</span>
-  <span class='fl'>1</span>   , <span class='fl'>4</span>   , <span class='st'>"A"</span>  <span class='kw'>|</span>
-  <span class='fl'>NA</span>  , <span class='fl'>5</span>   , <span class='st'>"B"</span>  <span class='kw'>|</span>
+<span class='kw'>d</span> <span class='op'>&lt;-</span> <span class='kw'>wrapr</span>::<span class='fu'><a href='https://winvector.github.io/wrapr//reference/build_frame.html'>build_frame</a></span>(
+  <span class='st'>"x1"</span>, <span class='st'>"x2"</span>, <span class='st'>"x3"</span> <span class='op'>|</span>
+  <span class='fl'>1</span>   , <span class='fl'>4</span>   , <span class='st'>"A"</span>  <span class='op'>|</span>
+  <span class='fl'>NA</span>  , <span class='fl'>5</span>   , <span class='st'>"B"</span>  <span class='op'>|</span>
   <span class='fl'>3</span>   , <span class='fl'>6</span>   , <span class='fl'>NA</span>   )
 
-<span class='no'>plan</span> <span class='kw'>&lt;-</span> <span class='fu'>design_missingness_treatment</span>(<span class='no'>d</span>)
-<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>plan</span>, <span class='no'>d</span>)</div><div class='output co'>#&gt;   x1 x1_isBAD x2        x3
+<span class='kw'>plan</span> <span class='op'>&lt;-</span> <span class='fu'>design_missingness_treatment</span>(<span class='kw'>d</span>)
+<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>plan</span>, <span class='kw'>d</span>)
+</div><div class='output co'>#&gt;   x1 x1_isBAD x2        x3
 #&gt; 1  1        0  4         A
 #&gt; 2  2        1  5         B
 #&gt; 3  3        0  6 _invalid_</div><div class='input'>
-<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='no'>plan</span>, <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x1</span><span class='kw'>=</span><span class='fl'>NA</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='fl'>NA</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"E"</span>))</div><div class='output co'>#&gt;   x1 x1_isBAD x2        x3
+<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>plan</span>, <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x1=<span class='fl'>NA</span>, x2=<span class='fl'>NA</span>, x3=<span class='st'>"E"</span>))
+</div><div class='output co'>#&gt;   x1 x1_isBAD x2        x3
 #&gt; 1  2        1  5 _invalid_</div><div class='input'>
 </div></pre>
   </div>
@@ -243,7 +245,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>
