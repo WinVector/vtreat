@@ -20,13 +20,13 @@ Description: A 'data.frame' processor/conditioner that prepares real-world data 
 License: GPL-2 | GPL-3
 Depends: 
   R (>= 3.4.0),
-  wrapr (>= 2.0.0)
+  wrapr (>= 2.0.2)
 Imports: 
     stats,
     digest
 Suggests: 
-    rquery (>= 1.4.4),
-    rqdatatable (>= 1.2.7),
+    rquery (>= 1.4.5),
+    rqdatatable (>= 1.2.8),
     data.table (>= 1.12.2),
     isotone,
     lme4,
