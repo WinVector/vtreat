@@ -27,9 +27,11 @@ test_WeirdTypes <- function() {
   xVars <- setdiff(colnames(d),yVar)
   treatmentsC <- designTreatmentsC(d,xVars,yVar,yTarget,verbose=FALSE)
   treatmentsN <- designTreatmentsN(d,xVars,yVar,verbose=FALSE)
-  RUnit::checkTrue(!is.null(treatmentsC))
-  RUnit::checkTrue(!is.null(treatmentsN))
+  expect_true(!is.null(treatmentsC))
+  expect_true(!is.null(treatmentsN))
   })
   
   invisible(NULL)
 }
+
+test_WeirdTypes()

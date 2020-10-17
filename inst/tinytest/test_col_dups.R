@@ -10,8 +10,8 @@ test_col_dups <- function() {
     scale = TRUE)
   
   dTrainAll_treated <- cross_frame_experiment$crossFrame
-  RUnit::checkTrue(length(colnames(dTrainAll_treated))==length(unique(colnames(dTrainAll_treated))))
-  RUnit::checkTrue(!isTRUE(any(is.na(dTrainAll_treated$x))))
+  expect_true(length(colnames(dTrainAll_treated))==length(unique(colnames(dTrainAll_treated))))
+  expect_true(!isTRUE(any(is.na(dTrainAll_treated$x))))
   
   treatment_plan <- cross_frame_experiment$treatments
   
@@ -20,8 +20,11 @@ test_col_dups <- function() {
                            scale = TRUE, check_for_duplicate_frames=FALSE)
   
   dTest_treated
-  RUnit::checkTrue(length(colnames(dTest_treated))==length(unique(colnames(dTest_treated))))
-  RUnit::checkTrue(!isTRUE(any(is.na(dTest_treated$x))))
+  expect_true(length(colnames(dTest_treated))==length(unique(colnames(dTest_treated))))
+  expect_true(!isTRUE(any(is.na(dTest_treated$x))))
   
   invisible(NULL)
 }
+
+test_col_dups()
+

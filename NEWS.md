@@ -1,4 +1,8 @@
 
+# vtreat 1.6.2 2020/10/17
+
+ * Move to tinytest
+
 # vtreat 1.6.1 2020/08/12
 
  * Documentation improvements.

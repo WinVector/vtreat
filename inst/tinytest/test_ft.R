@@ -26,40 +26,42 @@ test_ft_classification <- function() {
   # learn transform from data
   d_prepared <-  transform_design$fit_transform(d)
   
-  RUnit::checkTrue('yc' %in% colnames(d_prepared))
-  RUnit::checkTrue('y' %in% colnames(d_prepared))
-  RUnit::checkTrue(!('qq' %in% colnames(d_prepared)))
+  expect_true('yc' %in% colnames(d_prepared))
+  expect_true('y' %in% colnames(d_prepared))
+  expect_true(!('qq' %in% colnames(d_prepared)))
   
   # get statistics on the variables
   score_frame <- transform_design$score_frame()
   
-  RUnit::checkTrue(!('yc' %in% score_frame$origName))
-  RUnit::checkTrue(!('y' %in% score_frame$origName))
-  RUnit::checkTrue(!('qq' %in% score_frame$origName))
+  expect_true(!('yc' %in% score_frame$origName))
+  expect_true(!('y' %in% score_frame$origName))
+  expect_true(!('qq' %in% score_frame$origName))
   
   # check simple xform
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(d),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(saw_warning)
+  expect_true(saw_warning)
   dZ <- d
   dZ['zz'] <- 0
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(dZ),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(!saw_warning)
+  expect_true(!saw_warning)
   
   
-  RUnit::checkTrue('yc' %in% colnames(d2))
-  RUnit::checkTrue('y' %in% colnames(d2))
+  expect_true('yc' %in% colnames(d2))
+  expect_true('y' %in% colnames(d2))
   
   d2b <- dZ %.>% transform_design
-  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
+  expect_true(isTRUE(all.equal(d2, d2b)))
 
   invisible(NULL)
 }
+
+test_ft_classification()
 
 
 test_ft_regression <- function() {
@@ -87,39 +89,41 @@ test_ft_regression <- function() {
   # learn transform from data
   d_prepared <-  transform_design$fit_transform(d)
   
-  RUnit::checkTrue('yc' %in% colnames(d_prepared))
-  RUnit::checkTrue('y' %in% colnames(d_prepared))
-  RUnit::checkTrue(!('qq' %in% colnames(d_prepared)))
+  expect_true('yc' %in% colnames(d_prepared))
+  expect_true('y' %in% colnames(d_prepared))
+  expect_true(!('qq' %in% colnames(d_prepared)))
   
   # get statistics on the variables
   score_frame <- transform_design$score_frame()
   
-  RUnit::checkTrue(!('yc' %in% score_frame$origName))
-  RUnit::checkTrue(!('y' %in% score_frame$origName))
-  RUnit::checkTrue(!('qq' %in% score_frame$origName))
+  expect_true(!('yc' %in% score_frame$origName))
+  expect_true(!('y' %in% score_frame$origName))
+  expect_true(!('qq' %in% score_frame$origName))
   
   # check simple xform
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(d),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(saw_warning)
+  expect_true(saw_warning)
   dZ <- d
   dZ['zz'] <- 0
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(dZ),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(!saw_warning)
+  expect_true(!saw_warning)
   
-  RUnit::checkTrue('yc' %in% colnames(d2))
-  RUnit::checkTrue('y' %in% colnames(d2))
+  expect_true('yc' %in% colnames(d2))
+  expect_true('y' %in% colnames(d2))
   
   d2b <- dZ %.>% transform_design
-  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
+  expect_true(isTRUE(all.equal(d2, d2b)))
   
   invisible(NULL)
 }
+
+test_ft_regression()
 
 
 test_ft_unsupervised <- function() {
@@ -146,32 +150,35 @@ test_ft_unsupervised <- function() {
   # learn transform from data
   d_prepared <-  transform_design$fit_transform(d)
   
-  RUnit::checkTrue('yc' %in% colnames(d_prepared))
-  RUnit::checkTrue('y' %in% colnames(d_prepared))
-  RUnit::checkTrue(!('qq' %in% colnames(d_prepared)))
+  expect_true('yc' %in% colnames(d_prepared))
+  expect_true('y' %in% colnames(d_prepared))
+  expect_true(!('qq' %in% colnames(d_prepared)))
   
   # get statistics on the variables
   score_frame <- transform_design$score_frame()
   
-  RUnit::checkTrue(!('yc' %in% score_frame$origName))
-  RUnit::checkTrue(!('y' %in% score_frame$origName))
-  RUnit::checkTrue(!('qq' %in% score_frame$origName))
+  expect_true(!('yc' %in% score_frame$origName))
+  expect_true(!('y' %in% score_frame$origName))
+  expect_true(!('qq' %in% score_frame$origName))
   
   # check simple xform
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(d),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(!saw_warning)
+  expect_true(!saw_warning)
   
-  RUnit::checkTrue('yc' %in% colnames(d2))
-  RUnit::checkTrue('y' %in% colnames(d2))
+  expect_true('yc' %in% colnames(d2))
+  expect_true('y' %in% colnames(d2))
   
   d2b <- d %.>% transform_design
-  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
+  expect_true(isTRUE(all.equal(d2, d2b)))
   
   invisible(NULL)
 }
+
+test_ft_unsupervised()
+
 
 
 test_ft_multinomial <- function() {
@@ -199,40 +206,42 @@ test_ft_multinomial <- function() {
   # learn transform from data
   d_prepared <-  transform_design$fit_transform(d)
   
-  RUnit::checkTrue('yc' %in% colnames(d_prepared))
-  RUnit::checkTrue('y' %in% colnames(d_prepared))
-  RUnit::checkTrue(!('qq' %in% colnames(d_prepared)))
+  expect_true('yc' %in% colnames(d_prepared))
+  expect_true('y' %in% colnames(d_prepared))
+  expect_true(!('qq' %in% colnames(d_prepared)))
   
   # get statistics on the variables
   score_frame <- transform_design$score_frame()
   
-  RUnit::checkTrue(!('yc' %in% score_frame$origName))
-  RUnit::checkTrue(!('y' %in% score_frame$origName))
-  RUnit::checkTrue(!('qq' %in% score_frame$origName))
+  expect_true(!('yc' %in% score_frame$origName))
+  expect_true(!('y' %in% score_frame$origName))
+  expect_true(!('qq' %in% score_frame$origName))
   
   # check simple xform
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(d),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(saw_warning)
+  expect_true(saw_warning)
   dZ <- d
   dZ['zz'] <- 0
   saw_warning <- FALSE
   tryCatch(
     d2 <- transform_design$transform(dZ),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(!saw_warning)
+  expect_true(!saw_warning)
   
   
-  RUnit::checkTrue('yc' %in% colnames(d2))
-  RUnit::checkTrue('y' %in% colnames(d2))
+  expect_true('yc' %in% colnames(d2))
+  expect_true('y' %in% colnames(d2))
   
   d2b <- dZ %.>% transform_design
-  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
+  expect_true(isTRUE(all.equal(d2, d2b)))
   
   invisible(NULL)
 }
+
+test_ft_multinomial()
 
 
 
@@ -265,38 +274,41 @@ test_Rapi_classification <- function() {
   # learn transform from data
   d_prepared <-  transform_design$crossFrame
   
-  RUnit::checkTrue('yc' %in% colnames(d_prepared))
-  RUnit::checkTrue(!('y' %in% colnames(d_prepared)))
-  RUnit::checkTrue(!('qq' %in% colnames(d_prepared)))
+  expect_true('yc' %in% colnames(d_prepared))
+  expect_true(!('y' %in% colnames(d_prepared)))
+  expect_true(!('qq' %in% colnames(d_prepared)))
   
   # get statistics on the variables
   score_frame <- transform_design$treatments$scoreFrame
   
-  RUnit::checkTrue(!('yc' %in% score_frame$origName))
-  RUnit::checkTrue(!('y' %in% score_frame$origName))
-  RUnit::checkTrue(!('qq' %in% score_frame$origName))
+  expect_true(!('yc' %in% score_frame$origName))
+  expect_true(!('y' %in% score_frame$origName))
+  expect_true(!('qq' %in% score_frame$origName))
   
   # check simple xform
   saw_warning <- FALSE
   tryCatch(
     d2 <- prepare(transform_design$treatments, d),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(saw_warning)
+  expect_true(saw_warning)
   dZ <- d
   dZ['zz'] <- 0
   saw_warning <- FALSE
   tryCatch(
     d2 <- prepare(transform_design$treatments, dZ),
     warning = function(...) { saw_warning <<- TRUE })
-  RUnit::checkTrue(!saw_warning)
+  expect_true(!saw_warning)
   
   
-  RUnit::checkTrue('yc' %in% colnames(d2))
-  RUnit::checkTrue(!('y' %in% colnames(d2)))
+  expect_true('yc' %in% colnames(d2))
+  expect_true(!('y' %in% colnames(d2)))
   
   d2b <- dZ %.>% transform_design$treatments
-  RUnit::checkTrue(isTRUE(all.equal(d2, d2b)))
+  expect_true(isTRUE(all.equal(d2, d2b)))
   
   invisible(NULL)
 }
+
+test_Rapi_classification()
+
 

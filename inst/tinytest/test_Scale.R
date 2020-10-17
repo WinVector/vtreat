@@ -26,12 +26,15 @@ test_Scale <- function() {
                            },
                            numeric(1))
   slopeFrame$badSlope <- ifelse(is.na(slopeFrame$slope),TRUE,abs(slopeFrame$slope-1)>1.e-8)
-  RUnit::checkTrue(!any(is.na(dTrainCTreatedUnscaled)))
-  RUnit::checkTrue(!any(is.na(dTrainCTreatedScaled)))
-  RUnit::checkTrue(!any(is.na(slopeFrame$mean)))
-  RUnit::checkTrue(!any(is.infinite(slopeFrame$mean)))
-  RUnit::checkTrue(max(abs(slopeFrame$mean))<=1.0e-8)
-  RUnit::checkTrue(!any(slopeFrame$badSlope & (slopeFrame$sig<1)))
+  expect_true(!any(is.na(dTrainCTreatedUnscaled)))
+  expect_true(!any(is.na(dTrainCTreatedScaled)))
+  expect_true(!any(is.na(slopeFrame$mean)))
+  expect_true(!any(is.infinite(slopeFrame$mean)))
+  expect_true(max(abs(slopeFrame$mean))<=1.0e-8)
+  expect_true(!any(slopeFrame$badSlope & (slopeFrame$sig<1)))
   
   invisible(NULL)
 }
+
+test_Scale()
+

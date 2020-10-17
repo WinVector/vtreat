@@ -34,7 +34,9 @@ test_UniqValue <- function() {
                                   verbose=FALSE)
   dTrainZTreated <- prepare(treatmentsN,dTrainN,pruneSig=1, check_for_duplicate_frames=FALSE)
   dTestZTreated <- prepare(treatmentsN,dTestN,pruneSig=1, check_for_duplicate_frames=FALSE)
-  RUnit::checkTrue(!is.null(dTestZTreated))
+  expect_true(!is.null(dTestZTreated))
   
   invisible(NULL)
 }
+
+test_UniqValue()

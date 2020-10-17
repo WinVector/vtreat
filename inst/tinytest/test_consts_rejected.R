@@ -8,7 +8,7 @@ test_consts_rejected <- function() {
                              levRestriction = NULL, 
                              weights = c(1,1,1,1), 
                              catScaling = FALSE)
-  RUnit::checkTrue(is.null(cb))
+  expect_true(is.null(cb))
   
   cn <- vtreat:::.mkCatNum(origVarName = "x", 
                            vcolin = c(1,1,1,1), 
@@ -16,7 +16,9 @@ test_consts_rejected <- function() {
                            smFactor = 0, 
                            levRestriction = NULL, 
                            weights = c(1,1,1,1))
-  RUnit::checkTrue(is.null(cn))
+  expect_true(is.null(cn))
   
   invisible(NULL)
 }
+
+test_consts_rejected()

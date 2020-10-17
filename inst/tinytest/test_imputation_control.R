@@ -93,24 +93,24 @@ test_imputation_control <- function() {
     # unsupervised is the gold standard
     c0 = check_unsupervised(d, global_val, map)
     if(!is.null(gold_standard)) {
-      RUnit::checkTrue(equal_df(c0, gold_standard))
+      expect_true(equal_df(c0, gold_standard))
     } else {
       gold_standard = c0
     }
     
     # classification
     c1 = check_classification(d, global_val, map)
-    RUnit::checkTrue(equal_df(c1, gold_standard))
+    expect_true(equal_df(c1, gold_standard))
     
     c2 = check_classification(d, global_val, map, useFT=FALSE)
-    RUnit::checkTrue(equal_df(c2, gold_standard))
+    expect_true(equal_df(c2, gold_standard))
     
     # regression
     r1 = check_regression(d, global_val, map)
-    RUnit::checkTrue(equal_df(r1, gold_standard))
+    expect_true(equal_df(r1, gold_standard))
     
     r2 = check_regression(d, global_val, map, useFT=FALSE)
-    RUnit::checkTrue(equal_df(r2, gold_standard))
+    expect_true(equal_df(r2, gold_standard))
     invisible(gold_standard)
   }
   
@@ -178,5 +178,8 @@ test_imputation_control <- function() {
   
   invisible(NULL)
 }
+
+test_imputation_control()
+
   
   

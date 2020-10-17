@@ -41,16 +41,19 @@ test_custom_coder <- function() {
                                  outcometarget= 'Y',
                                  customCoders = customCoders, 
                                  verbose=FALSE)
-  RUnit::checkTrue("x1_logit" %in% treatplanC$scoreFrame$varName)
-  RUnit::checkTrue("x1_lm" %in% treatplanC$scoreFrame$varName)
+  expect_true("x1_logit" %in% treatplanC$scoreFrame$varName)
+  expect_true("x1_lm" %in% treatplanC$scoreFrame$varName)
   
   treatplanN = designTreatmentsN(d, 
                                  varlist = c("x1", "x2"),
                                  outcomename = 'yN',
                                  customCoders = customCoders, 
                                  verbose=FALSE)
-  RUnit::checkTrue("x1_lm" %in% treatplanN$scoreFrame$varName)
-  RUnit::checkTrue("x2_lm" %in% treatplanN$scoreFrame$varName)
+  expect_true("x1_lm" %in% treatplanN$scoreFrame$varName)
+  expect_true("x2_lm" %in% treatplanN$scoreFrame$varName)
   
   invisible(NULL)
 }
+
+test_custom_coder()
+

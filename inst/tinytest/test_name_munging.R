@@ -10,11 +10,13 @@ test_name_munging <- function() {
   
   t <- designTreatmentsZ(d, names(d), verbose = FALSE)
   d2 <- prepare(t, d, check_for_duplicate_frames=FALSE)
-  RUnit::checkTrue(isTRUE(all.equal(make.names(colnames(d2)), colnames(d2))))
+  expect_true(isTRUE(all.equal(make.names(colnames(d2)), colnames(d2))))
   
   ts <- design_missingness_treatment(d)
   ds <- prepare(ts, d)
-  RUnit::checkTrue(isTRUE(all.equal(make.names(colnames(ds)), colnames(ds))))
+  expect_true(isTRUE(all.equal(make.names(colnames(ds)), colnames(ds))))
   
   invisible(NULL)
 }
+
+test_name_munging()

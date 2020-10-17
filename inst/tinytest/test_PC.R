@@ -10,12 +10,14 @@ test_PC <- function() {
                                  splitFunction = splitter,
                                  ncross = 2, 
                                  verbose = FALSE)
-  RUnit::checkTrue(length(cfe$evalSets)==2)
+  expect_true(length(cfe$evalSets)==2)
   xValCount <- vapply(cfe$evalSets,function(ci) { 
     length(unique(d$x[ci$train]))},
     numeric(1))
-  RUnit::checkTrue(all(xValCount==1))
-  RUnit::checkTrue('clean' %in% cfe$treatments$scoreFrame$code)
+  expect_true(all(xValCount==1))
+  expect_true('clean' %in% cfe$treatments$scoreFrame$code)
   
   invisible(NULL)
 }
+
+test_PC()

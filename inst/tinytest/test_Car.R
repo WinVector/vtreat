@@ -1,6 +1,6 @@
 
 test_Car <- function() {
-  dir <- system.file("unit_tests", package = "vtreat", mustWork = TRUE)
+  dir <- system.file("tinytest", package = "vtreat", mustWork = TRUE)
   load(paste(dir, 'uci.car.data.Rdata', sep = "/"))
 
   set.seed(2352)
@@ -20,7 +20,10 @@ test_Car <- function() {
     p_values <- c(p_values, min(treatmentsC$scoreFrame$sig[treatmentsC$scoreFrame$origName=='noise']))
     
   }
-  RUnit::checkTrue(max(p_values)>0.05)
+  expect_true(max(p_values)>0.05)
   
   invisible(NULL)
 }
+
+test_Car()
+

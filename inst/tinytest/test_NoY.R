@@ -9,7 +9,9 @@ test_NoY <- function() {
                                   verbose=FALSE)
   dTrainZTreated <- prepare(treatmentsZ,dTrainZ,pruneSig=NULL, check_for_duplicate_frames=FALSE)
   dTestZTreated <- prepare(treatmentsZ,dTestZ,pruneSig=NULL, check_for_duplicate_frames=FALSE)
-  RUnit::checkTrue(!is.null(dTestZTreated))
+  expect_true(!is.null(dTestZTreated))
   
   invisible(NULL)
 }
+
+test_NoY()

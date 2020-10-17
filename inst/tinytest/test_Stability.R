@@ -44,7 +44,9 @@ test_Stability <- function() {
     # looking at instability in csig of Weiss level
     csig[[i]] <- tP$scoreFrame$sig[tP$scoreFrame$varName=='x_lev_x_Weiss']
   }
-  RUnit::checkTrue((max(csig)-min(csig))<1.0e-5)
+  expect_true((max(csig)-min(csig))<1.0e-5)
   
   invisible(NULL)
  }
+
+test_Stability()

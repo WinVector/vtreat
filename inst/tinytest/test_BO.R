@@ -75,9 +75,9 @@ test_BO <- function() {
       nvars <- setdiff(colnames(dTrainNTreated),'yN')
       if(scale) {
         # all input variables should be mean 0 when scale is TRUE
-        RUnit::checkTrue(max(abs(vapply(dTrainNTreated[,nvars],mean,numeric(1))))<1.0e-5)
+        expect_true(max(abs(vapply(dTrainNTreated[,nvars],mean,numeric(1))))<1.0e-5)
         # all slopes should be 1 when scales is TRUE
-        RUnit::checkTrue(max(abs(1-
+        expect_true(max(abs(1-
                               vapply(nvars,
                                      function(c) { 
                                        lm(paste('yN',c,sep='~'),
@@ -104,9 +104,9 @@ test_BO <- function() {
       cvars <- setdiff(colnames(dTrainCTreated),'yC')
       if(scale) {
         # all input variables should be mean 0 when scale is TRUE
-        RUnit::checkTrue(max(abs(vapply(dTrainCTreated[,cvars],mean,numeric(1))))<1.0e-5)
+        expect_true(max(abs(vapply(dTrainCTreated[,cvars],mean,numeric(1))))<1.0e-5)
         # all slopes should be 1 when scales is TRUE
-        RUnit::checkTrue(max(abs(1-
+        expect_true(max(abs(1-
                               vapply(cvars,
                                      function(c) { 
                                        glm(paste('yC',c,sep='~'),family=binomial,
@@ -127,3 +127,6 @@ test_BO <- function() {
   
   invisible(NULL)
 }
+
+test_BO()
+

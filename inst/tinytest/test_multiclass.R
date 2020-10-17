@@ -25,12 +25,15 @@ test_multiclass <- function() {
   sf <- cfe_m$score_frame
   cf <- cfe_m$cross_frame
   prepped <- prepare(cfe_m$treat_m, d, check_for_duplicate_frames=FALSE)
-  RUnit::checkEquals(sort(colnames(prepped)), 
+  expect_equal(sort(colnames(prepped)), 
                          sort(colnames(cf)))
-  RUnit::checkEquals(character(0), 
+  expect_equal(character(0), 
                          setdiff(sf$varName, colnames(cf)))
-  RUnit::checkEquals("y", 
+  expect_equal("y", 
                          setdiff(colnames(cf), sf$varName))
   
   invisible(NULL)
 }
+
+test_multiclass()
+

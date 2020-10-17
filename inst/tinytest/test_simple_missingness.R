@@ -13,3 +13,5 @@ test_simple_missingness <- function() {
   
   invisible(NULL)
 }
+
+test_simple_missingness()

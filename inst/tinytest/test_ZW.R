@@ -53,7 +53,9 @@ test_ZW <- function() {
   sapply(varsN,function(c) { lm(paste('y',c,sep='~'),
                                 data=dTrainNTreated)$coefficients[[2]]}) 
   dTestNTreated <- prepare(treatmentsN,dTestN,pruneSig=c(),scale=TRUE, check_for_duplicate_frames=FALSE)
-  RUnit::checkTrue(!is.null(dTestNTreated))
+  expect_true(!is.null(dTestNTreated))
   
   invisible(NULL)
 }
+
+test_ZW()

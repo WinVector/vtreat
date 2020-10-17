@@ -8,7 +8,9 @@ test_simple_col_replace <- function() {
   plan1 <- vtreat::design_missingness_treatment(d)
   r <- vtreat::prepare(plan1, d)
   expect <- c("x1", "x1_isBAD", "x2", "x3", "y")
-  RUnit::checkEquals(expect, sort(colnames(r)))
+  expect_equal(expect, sort(colnames(r)))
   
   invisible(NULL)
 }
+
+test_simple_col_replace()

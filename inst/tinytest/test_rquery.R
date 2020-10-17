@@ -94,3 +94,6 @@ test_rquery <- function() {
   
   invisible(NULL)
 }
+
+test_rquery()
+
