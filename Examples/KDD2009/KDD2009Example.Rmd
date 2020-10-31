@@ -311,6 +311,7 @@ treatedTestP[[mname]] = predict(
 ```
 
 Look at the ROC Plots
+
 ```{r  tidy=FALSE}
 
 t1 = paste(mname,'model on training')
@@ -322,6 +323,16 @@ print(ROCPlot(treatedTestP, mname, outcome, yTarget,
               title=t2))
 
 ```
+
+Save predictions.
+
+
+```{r}
+saveRDS(
+  list(train_p = treatedTrainP, test_p = treatedTestP),
+  file = 'predictions.RDS')
+```
+
 
 ```{r shutdown, tidy=FALSE}
 if(!is.null(cl)) {

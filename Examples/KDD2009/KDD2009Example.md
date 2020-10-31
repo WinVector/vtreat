@@ -42,7 +42,10 @@ table(d$churn)
     ##    -1     1 
     ## 46328  3672
 
-Arrange test/train split. The reported performance runs of this example were sensitive to the prevalance of the churn variable in the test set, so we are cutting down on this source of evaluation variance by using a stratified split.
+Arrange test/train split. The reported performance runs of this example
+were sensitive to the prevalance of the churn variable in the test set,
+so we are cutting down on this source of evaluation variance by using a
+stratified split.
 
 ``` r
 set.seed(729375)    
@@ -73,7 +76,8 @@ model <- xgboost(data = as.matrix(d_train[, vars, drop = FALSE]),
     ## Error in xgb.DMatrix(data, label = label, missing = missing): 'data' has class 'character' and length 10350000.
     ##   'data' accepts either a numeric matrix or a single filename.
 
-Even if you fix this, you run into missing values, overly large categoricals, etc.
+Even if you fix this, you run into missing values, overly large
+categoricals, etc.
 
 ``` r
 dim(d_train)
@@ -110,7 +114,8 @@ summary(nlevels)
 Use `vtreat` to prepare a clean data frame
 ------------------------------------------
 
-The correct way, with cross-validated training data to avoid nested-model bias.
+The correct way, with cross-validated training data to avoid
+nested-model bias.
 
 ``` r
 yTarget <- 1
@@ -131,9 +136,9 @@ unpack[
                               parallelCluster=cl)
 ```
 
-    ## [1] "vtreat 1.6.0 start initial treatment design Fri May  1 09:58:17 2020"
-    ## [1] " start cross frame work Fri May  1 10:00:43 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Fri May  1 10:02:13 2020"
+    ## [1] "vtreat 1.6.2 start initial treatment design Sat Oct 31 12:02:17 2020"
+    ## [1] " start cross frame work Sat Oct 31 12:03:09 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Oct 31 12:03:43 2020"
 
 ``` r
 scoreFrame <- transform$scoreFrame
@@ -328,13 +333,13 @@ calcAUC(treatedTestP[[mname]], treatedTestP[[outcome]]==yTarget)
 permTestAUC(treatedTestP, mname, outcome, yTarget = yTarget)
 ```
 
-    ## [1] "**AUC test alt. hyp. AUC>AUC(permuted)**: (*AUC*=0.7433, *s.d.*=0.01772, *p*&lt;1e-05)."
+    ## [1] "AUC test alt. hyp. AUC>AUC(permuted): (AUC=0.7433, s.d.=0.01772, p<1e-05)."
 
 ``` r
 wrapChiSqTest(treatedTestP, mname, outcome, yTarget = yTarget)
 ```
 
-    ## [1] "**Chi-Square Test** summary: *pseudo-<i>R^2^</i>*=0.1159 (<i>&chi;^2^</i>(1,*N*=5000)=301, *p*&lt;1e-05)."
+    ## [1] "Chi-Square Test summary: pseudo-R2=0.1159 (X2(1,N=5000)=301, p<1e-05)."
 
 ``` r
 t1 = paste(mname,'model on training')
@@ -342,21 +347,21 @@ print(DoubleDensityPlot(treatedTrainP, mname, outcome,
                         title=t1))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/kddplot-1.png)
+![](KDD2009Example_files/figure-gfm/kddplot-1.png)<!-- -->
 
 ``` r
 print(ROCPlot(treatedTrainP, mname, outcome, yTarget,
               title=t1))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/kddplot-2.png)
+![](KDD2009Example_files/figure-gfm/kddplot-2.png)<!-- -->
 
 ``` r
 print(WVPlots::PRPlot(treatedTrainP, mname, outcome, yTarget,
               title=t1))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/kddplot-3.png)
+![](KDD2009Example_files/figure-gfm/kddplot-3.png)<!-- -->
 
 ``` r
 t2 = paste(mname,'model on test')
@@ -364,26 +369,26 @@ print(DoubleDensityPlot(treatedTestP, mname, outcome,
                         title=t2))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/kddplot-4.png)
+![](KDD2009Example_files/figure-gfm/kddplot-4.png)<!-- -->
 
 ``` r
 print(ROCPlot(treatedTestP, mname, outcome, yTarget,
               title=t2))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/kddplot-5.png)
+![](KDD2009Example_files/figure-gfm/kddplot-5.png)<!-- -->
 
 ``` r
 print(WVPlots::PRPlot(treatedTestP, mname, outcome, yTarget,
               title=t2))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/kddplot-6.png)
+![](KDD2009Example_files/figure-gfm/kddplot-6.png)<!-- -->
 
 vtreat\` used incorrectly
 -------------------------
 
-What happens if you don't account for nested model bias. Don't do this!
+What happens if you don’t account for nested model bias. Don’t do this!
 
 ``` r
 # fit the treatment plan from the training data
@@ -395,13 +400,13 @@ transform <- designTreatmentsC(d_train,
                               parallelCluster=cl)
 ```
 
-    ## [1] "vtreat 1.6.0 inspecting inputs Fri May  1 10:03:59 2020"
-    ## [1] "designing treatments Fri May  1 10:03:59 2020"
-    ## [1] " have initial level statistics Fri May  1 10:04:01 2020"
-    ## [1] " scoring treatments Fri May  1 10:04:47 2020"
-    ## [1] "have treatment plan Fri May  1 10:05:41 2020"
-    ## [1] "rescoring complex variables Fri May  1 10:05:41 2020"
-    ## [1] "done rescoring complex variables Fri May  1 10:06:29 2020"
+    ## [1] "vtreat 1.6.2 inspecting inputs Sat Oct 31 12:05:00 2020"
+    ## [1] "designing treatments Sat Oct 31 12:05:00 2020"
+    ## [1] " have initial level statistics Sat Oct 31 12:05:01 2020"
+    ## [1] " scoring treatments Sat Oct 31 12:05:15 2020"
+    ## [1] "have treatment plan Sat Oct 31 12:05:31 2020"
+    ## [1] "rescoring complex variables Sat Oct 31 12:05:31 2020"
+    ## [1] "done rescoring complex variables Sat Oct 31 12:05:49 2020"
 
 ``` r
 # use the treatment plan to treat the treated data directly
@@ -587,7 +592,7 @@ print(ROCPlot(treatedTrainP, mname, outcome, yTarget,
               title=t1))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/unnamed-chunk-15-1.png)
+![](KDD2009Example_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 t2 = paste(mname,'model on test')
@@ -595,7 +600,15 @@ print(ROCPlot(treatedTestP, mname, outcome, yTarget,
               title=t2))
 ```
 
-![](KDD2009Example_files/figure-markdown_github/unnamed-chunk-15-2.png)
+![](KDD2009Example_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
+
+Save predictions.
+
+``` r
+saveRDS(
+  list(train_p = treatedTrainP, test_p = treatedTestP),
+  file = 'predictions.RDS')
+```
 
 ``` r
 if(!is.null(cl)) {
