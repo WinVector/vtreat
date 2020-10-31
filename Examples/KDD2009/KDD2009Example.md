@@ -136,9 +136,9 @@ unpack[
                               parallelCluster=cl)
 ```
 
-    ## [1] "vtreat 1.6.2 start initial treatment design Sat Oct 31 12:02:17 2020"
-    ## [1] " start cross frame work Sat Oct 31 12:03:09 2020"
-    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Oct 31 12:03:43 2020"
+    ## [1] "vtreat 1.6.2 start initial treatment design Sat Oct 31 12:38:38 2020"
+    ## [1] " start cross frame work Sat Oct 31 12:39:30 2020"
+    ## [1] " vtreat::mkCrossFrameCExperiment done Sat Oct 31 12:40:03 2020"
 
 ``` r
 scoreFrame <- transform$scoreFrame
@@ -385,6 +385,14 @@ print(WVPlots::PRPlot(treatedTestP, mname, outcome, yTarget,
 
 ![](KDD2009Example_files/figure-gfm/kddplot-6.png)<!-- -->
 
+Save predictions.
+
+``` r
+saveRDS(
+  list(train_p = treatedTrainP, test_p = treatedTestP),
+  file = 'predictions.RDS')
+```
+
 vtreat\` used incorrectly
 -------------------------
 
@@ -400,13 +408,13 @@ transform <- designTreatmentsC(d_train,
                               parallelCluster=cl)
 ```
 
-    ## [1] "vtreat 1.6.2 inspecting inputs Sat Oct 31 12:05:00 2020"
-    ## [1] "designing treatments Sat Oct 31 12:05:00 2020"
-    ## [1] " have initial level statistics Sat Oct 31 12:05:01 2020"
-    ## [1] " scoring treatments Sat Oct 31 12:05:15 2020"
-    ## [1] "have treatment plan Sat Oct 31 12:05:31 2020"
-    ## [1] "rescoring complex variables Sat Oct 31 12:05:31 2020"
-    ## [1] "done rescoring complex variables Sat Oct 31 12:05:49 2020"
+    ## [1] "vtreat 1.6.2 inspecting inputs Sat Oct 31 12:41:19 2020"
+    ## [1] "designing treatments Sat Oct 31 12:41:19 2020"
+    ## [1] " have initial level statistics Sat Oct 31 12:41:21 2020"
+    ## [1] " scoring treatments Sat Oct 31 12:41:35 2020"
+    ## [1] "have treatment plan Sat Oct 31 12:41:51 2020"
+    ## [1] "rescoring complex variables Sat Oct 31 12:41:51 2020"
+    ## [1] "done rescoring complex variables Sat Oct 31 12:42:10 2020"
 
 ``` r
 # use the treatment plan to treat the treated data directly
@@ -592,7 +600,7 @@ print(ROCPlot(treatedTrainP, mname, outcome, yTarget,
               title=t1))
 ```
 
-![](KDD2009Example_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](KDD2009Example_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
 t2 = paste(mname,'model on test')
@@ -600,15 +608,7 @@ print(ROCPlot(treatedTestP, mname, outcome, yTarget,
               title=t2))
 ```
 
-![](KDD2009Example_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
-
-Save predictions.
-
-``` r
-saveRDS(
-  list(train_p = treatedTrainP, test_p = treatedTestP),
-  file = 'predictions.RDS')
-```
+![](KDD2009Example_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
 
 ``` r
 if(!is.null(cl)) {

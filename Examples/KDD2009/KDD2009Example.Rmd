@@ -226,6 +226,16 @@ print(WVPlots::PRPlot(treatedTestP, mname, outcome, yTarget,
 
 ```
 
+Save predictions.
+
+
+```{r}
+saveRDS(
+  list(train_p = treatedTrainP, test_p = treatedTestP),
+  file = 'predictions.RDS')
+```
+
+
 ## vtreat` used incorrectly
 
 What happens if you don't account for nested model bias. Don't do this!
@@ -324,14 +334,6 @@ print(ROCPlot(treatedTestP, mname, outcome, yTarget,
 
 ```
 
-Save predictions.
-
-
-```{r}
-saveRDS(
-  list(train_p = treatedTrainP, test_p = treatedTestP),
-  file = 'predictions.RDS')
-```
 
 
 ```{r shutdown, tidy=FALSE}

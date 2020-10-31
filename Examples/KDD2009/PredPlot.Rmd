@@ -1,0 +1,27 @@
+---
+title: "Prediction Plot"
+output: github_document
+---
+
+```{r, message=FALSE, warning=FALSE}
+library(wrapr)
+library(ggplot2)
+library(WVPlots)
+```
+
+```{r}
+unpack[
+  train_p,
+  test_p
+] <- readRDS('predictions.RDS')
+```
+
+```{r}
+ROCPlot(
+  test_p,
+  xvar = 'xgboost',
+  truthVar = 'churn',
+  truthTarget = TRUE,
+  title = 'model on test',
+  add_convex_hull = TRUE)
+```
