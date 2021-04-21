@@ -21,7 +21,7 @@ merge_params <- function(..., params = NULL, user_params = NULL) {
 #' 
 #' A list of settings and values for vtreat binomial classification fitting. 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
@@ -64,7 +64,7 @@ classification_parameters <- function(user_params = NULL) {
 #' Hold settings and results for binomial classification data preparation.
 #' 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
@@ -272,7 +272,7 @@ BinomialOutcomeTreatment <- function(...,
 #' 
 #' A list of settings and values for vtreat regression fitting. 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameCExperiment}}, 
 #' \code{\link{designTreatmentsC}}, and
 #' \code{\link{mkCrossFrameNExperiment}}, 
@@ -317,7 +317,7 @@ regression_parameters <- function(user_params = NULL) {
 #' Hold settings and results for regression data preparation.
 #' 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameNExperiment}}, 
 #' \code{\link{designTreatmentsN}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
@@ -517,7 +517,7 @@ NumericOutcomeTreatment <- function(...,
 #' 
 #' A list of settings and values for vtreat multinomial classification fitting. 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameMExperiment}} and
 #' \code{\link{prepare.multinomial_plan}} for details.
 #' 
@@ -556,7 +556,7 @@ multinomial_parameters <- function(user_params = NULL) {
 #' Hold settings and results for multinomial classification data preparation.
 #' 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{mkCrossFrameMExperiment}} and
 #' \code{\link{prepare.multinomial_plan}} for details.
 #' 
@@ -739,7 +739,7 @@ MultinomialOutcomeTreatment <- function(...,
 #' 
 #' A list of settings and values for vtreat unsupervised fitting. 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{designTreatmentsZ}}, and
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 
@@ -774,7 +774,7 @@ unsupervised_parameters <- function(user_params = NULL) {
 #' Hold settings and results for unsupervised data preparation.
 #' 
 #' Please see
-#' \url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+#' \url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 #' \code{\link{designTreatmentsZ}} and
 #' \code{\link{prepare.treatmentplan}} for details.
 #' 

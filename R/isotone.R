@@ -10,7 +10,7 @@ NULL
 #' constraints as x.  This vector is picked as close to
 #' y (by square-distance) as possible.
 #' 
-#' Please see \url{https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md}.
+#' Please see \url{https://github.com/WinVector/vtreat/blob/main/extras/MonotoneCoder.md}.
 #'
 #' @param varName character, name of variable
 #' @param x numeric, factor, or character input (not empty, no NAs). 
@@ -114,7 +114,7 @@ solveNonDecreasing <- function(varName, x, y, w=NULL) {
 #' constraints as x.  This vector is picked as close to
 #' y (by square-distance) as possible.
 #' 
-#' Please see \url{https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md}.
+#' Please see \url{https://github.com/WinVector/vtreat/blob/main/extras/MonotoneCoder.md}.
 #'
 #' @param varName character, name of variable
 #' @param x numeric, factor, or character input (not empty, no NAs). 
@@ -145,7 +145,7 @@ solveNonIncreasing <- function(varName, x, y, w=NULL) {
 #' constraints as x.  This vector is picked as close to
 #' y (by square-distance) as possible.
 #' 
-#' Please see \url{https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md}.
+#' Please see \url{https://github.com/WinVector/vtreat/blob/main/extras/MonotoneCoder.md}.
 #'
 #' @param varName character, name of variable
 #' @param x numeric, factor, or character input (not empty, no NAs). 

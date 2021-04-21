@@ -50,7 +50,7 @@ designTreatmentsN(
 
 \item{codeRestriction}{what types of variables to produce (character array of level codes, NULL means no restriction).}
 
-\item{customCoders}{map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md}).}
+\item{customCoders}{map from code names to custom categorical variable encoding functions (please see \url{https://github.com/WinVector/vtreat/blob/main/extras/CustomLevelCoders.md}).}
 
 \item{splitFunction}{(optional) see vtreat::buildEvalSets .}
 

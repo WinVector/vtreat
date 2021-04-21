@@ -15,7 +15,7 @@ filled out parameter list
 \description{
 A list of settings and values for vtreat multinomial classification fitting. 
 Please see
-\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+\url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 \code{\link{mkCrossFrameMExperiment}} and
 \code{\link{prepare.multinomial_plan}} for details.
 }

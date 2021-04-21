@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -162,7 +162,7 @@
     <p>k-fold cross validation stratified on y, a splitFunction in the sense of vtreat::buildEvalSets</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kWayStratifiedY</span>(<span class='kw'>nRows</span>, <span class='kw'>nSplits</span>, <span class='kw'>dframe</span>, <span class='kw'>y</span>)</pre>
+    <pre class="usage"><span class='fu'>kWayStratifiedY</span><span class='op'>(</span><span class='va'>nRows</span>, <span class='va'>nSplits</span>, <span class='va'>dframe</span>, <span class='va'>y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,17 +191,17 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='#base/Random.html'>set.seed</a></span>(<span class='fl'>23255</span>)
-<span class='kw'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(y=<span class='fu'><a href='#base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>))
-<span class='kw'>pStrat</span> <span class='op'>&lt;-</span> <span class='fu'>kWayStratifiedY</span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>),<span class='fl'>5</span>,<span class='kw'>d</span>,<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span>)
-<span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>),<span class='fl'>5</span>,<span class='kw'>pStrat</span>,<span class='fl'>TRUE</span>)
-</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='kw'>d</span><span class='op'>$</span><span class='kw'>stratGroup</span> <span class='op'>&lt;-</span> <span class='kw'>vtreat</span>::<span class='fu'><a href='getSplitPlanAppLabels.html'>getSplitPlanAppLabels</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>),<span class='kw'>pStrat</span>)
-<span class='kw'>pSimple</span> <span class='op'>&lt;-</span> <span class='fu'><a href='kWayCrossValidation.html'>kWayCrossValidation</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>),<span class='fl'>5</span>,<span class='kw'>d</span>,<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span>)
-<span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>),<span class='fl'>5</span>,<span class='kw'>pSimple</span>,<span class='fl'>TRUE</span>)
-</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='kw'>d</span><span class='op'>$</span><span class='kw'>simpleGroup</span> <span class='op'>&lt;-</span> <span class='kw'>vtreat</span>::<span class='fu'><a href='getSplitPlanAppLabels.html'>getSplitPlanAppLabels</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>d</span>),<span class='kw'>pSimple</span>)
-<span class='fu'><a href='#base/summary.html'>summary</a></span>(<span class='fu'><a href='#base/tapply.html'>tapply</a></span>(<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span>,<span class='kw'>d</span><span class='op'>$</span><span class='kw'>simpleGroup</span>,<span class='kw'>mean</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>23255</span><span class='op'>)</span>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>pStrat</span> <span class='op'>&lt;-</span> <span class='fu'>kWayStratifiedY</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>,<span class='fl'>5</span>,<span class='va'>d</span>,<span class='va'>d</span><span class='op'>$</span><span class='va'>y</span><span class='op'>)</span>
+<span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>,<span class='fl'>5</span>,<span class='va'>pStrat</span>,<span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='va'>d</span><span class='op'>$</span><span class='va'>stratGroup</span> <span class='op'>&lt;-</span> <span class='fu'>vtreat</span><span class='fu'>::</span><span class='fu'><a href='getSplitPlanAppLabels.html'>getSplitPlanAppLabels</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>,<span class='va'>pStrat</span><span class='op'>)</span>
+<span class='va'>pSimple</span> <span class='op'>&lt;-</span> <span class='fu'><a href='kWayCrossValidation.html'>kWayCrossValidation</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>,<span class='fl'>5</span>,<span class='va'>d</span>,<span class='va'>d</span><span class='op'>$</span><span class='va'>y</span><span class='op'>)</span>
+<span class='fu'><a href='problemAppPlan.html'>problemAppPlan</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>,<span class='fl'>5</span>,<span class='va'>pSimple</span>,<span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='va'>d</span><span class='op'>$</span><span class='va'>simpleGroup</span> <span class='op'>&lt;-</span> <span class='fu'>vtreat</span><span class='fu'>::</span><span class='fu'><a href='getSplitPlanAppLabels.html'>getSplitPlanAppLabels</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>,<span class='va'>pSimple</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tapply.html'>tapply</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>$</span><span class='va'>y</span>,<span class='va'>d</span><span class='op'>$</span><span class='va'>simpleGroup</span>,<span class='va'>mean</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#&gt; -0.106875 -0.059623 -0.007774 -0.001272  0.068139  0.099774 </div><div class='input'><span class='fu'><a href='#base/summary.html'>summary</a></span>(<span class='fu'><a href='#base/tapply.html'>tapply</a></span>(<span class='kw'>d</span><span class='op'>$</span><span class='kw'>y</span>,<span class='kw'>d</span><span class='op'>$</span><span class='kw'>stratGroup</span>,<span class='kw'>mean</span>))
+#&gt; -0.106875 -0.059623 -0.007774 -0.001272  0.068139  0.099774 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tapply.html'>tapply</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>$</span><span class='va'>y</span>,<span class='va'>d</span><span class='op'>$</span><span class='va'>stratGroup</span>,<span class='va'>mean</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 #&gt; -0.011531 -0.010448 -0.002826 -0.001272  0.008797  0.009649 </div><div class='input'>
 
@@ -222,7 +222,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

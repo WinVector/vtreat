@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -162,7 +162,7 @@
     <p>Builds lists of observed unique character values of varlist variables from the data frame.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>track_values</span>(<span class='kw'>dframe</span>, <span class='kw'>varlist</span>)</pre>
+    <pre class="usage"><span class='fu'>track_values</span><span class='op'>(</span><span class='va'>dframe</span>, <span class='va'>varlist</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,23 +186,23 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='#base/Random.html'>set.seed</a></span>(<span class='fl'>23525</span>)
-<span class='kw'>zip</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>NA</span>, <span class='fu'><a href='#base/paste.html'>paste</a></span>(<span class='st'>'z'</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>, sep = <span class='st'>"_"</span>))
-<span class='kw'>N</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
-<span class='kw'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(zip = <span class='fu'><a href='#base/sample.html'>sample</a></span>(<span class='kw'>zip</span>, <span class='kw'>N</span>, replace=<span class='fl'>TRUE</span>),
-                zip2 = <span class='fu'><a href='#base/sample.html'>sample</a></span>(<span class='kw'>zip</span>, <span class='kw'>N</span>, replace=<span class='fl'>TRUE</span>),
-                y = <span class='fu'><a href='#stats/Uniform.html'>runif</a></span>(<span class='kw'>N</span>))
-<span class='kw'>dSample</span> <span class='op'>&lt;-</span> <span class='kw'>d</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>300</span>, , drop = <span class='fl'>FALSE</span>]
-<span class='kw'>tplan</span> <span class='op'>&lt;-</span> <span class='fu'><a href='designTreatmentsN.html'>designTreatmentsN</a></span>(<span class='kw'>dSample</span>, 
-                           <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>"zip"</span>, <span class='st'>"zip2"</span>), <span class='st'>"y"</span>, 
-                           verbose = <span class='fl'>FALSE</span>)
-<span class='kw'>trackedValues</span> <span class='op'>&lt;-</span> <span class='fu'>track_values</span>(<span class='kw'>dSample</span>, <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>"zip"</span>, <span class='st'>"zip2"</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>23525</span><span class='op'>)</span>
+<span class='va'>zip</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>'z'</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>, sep <span class='op'>=</span> <span class='st'>"_"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>zip <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>zip</span>, <span class='va'>N</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,
+                zip2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>zip</span>, <span class='va'>N</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,
+                y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>N</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>dSample</span> <span class='op'>&lt;-</span> <span class='va'>d</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>300</span>, , drop <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>]</span>
+<span class='va'>tplan</span> <span class='op'>&lt;-</span> <span class='fu'><a href='designTreatmentsN.html'>designTreatmentsN</a></span><span class='op'>(</span><span class='va'>dSample</span>, 
+                           <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"zip"</span>, <span class='st'>"zip2"</span><span class='op'>)</span>, <span class='st'>"y"</span>, 
+                           verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>trackedValues</span> <span class='op'>&lt;-</span> <span class='fu'>track_values</span><span class='op'>(</span><span class='va'>dSample</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"zip"</span>, <span class='st'>"zip2"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='co'># don't normally want to catch warnings,</span>
 <span class='co'># doing it here as this is an example </span>
 <span class='co'># and must not have unhandled warnings.</span>
-<span class='fu'><a href='#base/conditions.html'>tryCatch</a></span>(
-  <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>tplan</span>, <span class='kw'>d</span>, trackedValues = <span class='kw'>trackedValues</span>),
-  warning = <span class='fu'>function</span>(<span class='kw'>w</span>) { <span class='fu'><a href='#base/cat.html'>cat</a></span>(<span class='fu'><a href='#base/paste.html'>paste</a></span>(<span class='kw'>w</span>, collapse = <span class='st'>"\n"</span>)) })
+<span class='kw'><a href='https://rdrr.io/r/base/conditions.html'>tryCatch</a></span><span class='op'>(</span>
+  <span class='fu'><a href='prepare.html'>prepare</a></span><span class='op'>(</span><span class='va'>tplan</span>, <span class='va'>d</span>, trackedValues <span class='op'>=</span> <span class='va'>trackedValues</span><span class='op'>)</span>,
+  warning <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>w</span><span class='op'>)</span> <span class='op'>{</span> <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='va'>w</span>, collapse <span class='op'>=</span> <span class='st'>"\n"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>}</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; simpleWarning in prepare.treatmentplan(tplan, d, trackedValues = trackedValues): vtreat::prepare: column "zip" has 3 previously unseen values:z_38, z_89, z_71 .</div><div class='input'>
 </div></pre>
   </div>
@@ -220,7 +220,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -15,7 +15,7 @@ filled out parameter list
 \description{
 A list of settings and values for vtreat regression fitting. 
 Please see
-\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+\url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 \code{\link{mkCrossFrameCExperiment}}, 
 \code{\link{designTreatmentsC}}, and
 \code{\link{mkCrossFrameNExperiment}}, 

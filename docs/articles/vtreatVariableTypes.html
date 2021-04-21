@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,13 +109,13 @@
 
       
 
-      </header><script src="vtreatVariableTypes_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="vtreatVariableTypes_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Variable Types</h1>
                         <h4 class="author">Win-Vector LLC</h4>
             
-            <h4 class="date">2020-09-06</h4>
+            <h4 class="date">2021-04-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatVariableTypes.Rmd"><code>vignettes/vtreatVariableTypes.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatVariableTypes.Rmd</code></div>
@@ -142,46 +142,46 @@
 <h2 class="hasAnchor">
 <a href="#when-the-target-to-predict-is-categorical" class="anchor"></a>When the target to predict is categorical</h2>
 <p>An example categorical variable treatment is demonstrated below:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="#base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/WinVector/vtreat/">vtreat</a></span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/WinVector/vtreat/">vtreat</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: wrapr</code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">dTrainC</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="fl">NA</span>),
-   z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),y=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>),
-   stringsAsFactors = <span class="fl">FALSE</span>)
-<span class="kw">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="kw">dTrainC</span>,<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainC</span>),<span class="st">'y'</span>,<span class="fl">TRUE</span>)</pre></div>
-<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Sun Sep  6 13:51:11 2020"
-## [1] "designing treatments Sun Sep  6 13:51:11 2020"
-## [1] " have initial level statistics Sun Sep  6 13:51:11 2020"
-## [1] " scoring treatments Sun Sep  6 13:51:11 2020"
-## [1] "have treatment plan Sun Sep  6 13:51:11 2020"
-## [1] "rescoring complex variables Sun Sep  6 13:51:11 2020"
-## [1] "done rescoring complex variables Sun Sep  6 13:51:11 2020"</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">scoreColsToPrint</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span>)
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">treatmentsC</span><span class="op">$</span><span class="kw">scoreFrame</span>[,<span class="kw">scoreColsToPrint</span>])</pre></div>
-<pre><code>##   origName   varName  code        rsq        sig extraModelDegrees
-## 1        x    x_catP  catP 0.54085208 0.03392101                 2
-## 2        x    x_catB  catB 0.00000000 1.00000000                 2
-## 3        z         z clean 0.25792985 0.14299775                 0
-## 4        z   z_isBAD isBAD 0.19087450 0.20766228                 0
-## 5        x  x_lev_NA   lev 0.19087450 0.20766228                 0
-## 6        x x_lev_x_a   lev 0.08170417 0.40972582                 0
-## 7        x x_lev_x_b   lev 0.00000000 1.00000000                 0</code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dTrainC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="cn">NA</span><span class="op">)</span>,
+   z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="cn">NA</span>,<span class="fl">6</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span><span class="op">)</span>,
+   stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrainC</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainC</span><span class="op">)</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:52:07 2021"
+## [1] "designing treatments Wed Apr 21 09:52:07 2021"
+## [1] " have initial level statistics Wed Apr 21 09:52:07 2021"
+## [1] " scoring treatments Wed Apr 21 09:52:07 2021"
+## [1] "have treatment plan Wed Apr 21 09:52:07 2021"
+## [1] "rescoring complex variables Wed Apr 21 09:52:07 2021"
+## [1] "done rescoring complex variables Wed Apr 21 09:52:07 2021"</code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">scoreColsToPrint</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'rsq'</span>,<span class="st">'sig'</span>,<span class="st">'extraModelDegrees'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatmentsC</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>,<span class="va">scoreColsToPrint</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code>##   origName   varName  code        rsq       sig extraModelDegrees
+## 1        x    x_catP  catP 0.24340634 0.1547700                 2
+## 2        x    x_catB  catB 0.05070201 0.5160763                 2
+## 3        z         z clean 0.25792985 0.1429977                 0
+## 4        z   z_isBAD isBAD 0.19087450 0.2076623                 0
+## 5        x  x_lev_NA   lev 0.19087450 0.2076623                 0
+## 6        x x_lev_x_a   lev 0.08170417 0.4097258                 0
+## 7        x x_lev_x_b   lev 0.00000000 1.0000000                 0</code></pre>
 <p>For each user supplied variable or column (in this case <code>x</code> and <code>z</code>) ‘vtreat’ proposes derived or treated variables. The mapping from original variable name to derived variable name is given by comparing the columns <code>origName</code> and <code>varName</code>. One can map facts about the new variables back to the original variables as follows:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="co"># Build a map from vtreat names back to reasonable display names</span>
-<span class="kw">vmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/list.html">as.list</a></span>(<span class="kw">treatmentsC</span><span class="op">$</span><span class="kw">scoreFrame</span><span class="op">$</span><span class="kw">origName</span>)
-<span class="fu"><a href="#base/names.html">names</a></span>(<span class="kw">vmap</span>) <span class="op">&lt;-</span> <span class="kw">treatmentsC</span><span class="op">$</span><span class="kw">scoreFrame</span><span class="op">$</span><span class="kw">varName</span>
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">vmap</span>[<span class="st">'x_catB'</span>])</pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Build a map from vtreat names back to reasonable display names</span>
+<span class="va">vmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">treatmentsC</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">origName</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">vmap</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">treatmentsC</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">varName</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">vmap</span><span class="op">[</span><span class="st">'x_catB'</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>## $x_catB
 ## [1] "x"</code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="co"># Map significances back to original variables</span>
-<span class="fu"><a href="#stats/aggregate.html">aggregate</a></span>(<span class="kw">sig</span><span class="op">~</span><span class="kw">origName</span>,data=<span class="kw">treatmentsC</span><span class="op">$</span><span class="kw">scoreFrame</span>,FUN=<span class="kw">min</span>)</pre></div>
-<pre><code>##   origName        sig
-## 1        x 0.03392101
-## 2        z 0.14299775</code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Map significances back to original variables</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">sig</span><span class="op">~</span><span class="va">origName</span>,data<span class="op">=</span><span class="va">treatmentsC</span><span class="op">$</span><span class="va">scoreFrame</span>,FUN<span class="op">=</span><span class="va">min</span><span class="op">)</span></code></pre></div>
+<pre><code>##   origName       sig
+## 1        x 0.1547700
+## 2        z 0.1429977</code></pre>
 <p>In the <code>scoreFrame</code> the <code>sig</code> column is the significance of the single variable logistic regression using the named variable (plus a constant term), and the <code>rsq</code> column is the “pseudo-r-squared” or portion of deviance explained (please see <a href="https://win-vector.com/2011/09/14/the-simpler-derivation-of-logistic-regression/">here</a> for some notes).</p>
 <p>Essentially a derived variable name is built by concatenating an original variable name and a treatment type (also recorded in the <code>code</code> column for convenience). The codes give the different ‘vtreat’ variable types (or really meanings, as all derived variables are numeric).</p>
 <p>For categorical targets the possible variable types are as follows:</p>
@@ -202,21 +202,21 @@
 <h2 class="hasAnchor">
 <a href="#when-the-target-to-predict-is-numeric" class="anchor"></a>When the target to predict is numeric</h2>
 <p>An example numeric variable treatment is demonstrated below:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="#base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/WinVector/vtreat/">vtreat</a></span>)
-<span class="kw">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="fl">NA</span>),
-   z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),y=<span class="fu"><a href="#base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>)),
-   stringsAsFactors = <span class="fl">FALSE</span>)
-<span class="kw">treatmentsN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(<span class="kw">dTrainN</span>,<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainN</span>),<span class="st">'y'</span>)</pre></div>
-<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Sun Sep  6 13:51:11 2020"
-## [1] "designing treatments Sun Sep  6 13:51:11 2020"
-## [1] " have initial level statistics Sun Sep  6 13:51:11 2020"
-## [1] " scoring treatments Sun Sep  6 13:51:11 2020"
-## [1] "have treatment plan Sun Sep  6 13:51:11 2020"
-## [1] "rescoring complex variables Sun Sep  6 13:51:11 2020"
-## [1] "done rescoring complex variables Sun Sep  6 13:51:11 2020"</code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">treatmentsN</span><span class="op">$</span><span class="kw">scoreFrame</span>[,<span class="kw">scoreColsToPrint</span>])</pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/WinVector/vtreat/">vtreat</a></span><span class="op">)</span>
+<span class="va">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="cn">NA</span><span class="op">)</span>,
+   z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="cn">NA</span>,<span class="fl">6</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
+   stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">treatmentsN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span><span class="op">(</span><span class="va">dTrainN</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainN</span><span class="op">)</span>,<span class="st">'y'</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:52:08 2021"
+## [1] "designing treatments Wed Apr 21 09:52:08 2021"
+## [1] " have initial level statistics Wed Apr 21 09:52:08 2021"
+## [1] " scoring treatments Wed Apr 21 09:52:08 2021"
+## [1] "have treatment plan Wed Apr 21 09:52:08 2021"
+## [1] "rescoring complex variables Wed Apr 21 09:52:08 2021"
+## [1] "done rescoring complex variables Wed Apr 21 09:52:08 2021"</code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatmentsN</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>,<span class="va">scoreColsToPrint</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
 ## 1        x    x_catP  catP 4.385965e-01 0.1518345                 2
 ## 2        x    x_catN  catN 1.110223e-16 1.0000000                 2
@@ -248,19 +248,19 @@
 <h2 class="hasAnchor">
 <a href="#when-there-is-no-supplied-target-to-predict" class="anchor"></a>When there is no supplied target to predict</h2>
 <p>An example “no target” variable treatment is demonstrated below:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="fu"><a href="#base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/WinVector/vtreat/">vtreat</a></span>)
-<span class="kw">dTrainZ</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="fl">NA</span>),
-   z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),
-   stringsAsFactors = <span class="fl">FALSE</span>)
-<span class="kw">treatmentsZ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span>(<span class="kw">dTrainZ</span>,<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainZ</span>))</pre></div>
-<pre><code>## [1] "vtreat 1.6.1 inspecting inputs Sun Sep  6 13:51:11 2020"
-## [1] "designing treatments Sun Sep  6 13:51:11 2020"
-## [1] " have initial level statistics Sun Sep  6 13:51:11 2020"
-## [1] " scoring treatments Sun Sep  6 13:51:11 2020"
-## [1] "have treatment plan Sun Sep  6 13:51:11 2020"</code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">treatmentsZ</span><span class="op">$</span><span class="kw">scoreFrame</span>[, <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span>)])</pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/WinVector/vtreat/">vtreat</a></span><span class="op">)</span>
+<span class="va">dTrainZ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="cn">NA</span><span class="op">)</span>,
+   z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="cn">NA</span>,<span class="fl">6</span><span class="op">)</span>,
+   stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">treatmentsZ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsZ.html">designTreatmentsZ</a></span><span class="op">(</span><span class="va">dTrainZ</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainZ</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:52:08 2021"
+## [1] "designing treatments Wed Apr 21 09:52:08 2021"
+## [1] " have initial level statistics Wed Apr 21 09:52:08 2021"
+## [1] " scoring treatments Wed Apr 21 09:52:08 2021"
+## [1] "have treatment plan Wed Apr 21 09:52:08 2021"</code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatmentsZ</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'origName'</span>,<span class="st">'varName'</span>,<span class="st">'code'</span>,<span class="st">'extraModelDegrees'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##   origName   varName  code extraModelDegrees
 ## 1        x    x_catP  catP                 2
 ## 2        z         z clean                 0
@@ -284,38 +284,38 @@
 <h2 class="hasAnchor">
 <a href="#restricting-to-specific-variable-types" class="anchor"></a>Restricting to Specific Variable Types</h2>
 <p>Both <code>designTreatmentsX</code> and <code>prepare</code> functions take an argument called <code>codeRestriction</code> that restricts the type of variable that is created. For example, you may not want to create <code>catP</code> and <code>catD</code> variables for a regression problem.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="kw">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="fl">NA</span>),
-   z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),y=<span class="fu"><a href="#base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>)),
-   stringsAsFactors = <span class="fl">FALSE</span>)
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="cn">NA</span><span class="op">)</span>,
+   z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="cn">NA</span>,<span class="fl">6</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
+   stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="kw">treatmentsN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(<span class="kw">dTrainN</span>,<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainN</span>),<span class="st">'y'</span>,
-                                 codeRestriction = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'lev'</span>, 
+<span class="va">treatmentsN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span><span class="op">(</span><span class="va">dTrainN</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainN</span><span class="op">)</span>,<span class="st">'y'</span>,
+                                 codeRestriction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'lev'</span>, 
                                                       <span class="st">'catN'</span>,
                                                       <span class="st">'clean'</span>,
-                                                      <span class="st">'isBAD'</span>),
-                                 verbose=<span class="fl">FALSE</span>)
+                                                      <span class="st">'isBAD'</span><span class="op">)</span>,
+                                 verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># no catP or catD variables</span>
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">treatmentsN</span><span class="op">$</span><span class="kw">scoreFrame</span>[,<span class="kw">scoreColsToPrint</span>])</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatmentsN</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>,<span class="va">scoreColsToPrint</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1131222 0.5145190                 2
+## 1        x    x_catN  catN 0.1052632 0.5304117                 2
 ## 2        z         z clean 0.3045045 0.2562868                 0
 ## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
 ## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
 ## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
 ## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
 <p>Conversely, even if you have created a treatment plan for a particular type of variable, you may subsequently decide not to use it. For example, perhaps you only want to use indicator variables and not the <code>catN</code> variable for modeling. You can use <code>codeRestriction</code> in <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="kw">dTreated</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="kw">treatmentsN</span>, <span class="kw">dTrainN</span>, 
-                   codeRestriction = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'lev'</span>,<span class="st">'clean'</span>, <span class="st">'isBAD'</span>))</pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dTreated</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatmentsN</span>, <span class="va">dTrainN</span>, 
+                   codeRestriction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'lev'</span>,<span class="st">'clean'</span>, <span class="st">'isBAD'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in prepare.treatmentplan(treatmentsN, dTrainN, codeRestriction =
 ## c("lev", : possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
 ## mkCrossFrame*Experiment$crossFrame.</code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit">
-<span class="co"># no catN variables</span>
-<span class="fu"><a href="#utils/head.html">head</a></span>(<span class="kw">dTreated</span>)</pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># no catN variables</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dTreated</span><span class="op">)</span></code></pre></div>
 <pre><code>##     z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
 ## 1 1.0       0        0         1         0 0
 ## 2 2.0       0        0         1         0 0
@@ -339,44 +339,44 @@
 <p>‘vtreat’ attempts to compute “out of sample” significances for each variable effect ( the <code>sig</code> column in <code>scoreFrame</code>) through cross-validation techniques.</p>
 <p>‘vtreat’ is primarily intended to be “y-aware” processing. Of particular interest is using <code><a href="../reference/prepare.html">vtreat::prepare()</a></code> with <code>scale=TRUE</code> which tries to put most columns in ‘y-effect’ units. This can be an important pre-processing step before attempting dimension reduction (such as principal components methods).</p>
 <p>The vtreat user should pick which sorts of variables they are want and also filter on estimated significance. Doing this looks like the following:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit">
-<span class="kw">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="fl">NA</span>),
-   z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>),y=<span class="fu"><a href="#base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>)),
-   stringsAsFactors = <span class="fl">FALSE</span>)
-<span class="kw">treatmentsN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span>(<span class="kw">dTrainN</span>,<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainN</span>),<span class="st">'y'</span>,
-                                  codeRestriction = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'lev'</span>, 
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="cn">NA</span><span class="op">)</span>,
+   z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="cn">NA</span>,<span class="fl">6</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
+   stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">treatmentsN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsN.html">designTreatmentsN</a></span><span class="op">(</span><span class="va">dTrainN</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainN</span><span class="op">)</span>,<span class="st">'y'</span>,
+                                  codeRestriction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'lev'</span>, 
                                                       <span class="st">'catN'</span>,
                                                       <span class="st">'clean'</span>,
-                                                      <span class="st">'isBAD'</span>),
-                                 verbose=<span class="fl">FALSE</span>)
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">treatmentsN</span><span class="op">$</span><span class="kw">scoreFrame</span>[,<span class="kw">scoreColsToPrint</span>])</pre></div>
-<pre><code>##   origName   varName  code       rsq       sig extraModelDegrees
-## 1        x    x_catN  catN 0.1052632 0.5304117                 2
-## 2        z         z clean 0.3045045 0.2562868                 0
-## 3        z   z_isBAD isBAD 0.2000000 0.3739010                 0
-## 4        x  x_lev_NA   lev 0.2000000 0.3739010                 0
-## 5        x x_lev_x_a   lev 0.1111111 0.5185185                 0
-## 6        x x_lev_x_b   lev 0.0000000 1.0000000                 0</code></pre>
-<div class="sourceCode" id="cb27"><pre class="downlit">
-<span class="kw">pruneSig</span> <span class="op">&lt;-</span> <span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
-<span class="kw">vScoreFrame</span> <span class="op">&lt;-</span> <span class="kw">treatmentsN</span><span class="op">$</span><span class="kw">scoreFrame</span>
-<span class="kw">varsToUse</span> <span class="op">&lt;-</span> <span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">varName</span>[(<span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">sig</span><span class="op">&lt;=</span><span class="kw">pruneSig</span>)]
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">varsToUse</span>)</pre></div>
+                                                      <span class="st">'isBAD'</span><span class="op">)</span>,
+                                 verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatmentsN</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>,<span class="va">scoreColsToPrint</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code>##   origName   varName  code          rsq       sig extraModelDegrees
+## 1        x    x_catN  catN 1.110223e-16 1.0000000                 2
+## 2        z         z clean 3.045045e-01 0.2562868                 0
+## 3        z   z_isBAD isBAD 2.000000e-01 0.3739010                 0
+## 4        x  x_lev_NA   lev 2.000000e-01 0.3739010                 0
+## 5        x x_lev_x_a   lev 1.111111e-01 0.5185185                 0
+## 6        x x_lev_x_b   lev 0.000000e+00 1.0000000                 0</code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pruneSig</span> <span class="op">&lt;-</span> <span class="fl">1.0</span> <span class="co"># don't filter on significance for this tiny example</span>
+<span class="va">vScoreFrame</span> <span class="op">&lt;-</span> <span class="va">treatmentsN</span><span class="op">$</span><span class="va">scoreFrame</span>
+<span class="va">varsToUse</span> <span class="op">&lt;-</span> <span class="va">vScoreFrame</span><span class="op">$</span><span class="va">varName</span><span class="op">[</span><span class="op">(</span><span class="va">vScoreFrame</span><span class="op">$</span><span class="va">sig</span><span class="op">&lt;=</span><span class="va">pruneSig</span><span class="op">)</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">varsToUse</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "x_catN"    "z"         "z_isBAD"   "x_lev_NA"  "x_lev_x_a" "x_lev_x_b"</code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit">
-<span class="kw">origVarNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/sort.html">sort</a></span>(<span class="fu"><a href="#base/unique.html">unique</a></span>(<span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">origName</span>[<span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">varName</span> <span class="op">%in%</span> <span class="kw">varsToUse</span>]))
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">origVarNames</span>)</pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">origVarNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">vScoreFrame</span><span class="op">$</span><span class="va">origName</span><span class="op">[</span><span class="va">vScoreFrame</span><span class="op">$</span><span class="va">varName</span> <span class="op">%in%</span> <span class="va">varsToUse</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">origVarNames</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "x" "z"</code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit">
-<span class="co"># prepare a treated data frame using only the "significant" variables</span>
-<span class="kw">dTreated</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="kw">treatmentsN</span>, <span class="kw">dTrainN</span>, 
-                   varRestriction = <span class="kw">varsToUse</span>)</pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># prepare a treated data frame using only the "significant" variables</span>
+<span class="va">dTreated</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatmentsN</span>, <span class="va">dTrainN</span>, 
+                   varRestriction <span class="op">=</span> <span class="va">varsToUse</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in prepare.treatmentplan(treatmentsN, dTrainN, varRestriction =
 ## varsToUse): possibly called prepare() on same data frame as designTreatments*()/
 ## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
 ## mkCrossFrame*Experiment$crossFrame.</code></pre>
-<div class="sourceCode" id="cb33"><pre class="downlit">
-<span class="fu"><a href="#utils/head.html">head</a></span>(<span class="kw">dTreated</span>)</pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dTreated</span><span class="op">)</span></code></pre></div>
 <pre><code>##       x_catN   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b y
 ## 1 -0.1666667 1.0       0        0         1         0 0
 ## 2 -0.1666667 2.0       0        0         1         0 0
@@ -386,13 +386,13 @@
 ## 6  0.5000000 6.0       0        1         0         0 1</code></pre>
 <p>We strongly suggest using the standard variables coded as ‘lev’, ‘clean’, and ‘isBad’; and the “y aware” variables coded as ‘catN’ and ‘catB’. The non sub-model variables (‘catP’ and ‘catD’) can be useful (possibly as interactions or guards on the corresponding ‘catN’ and ‘catB’ variables) but also encode distributional facts about the data that may or may not be appropriate depending on your problem domain.</p>
 <p>When displaying variables to end users we suggest using the original names and the min significance seen on any derived variable:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit">
-<span class="kw">origVarNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/sort.html">sort</a></span>(<span class="fu"><a href="#base/unique.html">unique</a></span>(<span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">origName</span>[<span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">varName</span> <span class="op">%in%</span> <span class="kw">varsToUse</span>]))
-<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">origVarNames</span>)</pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">origVarNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">vScoreFrame</span><span class="op">$</span><span class="va">origName</span><span class="op">[</span><span class="va">vScoreFrame</span><span class="op">$</span><span class="va">varName</span> <span class="op">%in%</span> <span class="va">varsToUse</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">origVarNames</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "x" "z"</code></pre>
-<div class="sourceCode" id="cb37"><pre class="downlit">
-<span class="kw">origVarSigs</span> <span class="op">&lt;-</span> <span class="kw">vScoreFrame</span>[<span class="kw">vScoreFrame</span><span class="op">$</span><span class="kw">varName</span> <span class="op">%in%</span> <span class="kw">varsToUse</span>,]
-<span class="fu"><a href="#stats/aggregate.html">aggregate</a></span>(<span class="kw">sig</span><span class="op">~</span><span class="kw">origName</span>,data=<span class="kw">origVarSigs</span>,FUN=<span class="kw">min</span>)</pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">origVarSigs</span> <span class="op">&lt;-</span> <span class="va">vScoreFrame</span><span class="op">[</span><span class="va">vScoreFrame</span><span class="op">$</span><span class="va">varName</span> <span class="op">%in%</span> <span class="va">varsToUse</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">sig</span><span class="op">~</span><span class="va">origName</span>,data<span class="op">=</span><span class="va">origVarSigs</span>,FUN<span class="op">=</span><span class="va">min</span><span class="op">)</span></code></pre></div>
 <pre><code>##   origName       sig
 ## 1        x 0.3739010
 ## 2        z 0.2562868</code></pre>
@@ -422,7 +422,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

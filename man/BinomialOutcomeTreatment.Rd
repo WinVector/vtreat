@@ -34,7 +34,7 @@ Hold settings and results for binomial classification data preparation.
 }
 \details{
 Please see
-\url{https://github.com/WinVector/vtreat/blob/master/Examples/fit_transform/fit_transform_api.md},
+\url{https://github.com/WinVector/vtreat/blob/main/Examples/fit_transform/fit_transform_api.md},
 \code{\link{mkCrossFrameCExperiment}}, 
 \code{\link{designTreatmentsC}}, and
 \code{\link{prepare.treatmentplan}} for details.

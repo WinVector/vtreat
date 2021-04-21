@@ -74,7 +74,7 @@ Note: each column is processed independently of all others." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ Note: each column is processed independently of all others." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -166,22 +166,22 @@ except for dates (which are converted to numeric).
 Note: each column is processed independently of all others.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>designTreatmentsZ</span>(
-  <span class='kw'>dframe</span>,
-  <span class='kw'>varlist</span>,
-  <span class='kw'>...</span>,
-  minFraction = <span class='fl'>0</span>,
-  weights = <span class='fu'><a href='#base/c.html'>c</a></span>(),
-  rareCount = <span class='fl'>0</span>,
-  collarProb = <span class='fl'>0</span>,
-  codeRestriction = <span class='kw'>NULL</span>,
-  customCoders = <span class='kw'>NULL</span>,
-  verbose = <span class='fl'>TRUE</span>,
-  parallelCluster = <span class='kw'>NULL</span>,
-  use_parallel = <span class='fl'>TRUE</span>,
-  missingness_imputation = <span class='kw'>NULL</span>,
-  imputation_map = <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>designTreatmentsZ</span><span class='op'>(</span>
+  <span class='va'>dframe</span>,
+  <span class='va'>varlist</span>,
+  <span class='va'>...</span>,
+  minFraction <span class='op'>=</span> <span class='fl'>0</span>,
+  weights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  rareCount <span class='op'>=</span> <span class='fl'>0</span>,
+  collarProb <span class='op'>=</span> <span class='fl'>0</span>,
+  codeRestriction <span class='op'>=</span> <span class='cn'>NULL</span>,
+  customCoders <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  parallelCluster <span class='op'>=</span> <span class='cn'>NULL</span>,
+  use_parallel <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  missingness_imputation <span class='op'>=</span> <span class='cn'>NULL</span>,
+  imputation_map <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -220,7 +220,7 @@ Note: each column is processed independently of all others.</p>
     </tr>
     <tr>
       <th>customCoders</th>
-      <td><p>map from code names to custom categorical variable encoding functions (please see <a href='https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md'>https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md</a>).</p></td>
+      <td><p>map from code names to custom categorical variable encoding functions (please see <a href='https://github.com/WinVector/vtreat/blob/main/extras/CustomLevelCoders.md'>https://github.com/WinVector/vtreat/blob/main/extras/CustomLevelCoders.md</a>).</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -260,18 +260,18 @@ Note: each column is processed independently of all others.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>dTrainZ</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='fl'>NA</span>,<span class='st'>'e'</span>,<span class='st'>'e'</span>),
-    z=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>,<span class='fl'>NA</span>,<span class='fl'>9</span>))
-<span class='kw'>dTestZ</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='fl'>NA</span>),
-    z=<span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>NA</span>))
-<span class='kw'>treatmentsZ</span> <span class='op'>=</span> <span class='fu'>designTreatmentsZ</span>(<span class='kw'>dTrainZ</span>, <span class='fu'><a href='#base/colnames.html'>colnames</a></span>(<span class='kw'>dTrainZ</span>),
-  rareCount=<span class='fl'>0</span>)
-</div><div class='output co'>#&gt; [1] "vtreat 1.6.1 inspecting inputs Sun Sep  6 13:50:36 2020"
-#&gt; [1] "designing treatments Sun Sep  6 13:50:36 2020"
-#&gt; [1] " have initial level statistics Sun Sep  6 13:50:36 2020"
-#&gt; [1] " scoring treatments Sun Sep  6 13:50:36 2020"
-#&gt; [1] "have treatment plan Sun Sep  6 13:50:36 2020"</div><div class='input'><span class='kw'>dTrainZTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>treatmentsZ</span>, <span class='kw'>dTrainZ</span>)
-<span class='kw'>dTestZTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>treatmentsZ</span>, <span class='kw'>dTestZ</span>)
+<span class='va'>dTrainZ</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'a'</span>,<span class='st'>'b'</span>,<span class='st'>'b'</span>,<span class='cn'>NA</span>,<span class='st'>'e'</span>,<span class='st'>'e'</span><span class='op'>)</span>,
+    z<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>,<span class='cn'>NA</span>,<span class='fl'>9</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>dTestZ</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'a'</span>,<span class='st'>'x'</span>,<span class='st'>'c'</span>,<span class='cn'>NA</span><span class='op'>)</span>,
+    z<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='cn'>NA</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>treatmentsZ</span> <span class='op'>=</span> <span class='fu'>designTreatmentsZ</span><span class='op'>(</span><span class='va'>dTrainZ</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>dTrainZ</span><span class='op'>)</span>,
+  rareCount<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:51:30 2021"
+#&gt; [1] "designing treatments Wed Apr 21 09:51:30 2021"
+#&gt; [1] " have initial level statistics Wed Apr 21 09:51:30 2021"
+#&gt; [1] " scoring treatments Wed Apr 21 09:51:30 2021"
+#&gt; [1] "have treatment plan Wed Apr 21 09:51:30 2021"</div><div class='input'><span class='va'>dTrainZTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span><span class='op'>(</span><span class='va'>treatmentsZ</span>, <span class='va'>dTrainZ</span><span class='op'>)</span>
+<span class='va'>dTestZTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span><span class='op'>(</span><span class='va'>treatmentsZ</span>, <span class='va'>dTestZ</span><span class='op'>)</span>
 
 </div></pre>
   </div>
@@ -289,7 +289,7 @@ Note: each column is processed independently of all others.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

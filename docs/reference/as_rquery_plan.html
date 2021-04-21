@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -162,7 +162,7 @@
     <p>Convert vtreatment plans into a sequence of rquery operations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as_rquery_plan</span>(<span class='kw'>treatmentplans</span>, <span class='kw'>...</span>, var_restriction = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>as_rquery_plan</span><span class='op'>(</span><span class='va'>treatmentplans</span>, <span class='va'>...</span>, var_restriction <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,44 +190,44 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>if</span>(<span class='fu'><a href='#base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"rquery"</span>, quietly = <span class='fl'>TRUE</span>)) {
-   <span class='kw'>dTrainC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(x= <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'b'</span> ,<span class='fl'>NA</span> , <span class='st'>'b'</span>),
-                         z= <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>NA</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>6</span>),
-                         y= <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>FALSE</span>, <span class='fl'>FALSE</span>, <span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>, <span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>),
-                         stringsAsFactors = <span class='fl'>FALSE</span>)
-   <span class='kw'>dTrainC</span><span class='op'>$</span><span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/seq.html'>seq_len</a></span>(<span class='fu'><a href='#base/nrow.html'>nrow</a></span>(<span class='kw'>dTrainC</span>))
-   <span class='kw'>treatmentsC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='designTreatmentsC.html'>designTreatmentsC</a></span>(<span class='kw'>dTrainC</span>, <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>"x"</span>, <span class='st'>"z"</span>), <span class='st'>'y'</span>, <span class='fl'>TRUE</span>)
-   <span class='fu'><a href='#base/print.html'>print</a></span>(<span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>treatmentsC</span>, <span class='kw'>dTrainC</span>))
-   <span class='kw'>rqplan</span> <span class='op'>&lt;-</span> <span class='fu'>as_rquery_plan</span>(<span class='fu'><a href='#base/list.html'>list</a></span>(<span class='kw'>treatmentsC</span>))
-   <span class='kw'>ops</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flatten_fn_list.html'>flatten_fn_list</a></span>(<span class='kw'>rquery</span>::<span class='fu'><a href='#rquery/local_td.html'>local_td</a></span>(<span class='kw'>dTrainC</span>), <span class='kw'>rqplan</span><span class='op'>$</span><span class='kw'>optree_generators</span>)
-   <span class='fu'><a href='#base/cat.html'>cat</a></span>(<span class='fu'><a href='#base/format.html'>format</a></span>(<span class='kw'>ops</span>))
-   <span class='co'>if</span>(<span class='fu'><a href='#base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"rqdatatable"</span>, quietly = <span class='fl'>TRUE</span>)) {
-      <span class='kw'>treated</span> <span class='op'>&lt;-</span> <span class='kw'>rqdatatable</span>::<span class='fu'><a href='https://winvector.github.io/rqdatatable//reference/ex_data_table.html'>ex_data_table</a></span>(<span class='kw'>ops</span>, tables = <span class='kw'>rqplan</span><span class='op'>$</span><span class='kw'>tables</span>)
-      <span class='fu'><a href='#base/print.html'>print</a></span>(<span class='kw'>treated</span>[])
-   }
-   <span class='co'>if</span>(<span class='fu'><a href='#base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"DBI"</span>, quietly = <span class='fl'>TRUE</span>) <span class='op'>&amp;&amp;</span>
-      <span class='fu'><a href='#base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"RSQLite"</span>, quietly = <span class='fl'>TRUE</span>)) {
-      <span class='kw'>db</span> <span class='op'>&lt;-</span> <span class='kw'>DBI</span>::<span class='fu'><a href='https://dbi.r-dbi.org/reference/dbConnect.html'>dbConnect</a></span>(<span class='kw'>RSQLite</span>::<span class='fu'><a href='https://rsqlite.r-dbi.org/reference/SQLite.html'>SQLite</a></span>(), <span class='st'>":memory:"</span>)
-      <span class='kw'>source_data</span> <span class='op'>&lt;-</span> <span class='kw'>rquery</span>::<span class='fu'><a href='#rquery/rq_copy_to.html'>rq_copy_to</a></span>(<span class='kw'>db</span>, <span class='st'>"dTrainC"</span>, <span class='kw'>dTrainC</span>,
-                               overwrite = <span class='fl'>TRUE</span>, temporary = <span class='fl'>TRUE</span>)
+<span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"rquery"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+   <span class='va'>dTrainC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'b'</span> ,<span class='cn'>NA</span> , <span class='st'>'b'</span><span class='op'>)</span>,
+                         z<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='cn'>NA</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>6</span><span class='op'>)</span>,
+                         y<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span><span class='op'>)</span>,
+                         stringsAsFactors <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+   <span class='va'>dTrainC</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>dTrainC</span><span class='op'>)</span><span class='op'>)</span>
+   <span class='va'>treatmentsC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='designTreatmentsC.html'>designTreatmentsC</a></span><span class='op'>(</span><span class='va'>dTrainC</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>, <span class='st'>"z"</span><span class='op'>)</span>, <span class='st'>'y'</span>, <span class='cn'>TRUE</span><span class='op'>)</span>
+   <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='prepare.html'>prepare</a></span><span class='op'>(</span><span class='va'>treatmentsC</span>, <span class='va'>dTrainC</span><span class='op'>)</span><span class='op'>)</span>
+   <span class='va'>rqplan</span> <span class='op'>&lt;-</span> <span class='fu'>as_rquery_plan</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>treatmentsC</span><span class='op'>)</span><span class='op'>)</span>
+   <span class='va'>ops</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flatten_fn_list.html'>flatten_fn_list</a></span><span class='op'>(</span><span class='fu'>rquery</span><span class='fu'>::</span><span class='fu'><a href='https://winvector.github.io/rquery/reference/local_td.html'>local_td</a></span><span class='op'>(</span><span class='va'>dTrainC</span><span class='op'>)</span>, <span class='va'>rqplan</span><span class='op'>$</span><span class='va'>optree_generators</span><span class='op'>)</span>
+   <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='va'>ops</span><span class='op'>)</span><span class='op'>)</span>
+   <span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"rqdatatable"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+      <span class='va'>treated</span> <span class='op'>&lt;-</span> <span class='fu'>rqdatatable</span><span class='fu'>::</span><span class='fu'><a href='https://winvector.github.io/rqdatatable//reference/ex_data_table.html'>ex_data_table</a></span><span class='op'>(</span><span class='va'>ops</span>, tables <span class='op'>=</span> <span class='va'>rqplan</span><span class='op'>$</span><span class='va'>tables</span><span class='op'>)</span>
+      <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>treated</span><span class='op'>[</span><span class='op'>]</span><span class='op'>)</span>
+   <span class='op'>}</span>
+   <span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"DBI"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>&amp;&amp;</span>
+      <span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"RSQLite"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+      <span class='va'>db</span> <span class='op'>&lt;-</span> <span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbConnect.html'>dbConnect</a></span><span class='op'>(</span><span class='fu'>RSQLite</span><span class='fu'>::</span><span class='fu'><a href='https://rsqlite.r-dbi.org/reference/SQLite.html'>SQLite</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>":memory:"</span><span class='op'>)</span>
+      <span class='va'>source_data</span> <span class='op'>&lt;-</span> <span class='fu'>rquery</span><span class='fu'>::</span><span class='fu'><a href='https://winvector.github.io/rquery/reference/rq_copy_to.html'>rq_copy_to</a></span><span class='op'>(</span><span class='va'>db</span>, <span class='st'>"dTrainC"</span>, <span class='va'>dTrainC</span>,
+                               overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>, temporary <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-      <span class='kw'>rest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rquery_prepare.html'>rquery_prepare</a></span>(<span class='kw'>db</span>, <span class='kw'>rqplan</span>, <span class='kw'>source_data</span>, <span class='st'>"dTreatedC"</span>, 
-                                  extracols = <span class='st'>"id"</span>)
-      <span class='kw'>resd</span> <span class='op'>&lt;-</span> <span class='kw'>DBI</span>::<span class='fu'><a href='https://dbi.r-dbi.org/reference/dbReadTable.html'>dbReadTable</a></span>(<span class='kw'>db</span>, <span class='kw'>rest</span><span class='op'>$</span><span class='kw'>table_name</span>)
-      <span class='fu'><a href='#base/print.html'>print</a></span>(<span class='kw'>resd</span>)
+      <span class='va'>rest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rquery_prepare.html'>rquery_prepare</a></span><span class='op'>(</span><span class='va'>db</span>, <span class='va'>rqplan</span>, <span class='va'>source_data</span>, <span class='st'>"dTreatedC"</span>, 
+                                  extracols <span class='op'>=</span> <span class='st'>"id"</span><span class='op'>)</span>
+      <span class='va'>resd</span> <span class='op'>&lt;-</span> <span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbReadTable.html'>dbReadTable</a></span><span class='op'>(</span><span class='va'>db</span>, <span class='va'>rest</span><span class='op'>$</span><span class='va'>table_name</span><span class='op'>)</span>
+      <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>resd</span><span class='op'>)</span>
 
-      <span class='kw'>rquery</span>::<span class='fu'><a href='#rquery/rq_remove_table.html'>rq_remove_table</a></span>(<span class='kw'>db</span>, <span class='kw'>source_data</span><span class='op'>$</span><span class='kw'>table_name</span>)
-      <span class='kw'>rquery</span>::<span class='fu'><a href='#rquery/rq_remove_table.html'>rq_remove_table</a></span>(<span class='kw'>db</span>, <span class='kw'>rest</span><span class='op'>$</span><span class='kw'>table_name</span>)
-      <span class='kw'>DBI</span>::<span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='kw'>db</span>)
-   }
-}
-</div><div class='output co'>#&gt; [1] "vtreat 1.6.1 inspecting inputs Sun Sep  6 13:50:31 2020"
-#&gt; [1] "designing treatments Sun Sep  6 13:50:31 2020"
-#&gt; [1] " have initial level statistics Sun Sep  6 13:50:31 2020"
-#&gt; [1] " scoring treatments Sun Sep  6 13:50:32 2020"
-#&gt; [1] "have treatment plan Sun Sep  6 13:50:32 2020"
-#&gt; [1] "rescoring complex variables Sun Sep  6 13:50:32 2020"
-#&gt; [1] "done rescoring complex variables Sun Sep  6 13:50:32 2020"</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='output co'>#&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
+      <span class='fu'>rquery</span><span class='fu'>::</span><span class='fu'><a href='https://winvector.github.io/rquery/reference/rq_remove_table.html'>rq_remove_table</a></span><span class='op'>(</span><span class='va'>db</span>, <span class='va'>source_data</span><span class='op'>$</span><span class='va'>table_name</span><span class='op'>)</span>
+      <span class='fu'>rquery</span><span class='fu'>::</span><span class='fu'><a href='https://winvector.github.io/rquery/reference/rq_remove_table.html'>rq_remove_table</a></span><span class='op'>(</span><span class='va'>db</span>, <span class='va'>rest</span><span class='op'>$</span><span class='va'>table_name</span><span class='op'>)</span>
+      <span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>db</span><span class='op'>)</span>
+   <span class='op'>}</span>
+<span class='op'>}</span>
+</div><div class='output co'>#&gt; [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:51:27 2021"
+#&gt; [1] "designing treatments Wed Apr 21 09:51:27 2021"
+#&gt; [1] " have initial level statistics Wed Apr 21 09:51:27 2021"
+#&gt; [1] " scoring treatments Wed Apr 21 09:51:27 2021"
+#&gt; [1] "have treatment plan Wed Apr 21 09:51:27 2021"
+#&gt; [1] "rescoring complex variables Wed Apr 21 09:51:27 2021"
+#&gt; [1] "done rescoring complex variables Wed Apr 21 09:51:27 2021"</div><div class='output co'>#&gt; <span class='warning'>Warning: possibly called prepare() on same data frame as designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></div><div class='output co'>#&gt;      x_catP     x_catB   z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b     y
 #&gt; 1 0.5000000 -0.6930972 1.0       0        0         1         0 FALSE
 #&gt; 2 0.5000000 -0.6930972 2.0       0        0         1         0 FALSE
 #&gt; 3 0.5000000 -0.6930972 3.6       1        0         1         0  TRUE
@@ -288,7 +288,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

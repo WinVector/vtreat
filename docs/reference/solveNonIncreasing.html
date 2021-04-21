@@ -75,7 +75,7 @@ y (by square-distance) as possible." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ y (by square-distance) as possible." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -168,7 +168,7 @@ constraints as x.  This vector is picked as close to
 y (by square-distance) as possible.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>solveNonIncreasing</span>(<span class='kw'>varName</span>, <span class='kw'>x</span>, <span class='kw'>y</span>, w = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>solveNonIncreasing</span><span class='op'>(</span><span class='va'>varName</span>, <span class='va'>x</span>, <span class='va'>y</span>, w <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -196,14 +196,14 @@ y (by square-distance) as possible.</p>
     <p>isotonicly adjusted y (non-decreasing)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Please see <a href='https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md'>https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md</a>.</p>
+    <p>Please see <a href='https://github.com/WinVector/vtreat/blob/main/extras/MonotoneCoder.md'>https://github.com/WinVector/vtreat/blob/main/extras/MonotoneCoder.md</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 
-<span class='co'>if</span>(<span class='fu'><a href='#base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"isotone"</span>, quietly = <span class='fl'>TRUE</span>)) {
-   <span class='fu'>solveNonIncreasing</span>(<span class='st'>'v'</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>1</span>))
-}
+<span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"isotone"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+   <span class='fu'>solveNonIncreasing</span><span class='op'>(</span><span class='st'>'v'</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; [1] 1.5 1.5 1.0</div><div class='input'>
 </div></pre>
   </div>
@@ -221,7 +221,7 @@ y (by square-distance) as possible.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -26,7 +26,7 @@ constraints as x.  This vector is picked as close to
 y (by square-distance) as possible.
 }
 \details{
-Please see \url{https://github.com/WinVector/vtreat/blob/master/extras/MonotoneCoder.md}.
+Please see \url{https://github.com/WinVector/vtreat/blob/main/extras/MonotoneCoder.md}.
 }
 \examples{
 

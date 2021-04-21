@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,13 +109,13 @@
 
       
 
-      </header><script src="SavingTreamentPlans_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="SavingTreamentPlans_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Saving Treatment Plans</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2020-09-06</h4>
+            <h4 class="date">2021-04-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/SavingTreamentPlans.Rmd"><code>vignettes/SavingTreamentPlans.Rmd</code></a></small>
       <div class="hidden name"><code>SavingTreamentPlans.Rmd</code></div>
@@ -127,74 +127,74 @@
 <p>You can save and load treatment plans. Note: treatments plans are intended to be used with the version of <code>vtreat</code> they were constructed with (though we try to make plans forward-compatible). So it is good idea to have procedures to re-build treatment plans.</p>
 <p>The easiest way to save <code>vtreat</code> treatment plans is to use <code>R</code>’s built in <code>saveRDS</code> function.</p>
 <p>To save in a file:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="#base/library.html">library</a></span>(<span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: wrapr</code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">dTrainC</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="fl">NA</span>,<span class="fl">NA</span>),
-                      z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">NA</span>,<span class="fl">6</span>,<span class="fl">NA</span>),
-                      y=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">FALSE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">FALSE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>,<span class="fl">TRUE</span>))
-<span class="kw">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span>(<span class="kw">dTrainC</span>, <span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainC</span>),
-                                 <span class="st">'y'</span>, <span class="fl">TRUE</span>,
-                                 verbose= <span class="fl">FALSE</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dTrainC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'b'</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
+                      z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="cn">NA</span>,<span class="fl">6</span>,<span class="cn">NA</span><span class="op">)</span>,
+                      y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="va">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrainC</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainC</span><span class="op">)</span>,
+                                 <span class="st">'y'</span>, <span class="cn">TRUE</span>,
+                                 verbose<span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="kw">fileName</span> <span class="op">=</span> <span class="fu"><a href="#base/paste.html">paste0</a></span>(<span class="fu"><a href="#base/tempfile.html">tempfile</a></span>(<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'vtreatPlan'</span>)), <span class="st">'.RDS'</span>)
-<span class="fu"><a href="#base/readRDS.html">saveRDS</a></span>(<span class="kw">treatmentsC</span>,<span class="kw">fileName</span>)
-<span class="fu"><a href="#base/rm.html">rm</a></span>(list=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'treatmentsC'</span>))</pre></div>
+<span class="va">fileName</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'vtreatPlan'</span><span class="op">)</span><span class="op">)</span>, <span class="st">'.RDS'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">treatmentsC</span>,<span class="va">fileName</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'treatmentsC'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>And then to restore and use.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="#base/library.html">library</a></span>(<span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span>)
-<span class="kw">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/readRDS.html">readRDS</a></span>(<span class="kw">fileName</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span><span class="op">)</span>
+<span class="va">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">fileName</span><span class="op">)</span>
 
-<span class="kw">dTestC</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="fl">NA</span>),z=<span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">10</span>,<span class="fl">20</span>,<span class="fl">30</span>,<span class="fl">NA</span>))
-<span class="kw">dTestCTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="kw">treatmentsC</span>, <span class="kw">dTestC</span>, pruneSig= <span class="fu"><a href="#base/c.html">c</a></span>())
+<span class="va">dTestC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="cn">NA</span><span class="op">)</span>,z<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span>,<span class="fl">30</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dTestCTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatmentsC</span>, <span class="va">dTestC</span>, pruneSig<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># clean up</span>
-<span class="fu"><a href="#base/unlink.html">unlink</a></span>(<span class="kw">fileName</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span><span class="op">(</span><span class="va">fileName</span><span class="op">)</span></code></pre></div>
 <p>Treatment plans can also be stored as binary blobs in databases. Using ideas from <a href="https://jfaganuk.github.io/2015/01/12/storing-r-objects-in-sqlite-tables/">here</a> gives us the following through the <code>DBI</code> interface.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">con</span> <span class="op">&lt;-</span> <span class="kw">NULL</span>
-<span class="co">if</span> (<span class="fu"><a href="#base/ns-load.html">requireNamespace</a></span>(<span class="st">'RSQLite'</span>, quietly = <span class="fl">TRUE</span>) <span class="op">&amp;&amp;</span>
-    <span class="fu"><a href="#base/ns-load.html">requireNamespace</a></span>(<span class="st">'DBI'</span>, quietly = <span class="fl">TRUE</span>)) {
-  <span class="fu"><a href="#base/library.html">library</a></span>(<span class="st"><a href="https://rsqlite.r-dbi.org">"RSQLite"</a></span>)
-  <span class="kw">con</span> <span class="op">&lt;-</span> <span class="fu">dbConnect</span>(drv=<span class="fu"><a href="https://rsqlite.r-dbi.org/reference/SQLite.html">SQLite</a></span>(), dbname=<span class="st">":memory:"</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">con</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+<span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">'RSQLite'</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">'DBI'</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://rsqlite.r-dbi.org">"RSQLite"</a></span><span class="op">)</span>
+  <span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span>drv<span class="op">=</span><span class="fu"><a href="https://rsqlite.r-dbi.org/reference/SQLite.html">SQLite</a></span><span class="op">(</span><span class="op">)</span>, dbname<span class="op">=</span><span class="st">":memory:"</span><span class="op">)</span>
   <span class="co"># create table</span>
-  <span class="fu">dbExecute</span>(<span class="kw">con</span>, <span class="st">'create table if not exists treatments 
+  <span class="fu">dbExecute</span><span class="op">(</span><span class="va">con</span>, <span class="st">'create table if not exists treatments 
                  (key varchar(200) primary key, 
-                  treatment blob)'</span>)
+                  treatment blob)'</span><span class="op">)</span>
   <span class="co"># wrap data</span>
-  <span class="kw">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(
-    key=<span class="st">'treatmentsC'</span>, 
-    treatment = <span class="fu"><a href="#base/AsIs.html">I</a></span>(<span class="fu"><a href="#base/list.html">list</a></span>(<span class="fu"><a href="#base/serialize.html">serialize</a></span>(<span class="kw">treatmentsC</span>, <span class="kw">NULL</span>))))
+  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+    key<span class="op">=</span><span class="st">'treatmentsC'</span>, 
+    treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/serialize.html">serialize</a></span><span class="op">(</span><span class="va">treatmentsC</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
   <span class="co"># Clear any previous version</span>
-  <span class="fu">dbExecute</span>(<span class="kw">con</span>, 
-               <span class="st">"delete from treatments where key='treatmentsC'"</span>)
+  <span class="fu">dbExecute</span><span class="op">(</span><span class="va">con</span>, 
+               <span class="st">"delete from treatments where key='treatmentsC'"</span><span class="op">)</span>
   <span class="co"># insert treatmentplan</span>
   <span class="co"># depreciated</span>
   <span class="co"># dbGetPreparedQuery(con,</span>
   <span class="co">#                    'insert into treatments (key, treatment) values (:key, :treatment)',</span>
   <span class="co">#                    bind.data=df)</span>
-  <span class="fu">dbExecute</span>(<span class="kw">con</span>, 
+  <span class="fu">dbExecute</span><span class="op">(</span><span class="va">con</span>, 
              <span class="st">'insert into treatments (key, treatment) values (:key, :treatment)'</span>,
-             params=<span class="kw">df</span>)
-  <span class="kw">constr</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/paste.html">paste</a></span>(<span class="fu"><a href="#utils/capture.output.html">capture.output</a></span>(<span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">con</span>)),collapse=<span class="st">'\n'</span>)
-  <span class="fu"><a href="#base/paste.html">paste</a></span>(<span class="st">'saved to db: '</span>, <span class="kw">constr</span>)
-}</pre></div>
+             params<span class="op">=</span><span class="va">df</span><span class="op">)</span>
+  <span class="va">constr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html">capture.output</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span><span class="op">)</span>,collapse<span class="op">=</span><span class="st">'\n'</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'saved to db: '</span>, <span class="va">constr</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <pre><code>## [1] "saved to db:  &lt;SQLiteConnection&gt;\n  Path: :memory:\n  Extensions: TRUE"</code></pre>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="#base/rm.html">rm</a></span>(list= <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'treatmentsC'</span>, <span class="st">'dTestCTreated'</span>))</pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'treatmentsC'</span>, <span class="st">'dTestCTreated'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>And we can read the treatment back in as follows.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="co">if</span>(<span class="op">!</span><span class="fu"><a href="#base/NULL.html">is.null</a></span>(<span class="kw">con</span>)) {
-  <span class="kw">treatmentsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/lapply.html">lapply</a></span>(
-    <span class="fu">dbGetQuery</span>(<span class="kw">con</span>, 
-               <span class="st">"select * from treatments where key='treatmentsC'"</span>)<span class="op">$</span><span class="kw">treatment</span>,
-    <span class="kw">unserialize</span>)
-  <span class="kw">treatmentsC</span> <span class="op">&lt;-</span> <span class="kw">treatmentsList</span>[[<span class="fl">1</span>]]
-  <span class="fu">dbDisconnect</span>(<span class="kw">con</span>)
-  <span class="kw">dTestCTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span>(<span class="kw">treatmentsC</span>, <span class="kw">dTestC</span>, pruneSig= <span class="fu"><a href="#base/c.html">c</a></span>())
-  <span class="fu"><a href="#base/print.html">print</a></span>(<span class="kw">dTestCTreated</span>)
-}</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">treatmentsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+    <span class="fu">dbGetQuery</span><span class="op">(</span><span class="va">con</span>, 
+               <span class="st">"select * from treatments where key='treatmentsC'"</span><span class="op">)</span><span class="op">$</span><span class="va">treatment</span>,
+    <span class="va">unserialize</span><span class="op">)</span>
+  <span class="va">treatmentsC</span> <span class="op">&lt;-</span> <span class="va">treatmentsList</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+  <span class="fu">dbDisconnect</span><span class="op">(</span><span class="va">con</span><span class="op">)</span>
+  <span class="va">dTestCTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatmentsC</span>, <span class="va">dTestC</span>, pruneSig<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">dTestCTreated</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <pre><code>##       x_catP     x_catB    z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b
 ## 1 0.42857143 -0.9807709 10.0       0        0         1         0
 ## 2 0.28571429 -0.2876737 20.0       0        0         0         1
@@ -215,7 +215,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

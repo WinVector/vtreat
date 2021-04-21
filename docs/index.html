@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -220,12 +220,12 @@
 <p>Examples of current best practice using <code>vtreat</code> (variable coding, train, test split) can be found <a href="https://winvector.github.io/vtreat/articles/vtreatOverfit.html">here</a> and <a href="https://winvector.github.io/KDD2009/KDD2009RF.html">here</a>.</p>
 <p>Some small examples:</p>
 <p>We attach our packages.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="#base/library.html">library</a></span>(<span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span><span class="op">)</span>
  <span class="co">#  Loading required package: wrapr</span>
-<span class="fu"><a href="#utils/packageDescription.html">packageVersion</a></span>(<span class="st">"vtreat"</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"vtreat"</span><span class="op">)</span>
  <span class="co">#  [1] '1.6.1'</span>
-<span class="fu"><a href="#utils/citation.html">citation</a></span>(<span class="st">'vtreat'</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span><span class="st">'vtreat'</span><span class="op">)</span>
  <span class="co">#  </span>
  <span class="co">#  To cite package 'vtreat' in publications use:</span>
  <span class="co">#  </span>
@@ -241,39 +241,39 @@
  <span class="co">#      author = {John Mount and Nina Zumel},</span>
  <span class="co">#      year = {2020},</span>
  <span class="co">#      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},</span>
- <span class="co">#    }</span></pre></div>
+ <span class="co">#    }</span></code></pre></div>
 <p>A small categorical example.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># categorical example</span>
-<span class="fu"><a href="#base/Random.html">set.seed</a></span>(<span class="fl">23525</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># categorical example</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23525</span><span class="op">)</span>
 
 <span class="co"># we set up our raw training and application data</span>
-<span class="kw">dTrainC</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(
-  x = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="fl">NA</span>, <span class="fl">NA</span>),
-  z = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">NA</span>, <span class="fl">6</span>, <span class="fl">NA</span>),
-  y = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">FALSE</span>, <span class="fl">FALSE</span>, <span class="fl">TRUE</span>, <span class="fl">FALSE</span>, <span class="fl">TRUE</span>, <span class="fl">TRUE</span>, <span class="fl">TRUE</span>))
+<span class="va">dTrainC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,
+  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="cn">NA</span>, <span class="fl">6</span>, <span class="cn">NA</span><span class="op">)</span>,
+  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">dTestC</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(
-  x = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="fl">NA</span>), 
-  z = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">NA</span>))
+<span class="va">dTestC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="cn">NA</span><span class="op">)</span>, 
+  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># we perform a vtreat cross frame experiment</span>
 <span class="co"># and unpack the results into treatmentsC</span>
 <span class="co"># and dTrainCTreated</span>
-<span class="kw">unpack</span>[
-  treatmentsC = <span class="kw">treatments</span>,
-  dTrainCTreated = <span class="kw">crossFrame</span>
-  ] <span class="op">&lt;-</span> <span class="fu"><a href="reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span>(
-  dframe = <span class="kw">dTrainC</span>,
-  varlist = <span class="fu"><a href="#base/sets.html">setdiff</a></span>(<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainC</span>), <span class="st">'y'</span>),
-  outcomename = <span class="st">'y'</span>,
-  outcometarget = <span class="fl">TRUE</span>,
-  verbose = <span class="fl">FALSE</span>)
+<span class="va">unpack</span><span class="op">[</span>
+  treatmentsC <span class="op">=</span> <span class="va">treatments</span>,
+  dTrainCTreated <span class="op">=</span> <span class="va">crossFrame</span>
+  <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span><span class="op">(</span>
+  dframe <span class="op">=</span> <span class="va">dTrainC</span>,
+  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainC</span><span class="op">)</span>, <span class="st">'y'</span><span class="op">)</span>,
+  outcomename <span class="op">=</span> <span class="st">'y'</span>,
+  outcometarget <span class="op">=</span> <span class="cn">TRUE</span>,
+  verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># the treatments include a score frame relating new</span>
 <span class="co"># derived variables to original columns</span>
-<span class="kw">treatmentsC</span><span class="op">$</span><span class="kw">scoreFrame</span>[, <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>, <span class="st">'recommended'</span>)] <span class="op">%.&gt;%</span>
-  <span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">.</span>)</pre></div>
+<span class="va">treatmentsC</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>, <span class="st">'recommended'</span><span class="op">)</span><span class="op">]</span> <span class="op">%.&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">origName</th>
@@ -350,16 +350,16 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># the treated frame is a "cross frame" which</span>
 <span class="co"># is a transform of the training data built </span>
 <span class="co"># as if the treatment were learned on a different</span>
 <span class="co"># disjoint training set to avoid nested model</span>
 <span class="co"># bias and over-fit.</span>
-<span class="kw">dTrainCTreated</span> <span class="op">%.&gt;%</span>
-  <span class="fu"><a href="#utils/head.html">head</a></span>(<span class="kw">.</span>) <span class="op">%.&gt;%</span>
-  <span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">.</span>)</pre></div>
+<span class="va">dTrainCTreated</span> <span class="op">%.&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">%.&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x_catP</th>
@@ -434,15 +434,15 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Any future application data is prepared with</span>
 <span class="co"># the prepare method.</span>
-<span class="kw">dTestCTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span>(<span class="kw">treatmentsC</span>, <span class="kw">dTestC</span>, pruneSig=<span class="kw">NULL</span>)
+<span class="va">dTestCTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatmentsC</span>, <span class="va">dTestC</span>, pruneSig<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
-<span class="kw">dTestCTreated</span> <span class="op">%.&gt;%</span>
-  <span class="fu"><a href="#utils/head.html">head</a></span>(<span class="kw">.</span>) <span class="op">%.&gt;%</span>
-  <span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">.</span>)</pre></div>
+<span class="va">dTestCTreated</span> <span class="op">%.&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">%.&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x_catP</th>
@@ -493,36 +493,36 @@
 </tbody>
 </table>
 <p>A small numeric example.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># numeric example</span>
-<span class="fu"><a href="#base/Random.html">set.seed</a></span>(<span class="fl">23525</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># numeric example</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23525</span><span class="op">)</span>
 
 <span class="co"># we set up our raw training and application data</span>
-<span class="kw">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(
-  x = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="fl">NA</span>, <span class="fl">NA</span>),
-  z = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">NA</span>, <span class="fl">7</span>, <span class="fl">NA</span>), 
-  y = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>))
+<span class="va">dTrainN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'b'</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,
+  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="cn">NA</span>, <span class="fl">7</span>, <span class="cn">NA</span><span class="op">)</span>, 
+  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">dTestN</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(
-  x = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="fl">NA</span>), 
-  z = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">NA</span>))
+<span class="va">dTestN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="cn">NA</span><span class="op">)</span>, 
+  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># we perform a vtreat cross frame experiment</span>
 <span class="co"># and unpack the results into treatmentsN</span>
 <span class="co"># and dTrainNTreated</span>
-<span class="kw">unpack</span>[
-  treatmentsN = <span class="kw">treatments</span>,
-  dTrainNTreated = <span class="kw">crossFrame</span>
-  ] <span class="op">&lt;-</span> <span class="fu"><a href="reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(
-  dframe = <span class="kw">dTrainN</span>,
-  varlist = <span class="fu"><a href="#base/sets.html">setdiff</a></span>(<span class="fu"><a href="#base/colnames.html">colnames</a></span>(<span class="kw">dTrainN</span>), <span class="st">'y'</span>),
-  outcomename = <span class="st">'y'</span>,
-  verbose = <span class="fl">FALSE</span>)
+<span class="va">unpack</span><span class="op">[</span>
+  treatmentsN <span class="op">=</span> <span class="va">treatments</span>,
+  dTrainNTreated <span class="op">=</span> <span class="va">crossFrame</span>
+  <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span><span class="op">(</span>
+  dframe <span class="op">=</span> <span class="va">dTrainN</span>,
+  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainN</span><span class="op">)</span>, <span class="st">'y'</span><span class="op">)</span>,
+  outcomename <span class="op">=</span> <span class="st">'y'</span>,
+  verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># the treatments include a score frame relating new</span>
 <span class="co"># derived variables to original columns</span>
-<span class="kw">treatmentsN</span><span class="op">$</span><span class="kw">scoreFrame</span>[, <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span>)] <span class="op">%.&gt;%</span>
-  <span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">.</span>)</pre></div>
+<span class="va">treatmentsN</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'origName'</span>, <span class="st">'varName'</span>, <span class="st">'code'</span>, <span class="st">'rsq'</span>, <span class="st">'sig'</span>, <span class="st">'extraModelDegrees'</span><span class="op">)</span><span class="op">]</span> <span class="op">%.&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">origName</th>
@@ -599,16 +599,16 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># the treated frame is a "cross frame" which</span>
 <span class="co"># is a transform of the training data built </span>
 <span class="co"># as if the treatment were learned on a different</span>
 <span class="co"># disjoint training set to avoid nested model</span>
 <span class="co"># bias and over-fit.</span>
-<span class="kw">dTrainNTreated</span> <span class="op">%.&gt;%</span>
-  <span class="fu"><a href="#utils/head.html">head</a></span>(<span class="kw">.</span>) <span class="op">%.&gt;%</span>
-  <span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">.</span>)</pre></div>
+<span class="va">dTrainNTreated</span> <span class="op">%.&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">%.&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x_catN</th>
@@ -690,15 +690,15 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Any future application data is prepared with</span>
 <span class="co"># the prepare method.</span>
-<span class="kw">dTestNTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span>(<span class="kw">treatmentsN</span>, <span class="kw">dTestN</span>, pruneSig=<span class="kw">NULL</span>)
+<span class="va">dTestNTreated</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatmentsN</span>, <span class="va">dTestN</span>, pruneSig<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
-<span class="kw">dTestNTreated</span> <span class="op">%.&gt;%</span>
-  <span class="fu"><a href="#utils/head.html">head</a></span>(<span class="kw">.</span>) <span class="op">%.&gt;%</span>
-  <span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">.</span>)</pre></div>
+<span class="va">dTestNTreated</span> <span class="op">%.&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">%.&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x_catP</th>
@@ -766,8 +766,8 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>To install, from inside <code>R</code> please run:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="#utils/install.packages.html">install.packages</a></span>(<span class="st">"vtreat"</span>)</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"vtreat"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="note" class="section level2">
 <h2 class="hasAnchor">
@@ -831,7 +831,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

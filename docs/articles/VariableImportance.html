@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,13 +109,13 @@
 
       
 
-      </header><script src="VariableImportance_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="VariableImportance_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat Variable Importance</h1>
                         <h4 class="author">John Mount</h4>
             
-            <h4 class="date">2020-09-06</h4>
+            <h4 class="date">2021-04-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/VariableImportance.Rmd"><code>vignettes/VariableImportance.Rmd</code></a></small>
       <div class="hidden name"><code>VariableImportance.Rmd</code></div>
@@ -131,27 +131,27 @@
 <p>To help with this <code>vtreat</code> incorporates a per-variable linear significance report. This report shows how useful each variable is taken alone in a linear or generalized linear model (some details can be found <a href="https://arxiv.org/abs/1611.09477">here</a>). However, this sort of calculation was optimized for speed, not discovery power.</p>
 <p><code>vtreat</code> now includes a direct variable valuation system that works very well with complex numeric relationships. It is a function called <a href="https://winvector.github.io/vtreat/reference/value_variables_N.html"><code>vtreat::value_variables_N()</code></a> for numeric or regression problems and <a href="https://winvector.github.io/vtreat/reference/value_variables_C.html"><code>vtreat::value_variables_C()</code></a> for binomial classification problems. It works by fitting two transformed copies of each numeric variable to the outcome. One transform is a low frequency transform realized as an optimal <code>k</code>-segment linear model for a moderate choice of <code>k</code>. The other fit is a high-frequency trasnform realized as a <code>k</code>-nearest neighbor average for moderate choice of <code>k</code>. Some of the methodology is shown <a href="https://github.com/WinVector/vtreat/blob/master/extras/SegFitter.md">here</a>.</p>
 <p>We recommend using <code>vtreat::value_variables_*()</code> as an initial variable screen.</p>
-<p>Let’s demonstrate this using the data from the segment fitter example. In our case the value to be predicted (“<code>y</code>”) is a noisy copy of <code><a href="#base/Trig.html">sin(x)</a></code>. Let’s set up our example data:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="#base/Random.html">set.seed</a></span>(<span class="fl">1999</span>)
-<span class="kw">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/data.frame.html">data.frame</a></span>(x = <span class="fu"><a href="#base/seq.html">seq</a></span>(<span class="fl">0</span>, <span class="fl">15</span>, by = <span class="fl">0.25</span>))
-<span class="kw">d</span><span class="op">$</span><span class="kw">y_ideal</span> <span class="op">&lt;-</span> <span class="fu"><a href="#base/Trig.html">sin</a></span>(<span class="kw">d</span><span class="op">$</span><span class="kw">x</span>)
-<span class="kw">d</span><span class="op">$</span><span class="kw">x_noise</span> <span class="op">&lt;-</span> <span class="kw">d</span><span class="op">$</span><span class="kw">x</span>[<span class="fu"><a href="#base/sample.html">sample.int</a></span>(<span class="fu"><a href="#base/nrow.html">nrow</a></span>(<span class="kw">d</span>), <span class="fu"><a href="#base/nrow.html">nrow</a></span>(<span class="kw">d</span>), replace = <span class="fl">FALSE</span>)]
-<span class="kw">d</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="kw">d</span><span class="op">$</span><span class="kw">y_ideal</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span><span class="fu"><a href="#stats/Normal.html">rnorm</a></span>(<span class="fu"><a href="#base/nrow.html">nrow</a></span>(<span class="kw">d</span>))
-<span class="fu"><a href="#base/dim.html">dim</a></span>(<span class="kw">d</span>)</pre></div>
+<p>Let’s demonstrate this using the data from the segment fitter example. In our case the value to be predicted (“<code>y</code>”) is a noisy copy of <code><a href="https://rdrr.io/r/base/Trig.html">sin(x)</a></code>. Let’s set up our example data:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1999</span><span class="op">)</span>
+<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>
+<span class="va">d</span><span class="op">$</span><span class="va">y_ideal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+<span class="va">d</span><span class="op">$</span><span class="va">x_noise</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample.int</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span>
+<span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">$</span><span class="va">y_ideal</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 61  4</code></pre>
 <p>Now a simple linear valuation of the the variables can be produced as follows.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">cfe</span> <span class="op">&lt;-</span> <span class="kw">vtreat</span>::<span class="fu"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span>(
-  <span class="kw">d</span>, 
-  varlist = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>), 
-  outcomename = <span class="st">"y"</span>)</pre></div>
-<pre><code>## [1] "vtreat 1.6.1 start initial treatment design Sun Sep  6 13:50:48 2020"
-## [1] " start cross frame work Sun Sep  6 13:50:48 2020"
-## [1] " vtreat::mkCrossFrameNExperiment done Sun Sep  6 13:50:48 2020"</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">sf</span> <span class="op">&lt;-</span> <span class="kw">cfe</span><span class="op">$</span><span class="kw">treatments</span><span class="op">$</span><span class="kw">scoreFrame</span>
-<span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">sf</span>[, <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cfe</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span><span class="op">(</span>
+  <span class="va">d</span>, 
+  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"x_noise"</span><span class="op">)</span>, 
+  outcomename <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "vtreat 1.6.3 start initial treatment design Wed Apr 21 09:51:43 2021"
+## [1] " start cross frame work Wed Apr 21 09:51:43 2021"
+## [1] " vtreat::mkCrossFrameNExperiment done Wed Apr 21 09:51:43 2021"</code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sf</span> <span class="op">&lt;-</span> <span class="va">cfe</span><span class="op">$</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">sf</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
@@ -173,13 +173,13 @@
 </table>
 <p>Notice the signal carrying variable did not score better (having a larger <code>r</code>-squared and a smaller (better) significance value) than the noise variable (that is unrelated to the outcome). This is because the relation between <code>x</code> and <code>y</code> is not linear.</p>
 <p>Now let’s try <code><a href="../reference/value_variables_N.html">vtreat::value_variables_N()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">vf</span> <span class="op">=</span> <span class="kw">vtreat</span>::<span class="fu"><a href="../reference/value_variables_N.html">value_variables_N</a></span>(
-  <span class="kw">d</span>, 
-  varlist = <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"x_noise"</span>),
-  outcomename = <span class="st">"y"</span>)
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">vf</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/value_variables_N.html">value_variables_N</a></span><span class="op">(</span>
+  <span class="va">d</span>, 
+  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"x_noise"</span><span class="op">)</span>,
+  outcomename <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span>
 
-<span class="kw">knitr</span>::<span class="fu"><a href="#knitr/kable.html">kable</a></span>(<span class="kw">vf</span>[, <span class="fu"><a href="#base/c.html">c</a></span>(<span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>)])</pre></div>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">vf</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">var</th>
@@ -224,7 +224,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

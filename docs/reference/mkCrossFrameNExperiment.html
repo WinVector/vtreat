@@ -76,7 +76,7 @@ into calibration, training, test sets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ into calibration, training, test sets." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -170,30 +170,30 @@ The goal is to try to and supply a method of breaking nested model bias other th
 into calibration, training, test sets.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mkCrossFrameNExperiment</span>(
-  <span class='kw'>dframe</span>,
-  <span class='kw'>varlist</span>,
-  <span class='kw'>outcomename</span>,
-  <span class='kw'>...</span>,
-  weights = <span class='fu'><a href='#base/c.html'>c</a></span>(),
-  minFraction = <span class='fl'>0.02</span>,
-  smFactor = <span class='fl'>0</span>,
-  rareCount = <span class='fl'>0</span>,
-  rareSig = <span class='fl'>1</span>,
-  collarProb = <span class='fl'>0</span>,
-  codeRestriction = <span class='kw'>NULL</span>,
-  customCoders = <span class='kw'>NULL</span>,
-  scale = <span class='fl'>FALSE</span>,
-  doCollar = <span class='fl'>FALSE</span>,
-  splitFunction = <span class='kw'>NULL</span>,
-  ncross = <span class='fl'>3</span>,
-  forceSplit = <span class='fl'>FALSE</span>,
-  verbose = <span class='fl'>TRUE</span>,
-  parallelCluster = <span class='kw'>NULL</span>,
-  use_parallel = <span class='fl'>TRUE</span>,
-  missingness_imputation = <span class='kw'>NULL</span>,
-  imputation_map = <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>mkCrossFrameNExperiment</span><span class='op'>(</span>
+  <span class='va'>dframe</span>,
+  <span class='va'>varlist</span>,
+  <span class='va'>outcomename</span>,
+  <span class='va'>...</span>,
+  weights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  minFraction <span class='op'>=</span> <span class='fl'>0.02</span>,
+  smFactor <span class='op'>=</span> <span class='fl'>0</span>,
+  rareCount <span class='op'>=</span> <span class='fl'>0</span>,
+  rareSig <span class='op'>=</span> <span class='fl'>1</span>,
+  collarProb <span class='op'>=</span> <span class='fl'>0</span>,
+  codeRestriction <span class='op'>=</span> <span class='cn'>NULL</span>,
+  customCoders <span class='op'>=</span> <span class='cn'>NULL</span>,
+  scale <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  doCollar <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  splitFunction <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ncross <span class='op'>=</span> <span class='fl'>3</span>,
+  forceSplit <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  parallelCluster <span class='op'>=</span> <span class='cn'>NULL</span>,
+  use_parallel <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  missingness_imputation <span class='op'>=</span> <span class='cn'>NULL</span>,
+  imputation_map <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -244,7 +244,7 @@ into calibration, training, test sets.</p>
     </tr>
     <tr>
       <th>customCoders</th>
-      <td><p>map from code names to custom categorical variable encoding functions (please see <a href='https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md'>https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md</a>).</p></td>
+      <td><p>map from code names to custom categorical variable encoding functions (please see <a href='https://github.com/WinVector/vtreat/blob/main/extras/CustomLevelCoders.md'>https://github.com/WinVector/vtreat/blob/main/extras/CustomLevelCoders.md</a>).</p></td>
     </tr>
     <tr>
       <th>scale</th>
@@ -298,34 +298,34 @@ into calibration, training, test sets.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># numeric example</span>
-<span class='fu'><a href='#base/Random.html'>set.seed</a></span>(<span class='fl'>23525</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>23525</span><span class='op'>)</span>
 
 <span class='co'># we set up our raw training and application data</span>
-<span class='kw'>dTrainN</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(
-  x = <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'b'</span>, <span class='st'>'b'</span>, <span class='fl'>NA</span>, <span class='fl'>NA</span>),
-  z = <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>NA</span>, <span class='fl'>7</span>, <span class='fl'>NA</span>), 
-  y = <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>))
+<span class='va'>dTrainN</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'a'</span>, <span class='st'>'b'</span>, <span class='st'>'b'</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
+  z <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='cn'>NA</span>, <span class='fl'>7</span>, <span class='cn'>NA</span><span class='op'>)</span>, 
+  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='kw'>dTestN</span> <span class='op'>&lt;-</span> <span class='fu'><a href='#base/data.frame.html'>data.frame</a></span>(
-  x = <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'a'</span>, <span class='st'>'b'</span>, <span class='st'>'c'</span>, <span class='fl'>NA</span>), 
-  z = <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>20</span>, <span class='fl'>30</span>, <span class='fl'>NA</span>))
+<span class='va'>dTestN</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'a'</span>, <span class='st'>'b'</span>, <span class='st'>'c'</span>, <span class='cn'>NA</span><span class='op'>)</span>, 
+  z <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>20</span>, <span class='fl'>30</span>, <span class='cn'>NA</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># we perform a vtreat cross frame experiment</span>
 <span class='co'># and unpack the results into treatmentsN</span>
 <span class='co'># and dTrainNTreated</span>
-<span class='kw'>unpack</span>[
-  treatmentsN = <span class='kw'>treatments</span>,
-  dTrainNTreated = <span class='kw'>crossFrame</span>
-  ] <span class='op'>&lt;-</span> <span class='fu'>mkCrossFrameNExperiment</span>(
-    dframe = <span class='kw'>dTrainN</span>,
-    varlist = <span class='fu'><a href='#base/sets.html'>setdiff</a></span>(<span class='fu'><a href='#base/colnames.html'>colnames</a></span>(<span class='kw'>dTrainN</span>), <span class='st'>'y'</span>),
-    outcomename = <span class='st'>'y'</span>,
-    verbose = <span class='fl'>FALSE</span>)
+<span class='va'>unpack</span><span class='op'>[</span>
+  treatmentsN <span class='op'>=</span> <span class='va'>treatments</span>,
+  dTrainNTreated <span class='op'>=</span> <span class='va'>crossFrame</span>
+  <span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'>mkCrossFrameNExperiment</span><span class='op'>(</span>
+    dframe <span class='op'>=</span> <span class='va'>dTrainN</span>,
+    varlist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sets.html'>setdiff</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>dTrainN</span><span class='op'>)</span>, <span class='st'>'y'</span><span class='op'>)</span>,
+    outcomename <span class='op'>=</span> <span class='st'>'y'</span>,
+    verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># the treatments include a score frame relating new</span>
 <span class='co'># derived variables to original columns</span>
-<span class='kw'>treatmentsN</span><span class='op'>$</span><span class='kw'>scoreFrame</span>[, <span class='fu'><a href='#base/c.html'>c</a></span>(<span class='st'>'origName'</span>, <span class='st'>'varName'</span>, <span class='st'>'code'</span>, <span class='st'>'rsq'</span>, <span class='st'>'sig'</span>, <span class='st'>'extraModelDegrees'</span>)] <span class='op'>%.&gt;%</span>
-  <span class='fu'><a href='#base/print.html'>print</a></span>(<span class='kw'>.</span>)
+<span class='va'>treatmentsN</span><span class='op'>$</span><span class='va'>scoreFrame</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'origName'</span>, <span class='st'>'varName'</span>, <span class='st'>'code'</span>, <span class='st'>'rsq'</span>, <span class='st'>'sig'</span>, <span class='st'>'extraModelDegrees'</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   origName   varName  code          rsq        sig extraModelDegrees
 #&gt; 1        x    x_catP  catP 4.047085e-01 0.08994062                 2
 #&gt; 2        x    x_catN  catN 2.822908e-01 0.17539581                 2
@@ -340,9 +340,9 @@ into calibration, training, test sets.</p>
 <span class='co'># as if the treatment were learned on a different</span>
 <span class='co'># disjoint training set to avoid nested model</span>
 <span class='co'># bias and over-fit.</span>
-<span class='kw'>dTrainNTreated</span> <span class='op'>%.&gt;%</span>
-  <span class='fu'><a href='#utils/head.html'>head</a></span>(<span class='kw'>.</span>) <span class='op'>%.&gt;%</span>
-  <span class='fu'><a href='#base/print.html'>print</a></span>(<span class='kw'>.</span>)
+<span class='va'>dTrainNTreated</span> <span class='op'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span> <span class='op'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;        x_catN    x_catD z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b x_catP y
 #&gt; 1 -0.26666667 0.5000000 1       0        0         1         0    0.6 0
 #&gt; 2 -0.50000000 0.0000000 2       0        0         1         0    0.5 0
@@ -352,11 +352,11 @@ into calibration, training, test sets.</p>
 #&gt; 6 -0.40000000 0.7071068 3       1        0         0         1    0.2 1</div><div class='input'>
 <span class='co'># Any future application data is prepared with</span>
 <span class='co'># the prepare method.</span>
-<span class='kw'>dTestNTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span>(<span class='kw'>treatmentsN</span>, <span class='kw'>dTestN</span>, pruneSig=<span class='kw'>NULL</span>)
+<span class='va'>dTestNTreated</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare.html'>prepare</a></span><span class='op'>(</span><span class='va'>treatmentsN</span>, <span class='va'>dTestN</span>, pruneSig<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='kw'>dTestNTreated</span> <span class='op'>%.&gt;%</span>
-  <span class='fu'><a href='#utils/head.html'>head</a></span>(<span class='kw'>.</span>) <span class='op'>%.&gt;%</span>
-  <span class='fu'><a href='#base/print.html'>print</a></span>(<span class='kw'>.</span>)
+<span class='va'>dTestNTreated</span> <span class='op'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span> <span class='op'>%.&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   x_catP x_catN    x_catD         z z_isBAD x_lev_NA x_lev_x_a x_lev_x_b
 #&gt; 1 0.5000  -0.25 0.5000000 10.000000       0        0         1         0
 #&gt; 2 0.2500   0.00 0.7071068 20.000000       0        0         0         1
@@ -378,7 +378,7 @@ into calibration, training, test sets.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
