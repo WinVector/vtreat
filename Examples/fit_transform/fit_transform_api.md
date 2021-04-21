@@ -27,8 +27,8 @@ Both notation systems are good, the `R` one being more "R-like" (using the usual
 
 Examples of the modeling typical tasks in both notations can be found here:
 
- * Regression: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FT.md).
- * Binary Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FT.md).
- * Unsupervised Coding: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FT.md).
- * Multinomial Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`$fit_transform()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FT.md).
+ * Regression: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md), [`fit_prepare()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md).
+ * Binary Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md), [`fit_prepare()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md).
+ * Unsupervised Coding: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md), [`fit_prepare()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md).
+ * Multinomial Classification: [`R` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md), [`fit_prepare()` notation](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md).
 
