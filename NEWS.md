@@ -1,8 +1,9 @@
 
 
-# vtreat 1.6.3 2020/04/21
+# vtreat 1.6.3 2021/06/11
 
  * Fix some links.
+ * Remove LazyData decl.
  
 # vtreat 1.6.2 2020/10/17
 

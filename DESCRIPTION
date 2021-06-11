@@ -38,7 +38,6 @@ Suggests:
     datasets,
     R.rsp,
     tinytest
-LazyData: true
 VignetteBuilder: knitr, R.rsp
 RoxygenNote: 7.1.1
 ByteCompile: true
