@@ -115,7 +115,7 @@
       <h1 data-toc-skip>vtreat overfit</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2021-04-21</h4>
+            <h4 class="date">2021-06-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
@@ -151,13 +151,13 @@
 <code class="sourceCode R"><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,
   rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:51:54 2021"
-## [1] "designing treatments Wed Apr 21 09:51:54 2021"
-## [1] " have initial level statistics Wed Apr 21 09:51:54 2021"
-## [1] " scoring treatments Wed Apr 21 09:51:54 2021"
-## [1] "have treatment plan Wed Apr 21 09:51:54 2021"
-## [1] "rescoring complex variables Wed Apr 21 09:51:54 2021"
-## [1] "done rescoring complex variables Wed Apr 21 09:51:54 2021"</code></pre>
+<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:43 2021"
+## [1] "designing treatments Fri Jun 11 07:01:43 2021"
+## [1] " have initial level statistics Fri Jun 11 07:01:43 2021"
+## [1] " scoring treatments Fri Jun 11 07:01:43 2021"
+## [1] "have treatment plan Fri Jun 11 07:01:43 2021"
+## [1] "rescoring complex variables Fri Jun 11 07:01:43 2021"
+## [1] "done rescoring complex variables Fri Jun 11 07:01:44 2021"</code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,
   pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
@@ -261,13 +261,13 @@
                                         rareCount<span class="op">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                         rareSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note set this to something like 0.3</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:51:54 2021"
-## [1] "designing treatments Wed Apr 21 09:51:54 2021"
-## [1] " have initial level statistics Wed Apr 21 09:51:54 2021"
-## [1] " scoring treatments Wed Apr 21 09:51:54 2021"
-## [1] "have treatment plan Wed Apr 21 09:51:54 2021"
-## [1] "rescoring complex variables Wed Apr 21 09:51:54 2021"
-## [1] "done rescoring complex variables Wed Apr 21 09:51:54 2021"</code></pre>
+<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:44 2021"
+## [1] "designing treatments Fri Jun 11 07:01:44 2021"
+## [1] " have initial level statistics Fri Jun 11 07:01:44 2021"
+## [1] " scoring treatments Fri Jun 11 07:01:44 2021"
+## [1] "have treatment plan Fri Jun 11 07:01:44 2021"
+## [1] "rescoring complex variables Fri Jun 11 07:01:44 2021"
+## [1] "done rescoring complex variables Fri Jun 11 07:01:44 2021"</code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,
                                  pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
@@ -346,9 +346,9 @@
 <span class="va">xdat</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,
                                   rareCount<span class="op">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
                                   rareSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 start initial treatment design Wed Apr 21 09:51:54 2021"
-## [1] " start cross frame work Wed Apr 21 09:51:54 2021"
-## [1] " vtreat::mkCrossFrameCExperiment done Wed Apr 21 09:51:55 2021"</code></pre>
+<pre><code>## [1] "vtreat 1.6.3 start initial treatment design Fri Jun 11 07:01:44 2021"
+## [1] " start cross frame work Fri Jun 11 07:01:44 2021"
+## [1] " vtreat::mkCrossFrameCExperiment done Fri Jun 11 07:01:44 2021"</code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="va">xdat</span><span class="op">$</span><span class="va">treatments</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">)</span></code></pre></div>

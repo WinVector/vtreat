@@ -115,7 +115,7 @@
       <h1 data-toc-skip>vtreat significance</h1>
                         <h4 class="author">John Mount, Nina Zumel</h4>
             
-            <h4 class="date">2021-04-21</h4>
+            <h4 class="date">2021-06-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSignificance.Rmd"><code>vignettes/vtreatSignificance.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSignificance.Rmd</code></div>
@@ -172,13 +172,13 @@
 ## 252 FALSE      lev002       lev002F</code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">treatmentsC</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">d</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'catVarNoise'</span>,<span class="st">'catVarPerfect'</span><span class="op">)</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Wed Apr 21 09:52:03 2021"
-## [1] "designing treatments Wed Apr 21 09:52:03 2021"
-## [1] " have initial level statistics Wed Apr 21 09:52:03 2021"
-## [1] " scoring treatments Wed Apr 21 09:52:03 2021"
-## [1] "have treatment plan Wed Apr 21 09:52:03 2021"
-## [1] "rescoring complex variables Wed Apr 21 09:52:03 2021"
-## [1] "done rescoring complex variables Wed Apr 21 09:52:03 2021"</code></pre>
+<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:53 2021"
+## [1] "designing treatments Fri Jun 11 07:01:53 2021"
+## [1] " have initial level statistics Fri Jun 11 07:01:53 2021"
+## [1] " scoring treatments Fri Jun 11 07:01:53 2021"
+## [1] "have treatment plan Fri Jun 11 07:01:53 2021"
+## [1] "rescoring complex variables Fri Jun 11 07:01:53 2021"
+## [1] "done rescoring complex variables Fri Jun 11 07:01:53 2021"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Estimate effect significance (not coefficient significance).</span>
 <span class="va">estSigGLM</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">xVar</span>,<span class="va">yVar</span>,<span class="va">numberOfHiddenDegrees</span><span class="op">=</span><span class="fl">0</span><span class="op">)</span> <span class="op">{</span>
