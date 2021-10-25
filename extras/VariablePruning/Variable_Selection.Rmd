@@ -285,7 +285,7 @@ plot_parameter(
   use_hist = TRUE)
 ```
 
-It worked!  The model says the data is more consistent with `x` not being a variable.  Note: this is not a frequentist setup, so we have not done something silly or impossible such as "accepting the null hypothesis."  Strictly we have only said: the data is plausible under the assumption that `x` is not an explanatory variable.
+It worked!  The model says the data is more consistent with `x` not being a variable.  Note: this is not a frequentist setup, so we have not done something silly or impossible such as "accepting the null hypothesis."  Strictly we have only said: the data is plausible under the assumption that `x` is not an explanatory variable. Also note, this model is of a type forbidden by Stan "Zero inflation does not work for continuous distributions in Stan because of issues with derivatives; in particular, there is no way to add a point mass to a continuous distribution, such as zero-inflating a normal as a regression coefficient prior." ([ref](https://mc-stan.org/docs/2_28/stan-users-guide/zero-inflated.html)).
 
 We can of course also plot the inferred distributions of the remaining variables.
 
