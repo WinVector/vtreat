@@ -75,7 +75,8 @@ source('fns.R')
 
 set.seed(2020)
 
-cl <- parallel::makeCluster(parallel::detectCores())
+cl <- NULL
+# cl <- parallel::makeCluster(parallel::detectCores())
 ```
 
 The source to `fns.R` and the mathematical derivations of all the steps
@@ -101,7 +102,7 @@ generate_params <- function(
     substitute(list(...)), 
     "generate_params")
   params <- data.frame(
-    explanatory = rbinom(
+    beta_1_explanatory = rbinom(
       n = n_sample, 
       size = 1, prob = 
         prior_explanatory_prob),
@@ -119,8 +120,8 @@ generate_params <- function(
 }
 ```
 
-`explanatory` is a random variable that is always `0` or `1`. We will
-use it later to perform variable selection. For now it is not used.
+`beta_1_explanatory` is a random variable that is always `0` or `1`. We
+will use it later to perform variable selection. For now it is not used.
 
 Now we define functions to compute `P[data | parameters]`. We want to
 know `P[parameters | data]`, but we know from Bayes’ Law that if we can
@@ -192,7 +193,8 @@ The least criticized is considered the best.
 params$posterior_weight <- p_data_given_params(
   params = params,
   data = d,
-  fn_factory = mk_fun_p_data_given_params)
+  fn_factory = mk_fun_p_data_given_params,
+  cl = cl)
 ```
 
 This sampling or inference process can be summarized with the following
@@ -274,7 +276,8 @@ params <- generate_params()
 params$posterior_weight <- p_data_given_params(
   params = params,
   data = d,
-  fn_factory = mk_fun_p_data_given_params)
+  fn_factory = mk_fun_p_data_given_params,
+  cl = cl)
 ```
 
 ``` r
@@ -377,16 +380,16 @@ variable selection.
 First we adjust our `P[data | parameters]` function to include a new
 unobserved parameter called `explanatory`. `explanatory` is always zero
 or one. The change in code is: we now compute the residual or error as
-`data$y - (pi$explanatory * pi$beta_1 * data$x  + pi$beta_0)`. If
-`explanatory` is `1`, then our `P[data | parameters]` function works as
-before. However when `explanatory` is `0`, the error model changes to
-`data$y - pi$beta_0`. `explanatory == 0` stomps out the
-`pi$beta_1 * data$x` term.
+`data$y - (pi$beta_1_explanatory * pi$beta_1 * data$x  + pi$beta_0)`. If
+`beta_1_explanatory` is `1`, then our `P[data | parameters]` function
+works as before. However when `beta_1_explanatory` is `0`, the error
+model changes to `data$y - pi$beta_0`. `beta_1_explanatory == 0` stomps
+out the `pi$beta_1 * data$x` term.
 
-We arbitrarily start `explanatory` with a simple prior: it is `0` half
-of the time and `1` half of the time. We hope after inference it has a
-posterior distribution that is nearly always `1` (indicating the data is
-more plausible when `beta_1` is not zero, and `x` is in fact an
+We arbitrarily start `beta_1_explanatory` with a simple prior: it is `0`
+half of the time and `1` half of the time. We hope after inference it
+has a posterior distribution that is nearly always `1` (indicating the
+data is more plausible when `beta_1` is not zero, and `x` is in fact an
 explanatory variable) or nearly always `0` (indicating that the data is
 more plausible when `beta_0` is zero, and `x` is not in fact an
 explanatory variable). Note this prior is actually easy to get right:
@@ -399,24 +402,24 @@ We define a new unscaled log-probability of error calculation:
 `mk_fun_p_data_given_params_with_conditional`.
 
 ``` r
-# per setting parameter calculation function with explanatory 0/1 parameter
+# per setting parameter calculation function with beta_1_explanatory 0/1 parameter
 mk_fun_p_data_given_params_with_conditional <- function(params, data, sd_noise) {
     force(params)
     force(data)
     force(sd_noise)
     function(i) {
       pi <- params[i, , drop = FALSE]
-      ei <- data$y - (pi$explanatory * pi$beta_1 * data$x  + pi$beta_0)
+      ei <- data$y - (pi$beta_1_explanatory * pi$beta_1 * data$x  + pi$beta_0)
       sum(dnorm(ei, mean=0, sd = sd_noise, log = TRUE))
     }
 }
 ```
 
-Essentially `pi$explanatory * pi$beta_1` is a “zero inflated” parameter.
-(Note: traditionally in zero inflated models observable outcomes, rather
-than unobservable parameters are zero inflated.) Our new model is more
-powerful, as it can now put an atomic (non-negligible) mass exactly on
-zero.
+Essentially `pi$beta_1_explanatory * pi$beta_1` is a “zero inflated”
+parameter. (Note: traditionally in zero inflated models observable
+outcomes, rather than unobservable parameters are zero inflated.) Our
+new model is more powerful, as it can now put an atomic (non-negligible)
+mass exactly on zero.
 
 This new code instantiates the critique implied by the following
 graphical model.
@@ -426,7 +429,7 @@ graphical model.
 <p/>
 
 Again, the only important line of code is the
-`ei <- data$y - (pi$explanatory * pi$beta_1 * data$x  + pi$beta_0)`
+`ei <- data$y - (pi$beta_1_explanatory * pi$beta_1 * data$x  + pi$beta_0)`
 statement. All other code is just in service of this model specifying
 line.
 
@@ -437,7 +440,7 @@ same data.
 
 Let’s re-run our example where `x` is not explanatory and we should
 infer `beta_1 = 0`. For our software this is the same as inferring
-`explanatory * beta_1 = 0` or `explanatory = 0`.
+`beta_1_explanatory * beta_1 = 0` or `beta_1_explanatory = 0`.
 
 We set up the data and observed relation of `y` to `x`.
 
@@ -452,7 +455,8 @@ params <- generate_params()
 params$posterior_weight <- p_data_given_params(
   params = params,
   data = d,
-  fn_factory = mk_fun_p_data_given_params_with_conditional)
+  fn_factory = mk_fun_p_data_given_params_with_conditional,
+  cl = cl)
 ```
 
 And we plot what we came for: the prior and posterior distributions of
@@ -460,7 +464,7 @@ the `explanatory` parameter.
 
 ``` r
 plot_parameter(
-  params, 'explanatory', 
+  params, 'beta_1_explanatory', 
   subtitle = 'conditional model, beta_1 not explanatory',
   use_hist = TRUE)
 ```
@@ -490,13 +494,14 @@ plot_parameter(
 ![](Variable_Selection_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 Keep in mind that `beta_1` isn’t as interesting in this model
-formulation as `explanatory beta_1`, so the distribution of `beta_1`
-isn’t as important as the distribution of `explanatory beta_1`.
+formulation as `beta_1_explanatory * beta_1`, so the distribution of
+`beta_1` isn’t as important as the distribution of
+`beta_1_explanatory * beta_1`.
 
 ``` r
-params$explanatory_beta_1 <- params$explanatory * params$beta_1
+params$beta_1_explanatory <- params$beta_1_explanatory * params$beta_1
 plot_parameter(
-  params, 'explanatory_beta_1', 
+  params, 'beta_1_explanatory', 
   subtitle = 'conditional model, beta_1 not explanatory',
   use_hist = TRUE,
   bins = 100)
@@ -513,31 +518,31 @@ row_ids <- sample.int(
   size = 5, replace = TRUE, 
   prob = params$posterior_weight)
 
-params[row_ids, qc(beta_0, explanatory, explanatory_beta_1)] %.>%
+params[row_ids, qc(beta_0, beta_1_explanatory, beta_1)] %.>%
   knitr::kable(.)
 ```
 
-|       |   beta\_0 | explanatory | explanatory\_beta\_1 |
-|:------|----------:|------------:|---------------------:|
-| 89730 | 0.3502084 |           0 |                    0 |
-| 1623  | 0.2772984 |           0 |                    0 |
-| 38785 | 0.2637149 |           0 |                    0 |
-| 72876 | 0.2267579 |           0 |                    0 |
-| 51349 | 0.4321816 |           0 |                    0 |
+|       |   beta\_0 | beta\_1\_explanatory |    beta\_1 |
+|:------|----------:|---------------------:|-----------:|
+| 89730 | 0.3502084 |                    0 | -0.5524873 |
+| 1623  | 0.2772984 |                    0 |  0.2441236 |
+| 38785 | 0.2637149 |                    0 | -0.8979763 |
+| 72876 | 0.2267579 |                    0 |  0.1180014 |
+| 51349 | 0.4321816 |                    0 |  0.0140875 |
 
-Usually we see `explanatory_beta_1` exactly equal to zero. That is
+Usually we see `beta_1_explanatory` exactly equal to zero. That is
 correct.
 
 #### Experiment 4: Conditional Bayesian Inference with `beta_1` explanatory.
 
 We saw in the last experiment that if we started with a some mass of the
-distribution of `explanatory * beta_1` at zero, then after inference for
-a non-explanatory variable a lot of mass of `explanatory * beta_1` is at
-zero.
+distribution of `beta_1_explanatory * beta_1` at zero, then after
+inference for a non-explanatory variable a lot of mass of
+`beta_1_explanatory * beta_1` is at zero.
 
 If a variable is in fact explanatory, then we want to see both
-`explanatory` move its distribution to `1` and for
-`explanatory * beta_1` to move to the right value.
+`beta_1_explanatory` move its distribution to `1` and for
+`beta_1_explanatory * beta_1` to move to the right value.
 
 Let’s try that experiment.
 
@@ -553,49 +558,52 @@ params <- generate_params()
 params$posterior_weight <- p_data_given_params(
   params = params,
   data = d,
-  fn_factory = mk_fun_p_data_given_params_with_conditional)
+  fn_factory = mk_fun_p_data_given_params_with_conditional,
+  cl = cl)
 ```
 
 ``` r
 plot_parameter(
-  params, 'explanatory', 
-  subtitle = 'conditional model, beta_1 explanatory', 
+  params, 'beta_1_explanatory', 
+  subtitle = 'conditional model, beta_1 beta_1_explanatory', 
   use_hist = TRUE)
 ```
 
 ![](Variable_Selection_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 This looks good, in this case the posterior distribution for
-`explanatory` is more concentrated towards `1`, indicating the data has
-evidence for using the associated variable `x`.
+`beta_1_explanatory` is more concentrated towards `1`, indicating the
+data has evidence for using the associated variable `x`.
 
 Let’s look out our main (composite) parameter of interest
-`explanatory * beta_1`.
+`beta_1_explanatory * beta_1`.
 
 ``` r
-params$explanatory_beta_1 <- params$explanatory * params$beta_1
+params$beta_1_explanatory <- params$beta_1_explanatory * params$beta_1
 plot_parameter(
-  params, 'explanatory_beta_1', 
-  subtitle = 'conditional model, beta_1 explanatory',
+  params, 'beta_1_explanatory', 
+  subtitle = 'conditional model, beta_1 * beta_1_explanatory',
   use_hist = TRUE,
   bins = 100)
 ```
 
 ![](Variable_Selection_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
-The joint estimate of `explanatory * beta_1` is similar to the
+The joint estimate of `beta_1_explanatory * beta_1` is similar to the
 unobserved true model that generated the observed data
 (`d$y <- actual_b1 * d$x + actual_b0 + rnorm(nrow(d), mean = 0, sd = 1)`).
 
 The procedure worked. The inference recovered the parameters that
 generated the data. This is going to be a small measure less
 statistically efficient than a standard regression, as the inference was
-forced to consider cases we know not to be the case. But the procedure
-seems sound.
+forced to consider cases. But the procedure seems sound.
 
 ``` r
-#cleanup
-parallel::stopCluster(cl)
+# cleanup
+if(!is.null(cl)) {
+  parallel::stopCluster(cl)
+  cl <- NULL
+}
 ```
 
 ## Conclusion

@@ -15,16 +15,23 @@ p_data_given_params <- function(
   params,
   data,
   fn_factory,
-  sd_noise = 1) {
+  sd_noise = 1,
+  cl = NULL) {
   stop_if_dot_args(
     substitute(list(...)), 
     "p_data_given_params")
   f <- fn_factory(params, data, sd_noise)
-  res <- parallel::parLapply( # or just lapply() without cl
-    cl,
-    seq_len(nrow(params)),
-    f
-  )
+  if(!is.null(cl)) {
+    res <- parallel::parLapply( # or just lapply() without cl
+      cl,
+      seq_len(nrow(params)),
+      f
+    )
+  } else {
+    res <- lapply(
+      seq_len(nrow(params)),
+      f)
+  }
   posterior_weight <- params$prior_weight * safe_exp(res)
   return(posterior_weight / sum(posterior_weight))
 }
