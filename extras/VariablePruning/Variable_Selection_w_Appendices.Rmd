@@ -262,8 +262,7 @@ Let's see how these are different using this model for inference on the same dat
 
 #### Experiment 3: Conditional Bayesian Inference with `beta_1` not explanatory.
 
-Let's re-run our example where `x` is not explanatory and we should infer `beta_1 = 0`.
-For our software this is the same as inferring `beta_1_explanatory * beta_1 = 0` or `beta_1_explanatory = 0`.
+Let's re-run our example where `x` is not explanatory and we should infer `beta_1 = 0`. For our software this is the same as inferring `beta_1_explanatory * beta_1 = 0` or `beta_1_explanatory = 0`.
 
 We set up the data and observed relation of `y` to `x`.
 
@@ -302,8 +301,7 @@ plot_parameter(
   subtitle = 'conditional model, beta_1 not explanatory')
 ```
 
-Keep in mind that `beta_1` isn't as interesting in this model formulation as `beta_1_explanatory * beta_1`, so the distribution 
-of `beta_1` isn't as important as the distribution of `beta_1_explanatory * beta_1`.
+Keep in mind that `beta_1` isn't as interesting in this model formulation as `beta_1_explanatory * beta_1`, so the distribution of `beta_1` isn't as important as the distribution of `beta_1_explanatory * beta_1`.
 
 ```{r}
 params$explanatory_beta_1 <- params$beta_1_explanatory * params$beta_1
@@ -331,11 +329,9 @@ Usually we see `explanatory_beta_1` exactly equal to zero. That is correct.
 
 #### Experiment 4: Conditional Bayesian Inference with `beta_1` explanatory.
 
-We saw in the last experiment that if we started with a some mass of the distribution of `beta_1_explanatory * beta_1` at 
-zero, then after inference for a non-explanatory variable a lot of mass of `beta_1_explanatory * beta_1` is at zero.
+We saw in the last experiment that if we started with some mass of the distribution of `beta_1_explanatory * beta_1` at zero, then after inference for a non-explanatory variable a lot of mass of `beta_1_explanatory * beta_1` is at zero.
 
-We need to see if a variable is in fact explanatory that we see both `beta_1_explanatory` move its distribution to `1`
-and for `beta_1_explanatory * beta_1` to move to the right value.
+We need to see if a variable is in fact explanatory that we see both `beta_1_explanatory` move its distribution to `1` and for `beta_1_explanatory * beta_1` to move to the right value.
 
 Let's try that experiment.
 
