@@ -64,9 +64,9 @@ Materialize a treated data frame remotely.
 }
 \section{Functions}{
 \itemize{
-\item \code{materialize_treated}: old name for rquery_prepare function
-}}
+\item \code{materialize_treated()}: old name for rquery_prepare function
 
+}}
 \seealso{
 \code{\link{as_rquery_plan}}, \code{\link{rqdatatable_prepare}}
 }

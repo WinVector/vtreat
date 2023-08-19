@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/vtreat.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -97,7 +93,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/" class="external-link">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,283 +105,328 @@
 
       
 
-      </header><script src="vtreatCrossFrames_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat cross frames</h1>
-                        <h4 class="author">John Mount, Nina Zumel</h4>
+                        <h4 data-toc-skip class="author">John Mount,
+Nina Zumel</h4>
             
-            <h4 class="date">2021-06-11</h4>
+            <h4 data-toc-skip class="date">2023-08-19</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatCrossFrames.Rmd"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/HEAD/vignettes/vtreatCrossFrames.Rmd" class="external-link"><code>vignettes/vtreatCrossFrames.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatCrossFrames.Rmd</code></div>
 
     </div>
 
     
     
-<p>Example demonstrating “cross validated training frames” (or “cross frames”) in vtreat.</p>
-<p>Consider the following data frame. The outcome only depends on the “good” variables, not on the (high degree of freedom) “bad” variables. Modeling such a data set runs a high risk of over-fit.</p>
+<p>Example demonstrating “cross validated training frames” (or “cross
+frames”) in vtreat.</p>
+<p>Consider the following data frame. The outcome only depends on the
+“good” variables, not on the (high degree of freedom) “bad” variables.
+Modeling such a data set runs a high risk of over-fit.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">22626</span><span class="op">)</span>
-
-<span class="va">mkData</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>xBad1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,
-                  xBad2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,
-                  xBad3<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,
-                  xGood1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,
-                  xGood2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span>
-  
-  <span class="co"># outcome only depends on "good" variables</span>
-  <span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fl">0.2</span><span class="op">*</span><span class="va">d</span><span class="op">$</span><span class="va">xGood1</span> <span class="op">+</span> <span class="fl">0.3</span><span class="op">*</span><span class="va">d</span><span class="op">$</span><span class="va">xGood2</span><span class="op">&gt;</span><span class="fl">0.5</span>
-  <span class="co"># the random group used for splitting the data set, not a variable.</span>
-  <span class="va">d</span><span class="op">$</span><span class="va">rgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"cal"</span>,<span class="st">"train"</span>,<span class="st">"test"</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>  
-  <span class="va">d</span>
-<span class="op">}</span>
-
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">mkData</span><span class="op">(</span><span class="fl">2000</span><span class="op">)</span>
-
-<span class="co"># devtools::install_github("WinVector/WVPlots")</span>
-<span class="co"># library('WVPlots')</span>
-<span class="va">plotRes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>,<span class="va">predName</span>,<span class="va">yName</span>,<span class="va">title</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">title</span><span class="op">)</span>
-  <span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span>truth<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">yName</span><span class="op">]</span><span class="op">]</span>,pred<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">predName</span><span class="op">]</span><span class="op">]</span><span class="op">&gt;</span><span class="fl">0.5</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span>
-  <span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                     <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">tab</span><span class="op">[</span><span class="va">i</span>,<span class="va">i</span><span class="op">]</span>,<span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">acc</span> <span class="op">&lt;-</span> <span class="va">diag</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span>
-<span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span>
-<span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span>
-<span class="co">#  }</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'accuracy'</span>,<span class="va">acc</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<div id="the-wrong-way" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-wrong-way" class="anchor"></a>The Wrong Way</h2>
-<p>Bad practice: use the same set of data to prepare variable encoding and train a model.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">22626</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mkData</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>xBad1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>                  xBad2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>                  xBad3<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>                  xGood1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>                  xGood2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># outcome only depends on "good" variables</span></span>
+<span>  <span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fl">0.2</span><span class="op">*</span><span class="va">d</span><span class="op">$</span><span class="va">xGood1</span> <span class="op">+</span> <span class="fl">0.3</span><span class="op">*</span><span class="va">d</span><span class="op">$</span><span class="va">xGood2</span><span class="op">&gt;</span><span class="fl">0.5</span></span>
+<span>  <span class="co"># the random group used for splitting the data set, not a variable.</span></span>
+<span>  <span class="va">d</span><span class="op">$</span><span class="va">rgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cal"</span>,<span class="st">"train"</span>,<span class="st">"test"</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>  </span>
+<span>  <span class="va">d</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">mkData</span><span class="op">(</span><span class="fl">2000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># devtools::install_github("WinVector/WVPlots")</span></span>
+<span><span class="co"># library('WVPlots')</span></span>
+<span><span class="va">plotRes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>,<span class="va">predName</span>,<span class="va">yName</span>,<span class="va">title</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">title</span><span class="op">)</span></span>
+<span>  <span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>truth<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">yName</span><span class="op">]</span><span class="op">]</span>,pred<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">predName</span><span class="op">]</span><span class="op">]</span><span class="op">&gt;</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span>
+<span>  <span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                     <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">tab</span><span class="op">[</span><span class="va">i</span>,<span class="va">i</span><span class="op">]</span>,<span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">acc</span> <span class="op">&lt;-</span> <span class="va">diag</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span>
+<span><span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span></span>
+<span><span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span></span>
+<span><span class="co">#  }</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'accuracy'</span>,<span class="va">acc</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="the-wrong-way">The Wrong Way<a class="anchor" aria-label="anchor" href="#the-wrong-way"></a>
+</h2>
+<p>Bad practice: use the same set of data to prepare variable encoding
+and train a model.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">!=</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span><span class="op">)</span>,
-                                        <span class="st">'y'</span>,<span class="cn">TRUE</span>,
-  rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:37 2021"
-## [1] "designing treatments Fri Jun 11 07:01:37 2021"
-## [1] " have initial level statistics Fri Jun 11 07:01:37 2021"
-## [1] " scoring treatments Fri Jun 11 07:01:37 2021"
-## [1] "have treatment plan Fri Jun 11 07:01:37 2021"
-## [1] "rescoring complex variables Fri Jun 11 07:01:37 2021"
-## [1] "done rescoring complex variables Fri Jun 11 07:01:38 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">!=</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span><span class="op">)</span>,</span>
+<span>                                        <span class="st">'y'</span>,<span class="cn">TRUE</span>,</span>
+<span>  rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 inspecting inputs Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "designing treatments Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] " have initial level statistics Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] " scoring treatments Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "have treatment plan Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "rescoring complex variables Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "done rescoring complex variables Sat Aug 19 11:38:32 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,
-  pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## Warning in prepare.treatmentplan(treatments, dTrain, pruneSig = c()):
-## possibly called prepare() on same data frame as designTreatments*()/
-## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
-## mkCrossFrame*Experiment$crossFrame.</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,</span>
+<span>  pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problems</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in prepare.treatmentplan(treatments, dTrain, pruneSig = c()): possibly</span></span>
+<span><span class="co">## called prepare() on same data frame as</span></span>
+<span><span class="co">## designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To</span></span>
+<span><span class="co">## avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu">wrapr</span><span class="fu">::</span><span class="fu"><a href="https://winvector.github.io/wrapr//reference/mk_formula.html">mk_formula</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">varName</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></code></pre></div>
-<pre><code>## y ~ xBad1_catP + xBad1_catB + xBad2_catP + xBad2_catB + xBad3_catP + 
-##     xBad3_catB + xGood1 + xGood2
-## &lt;environment: base&gt;</code></pre>
+<code class="sourceCode R"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu">wrapr</span><span class="fu">::</span><span class="fu"><a href="https://winvector.github.io/wrapr//reference/mk_formula.html" class="external-link">mk_formula</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">varName</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## y ~ xBad1_catP + xBad1_catB + xBad2_catP + xBad2_catB + xBad3_catP + </span></span>
+<span><span class="co">##     xBad3_catB + xGood1 + xGood2</span></span>
+<span><span class="co">## &lt;environment: base&gt;</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">f</span>,
-          data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">f</span>,</span>
+<span>          data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  <span class="co"># notice low residual deviance</span></code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = f, family = binomial(link = "logit"), data = dTrainTreated)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -2.258   0.000   0.000   0.000   1.970  
-## 
-## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   -6.5366     2.4568  -2.661 0.007801 ** 
-## xBad1_catP  1168.1918   645.3595   1.810 0.070274 .  
-## xBad1_catB     1.8573     0.7867   2.361 0.018228 *  
-## xBad2_catP   167.4370   389.0529   0.430 0.666926    
-## xBad2_catB     1.4484     0.5456   2.655 0.007936 ** 
-## xBad3_catP   545.7586   453.9221   1.202 0.229240    
-## xBad3_catB     2.5985     0.6799   3.822 0.000133 ***
-## xGood1         0.7846     0.3519   2.229 0.025792 *  
-## xGood2         0.2889     0.3102   0.931 0.351838    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1662.745  on 1332  degrees of freedom
-## Residual deviance:   86.371  on 1324  degrees of freedom
-## AIC: 104.37
-## 
-## Number of Fisher Scoring iterations: 13</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  <span class="co"># notice low residual deviance</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## glm(formula = f, family = binomial(link = "logit"), data = dTrainTreated)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##              Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept)   -6.5366     2.4568  -2.661 0.007801 ** </span></span>
+<span><span class="co">## xBad1_catP  1168.1918   645.3595   1.810 0.070274 .  </span></span>
+<span><span class="co">## xBad1_catB     1.8573     0.7867   2.361 0.018228 *  </span></span>
+<span><span class="co">## xBad2_catP   167.4370   389.0529   0.430 0.666926    </span></span>
+<span><span class="co">## xBad2_catB     1.4484     0.5456   2.655 0.007936 ** </span></span>
+<span><span class="co">## xBad3_catP   545.7586   453.9221   1.202 0.229240    </span></span>
+<span><span class="co">## xBad3_catB     2.5985     0.6799   3.822 0.000133 ***</span></span>
+<span><span class="co">## xGood1         0.7846     0.3519   2.229 0.025792 *  </span></span>
+<span><span class="co">## xGood2         0.2889     0.3102   0.931 0.351838    </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 1662.745  on 1332  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance:   86.371  on 1324  degrees of freedom</span></span>
+<span><span class="co">## AIC: 104.37</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 13</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on train"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   898   14
-##   TRUE      6  415
-## [1] "accuracy 0.984996249062266"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on train"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   898   14</span></span>
+<span><span class="co">##   TRUE      6  415</span></span>
+<span><span class="co">## [1] "accuracy 0.984996249062266"</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on test"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   356  119
-##   TRUE    147   45
-## [1] "accuracy 0.60119940029985"</code></pre>
-<p>Notice above that we see a training accuracy of 98% and a test accuracy of 60%. Also notice the downstream model (the <code>glm</code>) erroneously thinks the <code>xBad?_cat</code> variables are significant (due to the large number of degrees of freedom hidden from the downstream model by the <a href="https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/">impact/effect coding</a>).</p>
+<code class="sourceCode R"><span><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on test"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   356  119</span></span>
+<span><span class="co">##   TRUE    147   45</span></span>
+<span><span class="co">## [1] "accuracy 0.60119940029985"</span></span></code></pre>
+<p>Notice above that we see a training accuracy of 98% and a test
+accuracy of 60%. Also notice the downstream model (the <code>glm</code>)
+erroneously thinks the <code>xBad?_cat</code> variables are significant
+(due to the large number of degrees of freedom hidden from the
+downstream model by the <a href="https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/" class="external-link">impact/effect
+coding</a>).</p>
 </div>
-<div id="the-right-way-a-calibration-set" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-right-way-a-calibration-set" class="anchor"></a>The Right Way: A Calibration Set</h2>
+<div class="section level2">
+<h2 id="the-right-way-a-calibration-set">The Right Way: A Calibration Set<a class="anchor" aria-label="anchor" href="#the-right-way-a-calibration-set"></a>
+</h2>
 <p>Now try a proper calibration/train/test split:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dCal</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'cal'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'train'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-
-<span class="co"># a nice heuristic, </span>
-<span class="co"># expect only a constant number of noise variables to sneak past</span>
-<span class="va">pruneSig</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">dTrain</span><span class="op">)</span> 
-<span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dCal</span>,
-                                        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span><span class="op">)</span>,
-                                        <span class="st">'y'</span>,<span class="cn">TRUE</span>,
-  rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:38 2021"
-## [1] "designing treatments Fri Jun 11 07:01:38 2021"
-## [1] " have initial level statistics Fri Jun 11 07:01:38 2021"
-## [1] " scoring treatments Fri Jun 11 07:01:38 2021"
-## [1] "have treatment plan Fri Jun 11 07:01:38 2021"
-## [1] "rescoring complex variables Fri Jun 11 07:01:38 2021"
-## [1] "done rescoring complex variables Fri Jun 11 07:01:38 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">dCal</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'cal'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'train'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># a nice heuristic, </span></span>
+<span><span class="co"># expect only a constant number of noise variables to sneak past</span></span>
+<span><span class="va">pruneSig</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">dTrain</span><span class="op">)</span> </span>
+<span><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dCal</span>,</span>
+<span>                                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span><span class="op">)</span>,</span>
+<span>                                        <span class="st">'y'</span>,<span class="cn">TRUE</span>,</span>
+<span>  rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 inspecting inputs Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "designing treatments Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] " have initial level statistics Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] " scoring treatments Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "have treatment plan Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "rescoring complex variables Sat Aug 19 11:38:32 2023"</span></span>
+<span><span class="co">## [1] "done rescoring complex variables Sat Aug 19 11:38:33 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,
-  pruneSig<span class="op">=</span><span class="va">pruneSig</span><span class="op">)</span>
-<span class="va">newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dTrainTreated</span><span class="op">)</span>,<span class="st">'y'</span><span class="op">)</span>
-<span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'y'</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">newvars</span>,collapse<span class="op">=</span><span class="st">' + '</span><span class="op">)</span>,sep<span class="op">=</span><span class="st">' ~ '</span><span class="op">)</span>,
-          data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  </code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = paste("y", paste(newvars, collapse = " + "), sep = " ~ "), 
-##     family = binomial(link = "logit"), data = dTrainTreated)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -1.856  -0.899  -0.686   1.195   2.218  
-## 
-## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  -0.77344    0.16769  -4.612 3.98e-06 ***
-## xBad1_catP  -21.99731  108.37126  -0.203    0.839    
-## xBad2_catB    0.00254    0.01552   0.164    0.870    
-## xGood1        0.45161    0.08974   5.032 4.84e-07 ***
-## xGood2        0.54021    0.09028   5.984 2.18e-09 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 860.31  on 677  degrees of freedom
-## Residual deviance: 798.35  on 673  degrees of freedom
-## AIC: 808.35
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,</span>
+<span>  pruneSig<span class="op">=</span><span class="va">pruneSig</span><span class="op">)</span></span>
+<span><span class="va">newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">dTrainTreated</span><span class="op">)</span>,<span class="st">'y'</span><span class="op">)</span></span>
+<span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'y'</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">newvars</span>,collapse<span class="op">=</span><span class="st">' + '</span><span class="op">)</span>,sep<span class="op">=</span><span class="st">' ~ '</span><span class="op">)</span>,</span>
+<span>          data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  </span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## glm(formula = paste("y", paste(newvars, collapse = " + "), sep = " ~ "), </span></span>
+<span><span class="co">##     family = binomial(link = "logit"), data = dTrainTreated)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##              Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept)  -0.77344    0.16769  -4.612 3.98e-06 ***</span></span>
+<span><span class="co">## xBad1_catP  -21.99731  108.37126  -0.203    0.839    </span></span>
+<span><span class="co">## xBad2_catB    0.00254    0.01552   0.164    0.870    </span></span>
+<span><span class="co">## xGood1        0.45161    0.08974   5.032 4.84e-07 ***</span></span>
+<span><span class="co">## xGood2        0.54021    0.09028   5.984 2.18e-09 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 860.31  on 677  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 798.35  on 673  degrees of freedom</span></span>
+<span><span class="co">## AIC: 808.35</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 4</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on train"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   424   30
-##   TRUE    172   52
-## [1] "accuracy 0.702064896755162"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on train"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   424   30</span></span>
+<span><span class="co">##   TRUE    172   52</span></span>
+<span><span class="co">## [1] "accuracy 0.702064896755162"</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,
-                                pruneSig<span class="op">=</span><span class="va">pruneSig</span><span class="op">)</span>
-<span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on test"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   436   39
-##   TRUE    154   38
-## [1] "accuracy 0.710644677661169"</code></pre>
-<p>Notice above that we now see training and test accuracies of 70%. We have defeated over-fit in two ways: training performance is closer to test performance, and test performance is better. Also we see that the model now properly considers the “bad” variables to be insignificant.</p>
+<code class="sourceCode R"><span><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,</span>
+<span>                                pruneSig<span class="op">=</span><span class="va">pruneSig</span><span class="op">)</span></span>
+<span><span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on test"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   436   39</span></span>
+<span><span class="co">##   TRUE    154   38</span></span>
+<span><span class="co">## [1] "accuracy 0.710644677661169"</span></span></code></pre>
+<p>Notice above that we now see training and test accuracies of 70%. We
+have defeated over-fit in two ways: training performance is closer to
+test performance, and test performance is better. Also we see that the
+model now properly considers the “bad” variables to be
+insignificant.</p>
 </div>
-<div id="another-right-way-cross-validation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#another-right-way-cross-validation" class="anchor"></a>Another Right Way: Cross-Validation</h2>
-<p>Below is a more statistically efficient practice: building a cross training frame.</p>
-<div id="the-intuition" class="section level3">
-<h3 class="hasAnchor">
-<a href="#the-intuition" class="anchor"></a>The intuition</h3>
-<p>Consider any trained statistical model (in this case our treatment plan and variable selection plan) as a two-argument function <em>f(A,B)</em>. The first argument is the training data and the second argument is the application data. In our case <em>f(A,B)</em> is: <code>designTreatmentsC(A) %&gt;% prepare(B)</code>, and it produces a treated data frame.</p>
-<p>When we use the same data in both places to build our training frame, as in</p>
+<div class="section level2">
+<h2 id="another-right-way-cross-validation">Another Right Way: Cross-Validation<a class="anchor" aria-label="anchor" href="#another-right-way-cross-validation"></a>
+</h2>
+<p>Below is a more statistically efficient practice: building a cross
+training frame.</p>
+<div class="section level3">
+<h3 id="the-intuition">The intuition<a class="anchor" aria-label="anchor" href="#the-intuition"></a>
+</h3>
+<p>Consider any trained statistical model (in this case our treatment
+plan and variable selection plan) as a two-argument function
+<em>f(A,B)</em>. The first argument is the training data and the second
+argument is the application data. In our case <em>f(A,B)</em> is:
+<code>designTreatmentsC(A) %&gt;% prepare(B)</code>, and it produces a
+treated data frame.</p>
+<p>When we use the same data in both places to build our training frame,
+as in</p>
 <blockquote>
 <p><em>TrainTreated = f(TrainData,TrainData)</em>,</p>
 </blockquote>
-<p>we are not doing a good job simulating the future application of <em>f(,)</em>, which will be <em>f(TrainData,FutureData)</em>.</p>
+<p>we are not doing a good job simulating the future application of
+<em>f(,)</em>, which will be <em>f(TrainData,FutureData)</em>.</p>
 <p>To improve the quality of our simulation we can call</p>
 <blockquote>
 <p><em>TrainTreated = f(CalibrationData,TrainData)</em></p>
 </blockquote>
-<p>where <em>CalibrationData</em> and <em>TrainData</em> are disjoint datasets (as we did in the earlier example) and expect this to be a good imitation of future <em>f(CalibrationData,FutureData)</em>.</p>
+<p>where <em>CalibrationData</em> and <em>TrainData</em> are disjoint
+datasets (as we did in the earlier example) and expect this to be a good
+imitation of future <em>f(CalibrationData,FutureData)</em>.</p>
 </div>
-<div id="cross-validation-and-vtreat-the-cross-frame-" class="section level3">
-<h3 class="hasAnchor">
-<a href="#cross-validation-and-vtreat-the-cross-frame-" class="anchor"></a>Cross-Validation and vtreat: The cross-frame.</h3>
-<p>Another approach is to build a “cross validated” version of <em>f</em>. We split <em>TrainData</em> into a list of 3 disjoint row intervals: <em>Train1</em>,<em>Train2</em>,<em>Train3</em>. Instead of computing <em>f(TrainData,TrainData)</em> compute:</p>
+<div class="section level3">
+<h3 id="cross-validation-and-vtreat-the-cross-frame-">Cross-Validation and vtreat: The cross-frame.<a class="anchor" aria-label="anchor" href="#cross-validation-and-vtreat-the-cross-frame-"></a>
+</h3>
+<p>Another approach is to build a “cross validated” version of
+<em>f</em>. We split <em>TrainData</em> into a list of 3 disjoint row
+intervals: <em>Train1</em>,<em>Train2</em>,<em>Train3</em>. Instead of
+computing <em>f(TrainData,TrainData)</em> compute:</p>
 <blockquote>
-<p><em>TrainTreated = f(Train2+Train3,Train1) + f(Train1+Train3,Train2) + f(Train1+Train2,Train3)</em></p>
+<p><em>TrainTreated = f(Train2+Train3,Train1) + f(Train1+Train3,Train2)
++ f(Train1+Train2,Train3)</em></p>
 </blockquote>
-<p>(where + denotes <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code>).</p>
-<p>The idea is this looks a lot like <em>f(TrainData,TrainData)</em> except it has the important property that no row in the right-hand side is ever worked on by a model built using that row (a key characteristic that future data will have) so we have a good imitation of <em>f(TrainData,FutureData)</em>.</p>
-<p>In other words: we use cross validation to simulate future data. The main thing we are doing differently is remembering that we can apply cross validation to <em>any</em> two argument function <em>f(A,B)</em> and not only to functions of the form <em>f(A,B)</em> = <code>buildModel(A) %&gt;% scoreData(B)</code>. We can use this formulation in stacking or super-learning with <em>f(A,B)</em> of the form <code>buildSubModels(A) %&gt;% combineModels(B)</code> (to produce a stacked or ensemble model); the idea applies to improving ensemble methods in general.</p>
+<p>(where + denotes <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code>).</p>
+<p>The idea is this looks a lot like <em>f(TrainData,TrainData)</em>
+except it has the important property that no row in the right-hand side
+is ever worked on by a model built using that row (a key characteristic
+that future data will have) so we have a good imitation of
+<em>f(TrainData,FutureData)</em>.</p>
+<p>In other words: we use cross validation to simulate future data. The
+main thing we are doing differently is remembering that we can apply
+cross validation to <em>any</em> two argument function <em>f(A,B)</em>
+and not only to functions of the form <em>f(A,B)</em> =
+<code>buildModel(A) %&gt;% scoreData(B)</code>. We can use this
+formulation in stacking or super-learning with <em>f(A,B)</em> of the
+form <code>buildSubModels(A) %&gt;% combineModels(B)</code> (to produce
+a stacked or ensemble model); the idea applies to improving ensemble
+methods in general.</p>
 <p>See:</p>
 <ul>
-<li>“General oracle inequalities for model selection” Charles Mitchell and Sara van de Geer</li>
-<li>“On Cross-Validation and Stacking: Building seemingly predictive models on random data” Claudia Perlich and Grzegorz Swirszcz</li>
-<li>“Super Learner” Mark J. van der Laan, Eric C. Polley, and Alan E. Hubbard</li>
+<li>“General oracle inequalities for model selection” Charles Mitchell
+and Sara van de Geer</li>
+<li>“On Cross-Validation and Stacking: Building seemingly predictive
+models on random data” Claudia Perlich and Grzegorz Swirszcz</li>
+<li>“Super Learner” Mark J. van der Laan, Eric C. Polley, and Alan E.
+Hubbard</li>
 </ul>
 <p>In fact you can think of vtreat as a super-learner.</p>
-<p>In super learning cross validation techniques are used to simulate having built sub-model predictions on novel data. The simulated out of sample-applications of these sub models (and not the sub models themselves) are then used as input data for the next stage learner. In future application the actual sub-models are applied and their immediate outputs is used by the super model.</p>
+<p>In super learning cross validation techniques are used to simulate
+having built sub-model predictions on novel data. The simulated out of
+sample-applications of these sub models (and not the sub models
+themselves) are then used as input data for the next stage learner. In
+future application the actual sub-models are applied and their immediate
+outputs is used by the super model.</p>
 <p><img src="superX.png" width="600"></p>
-<p>In vtreat the sub-models are single variable treatments and the outer model construction is left to the practitioner (using the cross-frames for simulation and not the treatmentplan). In application the treatment plan is used.</p>
+<p>In vtreat the sub-models are single variable treatments and the outer
+model construction is left to the practitioner (using the cross-frames
+for simulation and not the treatmentplan). In application the treatment
+plan is used.</p>
 <p><img src="vtreatX.png" width="600"></p>
 </div>
-<div id="example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h3>
-<p>Below is the example cross-run. The function <code>mkCrossFrameCExperiment</code> returns a treatment plan for use in preparing future data, and a cross-frame for use in fitting a model.</p>
+<div class="section level3">
+<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h3>
+<p>Below is the example cross-run. The function
+<code>mkCrossFrameCExperiment</code> returns a treatment plan for use in
+preparing future data, and a cross-frame for use in fitting a model.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">!=</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span><span class="op">(</span><span class="va">dTrain</span>,
-           <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span><span class="op">)</span>,
-           <span class="st">'y'</span>,<span class="cn">TRUE</span>,
-           rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 start initial treatment design Fri Jun 11 07:01:38 2021"
-## [1] " start cross frame work Fri Jun 11 07:01:38 2021"
-## [1] " vtreat::mkCrossFrameCExperiment done Fri Jun 11 07:01:39 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">!=</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">==</span><span class="st">'test'</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span><span class="op">(</span><span class="va">dTrain</span>,</span>
+<span>           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'xBad1'</span>,<span class="st">'xBad2'</span>,<span class="st">'xBad3'</span>,<span class="st">'xGood1'</span>,<span class="st">'xGood2'</span><span class="op">)</span>,</span>
+<span>           <span class="st">'y'</span>,<span class="cn">TRUE</span>,</span>
+<span>           rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problems</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 start initial treatment design Sat Aug 19 11:38:33 2023"</span></span>
+<span><span class="co">## [1] " start cross frame work Sat Aug 19 11:38:33 2023"</span></span>
+<span><span class="co">## [1] " vtreat::mkCrossFrameCExperiment done Sat Aug 19 11:38:33 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="va">prep</span><span class="op">$</span><span class="va">treatments</span>
-
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'varName'</span>,<span class="st">'sig'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="va">prep</span><span class="op">$</span><span class="va">treatments</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'varName'</span>,<span class="st">'sig'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
@@ -427,69 +468,73 @@
 </tbody>
 </table>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">prep</span><span class="op">$</span><span class="va">crossFrame</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "xBad1_catP" "xBad1_catB" "xBad2_catP" "xBad2_catB" "xBad3_catP"
-## [6] "xBad3_catB" "xGood1"     "xGood2"     "y"</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">prep</span><span class="op">$</span><span class="va">crossFrame</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "xBad1_catP" "xBad1_catB" "xBad2_catP" "xBad2_catB" "xBad3_catP"</span></span>
+<span><span class="co">## [6] "xBad3_catB" "xGood1"     "xGood2"     "y"</span></span></code></pre>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can</span>
-<span class="co"># prune on our own.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">pruneSig</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.1428571</code></pre>
+<code class="sourceCode R"><span><span class="co"># vtreat::mkCrossFrameCExperiment doesn't take a pruneSig argument, but we can</span></span>
+<span><span class="co"># prune on our own.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pruneSig</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.1428571</span></span></code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">newvars</span> <span class="op">&lt;-</span> <span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">varName</span><span class="op">[</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">sig</span><span class="op">&lt;=</span><span class="va">pruneSig</span><span class="op">]</span>
-<span class="co"># force in bad variables, to show we "belt and suspenders" deal with them</span>
-<span class="co"># in that things go well in the cross-frame even if they sneak past pruning</span>
-<span class="va">newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">union</a></span><span class="op">(</span><span class="va">newvars</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"xBad1_catB"</span>,<span class="st">"xBad2_catB"</span>,<span class="st">"xBad3_catB"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">newvars</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "xBad1_catB" "xBad2_catB" "xBad3_catB" "xGood1"     "xGood2"</code></pre>
+<code class="sourceCode R"><span><span class="va">newvars</span> <span class="op">&lt;-</span> <span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">varName</span><span class="op">[</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">$</span><span class="va">sig</span><span class="op">&lt;=</span><span class="va">pruneSig</span><span class="op">]</span></span>
+<span><span class="co"># force in bad variables, to show we "belt and suspenders" deal with them</span></span>
+<span><span class="co"># in that things go well in the cross-frame even if they sneak past pruning</span></span>
+<span><span class="va">newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">union</a></span><span class="op">(</span><span class="va">newvars</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xBad1_catB"</span>,<span class="st">"xBad2_catB"</span>,<span class="st">"xBad3_catB"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">newvars</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "xBad1_catB" "xBad2_catB" "xBad3_catB" "xGood1"     "xGood2"</span></span></code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="va">prep</span><span class="op">$</span><span class="va">crossFrame</span></code></pre></div>
-<p>We ensured the undesirable <code>xBad*_catB</code> variables back in to demonstrate that even if they sneak past a lose <code>pruneSig</code>, the crossframe lets the downstream model deal with them correctly. To ensure more consistent filtering of the complicated variables one can increase the <code>ncross</code> argument in <code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code>/<code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>.</p>
-<p>Now we fit the model to <em>the cross-frame</em> rather than to <code><a href="../reference/prepare.html">prepare(treatments, dTrain)</a></code> (the treated training data).</p>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="va">prep</span><span class="op">$</span><span class="va">crossFrame</span></span></code></pre></div>
+<p>We ensured the undesirable <code>xBad*_catB</code> variables back in
+to demonstrate that even if they sneak past a lose
+<code>pruneSig</code>, the crossframe lets the downstream model deal
+with them correctly. To ensure more consistent filtering of the
+complicated variables one can increase the <code>ncross</code> argument
+in
+<code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code>/<code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code>.</p>
+<p>Now we fit the model to <em>the cross-frame</em> rather than to
+<code>prepare(treatments, dTrain)</code> (the treated training
+data).</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'y'</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">newvars</span>,collapse<span class="op">=</span><span class="st">' + '</span><span class="op">)</span>,sep<span class="op">=</span><span class="st">' ~ '</span><span class="op">)</span>,
-          data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  </code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = paste("y", paste(newvars, collapse = " + "), sep = " ~ "), 
-##     family = binomial(link = "logit"), data = dTrainTreated)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.6349  -0.8718  -0.6592   1.1632   2.2616  
-## 
-## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.823469   0.069357 -11.873  &lt; 2e-16 ***
-## xBad1_catB  -0.027023   0.010167  -2.658  0.00786 ** 
-## xBad2_catB   0.007309   0.009871   0.740  0.45907    
-## xBad3_catB   0.031346   0.010194   3.075  0.00211 ** 
-## xGood1       0.390686   0.063926   6.111 9.87e-10 ***
-## xGood2       0.514013   0.064541   7.964 1.66e-15 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1662.7  on 1332  degrees of freedom
-## Residual deviance: 1535.9  on 1327  degrees of freedom
-## AIC: 1547.9
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
+<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'y'</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">newvars</span>,collapse<span class="op">=</span><span class="st">' + '</span><span class="op">)</span>,sep<span class="op">=</span><span class="st">' ~ '</span><span class="op">)</span>,</span>
+<span>          data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  </span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## glm(formula = paste("y", paste(newvars, collapse = " + "), sep = " ~ "), </span></span>
+<span><span class="co">##     family = binomial(link = "logit"), data = dTrainTreated)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##              Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept) -0.823469   0.069357 -11.873  &lt; 2e-16 ***</span></span>
+<span><span class="co">## xBad1_catB  -0.027023   0.010167  -2.658  0.00786 ** </span></span>
+<span><span class="co">## xBad2_catB   0.007309   0.009871   0.740  0.45907    </span></span>
+<span><span class="co">## xBad3_catB   0.031346   0.010194   3.075  0.00211 ** </span></span>
+<span><span class="co">## xGood1       0.390686   0.063926   6.111 9.87e-10 ***</span></span>
+<span><span class="co">## xGood2       0.514013   0.064541   7.964 1.66e-15 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 1662.7  on 1332  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 1535.9  on 1327  degrees of freedom</span></span>
+<span><span class="co">## AIC: 1547.9</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 3</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on train"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   858   54
-##   TRUE    325   96
-## [1] "accuracy 0.715678919729932"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on train"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   858   54</span></span>
+<span><span class="co">##   TRUE    325   96</span></span>
+<span><span class="co">## [1] "accuracy 0.715678919729932"</span></span></code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,
-                                pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,varRestriction<span class="op">=</span><span class="va">newvars</span><span class="op">)</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dTestTreated</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,</span>
+<span>                                pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,varRestriction<span class="op">=</span><span class="va">newvars</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dTestTreated</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">xBad1_catB</th>
@@ -551,16 +596,26 @@
 </tbody>
 </table>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on test"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   438   37
-##   TRUE    163   29
-## [1] "accuracy 0.700149925037481"</code></pre>
-<p>We again get the better 70% test accuracy. And this is a more statistically efficient technique as we didn’t have to restrict some data to calibration.</p>
-<p>The model fit to the cross-frame behaves similarly to the model produced via the process <em>f(CalibrationData, TrainData)</em>. Notice that the <code>xBad*_catB</code> variables fail to achieve significance in the downstream <code>glm</code> model, allowing that model to give them small coefficients and even (if need be) prune them out. This is the point of using a cross frame as we see in the first example the <code>xBad*_catB</code> are hard to remove if they make it to standard (non-cross) frames as they are hiding a lot of degrees of freedom from downstream modeling procedures.</p>
+<code class="sourceCode R"><span><span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on test"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   438   37</span></span>
+<span><span class="co">##   TRUE    163   29</span></span>
+<span><span class="co">## [1] "accuracy 0.700149925037481"</span></span></code></pre>
+<p>We again get the better 70% test accuracy. And this is a more
+statistically efficient technique as we didn’t have to restrict some
+data to calibration.</p>
+<p>The model fit to the cross-frame behaves similarly to the model
+produced via the process <em>f(CalibrationData, TrainData)</em>. Notice
+that the <code>xBad*_catB</code> variables fail to achieve significance
+in the downstream <code>glm</code> model, allowing that model to give
+them small coefficients and even (if need be) prune them out. This is
+the point of using a cross frame as we see in the first example the
+<code>xBad*_catB</code> are hard to remove if they make it to standard
+(non-cross) frames as they are hiding a lot of degrees of freedom from
+downstream modeling procedures.</p>
 </div>
 </div>
   </div>
@@ -576,11 +631,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by John Mount, Nina Zumel.</p>
+  <p></p>
+<p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -588,6 +645,8 @@
 
   
 
+
+  
 
   </body>
 </html>

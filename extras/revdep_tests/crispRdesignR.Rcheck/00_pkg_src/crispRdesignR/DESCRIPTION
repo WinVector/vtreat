@@ -1,0 +1,35 @@
+Package: crispRdesignR
+Type: Package
+Title: Guide Sequence Design for CRISPR/Cas9
+Version: 1.1.7
+Encoding: UTF-8
+Authors@R: c(
+    person("Dylan", "Beeber", email = "dylan.beeber@gmail.com", role = c("aut", "cre")),
+    person("Frederic", "Chain", role = "aut"))
+Description: Designs guide sequences for CRISPR/Cas9 genome editing and 
+    provides information on sequence features pertinent to guide 
+    efficiency. Sequence features include annotated off-target 
+    predictions in a user-selected genome and a predicted efficiency 
+    score based on the model described in Doench et al. (2016) 
+    <doi:10.1038/nbt.3437>. Users are able to import additional genomes 
+    and genome annotation files to use when searching and annotating 
+    off-target hits. All guide sequences and off-target data can be 
+    generated through the 'R' console with sgRNA_Design() or through 
+    'crispRdesignR's' user interface with crispRdesignRUI(). CRISPR 
+    (Clustered Regularly Interspaced Short Palindromic Repeats) and the 
+    associated protein Cas9 refer to a technique used in genome editing.
+URL: <https://github.com/dylanbeeber/crispRdesignR>
+License: GPL-3
+Depends: R (>= 2.10)
+Imports: Biostrings, gbm, GenomicRanges, BiocGenerics, IRanges,
+        GenomeInfoDb, S4Vectors, rtracklayer, stringr, vtreat, shiny,
+        DT
+Suggests: BSgenome.Scerevisiae.UCSC.sacCer3
+RoxygenNote: 7.1.0
+NeedsCompilation: no
+Packaged: 2023-04-11 20:33:17 UTC; admin
+Author: Dylan Beeber [aut, cre],
+  Frederic Chain [aut]
+Maintainer: Dylan Beeber <dylan.beeber@gmail.com>
+Repository: CRAN
+Date/Publication: 2023-04-12 09:50:02 UTC

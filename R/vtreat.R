@@ -18,9 +18,7 @@
 #'   \item \code{vignette(package='vtreat')}
 #'   \item Website: \url{https://github.com/WinVector/vtreat} }
 #'
-#' @docType package
-#' @name vtreat
-NULL
+"_PACKAGE"
 
 
 #' @importFrom stats aggregate anova as.formula binomial chisq.test fisher.test glm lm lm.wfit pchisq pf quantile

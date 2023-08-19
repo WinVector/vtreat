@@ -1,0 +1,29 @@
+* using log directory ‘/Users/johnmount/Documents/work/vtreat/extras/revdep_tests/crispRdesignR.Rcheck’
+* using R version 4.3.0 (2023-04-21)
+* using platform: x86_64-apple-darwin20 (64-bit)
+* R was compiled by
+    Apple clang version 14.0.3 (clang-1403.0.22.14.1)
+    GNU Fortran (GCC) 12.2.0
+* running under: macOS Ventura 13.4.1
+* using session charset: UTF-8
+* using options ‘--no-manual --no-vignettes’
+* checking for file ‘crispRdesignR/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘crispRdesignR’ version ‘1.1.7’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... ERROR
+Packages required but not available:
+  'Biostrings', 'GenomicRanges', 'BiocGenerics', 'IRanges',
+  'GenomeInfoDb', 'S4Vectors', 'rtracklayer'
+
+Package suggested but not available: ‘BSgenome.Scerevisiae.UCSC.sacCer3’
+
+The suggested packages are required for a complete check.
+Checking can be attempted without them by setting the environment
+variable _R_CHECK_FORCE_SUGGESTS_ to a false value.
+
+See section ‘The DESCRIPTION file’ in the ‘Writing R Extensions’
+manual.
+* DONE
+Status: 1 ERROR

@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/vtreat.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -97,7 +93,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/" class="external-link">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,300 +105,370 @@
 
       
 
-      </header><script src="vtreatOverfit_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat overfit</h1>
-                        <h4 class="author">John Mount, Nina Zumel</h4>
+                        <h4 data-toc-skip class="author">John Mount,
+Nina Zumel</h4>
             
-            <h4 class="date">2021-06-11</h4>
+            <h4 data-toc-skip class="date">2023-08-19</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatOverfit.Rmd"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/HEAD/vignettes/vtreatOverfit.Rmd" class="external-link"><code>vignettes/vtreatOverfit.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatOverfit.Rmd</code></div>
 
     </div>
 
     
     
-<p>Example showing safe “best practice” use of the <a href="https://cran.r-project.org/package=vtreat">‘vtreat’</a> variable preparation library. For more on <code>vtreat</code> see <a href="https://github.com/WinVector/vtreat">here</a>.</p>
-<p>Below we generate an example data frame with no relation between x and y. We are using a synthetic data set so we know what the “right answer is” (no signal). False fitting on no-signal variables is bad for several reasons:</p>
+<p>Example showing safe “best practice” use of the <a href="https://cran.r-project.org/package=vtreat" class="external-link">‘vtreat’</a> variable
+preparation library. For more on <code>vtreat</code> see <a href="https://github.com/WinVector/vtreat" class="external-link">here</a>.</p>
+<p>Below we generate an example data frame with no relation between x
+and y. We are using a synthetic data set so we know what the “right
+answer is” (no signal). False fitting on no-signal variables is bad for
+several reasons:</p>
 <ul>
-<li>It creates undesirable biases in variable quality estimates and in subsequent models.</li>
+<li>It creates undesirable biases in variable quality estimates and in
+subsequent models.</li>
 <li>It “hides degrees of freedom” from subsequent models.</li>
-<li>It creates the false impression you have a good result (which you may fail to falsify).</li>
-<li>Complex bad variables can starve out simple weak good variables.</li>
+<li>It creates the false impression you have a good result (which you
+may fail to falsify).</li>
+<li>Complex bad variables can starve out simple weak good
+variables.</li>
 </ul>
-<p>This example shows things we don’t want to happen, and then the additional precautions that help prevent them.</p>
+<p>This example shows things we don’t want to happen, and then the
+additional precautions that help prevent them.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">22626</span><span class="op">)</span>
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="fl">2000</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="co"># independent variable.</span>
-<span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0.5</span>  <span class="co"># the quantity to be predicted, notice: independent of variables.</span>
-<span class="va">d</span><span class="op">$</span><span class="va">rgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">100</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co"># the random group used for splitting the data set, not a variable.</span></code></pre></div>
-<div id="bad-practice-using-the-same-data-to-treat-and-to-train" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bad-practice-using-the-same-data-to-treat-and-to-train" class="anchor"></a>Bad Practice: Using the same data to treat and to train</h2>
-<p>Using the same set of data to prepare the variable encoding and train the model can lead to the false belief (derived from the training set) that the model fit well. This is largely due to the treated variable appearing to consume only one degree of freedom, when it in fact consumes many more. In many cases a reasonable setting of <code>pruneSig</code> (say 0.01) will help against a noise variable being considered desirable, but selected variables may still be mis-used by downstream modeling.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">22626</span><span class="op">)</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'level'</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>,<span class="fl">2000</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="co"># independent variable.</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0.5</span>  <span class="co"># the quantity to be predicted, notice: independent of variables.</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co"># the random group used for splitting the data set, not a variable.</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="bad-practice-using-the-same-data-to-treat-and-to-train">Bad Practice: Using the same data to treat and to train<a class="anchor" aria-label="anchor" href="#bad-practice-using-the-same-data-to-treat-and-to-train"></a>
+</h2>
+<p>Using the same set of data to prepare the variable encoding and train
+the model can lead to the false belief (derived from the training set)
+that the model fit well. This is largely due to the treated variable
+appearing to consume only one degree of freedom, when it in fact
+consumes many more. In many cases a reasonable setting of
+<code>pruneSig</code> (say 0.01) will help against a noise variable
+being considered desirable, but selected variables may still be mis-used
+by downstream modeling.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">80</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&gt;</span><span class="fl">80</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/">'vtreat'</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## Loading required package: wrapr</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">80</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">dTest</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&gt;</span><span class="fl">80</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/" class="external-link">'vtreat'</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: wrapr</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,
-  rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:43 2021"
-## [1] "designing treatments Fri Jun 11 07:01:43 2021"
-## [1] " have initial level statistics Fri Jun 11 07:01:43 2021"
-## [1] " scoring treatments Fri Jun 11 07:01:43 2021"
-## [1] "have treatment plan Fri Jun 11 07:01:43 2021"
-## [1] "rescoring complex variables Fri Jun 11 07:01:43 2021"
-## [1] "done rescoring complex variables Fri Jun 11 07:01:44 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,</span>
+<span>  rareCount<span class="op">=</span><span class="fl">0</span> <span class="co"># Note: usually want rareCount&gt;0, setting to zero to illustrate problem</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 inspecting inputs Sat Aug 19 11:38:38 2023"</span></span>
+<span><span class="co">## [1] "designing treatments Sat Aug 19 11:38:38 2023"</span></span>
+<span><span class="co">## [1] " have initial level statistics Sat Aug 19 11:38:38 2023"</span></span>
+<span><span class="co">## [1] " scoring treatments Sat Aug 19 11:38:38 2023"</span></span>
+<span><span class="co">## [1] "have treatment plan Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] "rescoring complex variables Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] "done rescoring complex variables Sat Aug 19 11:38:39 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,
-  pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## Warning in prepare.treatmentplan(treatments, dTrain, pruneSig = c()):
-## possibly called prepare() on same data frame as designTreatments*()/
-## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
-## mkCrossFrame*Experiment$crossFrame.</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,</span>
+<span>  pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: usually want pruneSig to be a small fraction, setting to null to illustrate problem</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in prepare.treatmentplan(treatments, dTrain, pruneSig = c()): possibly</span></span>
+<span><span class="co">## called prepare() on same data frame as</span></span>
+<span><span class="co">## designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To</span></span>
+<span><span class="co">## avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x_catB</span>,data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  <span class="co"># notice low residual deviance</span></code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = y ~ x_catB, family = binomial(link = "logit"), 
-##     data = dTrainTreated)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.79811  -0.75642   0.00684   0.75617   1.89724  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  0.03361    0.07170   0.469    0.639    
-## x_catB       1.00624    0.11442   8.794   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 2266.1  on 1634  degrees of freedom
-## Residual deviance: 1131.2  on 1633  degrees of freedom
-## AIC: 1135.2
-## 
-## Number of Fisher Scoring iterations: 8</code></pre>
+<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x_catB</span>,data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span>  <span class="co"># notice low residual deviance</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## glm(formula = y ~ x_catB, family = binomial(link = "logit"), </span></span>
+<span><span class="co">##     data = dTrainTreated)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##             Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept)  0.03361    0.07170   0.469    0.639    </span></span>
+<span><span class="co">## x_catB       1.00624    0.11442   8.794   &lt;2e-16 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 2266.1  on 1634  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 1131.2  on 1633  degrees of freedom</span></span>
+<span><span class="co">## AIC: 1135.2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 8</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-
-<span class="co"># devtools::install_github("WinVector/WVPlots")</span>
-<span class="co"># library('WVPlots')</span>
-<span class="va">plotRes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>,<span class="va">predName</span>,<span class="va">yName</span>,<span class="va">title</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">title</span><span class="op">)</span>
-  <span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span>truth<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">yName</span><span class="op">]</span><span class="op">]</span>,pred<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">predName</span><span class="op">]</span><span class="op">]</span><span class="op">&gt;</span><span class="fl">0.5</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span>
-  <span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                     <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">tab</span><span class="op">[</span><span class="va">i</span>,<span class="va">i</span><span class="op">]</span>,<span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">acc</span> <span class="op">&lt;-</span> <span class="va">diag</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span>
-<span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span>
-<span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span>
-<span class="co">#  }</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'accuracy'</span>,<span class="va">acc</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="co"># evaluate model on training</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on train"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   556  248
-##   TRUE     92  739
-## [1] "accuracy 0.792048929663609"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># devtools::install_github("WinVector/WVPlots")</span></span>
+<span><span class="co"># library('WVPlots')</span></span>
+<span><span class="va">plotRes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>,<span class="va">predName</span>,<span class="va">yName</span>,<span class="va">title</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">title</span><span class="op">)</span></span>
+<span>  <span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>truth<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">yName</span><span class="op">]</span><span class="op">]</span>,pred<span class="op">=</span><span class="va">d</span><span class="op">[[</span><span class="va">predName</span><span class="op">]</span><span class="op">]</span><span class="op">&gt;</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span>
+<span>  <span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                     <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">tab</span><span class="op">[</span><span class="va">i</span>,<span class="va">i</span><span class="op">]</span>,<span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">acc</span> <span class="op">&lt;-</span> <span class="va">diag</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span>
+<span><span class="co">#  if(requireNamespace("WVPlots",quietly=TRUE)) {</span></span>
+<span><span class="co">#     print(WVPlots::ROCPlot(d,predName,yName,title))</span></span>
+<span><span class="co">#  }</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'accuracy'</span>,<span class="va">acc</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># evaluate model on training</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on train'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on train"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   556  248</span></span>
+<span><span class="co">##   TRUE     92  739</span></span>
+<span><span class="co">## [1] "accuracy 0.792048929663609"</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># evaluate model on test</span>
-<span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model1 on test"
-##        pred
-## truth   FALSE TRUE
-##   FALSE    57  123
-##   TRUE     65  120
-## [1] "accuracy 0.484931506849315"</code></pre>
-<p>The above is bad: we saw a “significant” model fit on training data (even though there is no relation to be found). This means the treated training data can be confusing to machine learning techniques and to the analyst. The issue is that the training data is no longer exchangeable with the test data because the training data was used to build the variable encodings. One way to avoid this is to not use the training data for variable encoding construction, but instead use a third set for this task.</p>
-<div id="what-went-wrong" class="section level3">
-<h3 class="hasAnchor">
-<a href="#what-went-wrong" class="anchor"></a>What went wrong?</h3>
-<p>Notice that vtreat did not think there was any usable signal, and did not want us to use the variables: the values in <code>treatments$scoreFrame$sig</code> are all much larger than a nominally acceptable significance level like 0.05. The variables stayed in our model because we did not prune them (<em>ie</em> we set <code>pruneSig=c()</code>). Also notice we set <code>rareCount=0</code>, which allows the use of very rare levels (which help drive the problem).</p>
+<code class="sourceCode R"><span><span class="co"># evaluate model on test</span></span>
+<span><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dTest</span><span class="op">$</span><span class="va">predM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m1</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM1'</span>,<span class="st">'y'</span>,<span class="st">'model1 on test'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model1 on test"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE    57  123</span></span>
+<span><span class="co">##   TRUE     65  120</span></span>
+<span><span class="co">## [1] "accuracy 0.484931506849315"</span></span></code></pre>
+<p>The above is bad: we saw a “significant” model fit on training data
+(even though there is no relation to be found). This means the treated
+training data can be confusing to machine learning techniques and to the
+analyst. The issue is that the training data is no longer exchangeable
+with the test data because the training data was used to build the
+variable encodings. One way to avoid this is to not use the training
+data for variable encoding construction, but instead use a third set for
+this task.</p>
+<div class="section level3">
+<h3 id="what-went-wrong">What went wrong?<a class="anchor" aria-label="anchor" href="#what-went-wrong"></a>
+</h3>
+<p>Notice that vtreat did not think there was any usable signal, and did
+not want us to use the variables: the values in
+<code>treatments$scoreFrame$sig</code> are all much larger than a
+nominally acceptable significance level like 0.05. The variables stayed
+in our model because we did not prune them (<em>ie</em> we set
+<code>pruneSig=c()</code>). Also notice we set <code>rareCount=0</code>,
+which allows the use of very rare levels (which help drive the
+problem).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">)</span></code></pre></div>
-<pre><code>##   varName varMoves          rsq        sig needsSplit extraModelDegrees
-## 1  x_catP     TRUE 0.0001174834 0.60586892       TRUE               803
-## 2  x_catB     TRUE 0.0020852084 0.02972052       TRUE               803
-##   origName code default_threshold recommended
-## 1        x catP               0.5       FALSE
-## 2        x catB               0.5        TRUE</code></pre>
-<p>Subsequently, the down-stream machine learning (in this case a standard logistic regression) used the variable incorrectly. The modeling algorithm gave the variable a non-negligible coefficient (around 3) that it thought was reliably bounded away from zero; it also believed that the resulting model almost halved deviance (when in fact it explained nothing). So any variables that do get through may have distributional issues (and misleadingly low apparent degrees of freedom).</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   varName varMoves          rsq        sig needsSplit extraModelDegrees</span></span>
+<span><span class="co">## 1  x_catP     TRUE 0.0001174834 0.60586892       TRUE               803</span></span>
+<span><span class="co">## 2  x_catB     TRUE 0.0020852084 0.02972052       TRUE               803</span></span>
+<span><span class="co">##   origName code default_threshold recommended</span></span>
+<span><span class="co">## 1        x catP               0.5       FALSE</span></span>
+<span><span class="co">## 2        x catB               0.5        TRUE</span></span></code></pre>
+<p>Subsequently, the down-stream machine learning (in this case a
+standard logistic regression) used the variable incorrectly. The
+modeling algorithm gave the variable a non-negligible coefficient
+(around 3) that it thought was reliably bounded away from zero; it also
+believed that the resulting model almost halved deviance (when in fact
+it explained nothing). So any variables that do get through may have
+distributional issues (and misleadingly low apparent degrees of
+freedom).</p>
 <p><strong>Rare levels of a categorical variable</strong></p>
-<p>The biggest contributors to this distributional issue tend to be rare levels of categorical variables. Since the individual levels are rare we have unreliable estimates for their effects, and if there are very many of them we may see quite a large effect in aggregate. To help combat this we have a control called <code>rareLevels</code>. Any level that is observed no more than <code>rareLevels</code> times during training is re-mapped to a new special level called <em>rare</em> and not allowed to directly contribute (i.e. can not generate unique indicator columns, and doesn’t have a direct effect on <code>catB</code> or <code>catN</code> encodings). If all the rare levels have a distinct behavior after grouping, the <em>rare</em> level can capture that.</p>
-<p><strong>Impact-coding of categorical variables with many levels</strong></p>
-<p>Another undesirable effect is over-estimating significance of derived variable fit for <code>catB</code> and <code>catN</code> impact-coded variables. To fight this vtreat attempts to estimate out of sample or cross-validated effect significances (when it has enough data). With enough data, setting the <code>pruneSig</code> parameter during <code><a href="../reference/prepare.html">prepare()</a></code> will help remove noise variables. One can set <code>pruneSig</code> to something like <em>1/number-of-columns</em> to ensure that with high probability only an constant number of truly useless variables make it to later modeling. However, the significance of a given effect size for variables that actually have some signal (i.e. non-noise variables) can still be sensitive to in/out sample scoring and the hiding of degrees of freedom that occurs when a large categorical variable (that represents a large number of degrees of freedom) is re-coded as an impact or effect (which appears to have only a single degree of freedom).</p>
-<p>We next show how to avoid these undesirable illusory effects: better practice in partitioning and using training data. We are doing more with our data (essentially chaining models), so we have to take a bit more care with our data.</p>
+<p>The biggest contributors to this distributional issue tend to be rare
+levels of categorical variables. Since the individual levels are rare we
+have unreliable estimates for their effects, and if there are very many
+of them we may see quite a large effect in aggregate. To help combat
+this we have a control called <code>rareLevels</code>. Any level that is
+observed no more than <code>rareLevels</code> times during training is
+re-mapped to a new special level called <em>rare</em> and not allowed to
+directly contribute (i.e. can not generate unique indicator columns, and
+doesn’t have a direct effect on <code>catB</code> or <code>catN</code>
+encodings). If all the rare levels have a distinct behavior after
+grouping, the <em>rare</em> level can capture that.</p>
+<p><strong>Impact-coding of categorical variables with many
+levels</strong></p>
+<p>Another undesirable effect is over-estimating significance of derived
+variable fit for <code>catB</code> and <code>catN</code> impact-coded
+variables. To fight this vtreat attempts to estimate out of sample or
+cross-validated effect significances (when it has enough data). With
+enough data, setting the <code>pruneSig</code> parameter during
+<code><a href="../reference/prepare.html">prepare()</a></code> will help remove noise variables. One can set
+<code>pruneSig</code> to something like <em>1/number-of-columns</em> to
+ensure that with high probability only an constant number of truly
+useless variables make it to later modeling. However, the significance
+of a given effect size for variables that actually have some signal
+(i.e. non-noise variables) can still be sensitive to in/out sample
+scoring and the hiding of degrees of freedom that occurs when a large
+categorical variable (that represents a large number of degrees of
+freedom) is re-coded as an impact or effect (which appears to have only
+a single degree of freedom).</p>
+<p>We next show how to avoid these undesirable illusory effects: better
+practice in partitioning and using training data. We are doing more with
+our data (essentially chaining models), so we have to take a bit more
+care with our data.</p>
 </div>
 </div>
-<div id="correct-practice-12-use-different-data-to-treat-and-train" class="section level2">
-<h2 class="hasAnchor">
-<a href="#correct-practice-12-use-different-data-to-treat-and-train" class="anchor"></a>Correct Practice 1/2: Use different data to treat and train</h2>
-<p>Below is part of our suggested work pattern: coding/train/test split.</p>
+<div class="section level2">
+<h2 id="correct-practice-12-use-different-data-to-treat-and-train">Correct Practice 1/2: Use different data to treat and train<a class="anchor" aria-label="anchor" href="#correct-practice-12-use-different-data-to-treat-and-train"></a>
+</h2>
+<p>Below is part of our suggested work pattern: coding/train/test
+split.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dCode</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">20</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&gt;</span><span class="fl">20</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">80</span><span class="op">)</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dCode</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,
-                                        rareCount<span class="op">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
-                                        rareSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note set this to something like 0.3</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 inspecting inputs Fri Jun 11 07:01:44 2021"
-## [1] "designing treatments Fri Jun 11 07:01:44 2021"
-## [1] " have initial level statistics Fri Jun 11 07:01:44 2021"
-## [1] " scoring treatments Fri Jun 11 07:01:44 2021"
-## [1] "have treatment plan Fri Jun 11 07:01:44 2021"
-## [1] "rescoring complex variables Fri Jun 11 07:01:44 2021"
-## [1] "done rescoring complex variables Fri Jun 11 07:01:44 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">dCode</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">20</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&gt;</span><span class="fl">20</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">80</span><span class="op">)</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/designTreatmentsC.html">designTreatmentsC</a></span><span class="op">(</span><span class="va">dCode</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,</span>
+<span>                                        rareCount<span class="op">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span></span>
+<span>                                        rareSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note set this to something like 0.3</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 inspecting inputs Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] "designing treatments Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] " have initial level statistics Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] " scoring treatments Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] "have treatment plan Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] "rescoring complex variables Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] "done rescoring complex variables Sat Aug 19 11:38:39 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,
-                                 pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span>
-<span class="op">)</span>
-<span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x_catB</span>,data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span> <span class="co"># notice high residual deviance</span></code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = y ~ x_catB, family = binomial(link = "logit"), 
-##     data = dTrainTreated)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -1.254  -1.182   1.103   1.173   1.246  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)  0.01040    0.05746   0.181    0.856
-## x_catB       0.01713    0.01054   1.625    0.104
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1687.1  on 1216  degrees of freedom
-## Residual deviance: 1684.4  on 1215  degrees of freedom
-## AIC: 1688.4
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTrain</span>,</span>
+<span>                                 pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Note: set this to filter, like 0.05 or 1/nvars</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x_catB</span>,data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span> <span class="co"># notice high residual deviance</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## glm(formula = y ~ x_catB, family = binomial(link = "logit"), </span></span>
+<span><span class="co">##     data = dTrainTreated)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##             Estimate Std. Error z value Pr(&gt;|z|)</span></span>
+<span><span class="co">## (Intercept)  0.01040    0.05746   0.181    0.856</span></span>
+<span><span class="co">## x_catB       0.01713    0.01054   1.625    0.104</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 1687.1  on 1216  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 1684.4  on 1215  degrees of freedom</span></span>
+<span><span class="co">## AIC: 1688.4</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 3</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span><span class="op">$</span><span class="va">predM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m2</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on train'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model2 on train"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   105  499
-##   TRUE     92  521
-## [1] "accuracy 0.514379622021364"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span><span class="op">$</span><span class="va">predM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m2</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on train'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model2 on train"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   105  499</span></span>
+<span><span class="co">##   TRUE     92  521</span></span>
+<span><span class="co">## [1] "accuracy 0.514379622021364"</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># We do not advise creating dCodeTreated for any purpose other than</span>
-<span class="co"># diagnostic plotting.  You should not use the treated coding data</span>
-<span class="co"># for anything (as that would undo the benefit of having a separate</span>
-<span class="co"># coding data subset).</span>
-<span class="va">dCodeTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dCode</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in prepare.treatmentplan(treatments, dCode, pruneSig = c()):
-## possibly called prepare() on same data frame as designTreatments*()/
-## mkCrossFrame*Experiment(), this can lead to over-fit. To avoid this, please use
-## mkCrossFrame*Experiment$crossFrame.</code></pre>
+<code class="sourceCode R"><span><span class="co"># We do not advise creating dCodeTreated for any purpose other than</span></span>
+<span><span class="co"># diagnostic plotting.  You should not use the treated coding data</span></span>
+<span><span class="co"># for anything (as that would undo the benefit of having a separate</span></span>
+<span><span class="co"># coding data subset).</span></span>
+<span><span class="va">dCodeTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dCode</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in prepare.treatmentplan(treatments, dCode, pruneSig = c()): possibly</span></span>
+<span><span class="co">## called prepare() on same data frame as</span></span>
+<span><span class="co">## designTreatments*()/mkCrossFrame*Experiment(), this can lead to over-fit.  To</span></span>
+<span><span class="co">## avoid this, please use mkCrossFrame*Experiment$crossFrame.</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dCode</span><span class="op">$</span><span class="va">predM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m2</span>,newdata<span class="op">=</span><span class="va">dCodeTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dCode</span>,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on coding set'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model2 on coding set"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   174   26
-##   TRUE      3  215
-## [1] "accuracy 0.930622009569378"</code></pre>
+<code class="sourceCode R"><span><span class="va">dCode</span><span class="op">$</span><span class="va">predM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m2</span>,newdata<span class="op">=</span><span class="va">dCodeTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dCode</span>,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on coding set'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model2 on coding set"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   174   26</span></span>
+<span><span class="co">##   TRUE      3  215</span></span>
+<span><span class="co">## [1] "accuracy 0.930622009569378"</span></span></code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dTest</span><span class="op">$</span><span class="va">predM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m2</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on test set'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model2 on test set"
-##        pred
-## truth   FALSE TRUE
-##   FALSE    26  154
-##   TRUE     42  143
-## [1] "accuracy 0.463013698630137"</code></pre>
-<p>In the above example we saw training and test performance are similar – and equally poor, as they should be since there is no signal. Though it didn’t happen in this case, note the coding set can (falsely) show high performance. This is the bad behavior we wanted to isolate out of the training set.</p>
-<p>Remember, the goal isn’t good performance on training- it is good performance on future data (simulated by test). So doing well on training and bad on test is worse than doing bad on both test and training.</p>
-<p>There are, of course, other methods to avoid the bias introduced in using the same data to both treat/encode the variables and to train the model. vtreat incorporates a number of these methods, including smoothing (controlled through <code>smFactor</code>) and pruning of rare levels (controlled through <code>rareSig</code>).</p>
+<code class="sourceCode R"><span><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dTest</span><span class="op">$</span><span class="va">predM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m2</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM2'</span>,<span class="st">'y'</span>,<span class="st">'model2 on test set'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model2 on test set"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE    26  154</span></span>
+<span><span class="co">##   TRUE     42  143</span></span>
+<span><span class="co">## [1] "accuracy 0.463013698630137"</span></span></code></pre>
+<p>In the above example we saw training and test performance are similar
+– and equally poor, as they should be since there is no signal. Though
+it didn’t happen in this case, note the coding set can (falsely) show
+high performance. This is the bad behavior we wanted to isolate out of
+the training set.</p>
+<p>Remember, the goal isn’t good performance on training- it is good
+performance on future data (simulated by test). So doing well on
+training and bad on test is worse than doing bad on both test and
+training.</p>
+<p>There are, of course, other methods to avoid the bias introduced in
+using the same data to both treat/encode the variables and to train the
+model. vtreat incorporates a number of these methods, including
+smoothing (controlled through <code>smFactor</code>) and pruning of rare
+levels (controlled through <code>rareSig</code>).</p>
 </div>
-<div id="correct-practice-22-use-simulated-out-of-sample-methods-cross-methods" class="section level2">
-<h2 class="hasAnchor">
-<a href="#correct-practice-22-use-simulated-out-of-sample-methods-cross-methods" class="anchor"></a>Correct Practice 2/2: Use simulated out of sample methods (cross methods)</h2>
-<p>Another effective technique: cross-constructed training frames can also be accessed by using <code>mkCrossFrameCExperiment</code> or <code>mkCrossFrameNExperiment</code>, which we demonstrate here.</p>
+<div class="section level2">
+<h2 id="correct-practice-22-use-simulated-out-of-sample-methods-cross-methods">Correct Practice 2/2: Use simulated out of sample methods (cross
+methods)<a class="anchor" aria-label="anchor" href="#correct-practice-22-use-simulated-out-of-sample-methods-cross-methods"></a>
+</h2>
+<p>Another effective technique: cross-constructed training frames can
+also be accessed by using <code>mkCrossFrameCExperiment</code> or
+<code>mkCrossFrameNExperiment</code>, which we demonstrate here.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">80</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">xdat</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,
-                                  rareCount<span class="op">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span>
-                                  rareSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 start initial treatment design Fri Jun 11 07:01:44 2021"
-## [1] " start cross frame work Fri Jun 11 07:01:44 2021"
-## [1] " vtreat::mkCrossFrameCExperiment done Fri Jun 11 07:01:44 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrain</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">rgroup</span><span class="op">&lt;=</span><span class="fl">80</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">xdat</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameCExperiment.html">mkCrossFrameCExperiment</a></span><span class="op">(</span><span class="va">dTrain</span>,<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="cn">TRUE</span>,</span>
+<span>                                  rareCount<span class="op">=</span><span class="fl">0</span>,  <span class="co"># Note set this to something larger, like 5</span></span>
+<span>                                  rareSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 start initial treatment design Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] " start cross frame work Sat Aug 19 11:38:39 2023"</span></span>
+<span><span class="co">## [1] " vtreat::mkCrossFrameCExperiment done Sat Aug 19 11:38:39 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="va">xdat</span><span class="op">$</span><span class="va">treatments</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">)</span></code></pre></div>
-<pre><code>##   varName varMoves          rsq          sig needsSplit extraModelDegrees
-## 1  x_catP     TRUE 2.772417e-05 0.8020822863       TRUE               803
-## 2  x_catB     TRUE 5.776072e-03 0.0002969686       TRUE               803
-##   origName code default_threshold recommended
-## 1        x catP               0.5       FALSE
-## 2        x catB               0.5        TRUE</code></pre>
+<code class="sourceCode R"><span><span class="va">treatments</span> <span class="op">&lt;-</span> <span class="va">xdat</span><span class="op">$</span><span class="va">treatments</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   varName varMoves          rsq          sig needsSplit extraModelDegrees</span></span>
+<span><span class="co">## 1  x_catP     TRUE 2.772417e-05 0.8020822863       TRUE               803</span></span>
+<span><span class="co">## 2  x_catB     TRUE 5.776072e-03 0.0002969686       TRUE               803</span></span>
+<span><span class="co">##   origName code default_threshold recommended</span></span>
+<span><span class="co">## 1        x catP               0.5       FALSE</span></span>
+<span><span class="co">## 2        x catB               0.5        TRUE</span></span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="va">xdat</span><span class="op">$</span><span class="va">crossFrame</span>
-<span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x_catB</span>,data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">)</span> <span class="co"># notice high residual deviance</span></code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = y ~ x_catB, family = binomial(link = "logit"), 
-##     data = dTrainTreated)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -1.226  -1.191   1.131   1.164   1.199  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept) 0.031450   0.049508   0.635    0.525
-## x_catB      0.007853   0.007422   1.058    0.290
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 2266.1  on 1634  degrees of freedom
-## Residual deviance: 2265.0  on 1633  degrees of freedom
-## AIC: 2269
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span> <span class="op">&lt;-</span> <span class="va">xdat</span><span class="op">$</span><span class="va">crossFrame</span></span>
+<span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x_catB</span>,data<span class="op">=</span><span class="va">dTrainTreated</span>,family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">)</span> <span class="co"># notice high residual deviance</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## glm(formula = y ~ x_catB, family = binomial(link = "logit"), </span></span>
+<span><span class="co">##     data = dTrainTreated)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##             Estimate Std. Error z value Pr(&gt;|z|)</span></span>
+<span><span class="co">## (Intercept) 0.031450   0.049508   0.635    0.525</span></span>
+<span><span class="co">## x_catB      0.007853   0.007422   1.058    0.290</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 2266.1  on 1634  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 2265.0  on 1633  degrees of freedom</span></span>
+<span><span class="co">## AIC: 2269</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 3</span></span></code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTrainTreated</span><span class="op">$</span><span class="va">predM3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m3</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrainTreated</span>,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on train'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model3 on train"
-##        pred
-## truth   FALSE TRUE
-##   FALSE   184  620
-##   TRUE    205  626
-## [1] "accuracy 0.495412844036697"</code></pre>
+<code class="sourceCode R"><span><span class="va">dTrainTreated</span><span class="op">$</span><span class="va">predM3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m3</span>,newdata<span class="op">=</span><span class="va">dTrainTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTrainTreated</span>,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on train'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model3 on train"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE   184  620</span></span>
+<span><span class="co">##   TRUE    205  626</span></span>
+<span><span class="co">## [1] "accuracy 0.495412844036697"</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dTest</span><span class="op">$</span><span class="va">predM3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m3</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span>
-<span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on test set'</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "model3 on test set"
-##        pred
-## truth   FALSE TRUE
-##   FALSE    44  136
-##   TRUE     53  132
-## [1] "accuracy 0.482191780821918"</code></pre>
-<p>Notice the glm significance is off, but the model quality is similar on train and test, and the scoreFrame significance is a correct indication.</p>
+<code class="sourceCode R"><span><span class="va">dTestTreated</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">treatments</span>,<span class="va">dTest</span>,pruneSig<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dTest</span><span class="op">$</span><span class="va">predM3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m3</span>,newdata<span class="op">=</span><span class="va">dTestTreated</span>,type<span class="op">=</span><span class="st">'response'</span><span class="op">)</span></span>
+<span><span class="fu">plotRes</span><span class="op">(</span><span class="va">dTest</span>,<span class="st">'predM3'</span>,<span class="st">'y'</span>,<span class="st">'model3 on test set'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "model3 on test set"</span></span>
+<span><span class="co">##        pred</span></span>
+<span><span class="co">## truth   FALSE TRUE</span></span>
+<span><span class="co">##   FALSE    44  136</span></span>
+<span><span class="co">##   TRUE     53  132</span></span>
+<span><span class="co">## [1] "accuracy 0.482191780821918"</span></span></code></pre>
+<p>Notice the glm significance is off, but the model quality is similar
+on train and test, and the scoreFrame significance is a correct
+indication.</p>
 </div>
   </div>
 
@@ -417,11 +483,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by John Mount, Nina Zumel.</p>
+  <p></p>
+<p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -429,6 +497,8 @@
 
   
 
+
+  
 
   </body>
 </html>

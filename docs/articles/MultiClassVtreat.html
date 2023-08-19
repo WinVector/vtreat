@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/vtreat.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -97,7 +93,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/" class="external-link">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,47 +105,52 @@
 
       
 
-      </header><script src="MultiClassVtreat_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Multi Class vtreat</h1>
-                        <h4 class="author">John Mount</h4>
+                        <h4 data-toc-skip class="author">John Mount</h4>
             
-            <h4 class="date">2021-06-11</h4>
+            <h4 data-toc-skip class="date">2023-08-19</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/MultiClassVtreat.Rmd"><code>vignettes/MultiClassVtreat.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/HEAD/vignettes/MultiClassVtreat.Rmd" class="external-link"><code>vignettes/MultiClassVtreat.Rmd</code></a></small>
       <div class="hidden name"><code>MultiClassVtreat.Rmd</code></div>
 
     </div>
 
     
     
-<p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a> can now effectively prepare data for multi-class classification or multinomial modeling.</p>
-<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html"><code>mkCrossFrameMExperiment()</code></a> and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html"><code>prepare.multinomial_plan()</code></a>) are now part of <code>vtreat</code>.</p>
-<p>Let’s work a specific example: trying to model multi-class <code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
+<p><a href="https://github.com/WinVector/vtreat" class="external-link"><code>vtreat</code></a>
+can now effectively prepare data for multi-class classification or
+multinomial modeling.</p>
+<p>The two functions needed (<a href="https://winvector.github.io/vtreat/reference/mkCrossFrameMExperiment.html" class="external-link"><code>mkCrossFrameMExperiment()</code></a>
+and the <code>S3</code> method <a href="https://winvector.github.io/vtreat/reference/prepare.multinomial_plan.html" class="external-link"><code>prepare.multinomial_plan()</code></a>)
+are now part of <code>vtreat</code>.</p>
+<p>Let’s work a specific example: trying to model multi-class
+<code>y</code> as a function of <code>x1</code> and <code>x2</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/">"vtreat"</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## Loading required package: wrapr</code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/" class="external-link">"vtreat"</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: wrapr</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># create example data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">326346</span><span class="op">)</span>
-<span class="va">sym_bonuses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">sym_bonuses</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span><span class="op">)</span>
-<span class="va">sym_bonuses3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">sym_bonuses3</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sym_bonuses3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">n_row</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n_row</span><span class="op">)</span>,
-  x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">sym_bonuses</span><span class="op">)</span>, <span class="va">n_row</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  x3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">sym_bonuses3</span><span class="op">)</span>, <span class="va">n_row</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  y <span class="op">=</span> <span class="st">"NoInfo"</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">sym_bonuses</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x2</span><span class="op">]</span> <span class="op">&gt;</span> 
-      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmax</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x1</span>, <span class="va">sym_bonuses3</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x3</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n_row</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Large1"</span>
-<span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">sym_bonuses3</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x3</span><span class="op">]</span> <span class="op">&gt;</span> 
-      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmax</a></span><span class="op">(</span><span class="va">sym_bonuses</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x2</span><span class="op">]</span>, <span class="va">d</span><span class="op">$</span><span class="va">x1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n_row</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Large2"</span>
-
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># create example data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">326346</span><span class="op">)</span></span>
+<span><span class="va">sym_bonuses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sym_bonuses</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span><span class="op">)</span></span>
+<span><span class="va">sym_bonuses3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sym_bonuses3</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sym_bonuses3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n_row</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_row</span><span class="op">)</span>,</span>
+<span>  x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sym_bonuses</span><span class="op">)</span>, <span class="va">n_row</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  x3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sym_bonuses3</span><span class="op">)</span>, <span class="va">n_row</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  y <span class="op">=</span> <span class="st">"NoInfo"</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">sym_bonuses</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x2</span><span class="op">]</span> <span class="op">&gt;</span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x1</span>, <span class="va">sym_bonuses3</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x3</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n_row</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Large1"</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">sym_bonuses3</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x3</span><span class="op">]</span> <span class="op">&gt;</span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">sym_bonuses</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">x2</span><span class="op">]</span>, <span class="va">d</span><span class="op">$</span><span class="va">x1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n_row</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Large2"</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">x1</th>
@@ -196,67 +197,77 @@
 </tr>
 </tbody>
 </table>
-<p>We define the problem controls and use <code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> to build both a cross-frame and a treatment plan.</p>
+<p>We define the problem controls and use
+<code><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment()</a></code> to build both a cross-frame and a
+treatment plan.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># define problem</span>
-<span class="va">vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span><span class="op">)</span>
-<span class="va">y_name</span> <span class="op">&lt;-</span> <span class="st">"y"</span>
-
-<span class="co"># build the multi-class cross frame and treatments</span>
-<span class="va">cfe_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">vars</span>, <span class="va">y_name</span><span class="op">)</span></code></pre></div>
-<p>The cross-frame is the entity safest for training on (unless you have made separate data split for the treatment design step). It uses cross-validation to reduce nested model bias. Some notes on this issue are available <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html">here</a>, and <a href="https://github.com/WinVector/vtreat/blob/master/extras/vtreat.pdf">here</a>.</p>
+<code class="sourceCode R"><span><span class="co"># define problem</span></span>
+<span><span class="va">vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span><span class="op">)</span></span>
+<span><span class="va">y_name</span> <span class="op">&lt;-</span> <span class="st">"y"</span></span>
+<span></span>
+<span><span class="co"># build the multi-class cross frame and treatments</span></span>
+<span><span class="va">cfe_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mkCrossFrameMExperiment.html">mkCrossFrameMExperiment</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">vars</span>, <span class="va">y_name</span><span class="op">)</span></span></code></pre></div>
+<p>The cross-frame is the entity safest for training on (unless you have
+made separate data split for the treatment design step). It uses
+cross-validation to reduce nested model bias. Some notes on this issue
+are available <a href="https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html" class="external-link">here</a>,
+and <a href="https://github.com/WinVector/vtreat/blob/master/extras/vtreat.pdf" class="external-link">here</a>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># look at the data we would train models on</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">cross_frame</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'data.frame':    1000 obs. of  16 variables:
-##  $ x1            : num  0.818 0.587 -0.671 0.103 -0.318 ...
-##  $ x2_catP       : num  0.333 0.334 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 ...
-##  $ x3_catP       : num  0.35 0.321 0.329 0.35 0.329 0.35 0.321 0.321 0.321 0.35 ...
-##  $ x2_lev_x_a    : num  1 0 1 1 0 0 0 0 1 1 ...
-##  $ x2_lev_x_b    : num  0 0 0 0 0 0 1 1 0 0 ...
-##  $ x2_lev_x_c    : num  0 1 0 0 1 1 0 0 0 0 ...
-##  $ x3_lev_x_1    : num  0 1 0 0 0 0 1 1 1 0 ...
-##  $ x3_lev_x_2    : num  1 0 0 1 0 1 0 0 0 1 ...
-##  $ x3_lev_x_3    : num  0 0 1 0 1 0 0 0 0 0 ...
-##  $ Large1_x2_catB: num  1.23 -10.72 1.15 1.16 -10.53 ...
-##  $ Large1_x3_catB: num  0.7025 0.0903 -10.4833 0.6238 -10.529 ...
-##  $ Large2_x2_catB: num  0.17979 0.19661 -0.00379 -0.09818 0.00627 ...
-##  $ Large2_x3_catB: num  -13.12 -13.05 4.49 -4.03 4.71 ...
-##  $ NoInfo_x2_catB: num  -0.48752 -0.00254 -0.27947 -0.26155 0.15195 ...
-##  $ NoInfo_x3_catB: num  2.05 2.43 -4.34 1.79 -4.55 ...
-##  $ y             : chr  "NoInfo" "NoInfo" "Large2" "Large1" ...</code></pre>
-<p><code><a href="../reference/prepare.html">prepare()</a></code> can apply the designed treatments to new data. Here we are simulating new data by re-using our design data.</p>
+<code class="sourceCode R"><span><span class="co"># look at the data we would train models on</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">cross_frame</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'data.frame':    1000 obs. of  16 variables:</span></span>
+<span><span class="co">##  $ x1            : num  0.818 0.587 -0.671 0.103 -0.318 ...</span></span>
+<span><span class="co">##  $ x2_catP       : num  0.333 0.334 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 ...</span></span>
+<span><span class="co">##  $ x3_catP       : num  0.35 0.321 0.329 0.35 0.329 0.35 0.321 0.321 0.321 0.35 ...</span></span>
+<span><span class="co">##  $ x2_lev_x_a    : num  1 0 1 1 0 0 0 0 1 1 ...</span></span>
+<span><span class="co">##  $ x2_lev_x_b    : num  0 0 0 0 0 0 1 1 0 0 ...</span></span>
+<span><span class="co">##  $ x2_lev_x_c    : num  0 1 0 0 1 1 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ x3_lev_x_1    : num  0 1 0 0 0 0 1 1 1 0 ...</span></span>
+<span><span class="co">##  $ x3_lev_x_2    : num  1 0 0 1 0 1 0 0 0 1 ...</span></span>
+<span><span class="co">##  $ x3_lev_x_3    : num  0 0 1 0 1 0 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ Large1_x2_catB: num  1.23 -10.72 1.15 1.16 -10.53 ...</span></span>
+<span><span class="co">##  $ Large1_x3_catB: num  0.7025 0.0903 -10.4833 0.6238 -10.529 ...</span></span>
+<span><span class="co">##  $ Large2_x2_catB: num  0.17979 0.19661 -0.00379 -0.09818 0.00627 ...</span></span>
+<span><span class="co">##  $ Large2_x3_catB: num  -13.12 -13.05 4.49 -4.03 4.71 ...</span></span>
+<span><span class="co">##  $ NoInfo_x2_catB: num  -0.48752 -0.00254 -0.27947 -0.26155 0.15195 ...</span></span>
+<span><span class="co">##  $ NoInfo_x3_catB: num  2.05 2.43 -4.34 1.79 -4.55 ...</span></span>
+<span><span class="co">##  $ y             : chr  "NoInfo" "NoInfo" "Large2" "Large1" ...</span></span></code></pre>
+<p><code><a href="../reference/prepare.html">prepare()</a></code> can apply the designed treatments to new data.
+Here we are simulating new data by re-using our design data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># pretend original data is new data to be treated</span>
-<span class="co"># NA out top row to show processing</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">vi</span> <span class="kw">in</span> <span class="va">vars</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">d</span><span class="op">[[</span><span class="va">vi</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">treat_m</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'data.frame':    1000 obs. of  16 variables:
-##  $ x1            : num  0.0205 0.5867 -0.6712 0.1033 -0.3182 ...
-##  $ x2_catP       : num  0.0005 0.334 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 ...
-##  $ x3_catP       : num  0.0005 0.321 0.329 0.35 0.329 0.35 0.321 0.321 0.321 0.35 ...
-##  $ x2_lev_x_a    : num  0 0 1 1 0 0 0 0 1 1 ...
-##  $ x2_lev_x_b    : num  0 0 0 0 0 0 1 1 0 0 ...
-##  $ x2_lev_x_c    : num  0 1 0 0 1 1 0 0 0 0 ...
-##  $ x3_lev_x_1    : num  0 1 0 0 0 0 1 1 1 0 ...
-##  $ x3_lev_x_2    : num  0 0 0 1 0 1 0 0 0 1 ...
-##  $ x3_lev_x_3    : num  0 0 1 0 1 0 0 0 0 0 ...
-##  $ Large1_x2_catB: num  0 -10.58 1.18 1.18 -10.58 ...
-##  $ Large1_x3_catB: num  0 0.284 -10.584 0.529 -10.584 ...
-##  $ Large2_x2_catB: num  0 0.1 0.0242 0.0242 0.1 ...
-##  $ Large2_x3_catB: num  0 -13.08 4.72 -4.43 4.72 ...
-##  $ NoInfo_x2_catB: num  0 0.0685 -0.3392 -0.3392 0.0685 ...
-##  $ NoInfo_x3_catB: num  0 2.39 -4.55 2.05 -4.55 ...
-##  $ y             : chr  "NoInfo" "NoInfo" "Large2" "Large1" ...</code></pre>
-<p>Obvious issues include: computing variable importance, and blow up and co-dependency of produced columns. These we leave for the next modeling step to deal with (this is our philosophy with most issues that involve joint distributions of variables).</p>
+<code class="sourceCode R"><span><span class="co"># pretend original data is new data to be treated</span></span>
+<span><span class="co"># NA out top row to show processing</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">vi</span> <span class="kw">in</span> <span class="va">vars</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">d</span><span class="op">[[</span><span class="va">vi</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">treat_m</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'data.frame':    1000 obs. of  16 variables:</span></span>
+<span><span class="co">##  $ x1            : num  0.0205 0.5867 -0.6712 0.1033 -0.3182 ...</span></span>
+<span><span class="co">##  $ x2_catP       : num  0.0005 0.334 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 ...</span></span>
+<span><span class="co">##  $ x3_catP       : num  0.0005 0.321 0.329 0.35 0.329 0.35 0.321 0.321 0.321 0.35 ...</span></span>
+<span><span class="co">##  $ x2_lev_x_a    : num  0 0 1 1 0 0 0 0 1 1 ...</span></span>
+<span><span class="co">##  $ x2_lev_x_b    : num  0 0 0 0 0 0 1 1 0 0 ...</span></span>
+<span><span class="co">##  $ x2_lev_x_c    : num  0 1 0 0 1 1 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ x3_lev_x_1    : num  0 1 0 0 0 0 1 1 1 0 ...</span></span>
+<span><span class="co">##  $ x3_lev_x_2    : num  0 0 0 1 0 1 0 0 0 1 ...</span></span>
+<span><span class="co">##  $ x3_lev_x_3    : num  0 0 1 0 1 0 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ Large1_x2_catB: num  0 -10.58 1.18 1.18 -10.58 ...</span></span>
+<span><span class="co">##  $ Large1_x3_catB: num  0 0.284 -10.584 0.529 -10.584 ...</span></span>
+<span><span class="co">##  $ Large2_x2_catB: num  0 0.1 0.0242 0.0242 0.1 ...</span></span>
+<span><span class="co">##  $ Large2_x3_catB: num  0 -13.08 4.72 -4.43 4.72 ...</span></span>
+<span><span class="co">##  $ NoInfo_x2_catB: num  0 0.0685 -0.3392 -0.3392 0.0685 ...</span></span>
+<span><span class="co">##  $ NoInfo_x3_catB: num  0 2.39 -4.55 2.05 -4.55 ...</span></span>
+<span><span class="co">##  $ y             : chr  "NoInfo" "NoInfo" "Large2" "Large1" ...</span></span></code></pre>
+<p>Obvious issues include: computing variable importance, and blow up
+and co-dependency of produced columns. These we leave for the next
+modeling step to deal with (this is our philosophy with most issues that
+involve joint distributions of variables).</p>
 <p>We also have per-outcome variable importance.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>
-  <span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">[</span>, 
-                    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span><span class="op">)</span>, 
-                    drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">[</span>, </span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span>, <span class="st">"outcome_level"</span><span class="op">)</span>, </span>
+<span>                    drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
@@ -465,19 +476,20 @@
 </tr>
 </tbody>
 </table>
-<p>One can relate these per-target and per-treatment performances back to original columns by aggregating.</p>
+<p>One can relate these per-target and per-treatment performances back
+to original columns by aggregating.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">rsq</span>, 
-       <span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">origName</span>, 
-       <span class="va">max</span><span class="op">)</span></code></pre></div>
-<pre><code>##         x1         x2         x3 
-## 0.04276746 0.26811298 0.93085900</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">rsq</span>, </span>
+<span>       <span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">origName</span>, </span>
+<span>       <span class="va">max</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         x1         x2         x3 </span></span>
+<span><span class="co">## 0.04276746 0.26811298 0.93085900</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">sig</span>, 
-       <span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">origName</span>, 
-       <span class="va">min</span><span class="op">)</span></code></pre></div>
-<pre><code>##            x1            x2            x3 
-##  2.015164e-04  1.315559e-20 2.777723e-257</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">sig</span>, </span>
+<span>       <span class="va">cfe_m</span><span class="op">$</span><span class="va">score_frame</span><span class="op">$</span><span class="va">origName</span>, </span>
+<span>       <span class="va">min</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##            x1            x2            x3 </span></span>
+<span><span class="co">##  2.015164e-04  1.315559e-20 2.777723e-257</span></span></code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -489,11 +501,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by John Mount, Nina Zumel.</p>
+  <p></p>
+<p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -501,6 +515,8 @@
 
   
 
+
+  
 
   </body>
 </html>

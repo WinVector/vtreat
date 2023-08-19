@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/vtreat.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -97,7 +93,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/" class="external-link">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,52 +105,116 @@
 
       
 
-      </header><script src="vtreatSplitting_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat data splitting</h1>
-                        <h4 class="author">John Mount, Nina Zumel</h4>
+                        <h4 data-toc-skip class="author">John Mount,
+Nina Zumel</h4>
             
-            <h4 class="date">2021-06-11</h4>
+            <h4 data-toc-skip class="date">2023-08-19</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatSplitting.Rmd"><code>vignettes/vtreatSplitting.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/HEAD/vignettes/vtreatSplitting.Rmd" class="external-link"><code>vignettes/vtreatSplitting.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatSplitting.Rmd</code></div>
 
     </div>
 
     
     
-<div id="vtreat-data-set-splitting" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vtreat-data-set-splitting" class="anchor"></a>vtreat data set splitting</h2>
-<div id="motivation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#motivation" class="anchor"></a>Motivation</h3>
-<p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a> supplies a number of data set splitting or cross-validation planning facilities. Some services are implicit such as the simulated out of sample scoring of high degree of freedom derived variables (such as <code>catB</code>, <code>catN</code>,<code>catD</code>, and <code>catP</code>; see <a href="https://winvector.github.io/vtreathtml/vtreatVariableTypes.html">here</a> for a list of variable types). Some services are explicit such as <code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code> and <code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code> (please see <a href="https://winvector.github.io/vtreathtml/vtreatCrossFrames.html">here</a>). And there is even a user-facing cross-validation planner in <code><a href="../reference/buildEvalSets.html">vtreat::buildEvalSets</a></code> (try <code><a href="../reference/buildEvalSets.html">help(buildEvalSets)</a></code> for details).</p>
-<p>We (Nina Zumel and John Mount) have written a lot on structured cross-validation; the most relevant article being <a href="https://win-vector.com/2015/01/05/random-testtrain-split-is-not-always-enough/">Random Test/Train Split is not Always Enough</a>. The point is that in retrospective studies random test/train split is <em>at best</em> a simulation of how a model will be applied in the future. It is not an actual experimental design as in a <a href="https://en.wikipedia.org/wiki/Randomized_controlled_trial">randomized control trial</a>. To be an effective simulation you must work to preserve structure that will be true in future application.</p>
-<p>The overall idea is: a better splitting plan helps build a model that actually performs better in practice. And porting such a splitting plan back to your evaluation procedures gives you a better estimate of this future model performance.</p>
+<div class="section level2">
+<h2 id="vtreat-data-set-splitting">vtreat data set splitting<a class="anchor" aria-label="anchor" href="#vtreat-data-set-splitting"></a>
+</h2>
+<div class="section level3">
+<h3 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
+</h3>
+<p><a href="https://github.com/WinVector/vtreat" class="external-link"><code>vtreat</code></a>
+supplies a number of data set splitting or cross-validation planning
+facilities. Some services are implicit such as the simulated out of
+sample scoring of high degree of freedom derived variables (such as
+<code>catB</code>, <code>catN</code>,<code>catD</code>, and
+<code>catP</code>; see <a href="https://winvector.github.io/vtreathtml/vtreatVariableTypes.html" class="external-link">here</a>
+for a list of variable types). Some services are explicit such as
+<code><a href="../reference/mkCrossFrameCExperiment.html">vtreat::mkCrossFrameCExperiment</a></code> and
+<code><a href="../reference/mkCrossFrameNExperiment.html">vtreat::mkCrossFrameNExperiment</a></code> (please see <a href="https://winvector.github.io/vtreathtml/vtreatCrossFrames.html" class="external-link">here</a>).
+And there is even a user-facing cross-validation planner in
+<code><a href="../reference/buildEvalSets.html">vtreat::buildEvalSets</a></code> (try <code><a href="../reference/buildEvalSets.html">help(buildEvalSets)</a></code>
+for details).</p>
+<p>We (Nina Zumel and John Mount) have written a lot on structured
+cross-validation; the most relevant article being <a href="https://win-vector.com/2015/01/05/random-testtrain-split-is-not-always-enough/" class="external-link">Random
+Test/Train Split is not Always Enough</a>. The point is that in
+retrospective studies random test/train split is <em>at best</em> a
+simulation of how a model will be applied in the future. It is not an
+actual experimental design as in a <a href="https://en.wikipedia.org/wiki/Randomized_controlled_trial" class="external-link">randomized
+control trial</a>. To be an effective simulation you must work to
+preserve structure that will be true in future application.</p>
+<p>The overall idea is: a better splitting plan helps build a model that
+actually performs better in practice. And porting such a splitting plan
+back to your evaluation procedures gives you a better estimate of this
+future model performance.</p>
 <p>A random test/train split attempts to preserve the following:</p>
 <ul>
-<li>Future application data is exchangeable with training data (prior to model construction).</li>
-<li>Future application data remains exchangeable with test data (even after model construction, as test data is not used in model construction).</li>
+<li>Future application data is exchangeable with training data (prior to
+model construction).</li>
+<li>Future application data remains exchangeable with test data (even
+after model construction, as test data is not used in model
+construction).</li>
 </ul>
-<p>Note if there is a concept change (also called issues of non-stationarity) then future data is already not statistically exchangeable with training data (so can’t preserve a property you never had). However even if your future data starts exchangeable with training data there is at least one (often) un-modeled difference between training data and future application data:</p>
+<p>Note if there is a concept change (also called issues of
+non-stationarity) then future data is already not statistically
+exchangeable with training data (so can’t preserve a property you never
+had). However even if your future data starts exchangeable with training
+data there is at least one (often) un-modeled difference between
+training data and future application data:</p>
 <ul>
-<li>Future application data tends to be formed after (or in the future of) training data.</li>
+<li>Future application data tends to be formed after (or in the future
+of) training data.</li>
 </ul>
-<p>This is usually an unstated structure of your problem solving plan: use annotated data from the past to build a supervised model for future un-annotated data.</p>
+<p>This is usually an unstated structure of your problem solving plan:
+use annotated data from the past to build a supervised model for future
+un-annotated data.</p>
 </div>
-<div id="examples" class="section level3">
-<h3 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h3>
-<p>With the above discussion under our belt we get back to the problem at hand. When creating an appropriate test/train split, we may have to consider one or more of the following:</p>
+<div class="section level3">
+<h3 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h3>
+<p>With the above discussion under our belt we get back to the problem
+at hand. When creating an appropriate test/train split, we may have to
+consider one or more of the following:</p>
 <ul>
-<li><p><strong>Stratification:</strong> Stratification preserves the distribution or prevalence of the outcome variable (or any other variable, but vtreat only stratifies on <em>y</em>). For example, for a classification problem with a target class prevalence of 15%, stratifying on <em>y</em> insures that both the training and test sets have target class prevalence of precisely 15% (or as close to that as is possible), not just “around” 15%, as would happen with a simple randomized test/train split. This is especially important for modeling rare events.</p></li>
-<li><p><strong>Grouping:</strong> By “grouping” we mean not splitting closely related events into test and train: if a set of rows constitutes a “group,” then we want all those rows to go either into test or into train – as a group. Typical examples are multiple events from a single customer (as you really want your model to predict behavior of new customers) or records close together in time (as latter application records will not be close in time to original training records).</p></li>
-<li><p><strong>Structured back testing:</strong> Structured back testing preserves the order of time ordered events. In finance it is considered ridiculous to use data from a Monday and a Wednesday to build a model for prices on the intervening Tuesday – but this is the kind of thing that can happen if the training and evaluation data are partitioned using a simple random split.</p></li>
+<li><p><strong>Stratification:</strong> Stratification preserves the
+distribution or prevalence of the outcome variable (or any other
+variable, but vtreat only stratifies on <em>y</em>). For example, for a
+classification problem with a target class prevalence of 15%,
+stratifying on <em>y</em> insures that both the training and test sets
+have target class prevalence of precisely 15% (or as close to that as is
+possible), not just “around” 15%, as would happen with a simple
+randomized test/train split. This is especially important for modeling
+rare events.</p></li>
+<li><p><strong>Grouping:</strong> By “grouping” we mean not splitting
+closely related events into test and train: if a set of rows constitutes
+a “group,” then we want all those rows to go either into test or into
+train – as a group. Typical examples are multiple events from a single
+customer (as you really want your model to predict behavior of new
+customers) or records close together in time (as latter application
+records will not be close in time to original training
+records).</p></li>
+<li><p><strong>Structured back testing:</strong> Structured back testing
+preserves the order of time ordered events. In finance it is considered
+ridiculous to use data from a Monday and a Wednesday to build a model
+for prices on the intervening Tuesday – but this is the kind of thing
+that can happen if the training and evaluation data are partitioned
+using a simple random split.</p></li>
 </ul>
-<p>Our goal is for <code>vtreat</code> to be a domain agnostic, <code>y</code>-aware data conditioner. So <code>vtreat</code> should <em>y</em>-stratify its data splits throughout. Prior to version <code>0.5.26</code> <code>vtreat</code> used simple random splits. Now with version <code>0.5.26</code> (currently available from <a href="https://github.com/WinVector/vtreat">Github</a>) <code>vtreat</code> defaults to stratified sampling throughout. Respecting things like locality of record grouping or ordering of time are domain issues and should be handled by the analyst.</p>
-<p>Any splitting or stratification plan requires domain knowledge and should represent domain sensitive trade-off between the competing goals of:</p>
+<p>Our goal is for <code>vtreat</code> to be a domain agnostic,
+<code>y</code>-aware data conditioner. So <code>vtreat</code> should
+<em>y</em>-stratify its data splits throughout. Prior to version
+<code>0.5.26</code> <code>vtreat</code> used simple random splits. Now
+with version <code>0.5.26</code> (currently available from <a href="https://github.com/WinVector/vtreat" class="external-link">Github</a>)
+<code>vtreat</code> defaults to stratified sampling throughout.
+Respecting things like locality of record grouping or ordering of time
+are domain issues and should be handled by the analyst.</p>
+<p>Any splitting or stratification plan requires domain knowledge and
+should represent domain sensitive trade-off between the competing goals
+of:</p>
 <ul>
 <li>Having a random split.</li>
 <li>Stability of distribution of outcome variable across splits.</li>
@@ -163,205 +223,259 @@
 <li>Having a lot of data in each split.</li>
 <li>Having disjoint training and testing data.</li>
 </ul>
-<p>As of version <code>0.5.26</code> <code>vtreat</code> supports this by allowing a user specified data splitting function where the analyst can encode their desired domain invariants. The user-implemented splitting function should have the signature</p>
+<p>As of version <code>0.5.26</code> <code>vtreat</code> supports this
+by allowing a user specified data splitting function where the analyst
+can encode their desired domain invariants. The user-implemented
+splitting function should have the signature</p>
 <p><code>function(nRows,nSplits,dframe,y)</code></p>
 <p>where</p>
 <ul>
 <li>
-<code>nRows</code> is the number of rows you are trying to split</li>
+<code>nRows</code> is the number of rows you are trying to
+split</li>
 <li>
 <code>nSplits</code> is the number of split groups you want</li>
 <li>
-<code>dframe</code> is the original data frame (which may contain grouping or order columns that you want),</li>
+<code>dframe</code> is the original data frame (which may contain
+grouping or order columns that you want),</li>
 <li>
 <code>y</code> is the outcome variable converted to numeric</li>
 </ul>
-<p>The function should return a list of lists. The <em>i</em>th element should have slots <code>train</code> and <code>app</code>, where <code>[[i]]$train</code> designates the training data used to fit the model that evaluates the data designated by <code>[[i]]$app</code>.</p>
+<p>The function should return a list of lists. The <em>i</em>th element
+should have slots <code>train</code> and <code>app</code>, where
+<code>[[i]]$train</code> designates the training data used to fit the
+model that evaluates the data designated by <code>[[i]]$app</code>.</p>
 <p>This is easiest to show through an example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2</span>,<span class="cn">NULL</span>,<span class="cn">NULL</span><span class="op">)</span></code></pre></div>
-<pre><code>## [[1]]
-## [[1]]$train
-## [1] 2 3
-## 
-## [[1]]$app
-## [1] 1
-## 
-## 
-## [[2]]
-## [[2]]$train
-## [1] 1
-## 
-## [[2]]$app
-## [1] 3 2
-## 
-## 
-## attr(,"splitmethod")
-## [1] "kwaycross"</code></pre>
-<p>As we can see <code><a href="../reference/oneWayHoldout.html">vtreat::oneWayHoldout</a></code> builds three split sets where in each set the “application data rows” is a single row index and the corresponding training rows are the complementary row indexes. This is a leave-one-out <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">cross validation plan</a>.</p>
-<p><code>vtreat</code> supplies a number of cross validation split/plan implementations:</p>
+<code class="sourceCode R"><span><span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2</span>,<span class="cn">NULL</span>,<span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">## [[1]]$train</span></span>
+<span><span class="co">## [1] 2 3</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[1]]$app</span></span>
+<span><span class="co">## [1] 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">## [[2]]$train</span></span>
+<span><span class="co">## [1] 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]$app</span></span>
+<span><span class="co">## [1] 3 2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"splitmethod")</span></span>
+<span><span class="co">## [1] "kwaycross"</span></span></code></pre>
+<p>As we can see <code><a href="../reference/oneWayHoldout.html">vtreat::oneWayHoldout</a></code> builds three split
+sets where in each set the “application data rows” is a single row index
+and the corresponding training rows are the complementary row indexes.
+This is a leave-one-out <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)" class="external-link">cross
+validation plan</a>.</p>
+<p><code>vtreat</code> supplies a number of cross validation split/plan
+implementations:</p>
 <ul>
 <li>
-<code>kWayStratifiedY</code>: k-way y-stratified cross-validation. This is the <code>vtreat</code> default splitting plan.</li>
+<code>kWayStratifiedY</code>: k-way y-stratified cross-validation.
+This is the <code>vtreat</code> default splitting plan.</li>
 <li>
-<code>makekWayCrossValidationGroupedByColumn</code>: k-way y-stratified cross-validation that preserves grouping (for example, all rows corresponding to a single customer or patient, etc). This is a complex splitting plan, and only recommended when absolutely needed.</li>
+<code>makekWayCrossValidationGroupedByColumn</code>: k-way
+y-stratified cross-validation that preserves grouping (for example, all
+rows corresponding to a single customer or patient, etc). This is a
+complex splitting plan, and only recommended when absolutely
+needed.</li>
 <li>
-<code>kWayCrossValidation</code>: k-way un-stratified cross-validation</li>
+<code>kWayCrossValidation</code>: k-way un-stratified
+cross-validation</li>
 <li>
-<code>oneWayHoldout</code>: jackknife, or leave-one-out cross-validation. Note one way hold out can leak target expectations, so is not preferred for nested model situations.</li>
+<code>oneWayHoldout</code>: jackknife, or leave-one-out
+cross-validation. Note one way hold out can leak target expectations, so
+is not preferred for nested model situations.</li>
 </ul>
-<p>The function <code>buildEvalSets</code> takes one of the above splitting functions as input and returns a cross-validation plan that instantiates the desired splitting, while also guarding against corner cases. You can also explicitly specify the splitting plan when designing a vtreat variable treatment plan using <code>designTreatments[N\C]</code> or <code>mkCrossFrame[N\C]Experiment</code>.</p>
-<p>For issues beyond stratification the user may want to supply their own splitting plan. Such a function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass a user defined <code>splitFn</code> into <code><a href="../reference/buildEvalSets.html">vtreat::buildEvalSets</a></code> as follows:</p>
-<p>For example to use a user supplied splitting function we would write the following function definition.</p>
+<p>The function <code>buildEvalSets</code> takes one of the above
+splitting functions as input and returns a cross-validation plan that
+instantiates the desired splitting, while also guarding against corner
+cases. You can also explicitly specify the splitting plan when designing
+a vtreat variable treatment plan using
+<code>designTreatments[N\C]</code> or
+<code>mkCrossFrame[N\C]Experiment</code>.</p>
+<p>For issues beyond stratification the user may want to supply their
+own splitting plan. Such a function can then be passed into any
+<code>vtreat</code> operation that takes a <code>splitFunction</code>
+argument (such as <code>mkCrossFrameNExperiment</code>,
+<code>designTreatmentsN</code>, and many more). For example we can pass
+a user defined <code>splitFn</code> into
+<code><a href="../reference/buildEvalSets.html">vtreat::buildEvalSets</a></code> as follows:</p>
+<p>For example to use a user supplied splitting function we would write
+the following function definition.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># This method is not a great idea as the data could have structure that strides</span>
-<span class="co"># in the same pattern as this split.</span>
-<span class="co"># Such technically is possible for any split, but we typically use</span>
-<span class="co"># pseudo-random structure (that is not the same across many potential</span>
-<span class="co"># split calls) to try and make it unlikely such structures</span>
-<span class="co"># match often.</span>
-<span class="va">modularSplit</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nRows</span>,<span class="va">nSplits</span>,<span class="va">dframe</span>,<span class="va">y</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">nRows</span><span class="op">)</span> <span class="op">%%</span> <span class="va">nSplits</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,
-         <span class="kw">function</span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">{</span>
-           <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>train<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">group</span><span class="op">!=</span><span class="va">gi</span><span class="op">)</span>,
-                app<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="va">gi</span><span class="op">)</span><span class="op">)</span>
-         <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<p>This function can then be passed into any <code>vtreat</code> operation that takes a <code>splitFunction</code> argument (such as <code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>, and many more). For example we can pass the user defined <code>splitFn</code> into <code><a href="../reference/buildEvalSets.html">vtreat::buildEvalSets</a></code> as follows:</p>
+<code class="sourceCode R"><span><span class="co"># This method is not a great idea as the data could have structure that strides</span></span>
+<span><span class="co"># in the same pattern as this split.</span></span>
+<span><span class="co"># Such technically is possible for any split, but we typically use</span></span>
+<span><span class="co"># pseudo-random structure (that is not the same across many potential</span></span>
+<span><span class="co"># split calls) to try and make it unlikely such structures</span></span>
+<span><span class="co"># match often.</span></span>
+<span><span class="va">modularSplit</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nRows</span>,<span class="va">nSplits</span>,<span class="va">dframe</span>,<span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nRows</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">nSplits</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,</span>
+<span>         <span class="kw">function</span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>           <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>train<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">group</span><span class="op">!=</span><span class="va">gi</span><span class="op">)</span>,</span>
+<span>                app<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="va">gi</span><span class="op">)</span><span class="op">)</span></span>
+<span>         <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>This function can then be passed into any <code>vtreat</code>
+operation that takes a <code>splitFunction</code> argument (such as
+<code>mkCrossFrameNExperiment</code>, <code>designTreatmentsN</code>,
+and many more). For example we can pass the user defined
+<code>splitFn</code> into <code><a href="../reference/buildEvalSets.html">vtreat::buildEvalSets</a></code> as
+follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/buildEvalSets.html">buildEvalSets</a></span><span class="op">(</span>nRows<span class="op">=</span><span class="fl">25</span>,nSplits<span class="op">=</span><span class="fl">3</span>,splitFunction<span class="op">=</span><span class="va">modularSplit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [[1]]
-## [[1]]$train
-##  [1]  2  3  5  6  8  9 11 12 14 15 17 18 20 21 23 24
-## 
-## [[1]]$app
-## [1]  1  4  7 10 13 16 19 22 25
-## 
-## 
-## [[2]]
-## [[2]]$train
-##  [1]  1  3  4  6  7  9 10 12 13 15 16 18 19 21 22 24 25
-## 
-## [[2]]$app
-## [1]  2  5  8 11 14 17 20 23
-## 
-## 
-## [[3]]
-## [[3]]$train
-##  [1]  1  2  4  5  7  8 10 11 13 14 16 17 19 20 22 23 25
-## 
-## [[3]]$app
-## [1]  3  6  9 12 15 18 21 24
-## 
-## 
-## attr(,"splitmethod")
-## [1] "userfunction"</code></pre>
-<p>As stated above, the vtreat library code will try to use the user function for splitting, but will fall back to an appropriate vtreat function in corner cases that the user function may not handle (for example, too few rows, too few groups, and so on). Thus the user code can assume it is in a reasonable situation (and even safely return NULL if it can’t deal with the situation it is given). For example the following bad user split is detected and corrected:</p>
+<code class="sourceCode R"><span><span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/buildEvalSets.html">buildEvalSets</a></span><span class="op">(</span>nRows<span class="op">=</span><span class="fl">25</span>,nSplits<span class="op">=</span><span class="fl">3</span>,splitFunction<span class="op">=</span><span class="va">modularSplit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">## [[1]]$train</span></span>
+<span><span class="co">##  [1]  2  3  5  6  8  9 11 12 14 15 17 18 20 21 23 24</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[1]]$app</span></span>
+<span><span class="co">## [1]  1  4  7 10 13 16 19 22 25</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">## [[2]]$train</span></span>
+<span><span class="co">##  [1]  1  3  4  6  7  9 10 12 13 15 16 18 19 21 22 24 25</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]$app</span></span>
+<span><span class="co">## [1]  2  5  8 11 14 17 20 23</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]</span></span>
+<span><span class="co">## [[3]]$train</span></span>
+<span><span class="co">##  [1]  1  2  4  5  7  8 10 11 13 14 16 17 19 20 22 23 25</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]$app</span></span>
+<span><span class="co">## [1]  3  6  9 12 15 18 21 24</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"splitmethod")</span></span>
+<span><span class="co">## [1] "userfunction"</span></span></code></pre>
+<p>As stated above, the vtreat library code will try to use the user
+function for splitting, but will fall back to an appropriate vtreat
+function in corner cases that the user function may not handle (for
+example, too few rows, too few groups, and so on). Thus the user code
+can assume it is in a reasonable situation (and even safely return NULL
+if it can’t deal with the situation it is given). For example the
+following bad user split is detected and corrected:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">badSplit</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nRows</span>,<span class="va">nSplits</span>,<span class="va">dframe</span>,<span class="va">y</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>train<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">nRows</span><span class="op">)</span>,app<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">nRows</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/buildEvalSets.html">buildEvalSets</a></span><span class="op">(</span>nRows<span class="op">=</span><span class="fl">5</span>,nSplits<span class="op">=</span><span class="fl">3</span>,splitFunction<span class="op">=</span><span class="va">badSplit</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in doTryCatch(return(expr), name, parentenv, handler):
-## vtreat::buildEvalSets user carve-up rejected: train and application slots
-## overlap</code></pre>
-<pre><code>## [[1]]
-## [[1]]$train
-## [1] 1 3 4 5
-## 
-## [[1]]$app
-## [1] 2
-## 
-## 
-## [[2]]
-## [[2]]$train
-## [1] 2 3 5
-## 
-## [[2]]$app
-## [1] 1 4
-## 
-## 
-## [[3]]
-## [[3]]$train
-## [1] 1 2 4
-## 
-## [[3]]$app
-## [1] 3 5
-## 
-## 
-## attr(,"splitmethod")
-## [1] "kwaycross"</code></pre>
-<p>Notice above the returned split does not meet all of the original desiderata, but is guaranteed to be a useful data partition.</p>
+<code class="sourceCode R"><span><span class="va">badSplit</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nRows</span>,<span class="va">nSplits</span>,<span class="va">dframe</span>,<span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>train<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nRows</span><span class="op">)</span>,app<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nRows</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/buildEvalSets.html">buildEvalSets</a></span><span class="op">(</span>nRows<span class="op">=</span><span class="fl">5</span>,nSplits<span class="op">=</span><span class="fl">3</span>,splitFunction<span class="op">=</span><span class="va">badSplit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in doTryCatch(return(expr), name, parentenv, handler):</span></span>
+<span><span class="co">## vtreat::buildEvalSets user carve-up rejected: train and application slots</span></span>
+<span><span class="co">## overlap</span></span></code></pre>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">## [[1]]$train</span></span>
+<span><span class="co">## [1] 1 2 3 4</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[1]]$app</span></span>
+<span><span class="co">## [1] 5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">## [[2]]$train</span></span>
+<span><span class="co">## [1] 1 2 5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]$app</span></span>
+<span><span class="co">## [1] 3 4</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]</span></span>
+<span><span class="co">## [[3]]$train</span></span>
+<span><span class="co">## [1] 3 4 5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]$app</span></span>
+<span><span class="co">## [1] 2 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"splitmethod")</span></span>
+<span><span class="co">## [1] "kwaycross"</span></span></code></pre>
+<p>Notice above the returned split does not meet all of the original
+desiderata, but is guaranteed to be a useful data partition.</p>
 </div>
-<div id="implementations" class="section level3">
-<h3 class="hasAnchor">
-<a href="#implementations" class="anchor"></a>Implementations</h3>
-<p>The file <a href="https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R">outOfSample.R</a> contains worked examples. In particular we would suggest running the code displayed when you type any of:</p>
+<div class="section level3">
+<h3 id="implementations">Implementations<a class="anchor" aria-label="anchor" href="#implementations"></a>
+</h3>
+<p>The file <a href="https://github.com/WinVector/vtreat/blob/master/R/outOfSample.R" class="external-link">outOfSample.R</a>
+contains worked examples. In particular we would suggest running the
+code displayed when you type any of:</p>
 <ul>
 <li><code><a href="../reference/kWayCrossValidation.html">help(kWayCrossValidation)</a></code></li>
 <li><code><a href="../reference/kWayStratifiedY.html">help(kWayStratifiedY)</a></code></li>
 <li><code><a href="../reference/makekWayCrossValidationGroupedByColumn.html">help(makekWayCrossValidationGroupedByColumn)</a></code></li>
 <li><code><a href="../reference/oneWayHoldout.html">help(oneWayHoldout)</a></code></li>
 </ul>
-<p>For example from <code><a href="../reference/kWayStratifiedY.html">help(kWayStratifiedY)</a></code> we can see that the distribution of <code>y</code> is much more similar in each fold when we stratify than when we don’t:</p>
+<p>For example from <code><a href="../reference/kWayStratifiedY.html">help(kWayStratifiedY)</a></code> we can see that
+the distribution of <code>y</code> is much more similar in each fold
+when we stratify than when we don’t:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/">'vtreat'</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## Loading required package: wrapr</code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/WinVector/vtreat/" class="external-link">'vtreat'</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: wrapr</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23255</span><span class="op">)</span>
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># stratified 5-fold cross validation</span>
-<span class="va">pStrat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>
-<span class="co"># check if the split is a good partition</span>
-<span class="va">check</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/problemAppPlan.html">problemAppPlan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">pStrat</span>,<span class="cn">TRUE</span><span class="op">)</span>
-<span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">check</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">"Plan is good"</span><span class="op">)</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Problem with plan: "</span>, <span class="va">check</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<pre><code>## [1] "Plan is good"</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">23255</span><span class="op">)</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># stratified 5-fold cross validation</span></span>
+<span><span class="va">pStrat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="co"># check if the split is a good partition</span></span>
+<span><span class="va">check</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/problemAppPlan.html">problemAppPlan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">pStrat</span>,<span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">check</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Plan is good"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Problem with plan: "</span>, <span class="va">check</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Plan is good"</span></span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d</span><span class="op">$</span><span class="va">stratGroup</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">pStrat</span><span class="op">)</span>
-
-<span class="co"># unstratified 5-fold cross validation</span>
-<span class="va">pSimple</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kWayCrossValidation.html">kWayCrossValidation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>
-<span class="co"># check if the split is a good partition; return null if so</span>
-<span class="va">check</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/problemAppPlan.html">problemAppPlan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">pSimple</span>,<span class="cn">TRUE</span><span class="op">)</span>
-<span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">check</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">"Plan is good"</span><span class="op">)</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Problem with plan: "</span>, <span class="va">check</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<pre><code>## [1] "Plan is good"</code></pre>
+<code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">stratGroup</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">pStrat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># unstratified 5-fold cross validation</span></span>
+<span><span class="va">pSimple</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kWayCrossValidation.html">kWayCrossValidation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="co"># check if the split is a good partition; return null if so</span></span>
+<span><span class="va">check</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/problemAppPlan.html">problemAppPlan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">5</span>,<span class="va">pSimple</span>,<span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">check</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Plan is good"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Problem with plan: "</span>, <span class="va">check</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Plan is good"</span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d</span><span class="op">$</span><span class="va">simpleGroup</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">pSimple</span><span class="op">)</span>
-
-<span class="co"># mean(y) for each fold, unstratified</span>
-<span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">simpleGroup</span>,<span class="va">mean</span><span class="op">)</span></code></pre></div>
-<pre><code>##            1            2            3            4            5 
-## -0.059622525  0.068139081 -0.007774052  0.099774019 -0.106875074</code></pre>
+<code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">simpleGroup</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">pSimple</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># mean(y) for each fold, unstratified</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">simpleGroup</span>,<span class="va">mean</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##            1            2            3            4            5 </span></span>
+<span><span class="co">## -0.059622525  0.068139081 -0.007774052  0.099774019 -0.106875074</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># standard error of mean(y)</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">simpleGroup</span>,<span class="va">mean</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.08606286</code></pre>
+<code class="sourceCode R"><span><span class="co"># standard error of mean(y)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">simpleGroup</span>,<span class="va">mean</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.08606286</span></span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># mean(y) for each fold, unstratified</span>
-<span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">stratGroup</span>,<span class="va">mean</span><span class="op">)</span></code></pre></div>
-<pre><code>##            1            2            3            4            5 
-##  0.008797500 -0.011530915 -0.010448401  0.009648950 -0.002825685</code></pre>
+<code class="sourceCode R"><span><span class="co"># mean(y) for each fold, unstratified</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">stratGroup</span>,<span class="va">mean</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##            1            2            3            4            5 </span></span>
+<span><span class="co">##  0.008797500 -0.011530915 -0.010448401  0.009648950 -0.002825685</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># standard error of mean(y)</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">stratGroup</span>,<span class="va">mean</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.01015539</code></pre>
+<code class="sourceCode R"><span><span class="co"># standard error of mean(y)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">y</span>,<span class="va">d</span><span class="op">$</span><span class="va">stratGroup</span>,<span class="va">mean</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.01015539</span></span></code></pre>
 <p>Notice the increased similarity if distributions.</p>
 </div>
 </div>
-<div id="conclusion" class="section level2">
-<h2 class="hasAnchor">
-<a href="#conclusion" class="anchor"></a>Conclusion</h2>
-<p>Controlling the way data is split in cross-validation – preserving y-distribution, groups, and even ordering – can improve the real world performance of models trained on such data. Obviously this adds some complexity and “places to go wrong”, but it is a topic worth learning about.</p>
+<div class="section level2">
+<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
+</h2>
+<p>Controlling the way data is split in cross-validation – preserving
+y-distribution, groups, and even ordering – can improve the real world
+performance of models trained on such data. Obviously this adds some
+complexity and “places to go wrong”, but it is a topic worth learning
+about.</p>
 </div>
   </div>
 
@@ -376,11 +490,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by John Mount, Nina Zumel.</p>
+  <p></p>
+<p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -388,6 +504,8 @@
 
   
 
+
+  
 
   </body>
 </html>

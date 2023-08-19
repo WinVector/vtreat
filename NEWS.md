@@ -1,5 +1,9 @@
 
 
+# vtreat 1.6.4 2023/08/19
+
+ * work around https://github.com/r-lib/roxygen2/issues/1491
+
 # vtreat 1.6.3 2021/06/11
 
  * Fix some links.

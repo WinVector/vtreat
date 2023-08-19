@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/vtreat.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -97,7 +93,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/" class="external-link">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,49 +105,88 @@
 
       
 
-      </header><script src="VariableImportance_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat Variable Importance</h1>
-                        <h4 class="author">John Mount</h4>
+                        <h4 data-toc-skip class="author">John Mount</h4>
             
-            <h4 class="date">2021-06-11</h4>
+            <h4 data-toc-skip class="date">2023-08-19</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/VariableImportance.Rmd"><code>vignettes/VariableImportance.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/HEAD/vignettes/VariableImportance.Rmd" class="external-link"><code>vignettes/VariableImportance.Rmd</code></a></small>
       <div class="hidden name"><code>VariableImportance.Rmd</code></div>
 
     </div>
 
     
     
-<p><a href="https://github.com/WinVector/vtreat"><code>vtreat</code></a>’s purpose is to produce pure numeric <a href="https://www.r-project.org"><code>R</code></a> <code>data.frame</code>s that are ready for <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised predictive modeling</a> (predicting a value from other values). By ready we mean: a purely numeric data frame with no missing values and a reasonable number of columns (missing-values re-encoded with indicators, and high-degree categorical re-encode by effects codes or impact codes).</p>
-<p>Part of the <code>vtreat</code> philosophy is to assume after the <code>vtreat</code> variable processing the next step is a sophisticated <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised machine learning</a> method. Under this assumption we assume the machine learning methodology (be it regression, tree methods, random forests, boosting, or neural nets) will handle issues of redundant variables, joint distributions of variables, overall regularization, and joint dimension reduction.</p>
-<p>However, an important exception is: variable screening. In practice we have seen wide data-warehouses with hundreds of columns overwhelm and defeat state of the art machine learning algorithms due to over-fitting. We have some synthetic examples of this (<a href="https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/">here</a> and <a href="https://win-vector.com/talks-and-presentations/">here</a>).</p>
-<p>The upshot is: even in 2018 you can not treat every column you find in a data warehouse as a variable. You must at least perform some basic screening.</p>
-<p>To help with this <code>vtreat</code> incorporates a per-variable linear significance report. This report shows how useful each variable is taken alone in a linear or generalized linear model (some details can be found <a href="https://arxiv.org/abs/1611.09477">here</a>). However, this sort of calculation was optimized for speed, not discovery power.</p>
-<p><code>vtreat</code> now includes a direct variable valuation system that works very well with complex numeric relationships. It is a function called <a href="https://winvector.github.io/vtreat/reference/value_variables_N.html"><code>vtreat::value_variables_N()</code></a> for numeric or regression problems and <a href="https://winvector.github.io/vtreat/reference/value_variables_C.html"><code>vtreat::value_variables_C()</code></a> for binomial classification problems. It works by fitting two transformed copies of each numeric variable to the outcome. One transform is a low frequency transform realized as an optimal <code>k</code>-segment linear model for a moderate choice of <code>k</code>. The other fit is a high-frequency trasnform realized as a <code>k</code>-nearest neighbor average for moderate choice of <code>k</code>. Some of the methodology is shown <a href="https://github.com/WinVector/vtreat/blob/master/extras/SegFitter.md">here</a>.</p>
-<p>We recommend using <code>vtreat::value_variables_*()</code> as an initial variable screen.</p>
-<p>Let’s demonstrate this using the data from the segment fitter example. In our case the value to be predicted (“<code>y</code>”) is a noisy copy of <code><a href="https://rdrr.io/r/base/Trig.html">sin(x)</a></code>. Let’s set up our example data:</p>
+<p><a href="https://github.com/WinVector/vtreat" class="external-link"><code>vtreat</code></a>’s
+purpose is to produce pure numeric <a href="https://www.r-project.org" class="external-link"><code>R</code></a>
+<code>data.frame</code>s that are ready for <a href="https://en.wikipedia.org/wiki/Supervised_learning" class="external-link">supervised
+predictive modeling</a> (predicting a value from other values). By ready
+we mean: a purely numeric data frame with no missing values and a
+reasonable number of columns (missing-values re-encoded with indicators,
+and high-degree categorical re-encode by effects codes or impact
+codes).</p>
+<p>Part of the <code>vtreat</code> philosophy is to assume after the
+<code>vtreat</code> variable processing the next step is a sophisticated
+<a href="https://en.wikipedia.org/wiki/Supervised_learning" class="external-link">supervised
+machine learning</a> method. Under this assumption we assume the machine
+learning methodology (be it regression, tree methods, random forests,
+boosting, or neural nets) will handle issues of redundant variables,
+joint distributions of variables, overall regularization, and joint
+dimension reduction.</p>
+<p>However, an important exception is: variable screening. In practice
+we have seen wide data-warehouses with hundreds of columns overwhelm and
+defeat state of the art machine learning algorithms due to over-fitting.
+We have some synthetic examples of this (<a href="https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/" class="external-link">here</a>
+and <a href="https://win-vector.com/talks-and-presentations/" class="external-link">here</a>).</p>
+<p>The upshot is: even in 2018 you can not treat every column you find
+in a data warehouse as a variable. You must at least perform some basic
+screening.</p>
+<p>To help with this <code>vtreat</code> incorporates a per-variable
+linear significance report. This report shows how useful each variable
+is taken alone in a linear or generalized linear model (some details can
+be found <a href="https://arxiv.org/abs/1611.09477" class="external-link">here</a>). However,
+this sort of calculation was optimized for speed, not discovery
+power.</p>
+<p><code>vtreat</code> now includes a direct variable valuation system
+that works very well with complex numeric relationships. It is a
+function called <a href="https://winvector.github.io/vtreat/reference/value_variables_N.html" class="external-link"><code>vtreat::value_variables_N()</code></a>
+for numeric or regression problems and <a href="https://winvector.github.io/vtreat/reference/value_variables_C.html" class="external-link"><code>vtreat::value_variables_C()</code></a>
+for binomial classification problems. It works by fitting two
+transformed copies of each numeric variable to the outcome. One
+transform is a low frequency transform realized as an optimal
+<code>k</code>-segment linear model for a moderate choice of
+<code>k</code>. The other fit is a high-frequency trasnform realized as
+a <code>k</code>-nearest neighbor average for moderate choice of
+<code>k</code>. Some of the methodology is shown <a href="https://github.com/WinVector/vtreat/blob/master/extras/SegFitter.md" class="external-link">here</a>.</p>
+<p>We recommend using <code>vtreat::value_variables_*()</code> as an
+initial variable screen.</p>
+<p>Let’s demonstrate this using the data from the segment fitter
+example. In our case the value to be predicted (“<code>y</code>”) is a
+noisy copy of <code>sin(x)</code>. Let’s set up our example data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1999</span><span class="op">)</span>
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>
-<span class="va">d</span><span class="op">$</span><span class="va">y_ideal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
-<span class="va">d</span><span class="op">$</span><span class="va">x_noise</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample.int</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span>
-<span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">$</span><span class="va">y_ideal</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 61  4</code></pre>
-<p>Now a simple linear valuation of the the variables can be produced as follows.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1999</span><span class="op">)</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">y_ideal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">x_noise</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">$</span><span class="va">y_ideal</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 61  4</span></span></code></pre>
+<p>Now a simple linear valuation of the the variables can be produced as
+follows.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cfe</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span><span class="op">(</span>
-  <span class="va">d</span>, 
-  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"x_noise"</span><span class="op">)</span>, 
-  outcomename <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "vtreat 1.6.3 start initial treatment design Fri Jun 11 07:01:32 2021"
-## [1] " start cross frame work Fri Jun 11 07:01:32 2021"
-## [1] " vtreat::mkCrossFrameNExperiment done Fri Jun 11 07:01:32 2021"</code></pre>
+<code class="sourceCode R"><span><span class="va">cfe</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/mkCrossFrameNExperiment.html">mkCrossFrameNExperiment</a></span><span class="op">(</span></span>
+<span>  <span class="va">d</span>, </span>
+<span>  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"x_noise"</span><span class="op">)</span>, </span>
+<span>  outcomename <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vtreat 1.6.4 start initial treatment design Sat Aug 19 11:38:27 2023"</span></span>
+<span><span class="co">## [1] " start cross frame work Sat Aug 19 11:38:27 2023"</span></span>
+<span><span class="co">## [1] " vtreat::mkCrossFrameNExperiment done Sat Aug 19 11:38:27 2023"</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sf</span> <span class="op">&lt;-</span> <span class="va">cfe</span><span class="op">$</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">sf</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sf</span> <span class="op">&lt;-</span> <span class="va">cfe</span><span class="op">$</span><span class="va">treatments</span><span class="op">$</span><span class="va">scoreFrame</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sf</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varName"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">varName</th>
@@ -171,15 +206,19 @@
 </tr>
 </tbody>
 </table>
-<p>Notice the signal carrying variable did not score better (having a larger <code>r</code>-squared and a smaller (better) significance value) than the noise variable (that is unrelated to the outcome). This is because the relation between <code>x</code> and <code>y</code> is not linear.</p>
+<p>Notice the signal carrying variable did not score better (having a
+larger <code>r</code>-squared and a smaller (better) significance value)
+than the noise variable (that is unrelated to the outcome). This is
+because the relation between <code>x</code> and <code>y</code> is not
+linear.</p>
 <p>Now let’s try <code><a href="../reference/value_variables_N.html">vtreat::value_variables_N()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vf</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/value_variables_N.html">value_variables_N</a></span><span class="op">(</span>
-  <span class="va">d</span>, 
-  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"x_noise"</span><span class="op">)</span>,
-  outcomename <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span>
-
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">vf</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">vf</span> <span class="op">=</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/value_variables_N.html">value_variables_N</a></span><span class="op">(</span></span>
+<span>  <span class="va">d</span>, </span>
+<span>  varlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"x_noise"</span><span class="op">)</span>,</span>
+<span>  outcomename <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">vf</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"var"</span>, <span class="st">"rsq"</span>, <span class="st">"sig"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">var</th>
@@ -199,16 +238,46 @@
 </tr>
 </tbody>
 </table>
-<p>Now the difference is night and day. The important variable <code>x</code> is singled out (scores very well), and the unimportant variable <code>x_noise</code> doesn’t often score well. Though, as with all significance tests, useless variables can get lucky from time to time- (an issue that can be addressed by using a <a href="https://win-vector.com/2017/09/08/remember-p-values-are-not-effect-sizes/">Cohen’s-<code>d</code> style calculation</a>).</p>
+<p>Now the difference is night and day. The important variable
+<code>x</code> is singled out (scores very well), and the unimportant
+variable <code>x_noise</code> doesn’t often score well. Though, as with
+all significance tests, useless variables can get lucky from time to
+time- (an issue that can be addressed by using a <a href="https://win-vector.com/2017/09/08/remember-p-values-are-not-effect-sizes/" class="external-link">Cohen’s-<code>d</code>
+style calculation</a>).</p>
 <p>Our modeling advice is:</p>
 <ul>
 <li>Use <code>vtreat::value_variables_*()</code>
 </li>
-<li>Pick all variables with <code>sig &lt;= 1/number_of_variables_being_considered</code>.</li>
+<li>Pick all variables with
+<code>sig &lt;= 1/number_of_variables_being_considered</code>.</li>
 </ul>
-<p>The idea is: each “pure noise” (or purely useless) variable has a significance that is distributed uniformly between zero and one. So the expected number of useless variables that make it through the above screening is <code>number_of_useless_varaibles * P[useless_sig &lt;= 1/number_of_variables_being_considered]</code>. This equals <code>number_of_useless_varaibles * 1/number_of_variables_being_considered</code>. As <code>number_of_useless_varaibles &lt;= number_of_variables_being_considered</code> we get this quantity is no more than one. So we expect a constant number of useless variables to sneak through this filter. The hope is: this should not be enough useless variables to overwhelm the next stage supervised machine learning step.</p>
-<p>Obviously there are situations where variable importance can not be discovered without considering joint distributions. The most famous one being “xor” where the concept to be learned is if an odd or even number of indicator variables are zero or one (each such variable is individual completely uninformative about the outcome until you have all of the variables simultaneously). However, for practical problems you often have that most variables have a higher marginal predictive power taken alone than they have in the final joint model (as other, better, variables consume some of common variables’ predictive power in the joint model). With this in mind single variable screening often at least gives an indication where to look.</p>
-<p>In conclusion the <code>vtreat</code> package and <code>vtreat::value_variables_*()</code> can be a valuable addition to your supervised learning practice.</p>
+<p>The idea is: each “pure noise” (or purely useless) variable has a
+significance that is distributed uniformly between zero and one. So the
+expected number of useless variables that make it through the above
+screening is
+<code>number_of_useless_varaibles * P[useless_sig &lt;= 1/number_of_variables_being_considered]</code>.
+This equals
+<code>number_of_useless_varaibles * 1/number_of_variables_being_considered</code>.
+As
+<code>number_of_useless_varaibles &lt;= number_of_variables_being_considered</code>
+we get this quantity is no more than one. So we expect a constant number
+of useless variables to sneak through this filter. The hope is: this
+should not be enough useless variables to overwhelm the next stage
+supervised machine learning step.</p>
+<p>Obviously there are situations where variable importance can not be
+discovered without considering joint distributions. The most famous one
+being “xor” where the concept to be learned is if an odd or even number
+of indicator variables are zero or one (each such variable is individual
+completely uninformative about the outcome until you have all of the
+variables simultaneously). However, for practical problems you often
+have that most variables have a higher marginal predictive power taken
+alone than they have in the final joint model (as other, better,
+variables consume some of common variables’ predictive power in the
+joint model). With this in mind single variable screening often at least
+gives an indication where to look.</p>
+<p>In conclusion the <code>vtreat</code> package and
+<code>vtreat::value_variables_*()</code> can be a valuable addition to
+your supervised learning practice.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -220,11 +289,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by John Mount, Nina Zumel.</p>
+  <p></p>
+<p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -232,6 +303,8 @@
 
   
 
+
+  
 
   </body>
 </html>

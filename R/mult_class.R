@@ -32,8 +32,6 @@
 #' 
 #' @seealso \code{\link{prepare.multinomial_plan}}
 #' 
-#' @examples 
-#' 
 #' @examples
 #' 
 #' # numeric example

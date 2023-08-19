@@ -88,7 +88,6 @@ Please see \code{vignette("MultiClassVtreat", package = "vtreat")} \url{https://
 }
 \examples{
 
-
 # numeric example
 set.seed(23525)
 

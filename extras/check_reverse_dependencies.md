@@ -1,28 +1,32 @@
-check\_reverse\_dependencies
+check_reverse_dependencies
 ================
 
 ``` r
+repos <- c(CRAN="https://cloud.r-project.org")
 library("prrd")
-td <- tempdir()
+orig_dir <- getwd()
+# td <- tempdir()
+td <- paste0(orig_dir, '/', 'revdep_tests')
 package = "vtreat"
 packageVersion(package)
 ```
 
-    ## [1] '1.6.2'
+    ## [1] '1.6.4'
 
 ``` r
 date()
 ```
 
-    ## [1] "Sat Oct 17 08:10:38 2020"
+    ## [1] "Sat Aug 19 11:49:58 2023"
 
 ``` r
 parallelCluster <- NULL
-# # parallel doesn't work due to https://github.com/r-lib/liteq/issues/22
-#ncores <- parallel::detectCores()
-#parallelCluster <- parallel::makeCluster(ncores)
+ncores <- parallel::detectCores()
+#if(ncores > 1) {
+#  parallelCluster <- parallel::makeCluster(ncores)
+#}
 
-orig_dir <- getwd()
+
 print(orig_dir)
 ```
 
@@ -33,23 +37,38 @@ setwd(td)
 print(td)
 ```
 
-    ## [1] "/var/folders/7f/sdjycp_d08n8wwytsbgwqgsw0000gn/T//RtmpDAVlQY"
+    ## [1] "/Users/johnmount/Documents/work/vtreat/extras/revdep_tests"
 
 ``` r
-options(repos = c(CRAN="https://cloud.r-project.org"))
+options(repos = repos)
 jobsdfe <- enqueueJobs(package=package, directory=td)
 
-mk_fn <- function(package, directory) {
+print("checking:")
+```
+
+    ## [1] "checking:"
+
+``` r
+print(jobsdfe)
+```
+
+    ##   id         title status
+    ## 1  1 crispRdesignR  READY
+
+``` r
+mk_fn <- function(package, directory, repos) {
   force(package)
   force(directory)
+  force(repos)
   function(i) {
     library("prrd")
+    options(repos = repos)
     setwd(directory)
     Sys.sleep(1*i)
     dequeueJobs(package=package, directory=directory)
   }
 }
-f <- mk_fn(package=package, directory=td)
+f <- mk_fn(package=package, directory=td, repos=repos)
 
 if(!is.null(parallelCluster)) {
   parallel::parLapply(parallelCluster, seq_len(ncores), f)
@@ -58,8 +77,8 @@ if(!is.null(parallelCluster)) {
 }
 ```
 
-    ## ## Reverse depends check of vtreat 1.6.2 
-    ## crispRdesignR_1.1.5 started at 2020-10-17 08:10:39 success at 2020-10-17 08:11:03 (1/0/0)
+    ## ## Reverse depends check of vtreat 1.6.4 
+    ## crispRdesignR_1.1.7 started at 2023-08-19 11:49:59 failure at 2023-08-19 11:50:01 (0/0/1)
 
     ## [1] id     title  status
     ## <0 rows> (or 0-length row.names)
@@ -68,11 +87,11 @@ if(!is.null(parallelCluster)) {
 summariseQueue(package=package, directory=td)
 ```
 
-    ## Test of vtreat 1.6.2 had 1 successes, 0 failures, and 0 skipped packages. 
-    ## Ran from 2020-10-17 08:10:39 to 2020-10-17 08:11:03 for 24 secs 
-    ## Average of 24 secs relative to 23.965 secs using 1 runners
+    ## Test of vtreat 1.6.4 had 0 successes, 1 failures, and 0 skipped packages. 
+    ## Ran from 2023-08-19 11:49:59 to 2023-08-19 11:50:01 for 2 secs 
+    ## Average of 2 secs relative to 1.824 secs using 1 runners
     ## 
-    ## Failed packages:   
+    ## Failed packages:  crispRdesignR 
     ## 
     ## Skipped packages:   
     ## 

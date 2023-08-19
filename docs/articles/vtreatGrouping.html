@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vtreat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/vtreat.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -97,7 +93,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://win-vector.com/">Sponsor: Win-Vector LLC</a>
+  <a href="https://win-vector.com/" class="external-link">Sponsor: Win-Vector LLC</a>
 </li>
       </ul>
 </div>
@@ -109,148 +105,176 @@
 
       
 
-      </header><script src="vtreatGrouping_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>vtreat grouping example</h1>
-                        <h4 class="author">Nina Zumel, Nate Sutton</h4>
+                        <h4 data-toc-skip class="author">Nina Zumel,
+Nate Sutton</h4>
             
-            <h4 class="date">2021-06-11</h4>
+            <h4 data-toc-skip class="date">2023-08-19</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/master/vignettes/vtreatGrouping.Rmd"><code>vignettes/vtreatGrouping.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/WinVector/vtreat/blob/HEAD/vignettes/vtreatGrouping.Rmd" class="external-link"><code>vignettes/vtreatGrouping.Rmd</code></a></small>
       <div class="hidden name"><code>vtreatGrouping.Rmd</code></div>
 
     </div>
 
     
     
-<p>This vignette shows an example use of <em>y</em>-stratified sampling with a grouping restriction in <code>vtreat</code>.</p>
-<p>For this example, we will use the <code>Theosph</code> dataset: data from an experiment on the pharmacokinetics of theophylline. We will demonstrate the desired effects of <em>y</em>-stratification while also respecting a grouping constraint.</p>
-<div id="the-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-data" class="anchor"></a>The Data</h2>
+<p>This vignette shows an example use of <em>y</em>-stratified sampling
+with a grouping restriction in <code>vtreat</code>.</p>
+<p>For this example, we will use the <code>Theosph</code> dataset: data
+from an experiment on the pharmacokinetics of theophylline. We will
+demonstrate the desired effects of <em>y</em>-stratification while also
+respecting a grouping constraint.</p>
+<div class="section level2">
+<h2 id="the-data">The Data<a class="anchor" aria-label="anchor" href="#the-data"></a>
+</h2>
 <p>First, let’s look at the data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># panel data for concentration in multiple subjects </span>
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">datasets</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/datasets/Theoph.html">Theoph</a></span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></code></pre></div>
-<pre><code>##   Subject   Wt Dose Time  conc
-## 1       1 79.6 4.02 0.00  0.74
-## 2       1 79.6 4.02 0.25  2.84
-## 3       1 79.6 4.02 0.57  6.57
-## 4       1 79.6 4.02 1.12 10.50
-## 5       1 79.6 4.02 2.02  9.66
-## 6       1 79.6 4.02 3.82  8.58</code></pre>
+<code class="sourceCode R"><span><span class="co"># panel data for concentration in multiple subjects </span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">datasets</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/datasets/Theoph.html" class="external-link">Theoph</a></span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   Subject   Wt Dose Time  conc</span></span>
+<span><span class="co">## 1       1 79.6 4.02 0.00  0.74</span></span>
+<span><span class="co">## 2       1 79.6 4.02 0.25  2.84</span></span>
+<span><span class="co">## 3       1 79.6 4.02 0.57  6.57</span></span>
+<span><span class="co">## 4       1 79.6 4.02 1.12 10.50</span></span>
+<span><span class="co">## 5       1 79.6 4.02 2.02  9.66</span></span>
+<span><span class="co">## 6       1 79.6 4.02 3.82  8.58</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></code></pre></div>
-<pre><code>##     Subject         Wt             Dose            Time             conc       
-##  6      :11   Min.   :54.60   Min.   :3.100   Min.   : 0.000   Min.   : 0.000  
-##  7      :11   1st Qu.:63.58   1st Qu.:4.305   1st Qu.: 0.595   1st Qu.: 2.877  
-##  8      :11   Median :70.50   Median :4.530   Median : 3.530   Median : 5.275  
-##  11     :11   Mean   :69.58   Mean   :4.626   Mean   : 5.895   Mean   : 4.960  
-##  3      :11   3rd Qu.:74.42   3rd Qu.:5.037   3rd Qu.: 9.000   3rd Qu.: 7.140  
-##  2      :11   Max.   :86.40   Max.   :5.860   Max.   :24.650   Max.   :11.400  
-##  (Other):66</code></pre>
-<p>We have twelve subjects, who each received a dose of the anti-asthma drug theophylline. The theophylline concentration in the patients’ blood was then measured at eleven points during the next 25 hours. Most of the patients got about the same dose, although the dose information reported in the dataset is normalized by weight.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     Subject         Wt             Dose            Time             conc       </span></span>
+<span><span class="co">##  6      :11   Min.   :54.60   Min.   :3.100   Min.   : 0.000   Min.   : 0.000  </span></span>
+<span><span class="co">##  7      :11   1st Qu.:63.58   1st Qu.:4.305   1st Qu.: 0.595   1st Qu.: 2.877  </span></span>
+<span><span class="co">##  8      :11   Median :70.50   Median :4.530   Median : 3.530   Median : 5.275  </span></span>
+<span><span class="co">##  11     :11   Mean   :69.58   Mean   :4.626   Mean   : 5.895   Mean   : 4.960  </span></span>
+<span><span class="co">##  3      :11   3rd Qu.:74.42   3rd Qu.:5.037   3rd Qu.: 9.000   3rd Qu.: 7.140  </span></span>
+<span><span class="co">##  2      :11   Max.   :86.40   Max.   :5.860   Max.   :24.650   Max.   :11.400  </span></span>
+<span><span class="co">##  (Other):66</span></span></code></pre>
+<p>We have twelve subjects, who each received a dose of the anti-asthma
+drug theophylline. The theophylline concentration in the patients’ blood
+was then measured at eleven points during the next 25 hours. Most of the
+patients got about the same dose, although the dose information reported
+in the dataset is normalized by weight.</p>
 </div>
-<div id="partitioning-the-data-for-modeling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#partitioning-the-data-for-modeling" class="anchor"></a>Partitioning the Data for Modeling</h2>
-<p>Suppose we wanted to fit a model to analyze how a patient’s weight affects how theophylline is metabolized, and validate that model with three-fold cross-validation. It would be important that all readings from a given patient stay in the same fold. We might also want the population in each fold to have similar distributions of theophylline concentrations curves.</p>
-<p>Recall that the goal of <em>y</em>-stratification is to insure that all samples from the data have as close to identical <em>y</em> distributions as possible. This becomes more difficult when we also have to obey a grouping constraint.</p>
-<p>Let’s look at three ways of splitting the data into folds. First, we will split the data arbitrarily into three groups, using the modulo of the Subject id to do the splitting.</p>
+<div class="section level2">
+<h2 id="partitioning-the-data-for-modeling">Partitioning the Data for Modeling<a class="anchor" aria-label="anchor" href="#partitioning-the-data-for-modeling"></a>
+</h2>
+<p>Suppose we wanted to fit a model to analyze how a patient’s weight
+affects how theophylline is metabolized, and validate that model with
+three-fold cross-validation. It would be important that all readings
+from a given patient stay in the same fold. We might also want the
+population in each fold to have similar distributions of theophylline
+concentrations curves.</p>
+<p>Recall that the goal of <em>y</em>-stratification is to insure that
+all samples from the data have as close to identical <em>y</em>
+distributions as possible. This becomes more difficult when we also have
+to obey a grouping constraint.</p>
+<p>Let’s look at three ways of splitting the data into folds. First, we
+will split the data arbitrarily into three groups, using the modulo of
+the Subject id to do the splitting.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># a somewhat arbitrary split of patients</span>
-<span class="va">subnum</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span><span class="op">)</span>
-<span class="va">d</span><span class="op">$</span><span class="va">modSplit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">subnum</span> <span class="op">%%</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
-<p>We can verify that this split preserves groups, by looking at the table of subject observations in each fold. Each subject should only appear in a single fold.</p>
+<code class="sourceCode R"><span><span class="co"># a somewhat arbitrary split of patients</span></span>
+<span><span class="va">subnum</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">modSplit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">subnum</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<p>We can verify that this split preserves groups, by looking at the
+table of subject observations in each fold. Each subject should only
+appear in a single fold.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span>Subject<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span>, groupid<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">modSplit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        groupid
-## Subject  0  1  2
-##      6  11  0  0
-##      7   0 11  0
-##      8   0  0 11
-##      11  0  0 11
-##      3  11  0  0
-##      2   0  0 11
-##      4   0 11  0
-##      9  11  0  0
-##      12 11  0  0
-##      10  0 11  0
-##      1   0 11  0
-##      5   0  0 11</code></pre>
-<p>Now let’s try the standard <em>y</em> stratification in <code>vtreat</code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>Subject<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span>, groupid<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">modSplit</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        groupid</span></span>
+<span><span class="co">## Subject  0  1  2</span></span>
+<span><span class="co">##      6  11  0  0</span></span>
+<span><span class="co">##      7   0 11  0</span></span>
+<span><span class="co">##      8   0  0 11</span></span>
+<span><span class="co">##      11  0  0 11</span></span>
+<span><span class="co">##      3  11  0  0</span></span>
+<span><span class="co">##      2   0  0 11</span></span>
+<span><span class="co">##      4   0 11  0</span></span>
+<span><span class="co">##      9  11  0  0</span></span>
+<span><span class="co">##      12 11  0  0</span></span>
+<span><span class="co">##      10  0 11  0</span></span>
+<span><span class="co">##      1   0 11  0</span></span>
+<span><span class="co">##      5   0  0 11</span></span></code></pre>
+<p>Now let’s try the standard <em>y</em> stratification in
+<code>vtreat</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># stratify by outcome only</span>
-<span class="co"># forces concentration to be equivalent</span>
-<span class="va">pStrat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">3</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">conc</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">pStrat</span>, <span class="st">"splitmethod"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "kwaycrossystratified"</code></pre>
+<code class="sourceCode R"><span><span class="co"># stratify by outcome only</span></span>
+<span><span class="co"># forces concentration to be equivalent</span></span>
+<span><span class="va">pStrat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kWayStratifiedY.html">kWayStratifiedY</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">3</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">conc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pStrat</span>, <span class="st">"splitmethod"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "kwaycrossystratified"</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d</span><span class="op">$</span><span class="va">stratSplit</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">pStrat</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span>Subject<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span>, groupid<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">stratSplit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        groupid
-## Subject 1 2 3
-##      6  6 2 3
-##      7  2 8 1
-##      8  2 3 6
-##      11 4 3 4
-##      3  3 4 4
-##      2  4 3 4
-##      4  5 5 1
-##      9  6 3 2
-##      12 3 4 4
-##      10 1 2 8
-##      1  6 2 3
-##      5  2 5 4</code></pre>
-<p>We can see this partition didn’t preserve the <code>Subject</code> grouping.</p>
-<p>Finally, we can try <code>vtreat</code>’s group-preserving split, which also tries to <em>y</em>-stratify as much as possible (by stratifying on the mean <em>y</em> observation from each group).</p>
+<code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">stratSplit</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">pStrat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>Subject<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span>, groupid<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">stratSplit</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        groupid</span></span>
+<span><span class="co">## Subject 1 2 3</span></span>
+<span><span class="co">##      6  6 2 3</span></span>
+<span><span class="co">##      7  2 8 1</span></span>
+<span><span class="co">##      8  2 3 6</span></span>
+<span><span class="co">##      11 4 3 4</span></span>
+<span><span class="co">##      3  3 4 4</span></span>
+<span><span class="co">##      2  4 3 4</span></span>
+<span><span class="co">##      4  5 5 1</span></span>
+<span><span class="co">##      9  6 3 2</span></span>
+<span><span class="co">##      12 3 4 4</span></span>
+<span><span class="co">##      10 1 2 8</span></span>
+<span><span class="co">##      1  6 2 3</span></span>
+<span><span class="co">##      5  2 5 4</span></span></code></pre>
+<p>We can see this partition didn’t preserve the <code>Subject</code>
+grouping.</p>
+<p>Finally, we can try <code>vtreat</code>’s group-preserving split,
+which also tries to <em>y</em>-stratify as much as possible (by
+stratifying on the mean <em>y</em> observation from each group).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># stratify by patient and outcome</span>
-<span class="co"># allows concentration to vary amoung individual patients</span>
-<span class="va">splitter</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makekWayCrossValidationGroupedByColumn.html">makekWayCrossValidationGroupedByColumn</a></span><span class="op">(</span><span class="st">'Subject'</span><span class="op">)</span>
-<span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">splitter</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">3</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">conc</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">split</span>, <span class="st">"splitmethod"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "kwaycrossystratifiedgrouped"</code></pre>
+<code class="sourceCode R"><span><span class="co"># stratify by patient and outcome</span></span>
+<span><span class="co"># allows concentration to vary amoung individual patients</span></span>
+<span><span class="va">splitter</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makekWayCrossValidationGroupedByColumn.html">makekWayCrossValidationGroupedByColumn</a></span><span class="op">(</span><span class="st">'Subject'</span><span class="op">)</span></span>
+<span><span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">splitter</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="fl">3</span>,<span class="va">d</span>,<span class="va">d</span><span class="op">$</span><span class="va">conc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">split</span>, <span class="st">"splitmethod"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "kwaycrossystratifiedgrouped"</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d</span><span class="op">$</span><span class="va">subjectSplit</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">split</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span>Subject<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span>, groupid<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">subjectSplit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        groupid
-## Subject  1  2  3
-##      6   0  0 11
-##      7  11  0  0
-##      8   0 11  0
-##      11  0  0 11
-##      3   0 11  0
-##      2  11  0  0
-##      4   0  0 11
-##      9   0 11  0
-##      12 11  0  0
-##      10 11  0  0
-##      1   0 11  0
-##      5   0  0 11</code></pre>
+<code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">subjectSplit</span> <span class="op">&lt;-</span> <span class="fu">vtreat</span><span class="fu">::</span><span class="fu"><a href="../reference/getSplitPlanAppLabels.html">getSplitPlanAppLabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,<span class="va">split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>Subject<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">Subject</span>, groupid<span class="op">=</span><span class="va">d</span><span class="op">$</span><span class="va">subjectSplit</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        groupid</span></span>
+<span><span class="co">## Subject  1  2  3</span></span>
+<span><span class="co">##      6   0  0 11</span></span>
+<span><span class="co">##      7  11  0  0</span></span>
+<span><span class="co">##      8   0 11  0</span></span>
+<span><span class="co">##      11  0  0 11</span></span>
+<span><span class="co">##      3   0 11  0</span></span>
+<span><span class="co">##      2  11  0  0</span></span>
+<span><span class="co">##      4   0  0 11</span></span>
+<span><span class="co">##      9   0 11  0</span></span>
+<span><span class="co">##      12 11  0  0</span></span>
+<span><span class="co">##      10 11  0  0</span></span>
+<span><span class="co">##      1   0 11  0</span></span>
+<span><span class="co">##      5   0  0 11</span></span></code></pre>
 <p>This is again a subject-preserving partition.</p>
-<p>We can compare the mean theophylline concentration and the average pharmacokinetic profile for each fold, for both of the subject-preserving partitions. We see that the stratification reduces some of the variation between folds.</p>
-<div id="arbitrary-partition" class="section level3">
-<h3 class="hasAnchor">
-<a href="#arbitrary-partition" class="anchor"></a>Arbitrary Partition</h3>
-<pre><code>## [1] "Arbitrary grouping"
-## [1] "Group means:"
-##        0        1        2 
-## 4.728864 5.305227 4.847273 
-## [1] "Standard deviation of group means: 0.304395061237506"</code></pre>
+<p>We can compare the mean theophylline concentration and the average
+pharmacokinetic profile for each fold, for both of the
+subject-preserving partitions. We see that the stratification reduces
+some of the variation between folds.</p>
+<div class="section level3">
+<h3 id="arbitrary-partition">Arbitrary Partition<a class="anchor" aria-label="anchor" href="#arbitrary-partition"></a>
+</h3>
+<pre><code><span><span class="co">## [1] "Arbitrary grouping"</span></span>
+<span><span class="co">## [1] "Group means:"</span></span>
+<span><span class="co">##        0        1        2 </span></span>
+<span><span class="co">## 4.728864 5.305227 4.847273 </span></span>
+<span><span class="co">## [1] "Standard deviation of group means: 0.304395061237506"</span></span></code></pre>
 </div>
-<div id="group-preserving-y-stratified-partition" class="section level3">
-<h3 class="hasAnchor">
-<a href="#group-preserving-y-stratified-partition" class="anchor"></a>Group-preserving, <em>y</em>-stratified Partition</h3>
-<pre><code>## [1] "Group by patient, stratify on y"
-## [1] "Group means:"
-##        1        2        3 
-## 5.018864 5.172727 4.689773 
-## [1] "Standard deviation of group means: 0.246718442094266"</code></pre>
+<div class="section level3">
+<h3 id="group-preserving-y-stratified-partition">Group-preserving, <em>y</em>-stratified Partition<a class="anchor" aria-label="anchor" href="#group-preserving-y-stratified-partition"></a>
+</h3>
+<pre><code><span><span class="co">## [1] "Group by patient, stratify on y"</span></span>
+<span><span class="co">## [1] "Group means:"</span></span>
+<span><span class="co">##        1        2        3 </span></span>
+<span><span class="co">## 5.018864 5.172727 4.689773 </span></span>
+<span><span class="co">## [1] "Standard deviation of group means: 0.246718442094266"</span></span></code></pre>
 </div>
 </div>
   </div>
@@ -266,11 +290,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by John Mount, Nina Zumel.</p>
+  <p></p>
+<p>Developed by John Mount, Nina Zumel.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -278,6 +304,8 @@
 
   
 
+
+  
 
   </body>
 </html>
