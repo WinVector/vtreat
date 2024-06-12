@@ -4,13 +4,34 @@ Win-Vector LLC
 10/16/2017
 
 ``` r
-library("seplyr")
+library("dplyr")
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library("cdata")
 ```
 
     ## Loading required package: wrapr
 
+    ## 
+    ## Attaching package: 'wrapr'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     coalesce
+
 ``` r
-library("cdata")
 library("WVPlots")
 library("sigr")
 source("isotone.R")
@@ -73,27 +94,28 @@ summary(expmt)
 ```
 
     ##      adjPR2          linkPR2         runNumber     
-    ##  Min.   :0.5301   Min.   :0.5034   Min.   :  1.00  
-    ##  1st Qu.:0.6790   1st Qu.:0.6457   1st Qu.: 25.75  
-    ##  Median :0.7280   Median :0.6842   Median : 50.50  
-    ##  Mean   :0.7189   Mean   :0.6853   Mean   : 50.50  
-    ##  3rd Qu.:0.7688   3rd Qu.:0.7276   3rd Qu.: 75.25  
-    ##  Max.   :0.8996   Max.   :0.8547   Max.   :100.00
+    ##  Min.   :0.5134   Min.   :0.5262   Min.   :  1.00  
+    ##  1st Qu.:0.6608   1st Qu.:0.6390   1st Qu.: 25.75  
+    ##  Median :0.6975   Median :0.6875   Median : 50.50  
+    ##  Mean   :0.7028   Mean   :0.6795   Mean   : 50.50  
+    ##  3rd Qu.:0.7662   3rd Qu.:0.7339   3rd Qu.: 75.25  
+    ##  Max.   :0.8759   Max.   :0.7894   Max.   :100.00
 
 ``` r
 wrapTTest(expmt, "adjPR2", "linkPR2")
 ```
 
-    ## [1] "Welch Two Sample t-test, two.sided: (t=3.5, df=1.9e+02, p=0.00067)."
+    ## [1] "Welch Two Sample t-test, two.sided: (t=2.273, df=193.6, p=0.02415)."
 
 ``` r
-pltf <- unpivotValuesToRows(expmt, 
-                            nameForNewKeyColumn = 'score_type', 
-                            nameForNewValueColumn = 'pseudo_R2', 
-                            columnsToTakeFrom = c("adjPR2", "linkPR2"))
+pltf <- unpivot_to_blocks(
+  expmt, 
+  nameForNewKeyColumn = 'score_type', 
+  nameForNewValueColumn = 'pseudo_R2', 
+  columnsToTakeFrom = c("adjPR2", "linkPR2"))
 
 WVPlots::DoubleDensityPlot(pltf, 'pseudo_R2', 'score_type', 
                            "isotone adjusted pseudo-R2 versus sigmoid link pseudo-R2")
 ```
 
-![](MonotoneStats_files/figure-markdown_github/polish-1.png)
+![](MonotoneStats_files/figure-gfm/polish-1.png)<!-- -->

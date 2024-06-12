@@ -7,7 +7,7 @@ output: github_document
 
 
 ```{r polish}
-library("seplyr")
+library("dplyr")
 library("cdata")
 library("WVPlots")
 library("sigr")
@@ -71,10 +71,11 @@ summary(expmt)
 
 wrapTTest(expmt, "adjPR2", "linkPR2")
 
-pltf <- unpivotValuesToRows(expmt, 
-                            nameForNewKeyColumn = 'score_type', 
-                            nameForNewValueColumn = 'pseudo_R2', 
-                            columnsToTakeFrom = c("adjPR2", "linkPR2"))
+pltf <- unpivot_to_blocks(
+  expmt, 
+  nameForNewKeyColumn = 'score_type', 
+  nameForNewValueColumn = 'pseudo_R2', 
+  columnsToTakeFrom = c("adjPR2", "linkPR2"))
 
 WVPlots::DoubleDensityPlot(pltf, 'pseudo_R2', 'score_type', 
                            "isotone adjusted pseudo-R2 versus sigmoid link pseudo-R2")

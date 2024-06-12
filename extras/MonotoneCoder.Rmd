@@ -13,7 +13,8 @@ We will use the [`vtreat` package](https://winvector.github.io/vtreat/) [custom 
 
 ```{r regression}
 suppressPackageStartupMessages(library("ggplot2"))
-library("seplyr")
+library("wrapr")
+library("dplyr")
 source("isotone.R")
 
 # set up example data
@@ -164,7 +165,7 @@ predictionCollar <- 2/(sum(d$isTrain)-1)
 ```
 
 Notice in the score frame `vtreat`'s cross validation based scoring correctly 
-indentifies that the isotone encoding is over-fitting and not in fact better than
+identifies that the isotone encoding is over-fitting and not in fact better than
 the sigmoid link function.
 
 ```{r score}
@@ -187,8 +188,8 @@ dTest <- d[!d$isTrain, , drop=FALSE]
 ```{r adjscoreyobs}
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
 dTest %.>% 
-  group_by_se(., "yObserved") %.>%
-  summarize_nse(., minAdj := min(adjScore), maxAdj := max(adjScore))
+  group_by(., yObserved) %.>%
+  summarize(., minAdj := min(adjScore), maxAdj := max(adjScore))
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
@@ -198,8 +199,8 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
 ```{r linkscoreyobs}
 sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
 dTest %.>% 
-  group_by_se(., "yObserved") %.>%
-  summarize_nse(., minAdj := min(linkScore), maxAdj := max(linkScore))
+  group_by(., yObserved) %.>%
+  summarize(., minAdj := min(linkScore), maxAdj := max(linkScore))
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
                            "link prediction against observations")
 ```
@@ -209,8 +210,8 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
 ```{r adjscoreyideal}
 sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
 dTest %.>% 
-  group_by_se(., "yIdeal") %.>%
-  summarize_nse(., minAdj := min(adjScore), maxAdj := max(adjScore))
+  group_by(., yIdeal) %.>%
+  summarize(., minAdj := min(adjScore), maxAdj := max(adjScore))
 WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
@@ -220,8 +221,8 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
 ```{r linkscoreyideal}
 sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
 dTest %.>% 
-  group_by_se(., "yIdeal") %.>%
-  summarize_nse(., minAdj := min(linkScore), maxAdj := max(linkScore))
+  group_by(., yIdeal) %.>%
+  summarize(., minAdj := min(linkScore), maxAdj := max(linkScore))
 WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
                            "link prediction against ideal (unobserved) concept")
 ```

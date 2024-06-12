@@ -1,21 +1,50 @@
 Isotone Coding in vtreat
 ================
 John Mount, Win-Vector LLC
-2018-12-03
+2024-06-12
 
-Monotone (or isotone) regression via the [`isotone` package](https://CRAN.R-project.org/package=isotone) (also give [`scam`](https://CRAN.R-project.org/package=scam) and [`gbm` `var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which should have the advantage of also being low complexity).
+Monotone (or isotone) regression via the [`isotone`
+package](https://CRAN.R-project.org/package=isotone) (also give
+[`scam`](https://CRAN.R-project.org/package=scam) and [`gbm`
+`var.monotone`](https://CRAN.R-project.org/package=gbm) a look, which
+should have the advantage of also being low complexity).
 
-We will use the [`vtreat` package](https://winvector.github.io/vtreat/) [custom coder interface](https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md), which will supply cross-validated significance calculations and out-of sample interpolation (allowing us to apply the monotone transforms to new data). For a more substantial application of `vtreat` custom coding please see the [partial pooling application](http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/).
+We will use the [`vtreat` package](https://winvector.github.io/vtreat/)
+[custom coder
+interface](https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md),
+which will supply cross-validated significance calculations and out-of
+sample interpolation (allowing us to apply the monotone transforms to
+new data). For a more substantial application of `vtreat` custom coding
+please see the [partial pooling
+application](http://www.win-vector.com/blog/2017/09/partial-pooling-for-lower-variance-variable-encoding/).
 
-Regression
-----------
+## Regression
 
 ``` r
 suppressPackageStartupMessages(library("ggplot2"))
-library("seplyr")
 ```
 
-    ## Loading required package: wrapr
+    ## Warning: package 'ggplot2' was built under R version 4.3.2
+
+``` r
+library("wrapr")
+library("dplyr")
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following object is masked from 'package:wrapr':
+    ## 
+    ##     coalesce
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
 
 ``` r
 source("isotone.R")
@@ -35,7 +64,7 @@ ggplot(data=d, aes(x=x)) +
           subtitle = "dashed curve: ideal (pre-noise) values")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github/regression-1.png)
+![](MonotoneCoder_files/figure-gfm/regression-1.png)<!-- -->
 
 ``` r
 customCoders = list('n.NonDecreasingV.num' = solveNonDecreasing,
@@ -48,8 +77,8 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
 ```
 
     ##            varName       rsq          sig needsSplit
-    ## 1 x_NonDecreasingV 0.5809673 9.905695e-18       TRUE
-    ## 2          x_clean 0.6129088 3.320652e-19      FALSE
+    ## 1 x_NonDecreasingV 0.5886891 4.464988e-18       TRUE
+    ## 2                x 0.6129088 3.320652e-19      FALSE
 
 ``` r
 dTreated <- vtreat::prepare(treatments, d)
@@ -94,14 +123,21 @@ ggplot(data=d, aes(x=x)) +
           subtitle = "solid path: isotone fit")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github/regression-2.png)
+![](MonotoneCoder_files/figure-gfm/regression-2.png)<!-- -->
 
-The above formulation is kind of exciting. You get one degree of freedom per data-row (a very large number), but a simple constraint system (that the produced predictions must follow the x-order constraints) is enough to produce reasonable fits. This reminiscent of the [maximum entropy formulation of logistic regression](http://www.win-vector.com/dfiles/LogisticRegressionMaxEnt.pdf), and is evidence one is working with a sort of dual-formulation of a smaller primal problem.
+The above formulation is kind of exciting. You get one degree of freedom
+per data-row (a very large number), but a simple constraint system (that
+the produced predictions must follow the x-order constraints) is enough
+to produce reasonable fits. This reminiscent of the [maximum entropy
+formulation of logistic
+regression](http://www.win-vector.com/dfiles/LogisticRegressionMaxEnt.pdf),
+and is evidence one is working with a sort of dual-formulation of a
+smaller primal problem.
 
-Some notes on smoother implementations can be found [here](https://github.com/WinVector/vtreat/blob/master/extras/Monotone2.md).
+Some notes on smoother implementations can be found
+[here](https://github.com/WinVector/vtreat/blob/master/extras/Monotone2.md).
 
-Clasification
--------------
+## Clasification
 
 We can also easily adapt to classification and to categorical inputs.
 
@@ -131,8 +167,8 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
 ```
 
     ##            varName       rsq          sig needsSplit
-    ## 1 x_NonIncreasingV 0.3370146 2.856172e-10       TRUE
-    ## 2          x_clean 0.3522417 1.138713e-10      FALSE
+    ## 1 x_NonIncreasingV 0.3282916 4.838923e-10       TRUE
+    ## 2                x 0.3522417 1.138713e-10      FALSE
 
 ``` r
 # copy fit over to original data frame
@@ -217,16 +253,33 @@ sigr::wrapFisherTest(dTest, 'yObserved', 'yIdeal')
 
     ## [1] "Fisher's Exact Test for Count Data: (odds.ratio=8.936, p<1e-05)."
 
-Model calibration/polish
-------------------------
+## Model calibration/polish
 
-One application we have used the monotone methodology with good success is: calibrating regressions and classifiers.
+One application we have used the monotone methodology with good success
+is: calibrating regressions and classifiers.
 
-This is an idea that came up in discussion with [Jeremy Howard](http://www.fast.ai/about/). Jeremy, while President and Chief Scientist of Kaggle, decided AUC was a good "early to see if you have something" metric for running contests. That leaves the question: what is a principled mechanical way to convert a score with a good AUC to a score with correct probabilities (a good deviance). Kaggle participants are famous for good solutions. But here is our solution: a arbitrary isotone transform.
+This is an idea that came up in discussion with [Jeremy
+Howard](http://www.fast.ai/about/). Jeremy, while President and Chief
+Scientist of Kaggle, decided AUC was a good “early to see if you have
+something” metric for running contests. That leaves the question: what
+is a principled mechanical way to convert a score with a good AUC to a
+score with correct probabilities (a good deviance). Kaggle participants
+are famous for good solutions. But here is our solution: a arbitrary
+isotone transform.
 
-That is: we take a model that does well on the `AUC` measure (meaning it is good at ranking or reproducing order relations) and build the best model with the same order structure with respect to a more stringent measure (such as sum of squared errors, or deviance). Often this step is ignored or done by binning or some other method- but for systems that are not natively in probability units (such as margin based systems such as support vector machines) this isotone calibration or polish step can be an improvement (assuming one is careful about nested model bias issues).
+That is: we take a model that does well on the `AUC` measure (meaning it
+is good at ranking or reproducing order relations) and build the best
+model with the same order structure with respect to a more stringent
+measure (such as sum of squared errors, or deviance). Often this step is
+ignored or done by binning or some other method- but for systems that
+are not natively in probability units (such as margin based systems such
+as support vector machines) this isotone calibration or polish step can
+be an improvement (assuming one is careful about nested model bias
+issues).
 
-We can try- that. Suppose we forgot to set `type="response"` on a logistic regression and we didn't know the link function is the sigmoid (so we can't directly apply the correction).
+We can try- that. Suppose we forgot to set `type="response"` on a
+logistic regression and we didn’t know the link function is the sigmoid
+(so we can’t directly apply the correction).
 
 ``` r
 source("isotone.R")
@@ -273,14 +326,16 @@ print(treatments$scoreFrame[, c('varName', 'rsq', 'sig', 'needsSplit'), drop=FAL
 ```
 
     ##                   varName       rsq          sig needsSplit
-    ## 1 rawScore_NonDecreasingV 0.3370146 2.856172e-10       TRUE
-    ## 2          rawScore_clean 0.3522417 1.138713e-10      FALSE
+    ## 1 rawScore_NonDecreasingV 0.3282916 4.838923e-10       TRUE
+    ## 2                rawScore 0.3522417 1.138713e-10      FALSE
 
 ``` r
 predictionCollar <- 2/(sum(d$isTrain)-1)
 ```
 
-Notice in the score frame `vtreat`'s cross validation based scoring correctly indentifies that the isotone encoding is over-fitting and not in fact better than the sigmoid link function.
+Notice in the score frame `vtreat`’s cross validation based scoring
+correctly identifies that the isotone encoding is over-fitting and not
+in fact better than the sigmoid link function.
 
 ``` r
 # copy fit over to original data frame
@@ -295,20 +350,20 @@ d$linkPred <- d$linkScore>=0.5
 head(d)
 ```
 
-    ##          x yIdeal yObserved isTrain   rawScore   adjScore adjPred
-    ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394 0.91666667    TRUE
-    ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170 0.61111111    TRUE
-    ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434 0.28571429   FALSE
-    ## 4 9.732597  FALSE     FALSE    TRUE -2.1956494 0.02325581   FALSE
-    ## 5 3.726201   TRUE      TRUE   FALSE  1.9416808 0.91666667    TRUE
-    ## 6 2.197222   TRUE      TRUE   FALSE  2.9948735 0.91666667    TRUE
-    ##   linkScore linkPred
-    ## 1 0.8826781     TRUE
-    ## 2 0.4542739    FALSE
-    ## 3 0.3934475    FALSE
-    ## 4 0.1001419    FALSE
-    ## 5 0.8745367     TRUE
-    ## 6 0.9523420     TRUE
+    ##          x yIdeal yObserved isTrain   rawScore   adjScore adjPred linkScore
+    ## 1 3.615347   TRUE      TRUE   FALSE  2.0180394 0.91666667    TRUE 0.8826781
+    ## 2 6.811326   TRUE      TRUE    TRUE -0.1834170 0.61111111    TRUE 0.4542739
+    ## 3 7.173432  FALSE      TRUE   FALSE -0.4328434 0.28571429   FALSE 0.3934475
+    ## 4 9.732597  FALSE     FALSE    TRUE -2.1956494 0.02325581   FALSE 0.1001419
+    ## 5 3.726201   TRUE      TRUE   FALSE  1.9416808 0.91666667    TRUE 0.8745367
+    ## 6 2.197222   TRUE      TRUE   FALSE  2.9948735 0.91666667    TRUE 0.9523420
+    ##   linkPred
+    ## 1     TRUE
+    ## 2    FALSE
+    ## 3    FALSE
+    ## 4    FALSE
+    ## 5     TRUE
+    ## 6     TRUE
 
 ``` r
 dTest <- d[!d$isTrain, , drop=FALSE]
@@ -324,11 +379,11 @@ sigr::wrapChiSqTest(dTest, 'adjScore', 'yObserved')
 
 ``` r
 dTest %.>% 
-  group_by_se(., "yObserved") %.>%
-  summarize_nse(., minAdj := min(adjScore), maxAdj := max(adjScore))
+  group_by(., yObserved) %.>%
+  summarize(., minAdj := min(adjScore), maxAdj := max(adjScore))
 ```
 
-    ## # A tibble: 2 x 3
+    ## # A tibble: 2 × 3
     ##   yObserved minAdj maxAdj
     ##   <lgl>      <dbl>  <dbl>
     ## 1 FALSE     0.0233  0.977
@@ -339,7 +394,7 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yObserved',
                            "adjusted prediction against observations")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github/adjscoreyobs-1.png)
+![](MonotoneCoder_files/figure-gfm/adjscoreyobs-1.png)<!-- -->
 
 ### Link Score versus observed outcomes
 
@@ -351,11 +406,11 @@ sigr::wrapChiSqTest(dTest, 'linkScore', 'yObserved')
 
 ``` r
 dTest %.>% 
-  group_by_se(., "yObserved") %.>%
-  summarize_nse(., minAdj := min(linkScore), maxAdj := max(linkScore))
+  group_by(., yObserved) %.>%
+  summarize(., minAdj := min(linkScore), maxAdj := max(linkScore))
 ```
 
-    ## # A tibble: 2 x 3
+    ## # A tibble: 2 × 3
     ##   yObserved minAdj maxAdj
     ##   <lgl>      <dbl>  <dbl>
     ## 1 FALSE     0.0860  0.989
@@ -366,7 +421,7 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yObserved',
                            "link prediction against observations")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github/linkscoreyobs-1.png)
+![](MonotoneCoder_files/figure-gfm/linkscoreyobs-1.png)<!-- -->
 
 ### Adjusted Score versus Ideal (Unobserved) Concept
 
@@ -378,11 +433,11 @@ sigr::wrapChiSqTest(dTest, 'adjScore', 'yIdeal')
 
 ``` r
 dTest %.>% 
-  group_by_se(., "yIdeal") %.>%
-  summarize_nse(., minAdj := min(adjScore), maxAdj := max(adjScore))
+  group_by(., yIdeal) %.>%
+  summarize(., minAdj := min(adjScore), maxAdj := max(adjScore))
 ```
 
-    ## # A tibble: 2 x 3
+    ## # A tibble: 2 × 3
     ##   yIdeal minAdj maxAdj
     ##   <lgl>   <dbl>  <dbl>
     ## 1 FALSE  0.0233  0.521
@@ -393,7 +448,7 @@ WVPlots::DoubleDensityPlot(dTest, 'adjScore', 'yIdeal',
                            "adjusted prediction against ideal (unobserved) concept")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github/adjscoreyideal-1.png)
+![](MonotoneCoder_files/figure-gfm/adjscoreyideal-1.png)<!-- -->
 
 ### Link Score versus Ideal (Unobserved) Concept
 
@@ -405,11 +460,11 @@ sigr::wrapChiSqTest(dTest, 'linkScore', 'yIdeal')
 
 ``` r
 dTest %.>% 
-  group_by_se(., "yIdeal") %.>%
-  summarize_nse(., minAdj := min(linkScore), maxAdj := max(linkScore))
+  group_by(., yIdeal) %.>%
+  summarize(., minAdj := min(linkScore), maxAdj := max(linkScore))
 ```
 
-    ## # A tibble: 2 x 3
+    ## # A tibble: 2 × 3
     ##   yIdeal minAdj maxAdj
     ##   <lgl>   <dbl>  <dbl>
     ## 1 FALSE  0.0860  0.401
@@ -420,9 +475,14 @@ WVPlots::DoubleDensityPlot(dTest, 'linkScore', 'yIdeal',
                            "link prediction against ideal (unobserved) concept")
 ```
 
-![](MonotoneCoder_files/figure-markdown_github/linkscoreyideal-1.png)
+![](MonotoneCoder_files/figure-gfm/linkscoreyideal-1.png)<!-- -->
 
-Conclusion
-----------
+## Conclusion
 
-And we see the adjusted prediction is pretty good, even with the nested model bias issue. In fact even though it shows sings of over-fit on the testing set, it outperforms the original links score in recovering the (unobserved) original concept. This is because the inductive bias we introduced (monotone solution) was something true for the concept (the mapping of link scores to probabilities) but not a property of the noise model; so the transform prefers signal.
+And we see the adjusted prediction is pretty good, even with the nested
+model bias issue. In fact even though it shows sings of over-fit on the
+testing set, it outperforms the original links score in recovering the
+(unobserved) original concept. This is because the inductive bias we
+introduced (monotone solution) was something true for the concept (the
+mapping of link scores to probabilities) but not a property of the noise
+model; so the transform prefers signal.
