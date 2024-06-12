@@ -1,7 +1,7 @@
 Custom Level Coding in vtreat
 ================
 Nina Zumel, John Mount
-2019-06-02
+2024-06-12
 
 One of the services that `vtreat` provides is *level coding* (what we
 sometimes call *impact coding*): converting the levels of a categorical
@@ -51,9 +51,10 @@ data, we’ll use radon levels by county for the state of Minnesota
 ## The Data: Radon levels in Minnesota
 
 ``` r
-library("vtreat")
 library("lme4")
 ```
+
+    ## Warning: package 'lme4' was built under R version 4.3.2
 
     ## Loading required package: Matrix
 
@@ -76,22 +77,20 @@ library("dplyr")
 library("tidyr")
 ```
 
+    ## Warning: package 'tidyr' was built under R version 4.3.2
+
     ## 
     ## Attaching package: 'tidyr'
 
-    ## The following object is masked from 'package:Matrix':
+    ## The following objects are masked from 'package:Matrix':
     ## 
-    ##     expand
+    ##     expand, pack, unpack
 
 ``` r
 library("ggplot2")
 ```
 
-    ## Registered S3 methods overwritten by 'ggplot2':
-    ##   method         from 
-    ##   [.quosures     rlang
-    ##   c.quosures     rlang
-    ##   print.quosures rlang
+    ## Warning: package 'ggplot2' was built under R version 4.3.2
 
 ``` r
 # example data
@@ -117,9 +116,9 @@ str(radonMN)
 
 For this example we have three columns of interest:
 
-  - `county`: 85 possible values
-  - `activity`: the log of the radon reading (numerical outcome)
-  - `critical`: `TRUE` when activity \> 1.5 (categorical outcome)
+- `county`: 85 possible values
+- `activity`: the log of the radon reading (numerical outcome)
+- `critical`: `TRUE` when activity \> 1.5 (categorical outcome)
 
 The goal is to level code `county` for either the regression problem
 (predict the log radon reading) or the categorization problem (predict
@@ -144,8 +143,8 @@ As the graph shows, the conditional mean of log radon activity by county
 ranges from nearly zero to about 3, and the conditional expectation of a
 critical reading ranges from zero to one. On the other hand, the number
 of readings per county is quite low for many counties – only one or two
-– though some counties have a large number of readings. That means
-some of the conditional expectations are quite uncertain.
+– though some counties have a large number of readings. That means some
+of the conditional expectations are quite uncertain.
 
 ## Implementing Level Coders for Partial Pooling
 
@@ -157,10 +156,10 @@ level score.
 For regression problems, the custom coder should be a function that
 takes as input:
 
-  - `v`: a string with the name of the categorical variable
-  - `vcol`: the actual categorical column (assumed character)
-  - `y`: the numerical outcome column
-  - `weights`: a column of row weights
+- `v`: a string with the name of the categorical variable
+- `vcol`: the actual categorical column (assumed character)
+- `y`: the numerical outcome column
+- `weights`: a column of row weights
 
 The function should return a column of scores (the level codings). In
 keeping with how the `catN` and `catB` variables are calculated,
@@ -215,7 +214,7 @@ ppCoderC <- function(v, vcol,
 
 You can then pass the functions in as a named list into either
 `designTreatmentsX` or `mkCrossFrameXExperiment` to build the treatment
-plan. The format of the key is "\[n|c\].levelName\[.option\]\*"
+plan. The format of the key is “\[n\|c\].levelName\[.option\]\*”
 
 The prefacing picks the model type: numeric or regression starts with
 ‘n.’ and the categorical encoder starts with ‘c.’. Currently, the only
@@ -231,28 +230,28 @@ customCoders = list('n.poolN.center' = ppCoderN,
 
 ## Using the Custom Coders
 
-Let’s build a treatment plan for the regression
-problem.
+Let’s build a treatment plan for the regression problem.
 
 ``` r
 # I only want to create the cleaned numeric variables, the isBAD variables,
 # and the level codings (not the indicator variables or catP, etc.)
 vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolN')
 
-treatplanN = designTreatmentsN(radonMN, 
-                               varlist = c('county'),
-                               outcomename = 'activity',
-                               codeRestriction = vartypes_I_want,
-                               customCoders = customCoders, 
-                               verbose=FALSE)
+treatplanN = vtreat::designTreatmentsN(
+  radonMN, 
+  varlist = c('county'),
+  outcomename = 'activity',
+  codeRestriction = vartypes_I_want,
+  customCoders = customCoders, 
+  verbose=FALSE)
 
 scoreFrame = treatplanN$scoreFrame
 scoreFrame %>% select(varName, sig, origName, code)
 ```
 
     ##        varName          sig origName  code
-    ## 1 county_poolN 5.416387e-17   county poolN
-    ## 2  county_catN 6.794541e-15   county  catN
+    ## 1 county_poolN 4.193305e-22   county poolN
+    ## 2  county_catN 4.393860e-17   county  catN
 
 Note that the treatment plan returns both the `catN` variable (default
 level encoding) and the pooled level encoding (`poolN`). You can
@@ -266,13 +265,13 @@ Let’s compare the two level encodings.
 measframe = data.frame(county = unique(radonMN$county),
                        stringsAsFactors=FALSE)
 
-outframe = prepare(treatplanN, measframe)
+outframe = vtreat::prepare(treatplanN, measframe)
 
 # If we wanted only the new pooled level coding,
 # (plus any numeric/isBAD variables), we would
 # use a codeRestriction:
 #
-# outframe = prepare(treatplanN, 
+# outframe = vtreat::prepare(treatplanN, 
 #                    measframe,
 #                    codeRestriction = c('clean', 'isBAD', 'poolN'))
 
@@ -297,15 +296,16 @@ We can also code for the categorical problem.
 # For categorical problems, coding is catB
 vartypes_I_want = c('clean', 'isBAD', 'catB', 'poolC')
 
-treatplanC = designTreatmentsC(radonMN, 
-                               varlist = c('county'),
-                               outcomename = 'critical',
-                               outcometarget= TRUE,
-                               codeRestriction = vartypes_I_want,
-                               customCoders = customCoders, 
-                               verbose=FALSE)
+treatplanC = vtreat::designTreatmentsC(
+  radonMN, 
+  varlist = c('county'),
+  outcomename = 'critical',
+  outcometarget= TRUE,
+  codeRestriction = vartypes_I_want,
+  customCoders = customCoders, 
+  verbose=FALSE)
 
-outframe = prepare(treatplanC, measframe)
+outframe = vtreat::prepare(treatplanC, measframe)
 
 gather(outframe, key=scoreType, value=linkscore, 
        county_poolC, county_catB) %>%

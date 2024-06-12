@@ -1,4 +1,7 @@
 
+# vtreat 1.6.5 2024/06/12
+
+ * try to lower dependencies to avoid lme4 2024-06-17 removal threat
 
 # vtreat 1.6.4 2023/08/19
 

@@ -1,8 +1,8 @@
 Package: vtreat
 Type: Package
 Title: A Statistically Sound 'data.frame' Processor/Conditioner
-Version: 1.6.4
-Date: 2023-08-19
+Version: 1.6.5
+Date: 2024-06-12
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person("Nina", "Zumel", email = "nzumel@win-vector.com", role = c("aut")),
@@ -20,16 +20,14 @@ Description: A 'data.frame' processor/conditioner that prepares real-world data 
 License: GPL-2 | GPL-3
 Depends: 
   R (>= 3.4.0),
-  wrapr (>= 2.0.9)
+  wrapr (>= 2.1.0)
 Imports: 
     stats,
     digest
 Suggests: 
-    rquery (>= 1.4.9),
-    rqdatatable (>= 1.3.2),
+    rquery (>= 1.4.99),
+    rqdatatable (>= 1.3.3),
     data.table (>= 1.12.2),
-    isotone,
-    lme4,
     knitr,
     rmarkdown,
     parallel,
@@ -39,5 +37,5 @@ Suggests:
     R.rsp,
     tinytest
 VignetteBuilder: knitr, R.rsp
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 ByteCompile: true

@@ -15,6 +15,8 @@
   pred
 }
 
+
+#' @export
 as_rquery.vtreat_cat_Bayes <- function(tstep, 
                                        ...,
                                        var_restriction) {

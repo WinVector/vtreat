@@ -11,6 +11,8 @@
   vals
 }
 
+
+#' @export
 as_rquery.vtreat_cat_ind <- function(tstep, 
                                      ...,
                                      var_restriction) {

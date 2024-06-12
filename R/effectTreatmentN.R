@@ -16,6 +16,8 @@
   pred
 }
 
+
+#' @export
 as_rquery.vtreat_can_num <- function(tstep, 
                                        ...,
                                        var_restriction) {

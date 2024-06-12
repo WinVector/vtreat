@@ -23,7 +23,6 @@ We'll implement our partial pooling encoders using the multilevel linear regress
 ## The Data: Radon levels in Minnesota
 
 ```{r dat}
-library("vtreat")
 library("brms")
 library("dplyr")
 library("tidyr")
@@ -122,7 +121,7 @@ ppCoderCb <- function(v, vcol,
   d <- data.frame(x = vcol,
                   y = as.numeric(y),
                   stringsAsFactors = FALSE)
-  m = brm(y ~ (1 | x), data=d, family=binomial("logit"), cores=4, iter=2000)
+  m = brm(y ~ (1 | x), data=d, family=bernoulli, cores=4, iter=2000)
   z <- predict(m, newdata=d, type='link')
   z[, "Estimate", drop = TRUE]
 }
@@ -148,12 +147,13 @@ Let's build a treatment plan for the regression problem.
 # and the level codings (not the indicator variables or catP, etc.)
 vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolNb')
 
-treatplanN = designTreatmentsN(radonMN, 
-                               varlist = c('county'),
-                               outcomename = 'activity',
-                               codeRestriction = vartypes_I_want,
-                               customCoders = customCoders, 
-                               verbose=FALSE)
+treatplanN = vtreat::designTreatmentsN(
+  radonMN, 
+  varlist = c('county'),
+  outcomename = 'activity',
+  codeRestriction = vartypes_I_want,
+  customCoders = customCoders, 
+  verbose=FALSE)
 
 scoreFrame = treatplanN$scoreFrame
 scoreFrame %>% select(varName, sig, origName, code)
@@ -169,13 +169,13 @@ Let's compare the two level encodings.
 measframe = data.frame(county = unique(radonMN$county),
                        stringsAsFactors=FALSE)
 
-outframe = prepare(treatplanN, measframe)
+outframe = vtreat::prepare(treatplanN, measframe)
 
 # If we wanted only the new pooled level coding,
 # (plus any numeric/isBAD variables), we would
 # use a codeRestriction:
 #
-# outframe = prepare(treatplanN, 
+# outframe = vtreat::prepare(treatplanN, 
 #                    measframe,
 #                    codeRestriction = c('clean', 'isBAD', 'poolNb'))
 
@@ -196,15 +196,16 @@ We can also code for the categorical problem.
 # For categorical problems, coding is catB
 vartypes_I_want = c('clean', 'isBAD', 'catB', 'poolCb')
 
-treatplanC = designTreatmentsC(radonMN, 
-                               varlist = c('county'),
-                               outcomename = 'critical',
-                               outcometarget= TRUE,
-                               codeRestriction = vartypes_I_want,
-                               customCoders = customCoders, 
-                               verbose=FALSE)
+treatplanC = vtreat::designTreatmentsC(
+  radonMN, 
+  varlist = c('county'),
+  outcomename = 'critical',
+  outcometarget= TRUE,
+  codeRestriction = vartypes_I_want,
+  customCoders = customCoders, 
+  verbose=FALSE)
 
-outframe = prepare(treatplanC, measframe)
+outframe = vtreat::prepare(treatplanC, measframe)
 
 gather(outframe, key=scoreType, value=linkscore, 
        county_poolCb, county_catB) %>%

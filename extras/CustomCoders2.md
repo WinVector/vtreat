@@ -5,6 +5,8 @@ CustomCoders2
 library("ggplot2")
 ```
 
+    ## Warning: package 'ggplot2' was built under R version 4.3.2
+
 ``` r
 customCoders = list('c.PiecewiseV.num' = vtreat::solve_piecewise,
                     'n.PiecewiseV.num' = vtreat::solve_piecewise,
@@ -28,20 +30,20 @@ d$is_train <- runif(nrow(d))>=0.2
 head(d)
 ```
 
-    ##   x_numeric x_cat    y_ideal x_numeric_noise x_cat_noise           y    yc
-    ## 1       0.0   l_0 0.00000000             1.9      l_12.5  0.74512196  TRUE
-    ## 2       0.1 l_0.1 0.09983342             9.2       l_8.8 -1.14814461 FALSE
-    ## 3       0.2 l_0.2 0.19866933             9.3       l_4.8 -0.73178953 FALSE
-    ## 4       0.3 l_0.3 0.29552021             0.4      l_12.1  0.40747177 FALSE
-    ## 5       0.4 l_0.4 0.38941834            14.1       l_7.7 -0.03030095 FALSE
-    ## 6       0.5 l_0.5 0.47942554             5.5         l_5  0.34149408 FALSE
+    ##   x_numeric x_cat    y_ideal x_numeric_noise x_cat_noise          y    yc
+    ## 1       0.0   l_0 0.00000000            14.2      l_11.6  0.3734971 FALSE
+    ## 2       0.1 l_0.1 0.09983342            13.7       l_6.7  0.5224157  TRUE
+    ## 3       0.2 l_0.2 0.19866933            11.0         l_4 -0.3172854 FALSE
+    ## 4       0.3 l_0.3 0.29552021             3.3       l_8.9  0.5562089  TRUE
+    ## 5       0.4 l_0.4 0.38941834             4.1       l_8.6  0.2665816 FALSE
+    ## 6       0.5 l_0.5 0.47942554             0.0       l_7.9  0.9899354  TRUE
     ##   is_train
-    ## 1     TRUE
+    ## 1    FALSE
     ## 2     TRUE
     ## 3     TRUE
     ## 4     TRUE
     ## 5     TRUE
-    ## 6     TRUE
+    ## 6    FALSE
 
 ``` r
 summary(d)
@@ -55,12 +57,12 @@ summary(d)
     ##  3rd Qu.:11.25                      3rd Qu.: 0.8011   3rd Qu.:11.25  
     ##  Max.   :15.00                      Max.   : 0.9996   Max.   :15.00  
     ##  x_cat_noise              y               yc           is_train      
-    ##  Length:151         Min.   :-2.1323   Mode :logical   Mode :logical  
-    ##  Class :character   1st Qu.:-0.5730   FALSE:92        FALSE:31       
-    ##  Mode  :character   Median : 0.2457   TRUE :59        TRUE :120      
-    ##                     Mean   : 0.1235                                  
-    ##                     3rd Qu.: 0.8382                                  
-    ##                     Max.   : 1.9054
+    ##  Length:151         Min.   :-2.0224   Mode :logical   Mode :logical  
+    ##  Class :character   1st Qu.:-0.5152   FALSE:89        FALSE:23       
+    ##  Mode  :character   Median : 0.2483   TRUE :62        TRUE :128      
+    ##                     Mean   : 0.1469                                  
+    ##                     3rd Qu.: 0.8285                                  
+    ##                     Max.   : 1.8031
 
 ``` r
 ggplot(data=d) +
@@ -69,7 +71,7 @@ ggplot(data=d) +
   geom_hline(yintercept = 0.5, color = "red")
 ```
 
-![](CustomCoders2_files/figure-markdown_github/example-1.png)
+![](CustomCoders2_files/figure-gfm/example-1.png)<!-- -->
 
 ``` r
 cfn <- vtreat::mkCrossFrameNExperiment(
@@ -82,21 +84,29 @@ cfn <- vtreat::mkCrossFrameNExperiment(
 cfn$treatments
 ```
 
-    ##          origName       code          rsq          sig extraModelDegrees
-    ## 1       x_numeric PiecewiseV 6.758151e-01 1.216799e-30               120
-    ## 2       x_numeric   knearest 4.643300e-01 1.077773e-17               120
-    ## 3       x_numeric      clean 1.610979e-05 9.652967e-01                 0
-    ## 4 x_numeric_noise PiecewiseV 2.050607e-04 8.766375e-01               120
-    ## 5 x_numeric_noise   knearest 1.368122e-02 2.032782e-01               120
-    ## 6 x_numeric_noise      clean 7.088572e-03 3.605769e-01                 0
+    ## [1] "treatmentplan"
+    ##          origName                    varName       code          rsq
+    ## 1       x_numeric       x_numeric_PiecewiseV PiecewiseV 5.334440e-01
+    ## 2       x_numeric         x_numeric_knearest   knearest 4.925440e-01
+    ## 3       x_numeric                  x_numeric      clean 2.820451e-04
+    ## 4 x_numeric_noise x_numeric_noise_PiecewiseV PiecewiseV 3.929442e-05
+    ## 5 x_numeric_noise   x_numeric_noise_knearest   knearest 1.335695e-02
+    ## 6 x_numeric_noise            x_numeric_noise      clean 2.960446e-03
+    ##            sig extraModelDegrees recommended
+    ## 1 1.334651e-22               128        TRUE
+    ## 2 2.762734e-20               128        TRUE
+    ## 3 8.507559e-01                 0       FALSE
+    ## 4 9.440144e-01               128       FALSE
+    ## 5 1.939158e-01               128       FALSE
+    ## 6 5.418670e-01                 0       FALSE
 
 ``` r
 vtreat::variable_values(cfn$treatments$scoreFrame)
 ```
 
-    ##                        rsq count          sig             var
-    ## x_numeric       0.67581511     3 3.650398e-30       x_numeric
-    ## x_numeric_noise 0.01368122     3 6.098345e-01 x_numeric_noise
+    ##          rsq count          sig             var
+    ## 1 0.53344399     3 4.003954e-22       x_numeric
+    ## 2 0.01335695     3 5.817473e-01 x_numeric_noise
 
 ``` r
 # or directly
@@ -105,9 +115,9 @@ vtreat::value_variables_N(
   c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'y')
 ```
 
-    ##                        rsq count          sig             var
-    ## x_numeric       0.64542821     4 9.835474e-28       x_numeric
-    ## x_numeric_noise 0.01363169     4 8.164153e-01 x_numeric_noise
+    ##           rsq count         sig             var
+    ## 1 0.588661027     3 1.36563e-25       x_numeric
+    ## 2 0.002960446     3 1.00000e+00 x_numeric_noise
 
 ``` r
 prepared <- vtreat::prepare(cfn$treatments, d)
@@ -121,7 +131,7 @@ ggplot(data=d) +
   ggtitle("y_ideal as a function of x_numeric_PiecewiseV")
 ```
 
-![](CustomCoders2_files/figure-markdown_github/solve_numeric-1.png)
+![](CustomCoders2_files/figure-gfm/solve_numeric-1.png)<!-- -->
 
 ``` r
 ggplot(data=d) +
@@ -131,7 +141,7 @@ ggplot(data=d) +
   ggtitle("y_ideal as a function of x_numeric_knearest")
 ```
 
-![](CustomCoders2_files/figure-markdown_github/solve_numeric-2.png)
+![](CustomCoders2_files/figure-gfm/solve_numeric-2.png)<!-- -->
 
 ``` r
 WVPlots::ScatterHist(d[d$is_train, , drop=FALSE], 
@@ -141,7 +151,7 @@ WVPlots::ScatterHist(d[d$is_train, , drop=FALSE],
                      estimate_sig = TRUE)
 ```
 
-![](CustomCoders2_files/figure-markdown_github/solve_numeric-3.png)
+![](CustomCoders2_files/figure-gfm/solve_numeric-3.png)<!-- -->
 
 ``` r
 WVPlots::ScatterHist(d[d$is_train, , drop=FALSE], 
@@ -151,7 +161,7 @@ WVPlots::ScatterHist(d[d$is_train, , drop=FALSE],
                      estimate_sig = TRUE)
 ```
 
-![](CustomCoders2_files/figure-markdown_github/solve_numeric-4.png)
+![](CustomCoders2_files/figure-gfm/solve_numeric-4.png)<!-- -->
 
 ``` r
 WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE], 
@@ -161,7 +171,7 @@ WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE],
                      estimate_sig = TRUE)
 ```
 
-![](CustomCoders2_files/figure-markdown_github/solve_numeric-5.png)
+![](CustomCoders2_files/figure-gfm/solve_numeric-5.png)<!-- -->
 
 ``` r
 WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE], 
@@ -171,7 +181,7 @@ WVPlots::ScatterHist(d[!d$is_train, , drop=FALSE],
                      estimate_sig = TRUE)
 ```
 
-![](CustomCoders2_files/figure-markdown_github/solve_numeric-6.png)
+![](CustomCoders2_files/figure-gfm/solve_numeric-6.png)<!-- -->
 
 ``` r
 cfc <- vtreat::mkCrossFrameCExperiment(
@@ -184,21 +194,29 @@ cfc <- vtreat::mkCrossFrameCExperiment(
 cfc$treatments
 ```
 
-    ##          origName       code         rsq          sig extraModelDegrees
-    ## 1       x_numeric PiecewiseV 0.373710139 1.329297e-14               120
-    ## 2       x_numeric   knearest 0.279956649 2.609148e-11               120
-    ## 3       x_numeric      clean 0.001081731 6.785594e-01                 0
-    ## 4 x_numeric_noise PiecewiseV 0.003701413 4.433128e-01               120
-    ## 5 x_numeric_noise   knearest 0.009926324 2.093300e-01               120
-    ## 6 x_numeric_noise      clean 0.009267856 2.251083e-01                 0
+    ## [1] "treatmentplan"
+    ##          origName                    varName       code          rsq
+    ## 1       x_numeric       x_numeric_PiecewiseV PiecewiseV 1.877662e-01
+    ## 2       x_numeric         x_numeric_knearest   knearest 2.496124e-01
+    ## 3       x_numeric                  x_numeric      clean 5.736466e-05
+    ## 4 x_numeric_noise x_numeric_noise_PiecewiseV PiecewiseV 2.303475e-03
+    ## 5 x_numeric_noise   x_numeric_noise_knearest   knearest 9.806091e-04
+    ## 6 x_numeric_noise            x_numeric_noise      clean 1.160522e-02
+    ##            sig extraModelDegrees recommended
+    ## 1 1.211510e-08               128        TRUE
+    ## 2 5.037179e-11               128        TRUE
+    ## 3 9.206648e-01                 0       FALSE
+    ## 4 5.279610e-01               128       FALSE
+    ## 5 6.804979e-01               128       FALSE
+    ## 6 1.565991e-01                 0        TRUE
 
 ``` r
 vtreat::variable_values(cfc$treatments$scoreFrame)
 ```
 
-    ##                         rsq count          sig             var
-    ## x_numeric       0.373710139     3 3.987890e-14       x_numeric
-    ## x_numeric_noise 0.009926324     3 6.279901e-01 x_numeric_noise
+    ##          rsq count          sig             var
+    ## 1 0.24961236     3 1.511154e-10       x_numeric
+    ## 2 0.01160522     3 4.697974e-01 x_numeric_noise
 
 ``` r
 # or directly
@@ -207,6 +225,6 @@ vtreat::value_variables_C(
   c('x_numeric', 'x_numeric_noise', 'x_cat', 'x_cat_noise'), 'yc', TRUE)
 ```
 
-    ##                        rsq count          sig             var
-    ## x_numeric       0.39918339     4 6.816157e-15       x_numeric
-    ## x_numeric_noise 0.01492418     4 4.948781e-01 x_numeric_noise
+    ##          rsq count          sig             var
+    ## 1 0.24719323     3 1.871417e-10       x_numeric
+    ## 2 0.01160522     3 4.697974e-01 x_numeric_noise

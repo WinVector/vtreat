@@ -11,6 +11,8 @@
   treated
 }
 
+
+#' @export
 as_rquery.vtreat_pass_through <- function(tstep, 
                                           ...,
                                           var_restriction = NULL) {

@@ -5,6 +5,8 @@
   treated
 }
 
+
+#' @export
 as_rquery.vtreat_is_bad <- function(tstep, 
                                     ...,
                                     var_restriction) {

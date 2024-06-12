@@ -1,6 +1,8 @@
 
 ## Test Results
 
+tinytest::test_package('vtreat')
+All ok, 327 results (26.2s)
 
     R CMD check --as-cran vtreat_1.6.4.tar.gz
     * using R version 4.3.0 (2023-04-21)

@@ -3,7 +3,7 @@
 
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.00584/status.svg)](https://doi.org/10.21105/joss.00584)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173313.svg)](https://doi.org/10.5281/zenodo.1173313)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vtreat)](https://cran.r-project.org/package=vtreat)
 [![status](https://tinyverse.netlify.com/badge/vtreat)](https://CRAN.R-project.org/package=vtreat)
 
 `vtreat` is a `data.frame` processor/conditioner (available [for
@@ -47,31 +47,31 @@ one liners.
 
 The preparation commands are organized as follows:
 
-  - **Regression**: [`R` regression example, fit/prepare
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md),
-    [`R` regression example, design/prepare/experiment
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md),
-    [`Python` regression
-    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
-  - **Classification**: [`R` classification example, fit/prepare
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md),
-    [`R` classification example, design/prepare/experiment
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md),
-    [`Python` classification
-    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
-  - **Unsupervised tasks**: [`R` unsupervised example, fit/prepare
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md),
-    [`R` unsupervised example, design/prepare/experiment
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md),
-    [`Python` unsupervised
-    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
-  - **Multinomial classification**: [`R` multinomial classification
-    example, fit/prepare
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md),
-    [`R` multinomial classification example, design/prepare/experiment
-    interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md),
-    [`Python` multinomial classification
-    example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
+- **Regression**: [`R` regression example, fit/prepare
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression_FP.md),
+  [`R` regression example, design/prepare/experiment
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Regression/Regression.md),
+  [`Python` regression
+  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Regression/Regression.md).
+- **Classification**: [`R` classification example, fit/prepare
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification_FP.md),
+  [`R` classification example, design/prepare/experiment
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Classification/Classification.md),
+  [`Python` classification
+  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Classification/Classification.md).
+- **Unsupervised tasks**: [`R` unsupervised example, fit/prepare
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised_FP.md),
+  [`R` unsupervised example, design/prepare/experiment
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Unsupervised/Unsupervised.md),
+  [`Python` unsupervised
+  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Unsupervised/Unsupervised.md).
+- **Multinomial classification**: [`R` multinomial classification
+  example, fit/prepare
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample_FP.md),
+  [`R` multinomial classification example, design/prepare/experiment
+  interface](https://github.com/WinVector/vtreat/blob/master/Examples/Multinomial/MultinomialExample.md),
+  [`Python` multinomial classification
+  example](https://github.com/WinVector/pyvtreat/blob/master/Examples/Multinomial/MultinomialExample.md).
 
 In all cases: variable preparation is intended to be a “one liner.”
 
@@ -103,43 +103,43 @@ principled and automated fashion.
 In particular vtreat emphasizes a concept called “y-aware
 pre-processing” and implements:
 
-  - Treatment of missing values through safe replacement plus indicator
-    column (a simple but very powerful method when combined with
-    downstream machine learning algorithms).
-  - Treatment of novel levels (new values of categorical variable seen
-    during test or application, but not seen during training) through
-    sub-models (or impact/effects coding of pooled rare events).
-  - Explicit coding of categorical variable levels as new indicator
-    variables (with optional suppression of non-significant indicators).
-  - Treatment of categorical variables with very large numbers of levels
-    through sub-models (again [impact/effects
-    coding](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
-  - (optional) User specified significance pruning on levels coded into
-    effects/impact sub-models.
-  - Correct treatment of nested models or sub-models through data split
-    (see
-    [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html))
-    or through the generation of “cross validated” data frames (see
-    [here](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html));
-    these are issues similar to what is required to build statistically
-    efficient stacked models or super-learners).
-  - Safe processing of “wide data” (data with very many variables, often
-    driving common machine learning algorithms to over-fit) through [out
-    of sample per-variable significance estimates and user controllable
-    pruning](https://winvector.github.io/vtreat/articles/vtreatSignificance.html)
-    (something we have lectured on previously
-    [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS)
-    and
-    [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
-  - Collaring/Winsorizing of unexpected out of range numeric inputs.
-  - (optional) Conversion of all variables into effects (or “y-scale”)
-    units (through the optional `scale` argument to `vtreat::prepare()`,
-    using some of the ideas discussed
-    [here](https://win-vector.com/2014/06/02/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)).
-    This allows correct/sensible application of principal component
-    analysis pre-processing in a machine learning context.
-  - Joining in additional training distribution data (which can be
-    useful in analysis, called “catP” and “catD”).
+- Treatment of missing values through safe replacement plus indicator
+  column (a simple but very powerful method when combined with
+  downstream machine learning algorithms).
+- Treatment of novel levels (new values of categorical variable seen
+  during test or application, but not seen during training) through
+  sub-models (or impact/effects coding of pooled rare events).
+- Explicit coding of categorical variable levels as new indicator
+  variables (with optional suppression of non-significant indicators).
+- Treatment of categorical variables with very large numbers of levels
+  through sub-models (again [impact/effects
+  coding](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)).
+- (optional) User specified significance pruning on levels coded into
+  effects/impact sub-models.
+- Correct treatment of nested models or sub-models through data split
+  (see
+  [here](https://winvector.github.io/vtreat/articles/vtreatOverfit.html))
+  or through the generation of “cross validated” data frames (see
+  [here](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html));
+  these are issues similar to what is required to build statistically
+  efficient stacked models or super-learners).
+- Safe processing of “wide data” (data with very many variables, often
+  driving common machine learning algorithms to over-fit) through [out
+  of sample per-variable significance estimates and user controllable
+  pruning](https://winvector.github.io/vtreat/articles/vtreatSignificance.html)
+  (something we have lectured on previously
+  [here](https://github.com/WinVector/WinVector.github.io/tree/master/DS)
+  and
+  [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)).
+- Collaring/Winsorizing of unexpected out of range numeric inputs.
+- (optional) Conversion of all variables into effects (or “y-scale”)
+  units (through the optional `scale` argument to `vtreat::prepare()`,
+  using some of the ideas discussed
+  [here](https://win-vector.com/2014/06/02/skimming-statistics-papers-for-the-ideas-instead-of-the-complete-procedures/)).
+  This allows correct/sensible application of principal component
+  analysis pre-processing in a machine learning context.
+- Joining in additional training distribution data (which can be useful
+  in analysis, called “catP” and “catD”).
 
 The idea is: even with a sophisticated machine learning algorithm there
 are *many* ways messy real world data can defeat the modeling process,
@@ -152,22 +152,22 @@ the commonly needed transforms.
 
 To help explain the methods we have prepared some documentation:
 
-  - The [vtreat package
-    overall](https://winvector.github.io/vtreat/index.html).
-  - [Preparing data for analysis using R
-    white-paper](https://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
-  - The [types of new
-    variables](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html)
-    introduced by vtreat processing (including how to limit down to
-    domain appropriate variable types).
-  - Statistically sound treatment of the nested modeling issue
-    introduced by any sort of pre-processing (such as vtreat itself):
-    [nested over-fit
-    issues](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)
-    and a general [cross-frame
-    solution](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html).
-  - [Principled ways to pick significance based pruning
-    levels](https://winvector.github.io/vtreat/articles/vtreatSignificance.html).
+- The [vtreat package
+  overall](https://winvector.github.io/vtreat/index.html).
+- [Preparing data for analysis using R
+  white-paper](https://winvector.github.io/DataPrep/EN-CNTNT-Whitepaper-Data-Prep-Using-R.pdf)
+- The [types of new
+  variables](https://winvector.github.io/vtreat/articles/vtreatVariableTypes.html)
+  introduced by vtreat processing (including how to limit down to domain
+  appropriate variable types).
+- Statistically sound treatment of the nested modeling issue introduced
+  by any sort of pre-processing (such as vtreat itself): [nested
+  over-fit
+  issues](https://winvector.github.io/vtreat/articles/vtreatOverfit.html)
+  and a general [cross-frame
+  solution](https://winvector.github.io/vtreat/articles/vtreatCrossFrames.html).
+- [Principled ways to pick significance based pruning
+  levels](https://winvector.github.io/vtreat/articles/vtreatSignificance.html).
 
 Data treatments are “y-aware” (use distribution relations between
 independent variables and the dependent variable). For binary
@@ -189,74 +189,72 @@ necessary typically ignored precautions. The library is designed to
 produce a `data.frame` that is entirely numeric and takes common
 precautions to guard against the following real world data issues:
 
-  - Categorical variables with very many levels.
-    
-    We re-encode such variables as a family of indicator or dummy
-    variables for common levels plus an additional [impact
-    code](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
-    (also called “effects coded”). This allows principled use (including
-    smoothing) of huge categorical variables (like zip-codes) when
-    building models. This is critical for some libraries (such as
-    `randomForest`, which has hard limits on the number of allowed
-    levels).
+- Categorical variables with very many levels.
 
-  - Rare categorical levels.
-    
-    Levels that do not occur often during training tend not to have
-    reliable effect estimates and contribute to over-fit. vtreat helps
-    with 2 precautions in this case. First the `rareLevel` argument
-    suppresses levels with this count our below from modeling, except
-    possibly through a grouped contribution. Also with enough data
-    vtreat attempts to estimate out of sample performance of derived
-    variables. Finally we suggest users reserve a portion of data for
-    vtreat design, separate from any data used in additional training,
-    calibration, or testing.
+  We re-encode such variables as a family of indicator or dummy
+  variables for common levels plus an additional [impact
+  code](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+  (also called “effects coded”). This allows principled use (including
+  smoothing) of huge categorical variables (like zip-codes) when
+  building models. This is critical for some libraries (such as
+  `randomForest`, which has hard limits on the number of allowed
+  levels).
 
-  - Novel categorical levels.
-    
-    A common problem in deploying a classifier to production is: new
-    levels (levels not seen during training) encountered during model
-    application. We deal with this by encoding categorical variables in
-    a possibly redundant manner: reserving a dummy variable for all
-    levels (not the more common all but a reference level scheme). This
-    is in fact the correct representation for regularized modeling
-    techniques and lets us code novel levels as all dummies
-    simultaneously zero (which is a reasonable thing to try). This
-    encoding while limited is cheaper than the fully Bayesian solution
-    of computing a weighted sum over previously seen levels during model
-    application.
+- Rare categorical levels.
 
-  - Missing/invalid values NA, NaN, +-Inf.
-    
-    Variables with these issues are re-coded as two columns. The first
-    column is clean copy of the variable (with missing/invalid values
-    replaced with either zero or the grand mean, depending on the user
-    chose of the `scale` parameter). The second column is a dummy or
-    indicator that marks if the replacement has been performed. This is
-    simpler than imputation of missing values, and allows the downstream
-    model to attempt to use missingness as a useful signal (which it
-    often is in industrial data).
+  Levels that do not occur often during training tend not to have
+  reliable effect estimates and contribute to over-fit. vtreat helps
+  with 2 precautions in this case. First the `rareLevel` argument
+  suppresses levels with this count our below from modeling, except
+  possibly through a grouped contribution. Also with enough data vtreat
+  attempts to estimate out of sample performance of derived variables.
+  Finally we suggest users reserve a portion of data for vtreat design,
+  separate from any data used in additional training, calibration, or
+  testing.
 
-  - Extreme values.
-    
-    Variables can be restricted to stay in ranges seen during training.
-    This can defend against some run-away classifier issues during model
-    application.
+- Novel categorical levels.
 
-  - Constant and near-constant variables.
-    
-    Variables that “don’t vary” or “nearly don’t vary” are suppressed.
+  A common problem in deploying a classifier to production is: new
+  levels (levels not seen during training) encountered during model
+  application. We deal with this by encoding categorical variables in a
+  possibly redundant manner: reserving a dummy variable for all levels
+  (not the more common all but a reference level scheme). This is in
+  fact the correct representation for regularized modeling techniques
+  and lets us code novel levels as all dummies simultaneously zero
+  (which is a reasonable thing to try). This encoding while limited is
+  cheaper than the fully Bayesian solution of computing a weighted sum
+  over previously seen levels during model application.
 
-  - Need for estimated single-variable model effect sizes and
-    significances.
-    
-    It is a dirty secret that even popular machine learning techniques
-    need some variable pruning (when exposed to very wide data frames,
-    see
-    [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)
-    and [here](https://www.youtube.com/watch?v=X_Rn3EOEjGE)). We make
-    the necessary effect size estimates and significances easily
-    available and supply initial variable pruning.
+- Missing/invalid values NA, NaN, +-Inf.
+
+  Variables with these issues are re-coded as two columns. The first
+  column is clean copy of the variable (with missing/invalid values
+  replaced with either zero or the grand mean, depending on the user
+  chose of the `scale` parameter). The second column is a dummy or
+  indicator that marks if the replacement has been performed. This is
+  simpler than imputation of missing values, and allows the downstream
+  model to attempt to use missingness as a useful signal (which it often
+  is in industrial data).
+
+- Extreme values.
+
+  Variables can be restricted to stay in ranges seen during training.
+  This can defend against some run-away classifier issues during model
+  application.
+
+- Constant and near-constant variables.
+
+  Variables that “don’t vary” or “nearly don’t vary” are suppressed.
+
+- Need for estimated single-variable model effect sizes and
+  significances.
+
+  It is a dirty secret that even popular machine learning techniques
+  need some variable pruning (when exposed to very wide data frames, see
+  [here](https://win-vector.com/2014/02/01/bad-bayes-an-example-of-why-you-need-hold-out-testing/)
+  and [here](https://www.youtube.com/watch?v=X_Rn3EOEjGE)). We make the
+  necessary effect size estimates and significances easily available and
+  supply initial variable pruning.
 
 The above are all awful things that often lurk in real world data.
 Automating these steps ensures they are easy enough that you actually
@@ -287,27 +285,27 @@ and more) but you certainly do not want to do less.
 There have been a number of recent substantial improvements to the
 library, including:
 
-  - Out of sample scoring.
-  - Ability to use `parallel`.
-  - More general calculation of effect sizes and significances.
+- Out of sample scoring.
+- Ability to use `parallel`.
+- More general calculation of effect sizes and significances.
 
 Some of our related articles (which should make clear some of our
 motivations, and design decisions):
 
-  - [Modeling trick: impact coding of categorical variables with many
-    levels](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
-  - [A bit more on impact
-    coding](https://win-vector.com/2012/08/02/a-bit-more-on-impact-coding/)
-  - [vtreat: designing a package for variable
-    treatment](https://win-vector.com/2014/08/07/vtreat-designing-a-package-for-variable-treatment/)
-  - [A comment on preparing data for
-    classifiers](https://win-vector.com/2014/12/04/a-comment-on-preparing-data-for-classifiers/)
-  - [Nina Zumel presenting on
-    vtreat](https://www.slideshare.net/ChesterChen/vtreat)
-  - [What is new in the vtreat
-    library?](https://win-vector.com/2015/05/07/what-is-new-in-the-vtreat-library/)
-  - [How do you know if your data has
-    signal?](https://win-vector.com/2015/08/10/how-do-you-know-if-your-data-has-signal/)
+- [Modeling trick: impact coding of categorical variables with many
+  levels](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+- [A bit more on impact
+  coding](https://win-vector.com/2012/08/02/a-bit-more-on-impact-coding/)
+- [vtreat: designing a package for variable
+  treatment](https://win-vector.com/2014/08/07/vtreat-designing-a-package-for-variable-treatment/)
+- [A comment on preparing data for
+  classifiers](https://win-vector.com/2014/12/04/a-comment-on-preparing-data-for-classifiers/)
+- [Nina Zumel presenting on
+  vtreat](https://www.slideshare.net/ChesterChen/vtreat)
+- [What is new in the vtreat
+  library?](https://win-vector.com/2015/05/07/what-is-new-in-the-vtreat-library/)
+- [How do you know if your data has
+  signal?](https://win-vector.com/2015/08/10/how-do-you-know-if-your-data-has-signal/)
 
 Examples of current best practice using `vtreat` (variable coding,
 train, test split) can be found
@@ -322,14 +320,12 @@ We attach our packages.
 library("vtreat")
  #  Loading required package: wrapr
 packageVersion("vtreat")
- #  [1] '1.6.1'
+ #  [1] '1.6.5'
 citation('vtreat')
- #  
  #  To cite package 'vtreat' in publications use:
  #  
- #    John Mount and Nina Zumel (2020). vtreat: A Statistically Sound
- #    'data.frame' Processor/Conditioner.
- #    https://github.com/WinVector/vtreat/,
+ #    Mount J, Zumel N (2024). _vtreat: A Statistically Sound 'data.frame'
+ #    Processor/Conditioner_. https://github.com/WinVector/vtreat/,
  #    https://winvector.github.io/vtreat/.
  #  
  #  A BibTeX entry for LaTeX users is
@@ -337,7 +333,7 @@ citation('vtreat')
  #    @Manual{,
  #      title = {vtreat: A Statistically Sound 'data.frame' Processor/Conditioner},
  #      author = {John Mount and Nina Zumel},
- #      year = {2020},
+ #      year = {2024},
  #      note = {https://github.com/WinVector/vtreat/, https://winvector.github.io/vtreat/},
  #    }
 ```
@@ -377,15 +373,15 @@ treatmentsC$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraMo
   knitr::kable(.)
 ```
 
-| origName | varName      | code  |       rsq |       sig | extraModelDegrees | recommended |
-| :------- | :----------- | :---- | --------: | --------: | ----------------: | :---------- |
-| x        | x\_catP      | catP  | 0.1669568 | 0.2064389 |                 2 | FALSE       |
-| x        | x\_catB      | catB  | 0.2547883 | 0.1185814 |                 2 | TRUE        |
-| z        | z            | clean | 0.2376018 | 0.1317602 |                 0 | TRUE        |
-| z        | z\_isBAD     | isBAD | 0.2960654 | 0.0924840 |                 0 | TRUE        |
-| x        | x\_lev\_NA   | lev   | 0.2960654 | 0.0924840 |                 0 | FALSE       |
-| x        | x\_lev\_x\_a | lev   | 0.1300057 | 0.2649038 |                 0 | FALSE       |
-| x        | x\_lev\_x\_b | lev   | 0.0060673 | 0.8096724 |                 0 | FALSE       |
+| origName | varName   | code  |       rsq |       sig | extraModelDegrees | recommended |
+|:---------|:----------|:------|----------:|----------:|------------------:|:------------|
+| x        | x_catP    | catP  | 0.1669568 | 0.2064389 |                 2 | FALSE       |
+| x        | x_catB    | catB  | 0.2547883 | 0.1185814 |                 2 | TRUE        |
+| z        | z         | clean | 0.2376018 | 0.1317602 |                 0 | TRUE        |
+| z        | z_isBAD   | isBAD | 0.2960654 | 0.0924840 |                 0 | TRUE        |
+| x        | x_lev_NA  | lev   | 0.2960654 | 0.0924840 |                 0 | FALSE       |
+| x        | x_lev_x_a | lev   | 0.1300057 | 0.2649038 |                 0 | FALSE       |
+| x        | x_lev_x_b | lev   | 0.0060673 | 0.8096724 |                 0 | FALSE       |
 
 ``` r
 
@@ -399,14 +395,14 @@ dTrainCTreated %.>%
   knitr::kable(.)
 ```
 
-| x\_catP |      x\_catB | z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | y     |
-| ------: | -----------: | -: | -------: | ---------: | -----------: | -----------: | :---- |
-|    0.50 |    0.0000000 | 1 |        0 |          0 |            1 |            0 | FALSE |
-|    0.40 |  \-0.4054484 | 2 |        0 |          0 |            1 |            0 | FALSE |
-|    0.40 | \-10.3089860 | 3 |        0 |          0 |            1 |            0 | TRUE  |
-|    0.20 |    8.8049919 | 4 |        0 |          0 |            0 |            1 | FALSE |
-|    0.25 |  \-9.2104404 | 3 |        1 |          0 |            0 |            1 | TRUE  |
-|    0.25 |    9.2104404 | 6 |        0 |          1 |            0 |            0 | TRUE  |
+| x_catP |      x_catB |   z | z_isBAD | x_lev_NA | x_lev_x_a | x_lev_x_b | y     |
+|-------:|------------:|----:|--------:|---------:|----------:|----------:|:------|
+|   0.50 |   0.0000000 |   1 |       0 |        0 |         1 |         0 | FALSE |
+|   0.40 |  -0.4054484 |   2 |       0 |        0 |         1 |         0 | FALSE |
+|   0.40 | -10.3089860 |   3 |       0 |        0 |         1 |         0 | TRUE  |
+|   0.20 |   8.8049919 |   4 |       0 |        0 |         0 |         1 | FALSE |
+|   0.25 |  -9.2104404 |   3 |       1 |        0 |         0 |         1 | TRUE  |
+|   0.25 |   9.2104404 |   6 |       0 |        1 |         0 |         0 | TRUE  |
 
 ``` r
 
@@ -419,12 +415,12 @@ dTestCTreated %.>%
   knitr::kable(.)
 ```
 
-|   x\_catP |     x\_catB |    z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b |
-| --------: | ----------: | ---: | -------: | ---------: | -----------: | -----------: |
-| 0.4285714 | \-0.9807709 | 10.0 |        0 |          0 |            1 |            0 |
-| 0.2857143 | \-0.2876737 | 20.0 |        0 |          0 |            0 |            1 |
-| 0.0714286 |   0.0000000 | 30.0 |        0 |          0 |            0 |            0 |
-| 0.2857143 |   9.6158638 |  3.2 |        1 |          1 |            0 |            0 |
+|    x_catP |     x_catB |    z | z_isBAD | x_lev_NA | x_lev_x_a | x_lev_x_b |
+|----------:|-----------:|-----:|--------:|---------:|----------:|----------:|
+| 0.4285714 | -0.9807709 | 10.0 |       0 |        0 |         1 |         0 |
+| 0.2857143 | -0.2876737 | 20.0 |       0 |        0 |         0 |         1 |
+| 0.0714286 |  0.0000000 | 30.0 |       0 |        0 |         0 |         0 |
+| 0.2857143 |  9.6158638 |  3.2 |       1 |        1 |         0 |         0 |
 
 A small numeric example.
 
@@ -460,16 +456,15 @@ treatmentsN$scoreFrame[, c('origName', 'varName', 'code', 'rsq', 'sig', 'extraMo
   knitr::kable(.)
 ```
 
-| origName | varName      | code  |       rsq |       sig | extraModelDegrees |
-| :------- | :----------- | :---- | --------: | --------: | ----------------: |
-| x        | x\_catP      | catP  | 0.4047085 | 0.0899406 |                 2 |
-| x        | x\_catN      | catN  | 0.2822908 | 0.1753958 |                 2 |
-| x        | x\_catD      | catD  | 0.0209693 | 0.7322571 |                 2 |
-| z        | z            | clean | 0.2880952 | 0.1701892 |                 0 |
-| z        | z\_isBAD     | isBAD | 0.3333333 | 0.1339746 |                 0 |
-| x        | x\_lev\_NA   | lev   | 0.3333333 | 0.1339746 |                 0 |
-| x        | x\_lev\_x\_a | lev   | 0.2500000 | 0.2070312 |                 0 |
-| x        | x\_lev\_x\_b | lev   | 0.0000000 | 1.0000000 |                 0 |
+| origName | varName   | code  |       rsq |       sig | extraModelDegrees |
+|:---------|:----------|:------|----------:|----------:|------------------:|
+| x        | x_catP    | catP  | 0.4047085 | 0.0899406 |                 2 |
+| x        | x_catN    | catN  | 0.2822908 | 0.1753958 |                 2 |
+| x        | x_catD    | catD  | 0.0209693 | 0.7322571 |                 2 |
+| z        | z         | clean | 0.2880952 | 0.1701892 |                 0 |
+| z        | z_isBAD   | isBAD | 0.3333333 | 0.1339746 |                 0 |
+| x        | x_lev_NA  | lev   | 0.3333333 | 0.1339746 |                 0 |
+| x        | x_lev_x_a | lev   | 0.2500000 | 0.2070312 |                 0 |
 
 ``` r
 
@@ -483,14 +478,14 @@ dTrainNTreated %.>%
   knitr::kable(.)
 ```
 
-|     x\_catN |   x\_catD | z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b | x\_catP | y |
-| ----------: | --------: | -: | -------: | ---------: | -----------: | -----------: | ------: | -: |
-| \-0.2666667 | 0.5000000 | 1 |        0 |          0 |            1 |            0 |     0.6 | 0 |
-| \-0.5000000 | 0.0000000 | 2 |        0 |          0 |            1 |            0 |     0.5 | 0 |
-| \-0.0666667 | 0.5000000 | 3 |        0 |          0 |            1 |            0 |     0.6 | 0 |
-| \-0.5000000 | 0.0000000 | 4 |        0 |          0 |            1 |            0 |     0.5 | 1 |
-|   0.4000000 | 0.7071068 | 5 |        0 |          0 |            0 |            1 |     0.2 | 0 |
-| \-0.4000000 | 0.7071068 | 3 |        1 |          0 |            0 |            1 |     0.2 | 1 |
+|     x_catN |    x_catD |   z | z_isBAD | x_lev_NA | x_lev_x_a | x_catP |   y |
+|-----------:|----------:|----:|--------:|---------:|----------:|-------:|----:|
+| -0.2666667 | 0.5000000 |   1 |       0 |        0 |         1 |    0.6 |   0 |
+| -0.5000000 | 0.0000000 |   2 |       0 |        0 |         1 |    0.5 |   0 |
+| -0.0666667 | 0.5000000 |   3 |       0 |        0 |         1 |    0.6 |   0 |
+| -0.5000000 | 0.0000000 |   4 |       0 |        0 |         1 |    0.5 |   1 |
+|  0.4000000 | 0.7071068 |   5 |       0 |        0 |         0 |    0.2 |   0 |
+| -0.4000000 | 0.7071068 |   3 |       1 |        0 |         0 |    0.2 |   1 |
 
 ``` r
 
@@ -503,28 +498,28 @@ dTestNTreated %.>%
   knitr::kable(.)
 ```
 
-| x\_catP | x\_catN |   x\_catD |         z | z\_isBAD | x\_lev\_NA | x\_lev\_x\_a | x\_lev\_x\_b |
-| ------: | ------: | --------: | --------: | -------: | ---------: | -----------: | -----------: |
-|  0.5000 |  \-0.25 | 0.5000000 | 10.000000 |        0 |          0 |            1 |            0 |
-|  0.2500 |    0.00 | 0.7071068 | 20.000000 |        0 |          0 |            0 |            1 |
-|  0.0625 |    0.00 | 0.7071068 | 30.000000 |        0 |          0 |            0 |            0 |
-|  0.2500 |    0.50 | 0.0000000 |  3.666667 |        1 |          1 |            0 |            0 |
+| x_catP | x_catN |    x_catD |         z | z_isBAD | x_lev_NA | x_lev_x_a |
+|-------:|-------:|----------:|----------:|--------:|---------:|----------:|
+| 0.5000 |  -0.25 | 0.5000000 | 10.000000 |       0 |        0 |         1 |
+| 0.2500 |   0.00 | 0.7071068 | 20.000000 |       0 |        0 |         0 |
+| 0.0625 |   0.00 | 0.7071068 | 30.000000 |       0 |        0 |         0 |
+| 0.2500 |   0.50 | 0.0000000 |  3.666667 |       1 |        1 |         0 |
 
 Related work:
 
-  - Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation
-    Analysis For The Behavioral Sciences. 2 edition. Lawrence Erlbaum
-    Associates, Inc. ISBN 0-89859-268-2.
-  - [“A preprocessing scheme for high-cardinality categorical attributes
-    in classification and prediction
-    problems”](https://dl.acm.org/doi/10.1145/507533.507538) Daniele
-    Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001
-    Pages 27-32.
-  - [“Modeling Trick: Impact Coding of Categorical Variables with Many
-    Levels”](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
-    Nina Zumel; Win-Vector blog, 2012.
-  - “Big Learning Made Easy – with Counts\!”, Misha Bilenko, Cortana
-    Intelligence and Machine Learning Blog, 2015.
+- Cohen J, Cohen P (1983). Applied Multiple Regression/Correlation
+  Analysis For The Behavioral Sciences. 2 edition. Lawrence Erlbaum
+  Associates, Inc. ISBN 0-89859-268-2.
+- [“A preprocessing scheme for high-cardinality categorical attributes
+  in classification and prediction
+  problems”](https://dl.acm.org/doi/10.1145/507533.507538) Daniele
+  Micci-Barreca; ACM SIGKDD Explorations, Volume 3 Issue 1, July 2001
+  Pages 27-32.
+- [“Modeling Trick: Impact Coding of Categorical Variables with Many
+  Levels”](https://win-vector.com/2012/07/23/modeling-trick-impact-coding-of-categorical-variables-with-many-levels/)
+  Nina Zumel; Win-Vector blog, 2012.
+- “Big Learning Made Easy – with Counts!”, Misha Bilenko, Cortana
+  Intelligence and Machine Learning Blog, 2015.
 
 ## Installation
 

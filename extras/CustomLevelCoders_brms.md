@@ -1,7 +1,7 @@
 Custom Level Coding in vtreat
 ================
 Nina Zumel, John Mount
-2019-06-02
+2024-06-12
 
 (This article is an attempt to re-run [Custom Level Coding in
 vtreat](https://github.com/WinVector/vtreat/blob/master/extras/CustomLevelCoders.md),
@@ -60,25 +60,23 @@ original data
 ## The Data: Radon levels in Minnesota
 
 ``` r
-library("vtreat")
 library("brms")
 ```
 
+    ## Warning: package 'brms' was built under R version 4.3.2
+
     ## Loading required package: Rcpp
 
-    ## Registered S3 methods overwritten by 'ggplot2':
-    ##   method         from 
-    ##   [.quosures     rlang
-    ##   c.quosures     rlang
-    ##   print.quosures rlang
-
-    ## Registered S3 method overwritten by 'xts':
-    ##   method     from
-    ##   as.zoo.xts zoo
-
-    ## Loading 'brms' package (version 2.9.0). Useful instructions
+    ## Loading 'brms' package (version 2.21.0). Useful instructions
     ## can be found by typing help('brms'). A more detailed introduction
     ## to the package is available through vignette('brms_overview').
+
+    ## 
+    ## Attaching package: 'brms'
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     ar
 
 ``` r
 library("dplyr")
@@ -97,8 +95,17 @@ library("dplyr")
 
 ``` r
 library("tidyr")
-library("ggplot2")
+```
 
+    ## Warning: package 'tidyr' was built under R version 4.3.2
+
+``` r
+library("ggplot2")
+```
+
+    ## Warning: package 'ggplot2' was built under R version 4.3.2
+
+``` r
 # example data
 
 srrs = read.table("srrs2.dat", header=TRUE, sep=",", stringsAsFactor=FALSE)
@@ -122,9 +129,9 @@ str(radonMN)
 
 For this example we have three columns of interest:
 
-  - `county`: 85 possible values
-  - `activity`: the log of the radon reading (numerical outcome)
-  - `critical`: `TRUE` when activity \> 1.5 (categorical outcome)
+- `county`: 85 possible values
+- `activity`: the log of the radon reading (numerical outcome)
+- `critical`: `TRUE` when activity \> 1.5 (categorical outcome)
 
 The goal is to level code `county` for either the regression problem
 (predict the log radon reading) or the categorization problem (predict
@@ -149,8 +156,8 @@ As the graph shows, the conditional mean of log radon activity by county
 ranges from nearly zero to about 3, and the conditional expectation of a
 critical reading ranges from zero to one. On the other hand, the number
 of readings per county is quite low for many counties – only one or two
-– though some counties have a large number of readings. That means
-some of the conditional expectations are quite uncertain.
+– though some counties have a large number of readings. That means some
+of the conditional expectations are quite uncertain.
 
 ## Implementing Level Coders for Partial Pooling
 
@@ -162,10 +169,10 @@ level score.
 For regression problems, the custom coder should be a function that
 takes as input:
 
-  - `v`: a string with the name of the categorical variable
-  - `vcol`: the actual categorical column (assumed character)
-  - `y`: the numerical outcome column
-  - `weights`: a column of row weights (ignored by brm)
+- `v`: a string with the name of the categorical variable
+- `vcol`: the actual categorical column (assumed character)
+- `y`: the numerical outcome column
+- `weights`: a column of row weights (ignored by brm)
 
 The function should return a column of scores (the level codings). In
 keeping with how the `catN` and `catB` variables are calculated,
@@ -214,7 +221,7 @@ ppCoderCb <- function(v, vcol,
   d <- data.frame(x = vcol,
                   y = as.numeric(y),
                   stringsAsFactors = FALSE)
-  m = brm(y ~ (1 | x), data=d, family=binomial("logit"), cores=4, iter=2000)
+  m = brm(y ~ (1 | x), data=d, family=bernoulli, cores=4, iter=2000)
   z <- predict(m, newdata=d, type='link')
   z[, "Estimate", drop = TRUE]
 }
@@ -222,7 +229,7 @@ ppCoderCb <- function(v, vcol,
 
 You can then pass the functions in as a named list into either
 `designTreatmentsX` or `mkCrossFrameXExperiment` to build the treatment
-plan. The format of the key is "\[n|c\].levelName\[.option\]\*"
+plan. The format of the key is “\[n\|c\].levelName\[.option\]\*”
 
 The prefacing picks the model type: numeric or regression starts with
 ‘n.’ and the categorical encoder starts with ‘c.’. Currently, the only
@@ -238,41 +245,35 @@ customCoders = list('n.poolNb.center' = ppCoderNb,
 
 ## Using the Custom Coders
 
-Let’s build a treatment plan for the regression
-problem.
+Let’s build a treatment plan for the regression problem.
 
 ``` r
 # I only want to create the cleaned numeric variables, the isBAD variables,
 # and the level codings (not the indicator variables or catP, etc.)
 vartypes_I_want = c('clean', 'isBAD', 'catN', 'poolNb')
 
-treatplanN = designTreatmentsN(radonMN, 
-                               varlist = c('county'),
-                               outcomename = 'activity',
-                               codeRestriction = vartypes_I_want,
-                               customCoders = customCoders, 
-                               verbose=FALSE)
+treatplanN = vtreat::designTreatmentsN(
+  radonMN, 
+  varlist = c('county'),
+  outcomename = 'activity',
+  codeRestriction = vartypes_I_want,
+  customCoders = customCoders, 
+  verbose=FALSE)
 ```
 
-    ## Compiling the C++ model
+    ## Compiling Stan program...
 
     ## Start sampling
 
-    ## Compiling the C++ model
-
-    ## recompiling to avoid crashing R session
+    ## Compiling Stan program...
 
     ## Start sampling
 
-    ## Compiling the C++ model
-
-    ## recompiling to avoid crashing R session
+    ## Compiling Stan program...
 
     ## Start sampling
 
-    ## Compiling the C++ model
-
-    ## recompiling to avoid crashing R session
+    ## Compiling Stan program...
 
     ## Start sampling
 
@@ -282,8 +283,8 @@ scoreFrame %>% select(varName, sig, origName, code)
 ```
 
     ##         varName          sig origName   code
-    ## 1 county_poolNb 3.496850e-20   county poolNb
-    ## 2   county_catN 1.477907e-18   county   catN
+    ## 1 county_poolNb 6.667829e-17   county poolNb
+    ## 2   county_catN 2.197894e-10   county   catN
 
 Note that the treatment plan returns both the `catN` variable (default
 level encoding) and the pooled level encoding (`poolNb`). You can
@@ -297,13 +298,13 @@ Let’s compare the two level encodings.
 measframe = data.frame(county = unique(radonMN$county),
                        stringsAsFactors=FALSE)
 
-outframe = prepare(treatplanN, measframe)
+outframe = vtreat::prepare(treatplanN, measframe)
 
 # If we wanted only the new pooled level coding,
 # (plus any numeric/isBAD variables), we would
 # use a codeRestriction:
 #
-# outframe = prepare(treatplanN, 
+# outframe = vtreat::prepare(treatplanN, 
 #                    measframe,
 #                    codeRestriction = c('clean', 'isBAD', 'poolNb'))
 
@@ -328,107 +329,34 @@ We can also code for the categorical problem.
 # For categorical problems, coding is catB
 vartypes_I_want = c('clean', 'isBAD', 'catB', 'poolCb')
 
-treatplanC = designTreatmentsC(radonMN, 
-                               varlist = c('county'),
-                               outcomename = 'critical',
-                               outcometarget= TRUE,
-                               codeRestriction = vartypes_I_want,
-                               customCoders = customCoders, 
-                               verbose=FALSE)
+treatplanC = vtreat::designTreatmentsC(
+  radonMN, 
+  varlist = c('county'),
+  outcomename = 'critical',
+  outcometarget= TRUE,
+  codeRestriction = vartypes_I_want,
+  customCoders = customCoders, 
+  verbose=FALSE)
 ```
 
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
-
-    ## Compiling the C++ model
+    ## Compiling Stan program...
 
     ## Start sampling
 
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
-
-    ## Compiling the C++ model
-
-    ## recompiling to avoid crashing R session
+    ## Compiling Stan program...
 
     ## Start sampling
 
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
-
-    ## Compiling the C++ model
-
-    ## recompiling to avoid crashing R session
+    ## Compiling Stan program...
 
     ## Start sampling
 
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Only 2 levels detected so that family 'bernoulli' might be a more efficient choice.
-
-    ## Compiling the C++ model
-
-    ## recompiling to avoid crashing R session
+    ## Compiling Stan program...
 
     ## Start sampling
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
-
-    ## Using the maximum response value as the number of trials.
-
-    ## Warning: Using 'binomial' families without specifying 'trials' on the left-
-    ## hand side of the model formula is deprecated.
 
 ``` r
-outframe = prepare(treatplanC, measframe)
+outframe = vtreat::prepare(treatplanC, measframe)
 
 gather(outframe, key=scoreType, value=linkscore, 
        county_poolCb, county_catB) %>%

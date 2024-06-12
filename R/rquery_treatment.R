@@ -253,6 +253,8 @@ as_rquery <- function(tstep,
   UseMethod("as_rquery")
 }
 
+
+#' @export
 as_rquery.vtreatment <- function(tstep, 
                                  ...,
                                  var_restriction = NULL) {

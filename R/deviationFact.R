@@ -16,6 +16,8 @@
   pred
 }
 
+
+#' @export
 as_rquery.vtreat_cat_d <- function(tstep, 
                                    ...,
                                    var_restriction) {
