@@ -4,6 +4,11 @@ check_reverse_dependencies
 ``` r
 repos <- c(CRAN="https://cloud.r-project.org")
 library("prrd")
+```
+
+    ## Warning: package 'prrd' was built under R version 4.3.2
+
+``` r
 orig_dir <- getwd()
 # td <- tempdir()
 td <- paste0(orig_dir, '/', 'revdep_tests')
@@ -11,13 +16,13 @@ package = "vtreat"
 packageVersion(package)
 ```
 
-    ## [1] '1.6.4'
+    ## [1] '1.6.5'
 
 ``` r
 date()
 ```
 
-    ## [1] "Sat Aug 19 11:49:58 2023"
+    ## [1] "Wed Jun 12 08:47:17 2024"
 
 ``` r
 parallelCluster <- NULL
@@ -53,7 +58,7 @@ print(jobsdfe)
 ```
 
     ##   id         title status
-    ## 1  1 crispRdesignR  READY
+    ## 1  3 crispRdesignR  READY
 
 ``` r
 mk_fn <- function(package, directory, repos) {
@@ -77,8 +82,8 @@ if(!is.null(parallelCluster)) {
 }
 ```
 
-    ## ## Reverse depends check of vtreat 1.6.4 
-    ## crispRdesignR_1.1.7 started at 2023-08-19 11:49:59 failure at 2023-08-19 11:50:01 (0/0/1)
+    ## ## Reverse depends check of vtreat 1.6.5 
+    ## crispRdesignR_1.1.7 started at 2024-06-12 08:47:18 failure at 2024-06-12 08:47:19 (0/0/1)
 
     ## [1] id     title  status
     ## <0 rows> (or 0-length row.names)
@@ -87,9 +92,9 @@ if(!is.null(parallelCluster)) {
 summariseQueue(package=package, directory=td)
 ```
 
-    ## Test of vtreat 1.6.4 had 0 successes, 1 failures, and 0 skipped packages. 
-    ## Ran from 2023-08-19 11:49:59 to 2023-08-19 11:50:01 for 2 secs 
-    ## Average of 2 secs relative to 1.824 secs using 1 runners
+    ## Test of vtreat 1.6.5 had 0 successes, 3 failures, and 0 skipped packages. 
+    ## Ran from 2024-06-12 08:45:15 to 2024-06-12 08:47:19 for 2.067 mins 
+    ## Average of 41.333 secs relative to 1.204 secs using 3 runners
     ## 
     ## Failed packages:  crispRdesignR 
     ## 
