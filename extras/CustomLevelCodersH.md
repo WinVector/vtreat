@@ -1,7 +1,7 @@
 Custom Level Coding in vtreat
 ================
 Nina Zumel, John Mount
-2024-06-12
+2024-06-13
 
 One of the services that `vtreat` provides is *level coding* (what we
 sometimes call *impact coding*): converting the levels of a categorical
@@ -269,8 +269,8 @@ scoreFrame %>% select(varName, sig, origName, code)
 ```
 
     ##        varName          sig origName  code
-    ## 1 county_poolN 3.900983e-19   county poolN
-    ## 2  county_catN 2.434314e-14   county  catN
+    ## 1 county_poolN 4.587198e-19   county poolN
+    ## 2  county_catN 5.305197e-17   county  catN
 
 Note that the treatment plan returns both the `catN` variable (default
 level encoding) and the pooled level encoding (`poolN`). You can
