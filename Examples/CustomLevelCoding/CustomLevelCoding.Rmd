@@ -1,9 +1,7 @@
 ---
 title: "Custom Level Coding in vtreat"
 author: "Nina Zumel, John Mount"
-output: 
-  html_document:
-    keep_md: true
+output: github_document
 ---
 
 One of the services that the [`R`](https://www.r-project.org) package [`vtreat`](https://winvector.github.io/vtreat/) provides is *level coding* (what we sometimes call *impact coding*):
