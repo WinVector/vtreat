@@ -43,10 +43,11 @@ create and apply a treatment plan, etc.
 
 For our example, we will implement level coders based on partial
 pooling, or hierarchical/multilevel models (Gelman and Hill, 2007).
-We’ll leave the details of how partial pooling works to a subsequent
-article; for now, just think of it as a score that shrinks the estimate
-of the conditional mean to be closer to the unconditioned mean, and
-hence possibly closer to the unknown true values, when there are too few
+We’ll leave the details of how partial pooling works to a [subsequent
+article](https://winvector.github.io/PartialPooling_R/PartialPooling_R.html);
+for now, just think of it as a score that shrinks the estimate of the
+conditional mean to be closer to the unconditioned mean, and hence
+possibly closer to the unknown true values, when there are too few
 measurements to make an accurate estimate.
 
 We’ll implement our partial pooling encoders using the `lmer()`
@@ -205,8 +206,8 @@ scoreFrame %>% select(varName, sig, origName, code)
 ```
 
     ##        varName          sig origName  code
-    ## 1 county_poolN 9.929706e-18   county poolN
-    ## 2  county_catN 1.089572e-13   county  catN
+    ## 1 county_poolN 3.296231e-23   county poolN
+    ## 2  county_catN 1.192910e-20   county  catN
 
 Note that the treatment plan returned both the `catN` variable (default
 level encoding) and the pooled level encoding (`poolN`). You can
@@ -308,9 +309,10 @@ Principal Data Scientist at Echo Global Logistics, for suggesting
 partial pooling based level coding (and testing it for us!), introducing
 us to the references, and reviewing our articles.
 
-In a follow-up article, we will go into partial pooling in more detail,
-and motivate why you might sometimes prefer it to `vtreat`’s default
-coding.
+In a [follow-up
+article](https://winvector.github.io/PartialPooling_R/PartialPooling_R.html),
+we will go into partial pooling in more detail, and motivate why you
+might sometimes prefer it to `vtreat`’s default coding.
 
 ## References
 

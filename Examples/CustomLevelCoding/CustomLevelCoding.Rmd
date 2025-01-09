@@ -17,7 +17,7 @@ By default, `vtreat` level codes to the difference between the conditional means
 
 So the data scientist may want to use a level coding different from what `vtreat` defaults to. In this article, we will demonstrate how to implement custom level encoders in `vtreat`. We assume you are familiar with the basics of `vtreat`: the types of derived variables, how to create and apply a treatment plan, etc.
 
-For our example, we will implement level coders based on partial pooling, or hierarchical/multilevel models (Gelman and Hill, 2007). We'll leave the details of how partial pooling works to a subsequent article; for now, just think of it as a score that shrinks the estimate of the conditional mean to be closer to the unconditioned mean, and hence possibly closer to the unknown true values, when there are too few measurements to make an accurate estimate.
+For our example, we will implement level coders based on partial pooling, or hierarchical/multilevel models (Gelman and Hill, 2007). We'll leave the details of how partial pooling works to a [subsequent article](https://winvector.github.io/PartialPooling_R/PartialPooling_R.html); for now, just think of it as a score that shrinks the estimate of the conditional mean to be closer to the unconditioned mean, and hence possibly closer to the unknown true values, when there are too few measurements to make an accurate estimate.
 
 We'll implement our partial pooling encoders using the `lmer()` (multilevel linear regression) and `glmer()` (multilevel generalized linear regression) functions from the `lme4` package. For our example data, we'll use radon levels by county for the state of Minnesota (Gelman and Hill, 2007. You can find the original data [here](http://www.stat.columbia.edu/~gelman/arm/software/)).
 
@@ -223,7 +223,7 @@ When using `mkCrossFrameXExperiment`, note that the resulting cross frame will h
 
 Thanks to [Geoffrey Simmons](https://www.linkedin.com/in/geoffrey-simmons-bb675242/), Principal Data Scientist at Echo Global Logistics, for suggesting partial pooling based level coding (and testing it for us!), introducing us to the references, and reviewing our articles.
 
-In a follow-up article, we will go into partial pooling in more detail, and motivate why you might sometimes prefer it to `vtreat`'s default coding.
+In a [follow-up article](https://winvector.github.io/PartialPooling_R/PartialPooling_R.html), we will go into partial pooling in more detail, and motivate why you might sometimes prefer it to `vtreat`'s default coding.
 
 ## References
 
